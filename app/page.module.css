@@ -1,168 +1,257 @@
-.page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+/* src/app/home.module.css */
 
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
-  font-family: var(--font-geist-sans);
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #1F2937;
+  /* font-family: 'Poppins', sans-serif; - A fonte já é definida no RootLayout/globals.css */
+  background-color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+/* Hero Section */
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: uma coluna */
+  gap: var(--spacing-xl); /* 2rem */
+  padding: 4rem var(--spacing-lg); /* 4rem 1.5rem */
+  align-items: center;
+  background-color: #F5F3FF;
+}
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
+/* Desktop: duas colunas para Hero Section */
+@media (min-width: 768px) {
+  .heroSection {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.main {
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #5B21B6;
+  margin-bottom: var(--spacing-md); /* 1.5rem */
+  line-height: 1.2;
+}
+
+.heroParagraph {
+  font-size: 1.125rem;
+  margin-bottom: var(--spacing-md); /* 1.5rem */
+  color: #4B5563;
+}
+
+.heroStrong {
+  font-weight: 700;
+  color: #6D28D9;
+}
+
+.heroImageContainer {
+  display: flex;
+  justify-content: center;
+  /* Adicione margin-bottom em mobile se a imagem ficar colada no próximo elemento */
+  margin-bottom: 2rem; /* Exemplo para mobile */
+}
+
+@media (min-width: 768px) {
+  .heroImageContainer {
+    margin-bottom: 0; /* Remove margin em desktop */
+  }
+}
+
+
+/* Suporte Section */
+.suporteSection {
+  width: 100%;
+  padding: 3rem var(--spacing-lg); /* 3rem 1rem */
+  background-color: #fff;
+}
+
+.suporteContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg); /* 0 1rem */
+  display: flex;
+  flex-direction: column; /* Mobile: coluna */
+  gap: var(--spacing-xl); /* 2rem */
+  justify-content: space-between;
+}
+
+/* Desktop: linha para Suporte Container */
+@media (min-width: 1024px) { /* Use lg breakpoint se preferir */
+  .suporteContainer {
+    flex-direction: row;
+  }
+}
+
+.suporteLeft {
+  width: 100%;
+  max-width: 600px;
+}
+
+.suporteTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #6B21A8;
+  margin-bottom: var(--spacing-md); /* 1rem */
+}
+
+.suporteText {
+  font-size: 1.125rem;
+  color: #4B5563;
+}
+
+.suporteRight {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  justify-content: center;
+}
+
+.suporteBox {
+  border: 1px solid #6B21A8;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 320px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.suporteBoxTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #6B21A8;
+  margin-bottom: var(--spacing-md); /* 1rem */
+}
+
+.suporteBoxItems { /* Classe para o container dos itens de horário */
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
+  gap: var(--spacing-md); /* 1rem */
+  font-size: 0.875rem;
 }
 
-.main ol {
-  font-family: var(--font-geist-mono);
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
-}
-
-.main code {
-  font-family: inherit;
-  background: var(--gray-alpha-100);
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-.ctas {
+.suporteBoxItem {
   display: flex;
-  gap: 16px;
-}
-
-.ctas a {
-  appearance: none;
-  border-radius: 128px;
-  height: 48px;
-  padding: 0 20px;
-  border: none;
-  border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  line-height: 20px;
+  justify-content: space-between;
+  /* margin-bottom: 1rem; - Movido para o gap do container pai */
   font-weight: 500;
 }
 
-a.primary {
-  background: var(--foreground);
-  color: var(--background);
-  gap: 8px;
+.suporteHighlight { /* Classe para os valores destacados */
+  color: #6D28D9;
+  font-weight: 600;
 }
 
-a.secondary {
-  border-color: var(--gray-alpha-200);
-  min-width: 158px;
+
+/* Benefício Section */
+.beneficioSection {
+  padding: 4rem var(--spacing-lg); /* 4rem 1.5rem */
+  background-color: #F9FAFB;
+  text-align: center;
 }
 
-.footer {
-  grid-row-start: 3;
+.beneficioTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 3rem;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.beneficioGrid {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Mobile: 1 coluna */
+  gap: var(--spacing-md); /* 1.5rem */
+}
+
+/* Tablet/Desktop: 2 colunas */
+@media (min-width: 640px) { /* Exemplo: sm breakpoint */
+  .beneficioGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Grande Desktop: 4 colunas */
+@media (min-width: 1024px) { /* Exemplo: lg breakpoint */
+  .beneficioGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+
+.beneficioCard {
+  width: 100%;
+  height: 10rem;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  color: #6B21A8;
+  border: 1px solid #D8B4FE;
   display: flex;
-  gap: 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.footer a {
+.beneficioPercent {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background-color: #DDD6FE;
+  color: #6B21A8;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
 }
 
-.footer img {
-  flex-shrink: 0;
+.beneficioLabel {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-
-  .footer a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
+/* Planos Section */
+.planosSection {
+  width: 100%;
+  padding: 4rem var(--spacing-lg); /* 4rem 1rem */
+  background-color: #fff;
 }
 
-@media (max-width: 600px) {
-  .page {
-    padding: 32px;
-    padding-bottom: 80px;
-  }
-
-  .main {
-    align-items: center;
-  }
-
-  .main ol {
-    text-align: center;
-  }
-
-  .ctas {
-    flex-direction: column;
-  }
-
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
-  }
-
-  a.secondary {
-    min-width: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
+.planosTitle {
+  text-align: center;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #6D28D9;
+  margin-bottom: 2.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-}
+/* As classes planosCarrosselMobile e planosGridMd não serão mais usadas aqui */
+/* A classe planos-container em globals.css já faz o trabalho responsivo */
+/* Você pode remover as definições delas se ainda estiverem aqui */
+/* planosCarrosselMobile: {
+    overflowX: 'auto' as const,
+    whiteSpace: 'nowrap' as const,
+    scrollbarWidth: 'none' as const,
+    msOverflowStyle: 'none' as const,
+  },
+  planosCarrosselMobileContent: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'nowrap' as const,
+  },
+  planosGridMd: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '1.5rem',
+  }, */
