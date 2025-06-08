@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 const cardStyle: React.CSSProperties = {
@@ -23,19 +23,14 @@ const dataVendas = [
 
 export default function EstatisticasPage() {
   const stats = {
-  vendasHoje: 1230,
-  visitantes: 342,
-  estoque: 128,
-  pedidosPendentes: 7,
-  faturamentoMes: 45000,
-  ticketMedio: 150,
-  taxaConversao: 2.3,
-};
-
-  
-  useEffect(() => {
-   
-  }, []);
+    vendasHoje: 1230,
+    visitantes: 342,
+    estoque: 128,
+    pedidosPendentes: 7,
+    faturamentoMes: 45000,
+    ticketMedio: 150,
+    taxaConversao: 2.3,
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -49,14 +44,12 @@ export default function EstatisticasPage() {
           <div key={key} style={cardStyle}>
             <h2 style={{ fontSize: 16, marginBottom: 8 }}>
               {key
-                .replace(/([A-Z])/g, ' $1') // transforma camelCase em palavras separadas
+                .replace(/([A-Z])/g, ' $1') // camelCase vira palavras separadas
                 .replace(/^./, str => str.toUpperCase())}
             </h2>
             <p style={{ fontSize: 20, fontWeight: 600 }}>
-              {typeof value === 'number' && key.toLowerCase().includes('vendas') || key.toLowerCase().includes('faturamento')
+              {(typeof value === 'number' && (key.toLowerCase().includes('vendas') || key.toLowerCase().includes('faturamento')))
                 ? `R$ ${value.toFixed(2)}`
-                : typeof value === 'number'
-                ? value
                 : value}
             </p>
           </div>
