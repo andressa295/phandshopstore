@@ -197,6 +197,32 @@ export default function Home() {
 
   const heroSectionStyle = isMobile ? styles.heroSection : { ...styles.heroSection, ...styles.heroGridMd };
   const suporteContainerStyle = isMobile ? styles.suporteContainer : { ...styles.suporteContainer, ...styles.suporteGridLg };
+const dynamicStyles = {
+  heroTitle: {
+    ...styles.heroTitle,
+    fontSize: isMobile ? '2rem' : '3rem',
+  },
+  heroParagraph: {
+    ...styles.heroParagraph,
+    fontSize: isMobile ? '1rem' : '1.25rem',
+  },
+  suporteTitle: {
+    ...styles.suporteTitle,
+    fontSize: isMobile ? '1.5rem' : '2rem',
+  },
+  suporteText: {
+    ...styles.suporteText,
+    fontSize: isMobile ? '1rem' : '1.125rem',
+  },
+  beneficioTitle: {
+    ...styles.beneficioTitle,
+    fontSize: isMobile ? '1.75rem' : '2.25rem',
+  },
+  beneficioLabel: {
+    ...styles.beneficioLabel,
+    fontSize: isMobile ? '1rem' : '1.125rem',
+  },
+};
 
   return (
     <div style={styles.container}>
