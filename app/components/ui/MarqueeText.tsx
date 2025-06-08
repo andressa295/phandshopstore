@@ -1,6 +1,5 @@
 // src/app/components/ui/MarqueeText.tsx
 import React from 'react';
-import { FiShoppingBag } from 'react-icons/fi';
 
 interface MarqueeTextProps {
   text: string;
