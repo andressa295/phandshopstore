@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Poppins } from 'next/font/google';
-import Header from '../components/HeaderGlobal';
+
 
 const poppins = Poppins({
   subsets: ['latin'],
