@@ -2,7 +2,7 @@
 
 import React, { CSSProperties, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Planos from './components/Planos'; // Certifique-se que o caminho está correto
+import Planos from './components/Planos';
 
 const styles: { [key: string]: CSSProperties } = {
   container: {
