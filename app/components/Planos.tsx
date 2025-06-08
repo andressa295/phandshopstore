@@ -1,4 +1,3 @@
-// src/app/components/Planos.tsx (CONTEÚDO FORNECIDO POR VOCÊ)
 'use client';
 
 import Link from "next/link";
@@ -11,8 +10,7 @@ import {
   DollarSign,
 } from "lucide-react";
 
-// Certifique-se que este caminho está correto para o seu Planos.module.css
-import styles from './Planos.module.css'; 
+import styles from './Planos.module.css';
 
 interface Plano {
   nome: string;
@@ -59,7 +57,7 @@ const planos: Plano[] = [
     nome: "Premium",
     precoMensal: "R$ 149,00",
     precoAnual: "R$ 129,00",
-    destaque: true, // Note: No seu código original, destaque estava true para Premium e Master
+    destaque: true,
     beneficios: [
       "Produtos, visitas e usuários ilimitados",
       "Marketplace gratuitos e zero taxas",
@@ -94,7 +92,7 @@ const planos: Plano[] = [
       "Garantia de 30 dias",
       "Underbook no checkout",
       "Kit de produto",
-      "Importação por tornilha", // Planilha?
+      "Importação por tornilha",
       "Aplicativo grátis",
       "Personalizador de produtos grátis",
       "Sacolinha do Instagram",
@@ -109,45 +107,27 @@ const Planos = () => {
   const renderPreco = (plano: Plano) => {
     const preco = tipoPlano === "mensal" ? plano.precoMensal : plano.precoAnual;
     if (!preco) return null;
-
     const isMaster = plano.nome === "Master";
-    // Usa classes do Planos.module.css para estilizar preço
-    const priceClassName = isMaster ? styles.planPriceMaster : ''; 
+    const priceClassName = isMaster ? styles.planPriceMaster : '';
     const unitClassName = isMaster ? styles.planPriceUnitMaster : '';
-
     return (
       <div className={`${styles.planPrice} ${priceClassName}`}>
         {preco}
-        <span className={`${styles.planPriceUnit} ${unitClassName}`}>
-          /mês
-        </span>
+        <span className={`${styles.planPriceUnit} ${unitClassName}`}> /mês</span>
       </div>
     );
   };
 
-  const renderIcon = (
-    beneficio: string,
-    isMaster: boolean
-  ) => {
+  const renderIcon = (beneficio: string, isMaster: boolean) => {
     const commonIconStyle = {
-      width: '1.125rem', 
-      height: '1.125rem', 
-      flexShrink: 0,
+      width: '1.125rem', height: '1.125rem',
+      flexShrink: 0, marginRight: '0.5rem',
     };
-
-    // Usa classes do Planos.module.css para cores dos ícones
-    let colorClass = styles.iconSuccess; 
-    if (isMaster) {
-      colorClass = styles.iconMaster;
-    } else if (
-      beneficio.includes("Produtos") ||
-      beneficio.includes("Marketplace") ||
-      beneficio.includes("Mentoria") ||
-      beneficio.includes("Tarifa")
-    ) {
+    let colorClass = styles.iconSuccess;
+    if (isMaster) colorClass = styles.iconMaster;
+    else if (beneficio.includes("Produtos") || beneficio.includes("Marketplace") || beneficio.includes("Mentoria") || beneficio.includes("Tarifa")) {
       colorClass = styles.iconPrimary;
     }
-
     if (beneficio.includes("Produtos")) return <ShoppingCart className={colorClass} style={commonIconStyle} />;
     if (beneficio.includes("Marketplace")) return <Globe className={colorClass} style={commonIconStyle} />;
     if (beneficio.includes("Mentoria")) return <BarChart2 className={colorClass} style={commonIconStyle} />;
@@ -156,85 +136,59 @@ const Planos = () => {
   };
 
   return (
-    // O wrapper .planosSectionWrapper é do Planos.module.css
-    // e pode ser usado para padding/margem geral da seção de planos, se necessário.
-    // Se a <section style={styles.planosSection}> da Home.tsx já cuida do padding,
-    // este wrapper pode não precisar de padding próprio.
-    <section className={styles.planosSectionWrapper}> 
+    <section className={styles.planosSectionWrapper}>
       <div className={styles.toggleContainer}>
         {["mensal", "anual"].map((tipo) => (
           <button
             key={tipo}
             onClick={() => setTipoPlano(tipo as "mensal" | "anual")}
             className={`${styles.toggleButton} ${tipoPlano === tipo ? styles.toggleButtonActive : ''}`}
+            aria-pressed={tipoPlano === tipo}
           >
             {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
           </button>
         ))}
       </div>
 
-      {/* Esta div usa a classe .planos-container do globals.css */}
-      {/* Ela será flex (scroll horizontal) no mobile e grid (4 colunas) no desktop */}
-      <div className="planos-container"> 
+      <div className="planos-container"> {/* Container estilizado pelo globals.css */}
         {planos.map((plano) => {
           const isMaster = plano.nome === "Master";
-
-          // Classe .card vem do globals.css (base)
-          // Classes .planCardDefault ou .planCardMaster vêm do Planos.module.css (sobrescritas)
-          const cardSpecificStyleClass = isMaster
-            ? styles.planCardMaster 
-            : styles.planCardDefault; 
+          const cardSpecificStyleClass = isMaster ? styles.planCardMaster : styles.planCardDefault;
 
           return (
-            // Cada plano é uma <section> com a classe base "card" e a classe específica do módulo
-            <section
-              key={plano.nome}
-              className={`card ${cardSpecificStyleClass}`} 
-            >
-              {isMaster && ( // Badge para o plano Master
-                <div className={styles.masterBadge}>
-                  🎉 OFERTA ESPECIAL
-                </div>
-              )}
+            <article key={plano.nome} className={`card ${cardSpecificStyleClass}`}>
+              {isMaster && (<div className={styles.masterBadge}>🎉 OFERTA ESPECIAL</div>)}
 
-              <div> {/* Container para título, subtítulo, preço */}
-                <h2 className={styles.planTitle}>
-                  {plano.nome}
-                </h2>
-
-                {isMaster && (
-                  <p className={styles.planSubtitle}>
-                    Profissional + Loja Pronta
-                  </p>
-                )}
-
+              {/* Seção do Título e Preço (Topo do card) */}
+              <div>
+                <h2 className={styles.planTitle}>{plano.nome}</h2>
+                {isMaster && (<p className={styles.planSubtitle}>Profissional + Loja Pronta</p>)}
                 {renderPreco(plano)}
-
-                {isMaster && (
-                  <div className={styles.planPriceNote}>
-                    No plano anual você tem o seu site pronto
-                  </div>
-                )}
+                {isMaster && (<div className={styles.planPriceNote}>No plano anual você tem o seu site pronto</div>)}
               </div>
 
+              {/* Wrapper para a lista e divisor que vai crescer e ocupar espaço */}
+              <div className={styles.benefitsSection}>
+                <hr className={`${styles.divider} ${isMaster ? styles.dividerMaster : ''}`} />
+                <ul className={styles.benefitsList}>
+                  {plano.beneficios.map((b, i) => (
+                    <li key={i} className={styles.benefitItem}>
+                      {renderIcon(b, isMaster)}
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Botão de Ação (Fundo do card) */}
               <Link
-                href="/cadastro" // Adapte o link se necessário
+                href="/cadastro"
                 aria-label={`Criar loja virtual no plano ${plano.nome}`}
                 className={`${styles.ctaButton} ${isMaster ? styles.ctaButtonMaster : ''}`}
               >
                 CRIAR LOJA VIRTUAL GRÁTIS
               </Link>
-
-              <hr className={`${styles.divider} ${isMaster ? styles.dividerMaster : ''}`} />
-
-              <ul className={styles.benefitsList}>
-                {plano.beneficios.map((b, i) => (
-                  <li key={i} className={styles.benefitItem}>
-                    {renderIcon(b, isMaster)} <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            </article>
           );
         })}
       </div>

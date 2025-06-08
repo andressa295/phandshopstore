@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import HeaderPainel from '../components/HeaderPainel';
-import FooterPainel from '../components/FooterPainel';
+import HeaderPainel from './components/HeaderPainel';
+import FooterPainel from './components/FooterPainel';
+
 import {
   FaHome, FaChartBar, FaBoxOpen, FaUsers, FaTags, FaBullhorn, FaShoppingCart,
   FaStore, FaChevronDown, FaChevronUp
@@ -179,9 +180,7 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
                       fontWeight: 500,
                       color: '#333',
                       fontSize: 15,
-                      textDecoration: 'none',
-                      cursor: 'pointer',
-                      userSelect: 'none'
+                      textDecoration: 'none'
                     }}
                   >
                     {icon}
@@ -197,8 +196,9 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
         <main style={{
           flexGrow: 1,
           padding: 32,
-          boxSizing: 'border-box',
-          backgroundColor: '#f9f9f9'
+          backgroundColor: '#f9f9f9',
+          minHeight: '100%',
+          overflowY: 'auto'
         }}>
           {children}
         </main>

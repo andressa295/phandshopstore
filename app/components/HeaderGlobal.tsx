@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const headerStyles: React.CSSProperties = {
   position: 'relative',
@@ -9,8 +10,7 @@ const headerStyles: React.CSSProperties = {
   left: 0,
   width: '100%',
   height: '64px',
-  backgroundColor: '#fff',
-  borderBottom: '1px solid #E5E7EB',
+  backgroundColor: '#6b21a8', // mesmo roxo do rodapé
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -19,10 +19,10 @@ const headerStyles: React.CSSProperties = {
   fontFamily: "'Poppins', sans-serif",
 };
 
-const logoStyle: React.CSSProperties = {
-  fontSize: '1.5rem',
-  fontWeight: 700,
-  color: '#6D28D9',
+const logoContainerStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
   textDecoration: 'none',
 };
 
@@ -33,7 +33,7 @@ const navStyle: React.CSSProperties = {
 };
 
 const linkStyle: React.CSSProperties = {
-  color: '#4B5563',
+  color: '#eee',
   textDecoration: 'none',
   fontWeight: 500,
   fontSize: '0.95rem',
@@ -43,8 +43,8 @@ const linkStyle: React.CSSProperties = {
 
 const buttonStyle: React.CSSProperties = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#6D28D9',
-  color: '#fff',
+  backgroundColor: '#fff',
+  color: '#4c1d95',
   borderRadius: '0.5rem',
   fontWeight: 600,
   textDecoration: 'none',
@@ -55,8 +55,14 @@ const buttonStyle: React.CSSProperties = {
 export default function Header() {
   return (
     <header style={headerStyles}>
-      <Link href="/" style={logoStyle}>
-        Phandshop
+      <Link href="/" style={logoContainerStyle}>
+        <Image
+          src="/logo.png"
+          alt="Phandshop"
+          width={200}
+          height={50}
+          priority
+        />
       </Link>
       <nav style={navStyle}>
         <Link href="/planos" style={linkStyle}>

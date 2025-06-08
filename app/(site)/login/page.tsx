@@ -1,13 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Poppins } from 'next/font/google';
-import Header from '../components/HeaderGlobal';
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-});
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -34,9 +27,8 @@ export default function LoginPage() {
 
   return (
     <main
-      className={poppins.className}
       style={{
-        height: '100vh',
+        height: 'calc(100vh - 64px)', // descontando header de 64px
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -174,10 +166,10 @@ export default function LoginPage() {
             transition: 'background-color 0.3s',
           }}
           onMouseEnter={e => {
-            if (!loading) (e.currentTarget.style.backgroundColor = '#7c3aed');
+            if (!loading) e.currentTarget.style.backgroundColor = '#7c3aed';
           }}
           onMouseLeave={e => {
-            if (!loading) (e.currentTarget.style.backgroundColor = '#6b21a8');
+            if (!loading) e.currentTarget.style.backgroundColor = '#6b21a8';
           }}
         >
           {loading ? 'Entrando...' : 'Entrar'}

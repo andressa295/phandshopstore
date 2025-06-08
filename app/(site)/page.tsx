@@ -2,7 +2,6 @@
 
 import React, { CSSProperties, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Planos from './components/Planos';
 
 const styles: { [key: string]: CSSProperties } = {
   container: {
@@ -11,38 +10,38 @@ const styles: { [key: string]: CSSProperties } = {
     flexDirection: 'column',
     color: '#1F2937',
     fontFamily: "'Poppins', sans-serif",
-    backgroundColor: '#fff',
+    backgroundColor: '#F9FAFB',
   },
   heroSection: {
     display: 'grid',
     gridTemplateColumns: '1fr',
-    gap: '2rem',
-    padding: '4rem 1.5rem',
+    gap: '2.5rem',
+    padding: '5rem 1.5rem',
     alignItems: 'center',
-    backgroundColor: '#F5F3FF',
+    backgroundColor: '#EEF2FF',
   },
-  heroGridMd: { // Para desktop, este vira 2 colunas
+  heroGridMd: {
     gridTemplateColumns: 'repeat(2, 1fr)',
   },
   heroTitle: {
-    fontSize: '2.5rem',
-    fontWeight: 700,
-    color: '#5B21B6',
-    marginBottom: '1.5rem',
+    fontSize: '3rem',
+    fontWeight: 800,
+    color: '#7C3AED',
+    marginBottom: '2rem',
     lineHeight: 1.2,
   },
   heroParagraph: {
-    fontSize: '1.125rem',
-    marginBottom: '1.5rem',
-    color: '#4B5563',
+    fontSize: '1.25rem',
+    marginBottom: '2rem',
+    color: '#374151',
   },
   heroStrong: {
     fontWeight: 700,
-    color: '#6D28D9',
+    color: '#7C3AED',
   },
   suporteSection: {
     width: '100%',
-    padding: '3rem 1rem',
+    padding: '4rem 1rem',
     backgroundColor: '#fff',
   },
   suporteContainer: {
@@ -51,10 +50,10 @@ const styles: { [key: string]: CSSProperties } = {
     padding: '0 1rem',
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem',
+    gap: '3rem',
     justifyContent: 'space-between',
   },
-  suporteGridLg: { // Para desktop, este vira row
+  suporteGridLg: {
     flexDirection: 'row',
   },
   suporteLeft: {
@@ -62,14 +61,15 @@ const styles: { [key: string]: CSSProperties } = {
     maxWidth: '600px',
   },
   suporteTitle: {
-    fontSize: '1.5rem',
+    fontSize: '2rem',
     fontWeight: 700,
-    color: '#6B21A8',
-    marginBottom: '1rem',
+    color: '#6D28D9',
+    marginBottom: '1.25rem',
   },
   suporteText: {
     fontSize: '1.125rem',
     color: '#4B5563',
+    lineHeight: 1.6,
   },
   suporteRight: {
     width: '100%',
@@ -78,36 +78,37 @@ const styles: { [key: string]: CSSProperties } = {
     justifyContent: 'center',
   },
   suporteBox: {
-    border: '1px solid #6B21A8',
-    borderRadius: '0.5rem',
-    padding: '1.5rem',
+    border: '1px solid #A78BFA',
+    borderRadius: '0.75rem',
+    padding: '2rem',
     width: '100%',
     maxWidth: '320px',
     backgroundColor: '#fff',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
   },
   suporteBoxTitle: {
-    fontSize: '1.125rem',
+    fontSize: '1.25rem',
     fontWeight: 600,
-    color: '#6B21A8',
-    marginBottom: '1rem',
+    color: '#7C3AED',
+    marginBottom: '1.25rem',
   },
   suporteBoxItem: {
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: '0.875rem',
+    fontSize: '1rem',
     marginBottom: '1rem',
     fontWeight: 500,
+    color: '#374151',
   },
   beneficioSection: {
-    padding: '4rem 1.5rem',
-    backgroundColor: '#F9FAFB',
+    padding: '5rem 1.5rem',
+    backgroundColor: '#F3F4F6',
     textAlign: 'center',
   },
   beneficioTitle: {
-    fontSize: '1.875rem',
+    fontSize: '2.25rem',
     fontWeight: 700,
-    color: '#111827',
+    color: '#1F2937',
     marginBottom: '3rem',
     maxWidth: '48rem',
     marginLeft: 'auto',
@@ -118,70 +119,69 @@ const styles: { [key: string]: CSSProperties } = {
     marginLeft: 'auto',
     marginRight: 'auto',
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)', // Ajuste para 1 coluna em mobile se necessário via media query no objeto ou classe CSS
-    gap: '1.5rem',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '2rem',
   },
   beneficioCard: {
-    width: '100%',
-    height: '10rem',
-    borderRadius: '0.75rem',
+    height: '11rem',
+    borderRadius: '1rem',
     backgroundColor: '#fff',
-    color: '#6B21A8',
-    border: '1px solid #D8B4FE',
+    color: '#7C3AED',
+    border: '1px solid #DDD6FE',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
   },
   beneficioPercent: {
-    width: '3rem',
-    height: '3rem',
+    width: '3.25rem',
+    height: '3.25rem',
     borderRadius: '9999px',
     backgroundColor: '#DDD6FE',
-    color: '#6B21A8',
+    color: '#6D28D9',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 700,
-    fontSize: '1.25rem',
+    fontSize: '1.375rem',
   },
   beneficioLabel: {
     marginTop: '0.5rem',
-    fontSize: '1rem',
+    fontSize: '1.125rem',
     fontWeight: 500,
   },
   planosSection: {
     width: '100%',
-    padding: '4rem 1rem',
+    padding: '5rem 1rem',
     backgroundColor: '#fff',
   },
   planosTitle: {
     textAlign: 'center',
-    fontSize: '1.875rem',
-    fontWeight: 700,
-    color: '#6D28D9',
-    marginBottom: '2.5rem',
+    fontSize: '2.25rem',
+    fontWeight: 800,
+    color: '#7C3AED',
+    marginBottom: '3rem',
   },
-  planosCarrosselMobile: { // Container para o carrossel mobile
+  planosCarrosselMobile: {
     overflowX: 'auto' as const,
-    whiteSpace: 'nowrap' as const, // Impede que o conteúdo do Planos quebre linha
+    whiteSpace: 'nowrap' as const,
     scrollbarWidth: 'none' as const,
     msOverflowStyle: 'none' as const,
-    WebkitOverflowScrolling: 'touch', // Para iOS
+    WebkitOverflowScrolling: 'touch',
   },
-  planosCarrosselMobileContent: { // Conteúdo interno do carrossel
-    display: 'flex', // Necessário para que os planos fiquem em linha
+  planosCarrosselMobileContent: {
+    display: 'flex',
     flexDirection: 'row',
-    gap: '1rem', // Espaçamento entre os cards no carrossel (se Planos renderizar múltiplos itens diretamente)
-    // Se o .planos-container do globals.css já faz o display:flex pros cards, este pode não precisar de display:flex
-    // mas sim de padding para o scroll não colar nas bordas.
-    // padding: '0 1rem', // Exemplo de padding para o scroll do carrossel
+    gap: '1.5rem',
   },
-  // ***** ESTA É A ALTERAÇÃO PRINCIPAL *****
-  planosGridMd: { // Container para os planos em desktop
-    width: '100%', // Permite que o .planos-container interno (do globals.css) se centralize
-    // As propriedades de grid display, gridTemplateColumns e gap foram removidas daqui.
+  planosGridMd: {
+    width: '100%',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, 1fr)',
+    gap: '2rem',
   },
 };
 
@@ -195,13 +195,8 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Adapta o estilo do heroSection e suporteContainer baseado em isMobile
   const heroSectionStyle = isMobile ? styles.heroSection : { ...styles.heroSection, ...styles.heroGridMd };
   const suporteContainerStyle = isMobile ? styles.suporteContainer : { ...styles.suporteContainer, ...styles.suporteGridLg };
-  // Adapta o estilo do beneficioGrid para mobile (ex: 1 coluna)
-  // Você pode adicionar uma lógica similar se quiser que beneficioGrid mude em mobile
-  // Ex: const beneficioGridStyle = isMobile ? {...styles.beneficioGrid, gridTemplateColumns: '1fr'} : styles.beneficioGrid;
-  // E usar beneficioGridStyle no JSX.
 
   return (
     <div style={styles.container}>
@@ -214,11 +209,11 @@ export default function Home() {
           </h1>
           <p style={styles.heroParagraph}>
             Venda 24 horas por dia com a cara da sua marca, temas personalizados e tudo o que você precisa para começar.
-            Cobramos apenas <span style={styles.heroStrong}>1% por venda</span>, a menor taxa do mercado.
+            Taxa por venda <span style={styles.heroStrong}>0% </span>, a melhor taxa do mercado.
           </p>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Adicionado alignItems para centralizar verticalmente se a altura permitir */}
-          <Image src="/logo.png" alt="Ilustração Phandshop" width={300} height={300} style={{ maxWidth: '100%', height: 'auto' }} />
+          <Image src="/site.png" alt="Ilustração Phandshop" width={900} height={900} style={{ maxWidth: '100%', height: 'auto' }} />
         </div>
       </section>
 
@@ -249,28 +244,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Benefícios */}
-      
-
-      {/* Planos */}
-      <section style={styles.planosSection}>
-        <h2 style={styles.planosTitle}>Escolha o plano ideal</h2>
-        {isMobile ? (
-          <div style={styles.planosCarrosselMobile}>
-            <div style={styles.planosCarrosselMobileContent}>
-              {/* O componente Planos renderizará o .planos-container que no mobile é flex e scrollable */}
-              <Planos />
-            </div>
-          </div>
-        ) : (
-          // Em desktop, este div agora é um container simples,
-          // e o .planos-container DENTRO de <Planos /> fará o grid de 4 colunas.
-          <div style={styles.planosGridMd}>
-            <Planos />
-          </div>
-        )}
       </section>
     </div>
   );

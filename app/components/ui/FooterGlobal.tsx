@@ -19,7 +19,7 @@ export function Footer() {
       }}
     >
       <div>
-        <Image src="/logo.png" alt="Logo" width={120} height={40} />
+        <Image src="/logo.png" alt="Logo" width={170} height={50} />
         <p>© {new Date().getFullYear()} Phandshop. Todos os direitos reservados.</p>
       </div>
 

@@ -5,7 +5,7 @@ import React from 'react';
 const footerStyles: React.CSSProperties = {
   marginTop: 'auto',
   padding: '1rem 1.5rem',
-  backgroundColor: '#4c1d95', // roxo escuro consistente
+  backgroundColor: '#6b21a8',
   color: '#eee',
   fontSize: '0.875rem',
   textAlign: 'center',

@@ -1,35 +1,28 @@
-/* src/app/components/Planos.module.css */
-
+/* Wrapper da Seção */
 .planosSectionWrapper {
-  padding: var(--spacing-xl) 0; 
+  padding: 4rem 0; /* var(--spacing-xl) é 32px, 4rem é 64px. Ajuste se preferir */
   position: relative;
 }
 
-@media (min-width: 768px) {
-  .planosSectionWrapper {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
+/* Toggle Mensal/Anual */
 .toggleContainer {
   display: flex;
-  gap: var(--spacing-lg);
-  background-color: var(--gray-light);
-  padding: var(--spacing-xxs);
+  gap: 1.5rem; /* var(--spacing-lg) */
+  background-color: #f3f4f6; /* var(--gray-light) */
+  padding: 0.25rem; /* var(--spacing-xxs) */
   border-radius: 9999px;
   width: fit-content;
-  margin: 0 auto var(--spacing-xl);
+  margin: 0 auto 2rem; /* var(--spacing-xl) */
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .toggleButton {
-  padding: 4px var(--spacing-md);
+  padding: 0.25rem 1rem; /* var(--spacing-xxs) var(--spacing-md) */
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 9999px;
   background-color: transparent;
-  color: var(--gray-dark-text);
+  color: #374151; /* var(--gray-dark-text) */
   border: none;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -37,176 +30,100 @@
 }
 
 .toggleButtonActive {
-  background-color: var(--purple-main);
+  background-color: #6B21A8; /* var(--purple-main) */
   color: white;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.planCardDefault {
-  background-color: white; 
-  border: 1px solid var(--gray-medium);
-  border-radius: 1rem; 
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08); 
-  padding: var(--spacing-lg); 
-  color: var(--foreground); 
-  text-align: left; /* Para alinhar o texto à esquerda, sobrescrevendo o .card base */
-}
-.planCardDefault:hover {
-  transform: translateY(-4px); 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
+/* Estilo para TODOS os cards de plano */
+.planCardDefault,
 .planCardMaster {
-  background-color: var(--purple-dark); 
-  color: white; 
-  border: none; 
+  background-color: white; 
+  border: 1px solid #e5e7eb; /* var(--gray-medium) */
   border-radius: 1rem; 
-  box-shadow: 0 8px 20px rgba(75, 0, 130, 0.5); 
-  padding: var(--spacing-lg); 
-  z-index: 2; 
-  text-align: left; /* Para alinhar o texto à esquerda */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem; /* var(--spacing-lg) */
+  text-align: left;
+  
+  /* LAYOUT FLEXBOX VERTICAL PARA ORGANIZAR O CONTEÚDO INTERNO */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
-.planCardMaster:hover {
-  transform: translateY(-6px) scale(1.03); 
-  box-shadow: 0 12px 25px rgba(75, 0, 130, 0.6);
-}
+.planCardDefault:hover { transform: translateY(-4px); }
 
+/* Estilo específico para o card Master (sobrescreve o default) */
+.planCardMaster {
+  background-color: #4B0082; /* var(--purple-dark) */
+  color: white; 
+  border: 2px solid #6B21A8;
+  box-shadow: 0 8px 20px rgba(75, 0, 130, 0.25); 
+  z-index: 2; /* Para ficar por cima caso haja sobreposição de sombra */
+}
+.planCardMaster:hover { transform: translateY(-6px) scale(1.03); }
+
+/* Badge de Oferta Especial */
 .masterBadge {
   position: absolute;
-  top: calc(-1 * var(--spacing-md)); 
+  top: -16px; 
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--purple-main);
+  background-color: #6B21A8; /* var(--purple-main) */
   color: white;
-  font-size: var(--spacing-sm);
+  font-size: 0.75rem; /* var(--spacing-sm) */
   font-weight: bold;
-  padding: 6px var(--spacing-md);
+  padding: 6px 16px;
   border-radius: 9999px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-  animation: pulse 2s infinite; /* pulse definido em globals.css */
   z-index: 10; 
-  user-select: none;
   white-space: nowrap;
 }
 
-.planTitle {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: var(--spacing-xxs);
-  color: inherit; 
+/* Conteúdo do Card */
+.planTitle { font-size: 1.25rem; font-weight: bold; margin-bottom: 0.25rem; color: inherit; }
+.planSubtitle { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: inherit; }
+.planPrice { font-size: 2rem; font-weight: bold; color: #6B21A8; /* var(--purple-main) */ margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: flex-start; }
+.planPriceMaster { color: white; }
+.planPriceUnit { font-size: 1rem; font-weight: normal; margin-left: 0.25rem; color: #6b7280; /* var(--gray-text) */ }
+.planPriceUnitMaster { color: rgba(255,255,255,0.8); }
+.planPriceNote { font-size: 0.75rem; margin-top: 0.5rem; color: rgba(255,255,255,0.7); }
+
+/* SEÇÃO DE BENEFÍCIOS QUE CRESCE */
+.benefitsSection {
+  flex-grow: 1; /* <<-- A MÁGICA: faz esta div ocupar todo o espaço vertical disponível */
 }
 
-.planSubtitle {
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-  color: inherit; 
-}
+.divider { margin: 1.5rem 0; border: 0; border-top: 1px solid #e5e7eb; /* var(--gray-medium) */ }
+.dividerMaster { border-color: rgba(255,255,255,0.3); }
 
-.planPrice {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--purple-accent); 
-  margin-bottom: var(--spacing-xxs);
-  display: flex; 
-  align-items: baseline;
-  justify-content: flex-start; /* Alinhado à esquerda junto com o resto do card */
-}
+.benefitsList { list-style: none; padding-left: 0; margin: 0; }
+.benefitItem { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem; margin-bottom: 0.75rem; line-height: 1.5; color: inherit; }
+.benefitItem:last-child { margin-bottom: 0; }
 
-.planPriceMaster {
-  color: white;
-}
+/* Ícones dos Benefícios */
+.iconPrimary { color: #6B21A8; /* var(--purple-main) */ }
+.iconSuccess { color: #10b981; /* var(--green-success) */ }
+.iconMaster { color: white; }
 
-.planPriceUnit {
-  font-size: 0.75rem;
-  margin-left: var(--spacing-xxs);
-  color: var(--gray-text); 
-}
-
-.planPriceUnitMaster {
-  color: rgba(255,255,255,0.8); 
-}
-
-.planPriceNote {
-  font-size: var(--spacing-sm);
-  margin-top: var(--spacing-xxs);
-  color: rgba(255,255,255,0.7);
-}
-
+/* Botão de Ação (Call to Action) */
 .ctaButton {
-  display: inline-block; 
+  display: block; /* Mudei para block para simplificar */
   text-align: center; 
-  margin-top: var(--spacing-lg); 
-  border-radius: 9999px;
+  border-radius: 8px;
   width: 100%; 
-  padding: 10px var(--spacing-md); 
-  line-height: 1.5; 
-  background-color: var(--purple-main);
+  padding: 14px 24px;
+  background-color: #6B21A8; /* var(--purple-main) */
   color: white;
-  cursor: pointer;
+  cursor: pointer; 
   border: none;
   font-weight: bold;
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease-in-out;
+  margin-top: 1.5rem; /* Espaço entre a lista de benefícios e o botão */
 }
+.ctaButton:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(107,33,168,0.3); }
 
-.ctaButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-}
-
-.ctaButtonMaster {
-  background-color: white;
-  color: var(--purple-dark);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-.ctaButtonMaster:hover {
-  background-color: var(--gray-light); 
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-}
-
-.divider {
-  margin: var(--spacing-lg) 0; 
-  border-color: var(--gray-medium); 
-  border-top-width: 1px;
-  border-bottom-width: 0;
-  border-left-width: 0;
-  border-right-width: 0;
-  border-style: solid;
-}
-
-.dividerMaster {
-  border-color: rgba(255,255,255,0.3); 
-}
-
-.benefitsList {
-  list-style: none;
-  padding-left: 0;
-  margin-bottom: 0; 
-}
-
-.benefitItem {
-  display: flex;
-  align-items: flex-start; 
-  gap: var(--spacing-xs); 
-  font-size: 0.875rem; 
-  margin-bottom: var(--spacing-xs); 
-  line-height: 1.3;
-  color: inherit; 
-}
-.benefitItem:last-child {
-  margin-bottom: 0; 
-}
-
-.iconPrimary {
-  color: var(--purple-main);
-}
-.iconSuccess {
-  color: var(--green-success);
-}
-.iconMaster {
-  color: white;
-}
+.ctaButtonMaster { background-color: white; color: #4B0082; }
+.ctaButtonMaster:hover { background-color: #f0f0f0; }
