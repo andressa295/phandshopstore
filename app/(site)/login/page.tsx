@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Header from '../../components/HeaderGlobal';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

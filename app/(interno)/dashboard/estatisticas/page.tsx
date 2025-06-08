@@ -22,19 +22,19 @@ const dataVendas = [
 ];
 
 export default function EstatisticasPage() {
-  const [stats, setStats] = useState({
-    vendasHoje: 1230,
-    visitantes: 342,
-    estoque: 128,
-    pedidosPendentes: 7,
-    faturamentoMes: 45000,
-    ticketMedio: 150,
-    taxaConversao: 2.3,
-  });
+  const stats = {
+  vendasHoje: 1230,
+  visitantes: 342,
+  estoque: 128,
+  pedidosPendentes: 7,
+  faturamentoMes: 45000,
+  ticketMedio: 150,
+  taxaConversao: 2.3,
+};
 
-  // Aqui você pode colocar sua integração real
+  
   useEffect(() => {
-    // fetch('/api/estatisticas').then(res => res.json()).then(data => setStats(data));
+   
   }, []);
 
   return (
