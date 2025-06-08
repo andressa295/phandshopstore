@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Poppins } from 'next/font/google';
-
+import Header from '../components/HeaderGlobal';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -44,6 +44,7 @@ export default function LoginPage() {
         padding: '1rem',
       }}
     >
+       <Header />
       <form
         onSubmit={handleSubmit}
         style={{
