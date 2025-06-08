@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../../components/HeaderGlobal';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -28,7 +27,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Header />
+      
       <main
         style={{
           height: 'calc(100vh - 64px)', // descontando header de 64px
