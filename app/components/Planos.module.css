@@ -1,129 +1,105 @@
-/* Wrapper da Seção */
-.planosSectionWrapper {
-  padding: 4rem 0; /* var(--spacing-xl) é 32px, 4rem é 64px. Ajuste se preferir */
-  position: relative;
-}
+/* src/app/components/Planos.module.css */
 
-/* Toggle Mensal/Anual */
-.toggleContainer {
-  display: flex;
-  gap: 1.5rem; /* var(--spacing-lg) */
-  background-color: #f3f4f6; /* var(--gray-light) */
-  padding: 0.25rem; /* var(--spacing-xxs) */
-  border-radius: 9999px;
-  width: fit-content;
-  margin: 0 auto 2rem; /* var(--spacing-xl) */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
+.planosSectionWrapper { padding: 4rem 0; position: relative; }
 
-.toggleButton {
-  padding: 0.25rem 1rem; /* var(--spacing-xxs) var(--spacing-md) */
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 9999px;
-  background-color: transparent;
-  color: #374151; /* var(--gray-dark-text) */
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  flex-shrink: 0;
-}
+/* Toggle */
+.toggleContainer { display: flex; gap: 1.5rem; background-color: #f3f4f6; padding: 0.25rem; border-radius: 9999px; width: fit-content; margin: 0 auto 3rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.toggleButton { padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; border-radius: 9999px; background-color: transparent; color: #374151; border: none; cursor: pointer; transition: all 0.2s ease-in-out; }
+.toggleButtonActive { background-color: #6B21A8; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-.toggleButtonActive {
-  background-color: #6B21A8; /* var(--purple-main) */
-  color: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* Estilo para TODOS os cards de plano */
+/* Estilos para TODOS os cards de plano */
 .planCardDefault,
 .planCardMaster {
   background-color: white; 
-  border: 1px solid #e5e7eb; /* var(--gray-medium) */
+  border: 1px solid #e5e7eb;
   border-radius: 1rem; 
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem; /* var(--spacing-lg) */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
   text-align: left;
-  
-  /* LAYOUT FLEXBOX VERTICAL PARA ORGANIZAR O CONTEÚDO INTERNO */
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.planCardDefault:hover { transform: translateY(-4px); }
+.planCardDefault:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+/* Estilo de Destaque (para Premium e Master) */
+.planCardDestaque {
+  border: 2px solid #6B21A8;
+  transform: scale(1.03);
+}
+.planCardDestaque:hover {
+  transform: scale(1.08) translateY(-5px);
+}
 
 /* Estilo específico para o card Master (sobrescreve o default) */
 .planCardMaster {
-  background-color: #4B0082; /* var(--purple-dark) */
+  background-color: #4B0082;
   color: white; 
-  border: 2px solid #6B21A8;
-  box-shadow: 0 8px 20px rgba(75, 0, 130, 0.25); 
-  z-index: 2; /* Para ficar por cima caso haja sobreposição de sombra */
+  border-color: #7c3aed;
+  box-shadow: 0 10px 20px rgba(75, 0, 130, 0.3);
+  z-index: 2; 
 }
-.planCardMaster:hover { transform: translateY(-6px) scale(1.03); }
+.planCardMaster:hover {
+  transform: scale(1.08) translateY(-5px);
+  box-shadow: 0 15px 25px rgba(75, 0, 130, 0.4);
+}
 
-/* Badge de Oferta Especial */
-.masterBadge {
-  position: absolute;
-  top: -16px; 
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #6B21A8; /* var(--purple-main) */
-  color: white;
-  font-size: 0.75rem; /* var(--spacing-sm) */
-  font-weight: bold;
-  padding: 6px 16px;
-  border-radius: 9999px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-  z-index: 10; 
-  white-space: nowrap;
+/* Badges de Destaque */
+.masterBadge, .premiumBadge {
+  position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+  color: rgb(32, 32, 32); font-size: 0.75rem; font-weight: bold;
+  padding: 6px 16px; border-radius: 9999px; z-index: 10;
 }
+.masterBadge { background-color: #cfaeeb; }
+.premiumBadge { background-color: #cfaeeb; }
 
 /* Conteúdo do Card */
-.planTitle { font-size: 1.25rem; font-weight: bold; margin-bottom: 0.25rem; color: inherit; }
-.planSubtitle { font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: inherit; }
-.planPrice { font-size: 2rem; font-weight: bold; color: #6B21A8; /* var(--purple-main) */ margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: flex-start; }
+.planTitle { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: inherit; }
+.planSubtitle { font-size: 0.9rem; font-weight: 400; margin-bottom: 0.75rem; color: inherit; opacity: 0.9; }
+.planPrice { font-size: 2.5rem; font-weight: 800; color: #6B21A8; margin-bottom: 0.5rem; display: flex; align-items: baseline; justify-content: flex-start; }
 .planPriceMaster { color: white; }
-.planPriceUnit { font-size: 1rem; font-weight: normal; margin-left: 0.25rem; color: #6b7280; /* var(--gray-text) */ }
+.planPriceUnit { font-size: 1rem; font-weight: 400; margin-left: 0.25rem; color: #6b7280; }
 .planPriceUnitMaster { color: rgba(255,255,255,0.8); }
 .planPriceNote { font-size: 0.75rem; margin-top: 0.5rem; color: rgba(255,255,255,0.7); }
 
-/* SEÇÃO DE BENEFÍCIOS QUE CRESCE */
+/* Seção de benefícios (que vai crescer) */
 .benefitsSection {
-  flex-grow: 1; /* <<-- A MÁGICA: faz esta div ocupar todo o espaço vertical disponível */
+  flex-grow: 1; /* Empurra o botão para baixo */
 }
 
-.divider { margin: 1.5rem 0; border: 0; border-top: 1px solid #e5e7eb; /* var(--gray-medium) */ }
-.dividerMaster { border-color: rgba(255,255,255,0.3); }
+.divider { margin: 1.5rem 0; border: 0; border-top: 1px solid #f3f4f6; }
+.dividerMaster { border-color: rgba(255,255,255,0.2); }
 
-.benefitsList { list-style: none; padding-left: 0; margin: 0; }
-.benefitItem { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem; margin-bottom: 0.75rem; line-height: 1.5; color: inherit; }
+.benefitsList { list-style: none; padding: 0; margin: 0; }
+.benefitItem { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; margin-bottom: 0.75rem; line-height: 1.5; color: inherit; }
 .benefitItem:last-child { margin-bottom: 0; }
 
-/* Ícones dos Benefícios */
-.iconPrimary { color: #6B21A8; /* var(--purple-main) */ }
-.iconSuccess { color: #10b981; /* var(--green-success) */ }
-.iconMaster { color: white; }
-
-/* Botão de Ação (Call to Action) */
-.ctaButton {
-  display: block; /* Mudei para block para simplificar */
-  text-align: center; 
-  border-radius: 8px;
-  width: 100%; 
-  padding: 14px 24px;
-  background-color: #6B21A8; /* var(--purple-main) */
-  color: white;
-  cursor: pointer; 
-  border: none;
-  font-weight: bold;
-  font-size: 1rem;
-  text-decoration: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease-in-out;
-  margin-top: 1.5rem; /* Espaço entre a lista de benefícios e o botão */
+.benefitItemDisabled {
+  color: #a0a0a0;
+  text-decoration: line-through;
+  opacity: 0.6;
 }
-.ctaButton:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(107,33,168,0.3); }
+
+/* Ícones dos Benefícios */
+.iconPrimary, .iconSuccess, .iconMaster, .iconDisabled { flex-shrink: 0; }
+.iconPrimary { color: #6B21A8; }
+.iconSuccess { color: #10b981; }
+.iconMaster { color: white; }
+.iconDisabled { color: #a0a0a0; }
+
+/* Botão de Ação Refinado */
+.ctaButton, .ctaButtonMaster {
+  display: block; text-align: center; border-radius: 8px;
+  width: 100%; padding: 12px 20px; /* Mais fino */
+  background-color: #6B21A8; color: white; cursor: pointer; border: none;
+  font-weight: 500; /* Menos "grosso" */
+  font-size: 0.9rem; /* Um pouco menor */
+  text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  margin-top: 1.5rem;
+}
+.ctaButton:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(107,33,168,0.4); }
 
 .ctaButtonMaster { background-color: white; color: #4B0082; }
 .ctaButtonMaster:hover { background-color: #f0f0f0; }
