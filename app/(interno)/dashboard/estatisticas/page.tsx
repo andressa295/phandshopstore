@@ -33,28 +33,7 @@ export default function EstatisticasPage() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>📊 Estatísticas detalhadas</h1>
-      <p style={{ marginBottom: 32 }}>
-        Visão completa do desempenho da sua loja para decisões mais assertivas.
-      </p>
-
-      <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-        {Object.entries(stats).map(([key, value]) => (
-          <div key={key} style={cardStyle}>
-            <h2 style={{ fontSize: 16, marginBottom: 8 }}>
-              {key
-                .replace(/([A-Z])/g, ' $1') // camelCase vira palavras separadas
-                .replace(/^./, str => str.toUpperCase())}
-            </h2>
-            <p style={{ fontSize: 20, fontWeight: 600 }}>
-              {(typeof value === 'number' && (key.toLowerCase().includes('vendas') || key.toLowerCase().includes('faturamento')))
-                ? `R$ ${value.toFixed(2)}`
-                : value}
-            </p>
-          </div>
-        ))}
-      </div>
+   
 
       <div
         style={{
@@ -77,6 +56,6 @@ export default function EstatisticasPage() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    
   );
 }
