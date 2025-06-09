@@ -24,7 +24,7 @@ export default function Home() {
     { src: "/logos/correios.png", alt: "Correios", width: 120, height: 120 },
     { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 130, height: 130 },
     { src: "/logos/instagram.png", alt: "Instagram", width: 120, height: 120 },
-    { src: "/logos/google.png", alt: "Google", width: 230, height: 230 },
+    { src: "/logos/google.png", alt: "Google", width: 500, height: 500 },
   ];
   const depoimentos = [
     { texto: "A plataforma é incrivelmente fácil de usar e o suporte é o mais rápido que já vi. Minhas vendas aumentaram 30%!", autor: "Ana Souza", loja: "Ana Acessórios" },
