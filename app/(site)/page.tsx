@@ -1,276 +1,141 @@
 'use client';
 
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-
-const styles: { [key: string]: CSSProperties } = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    color: '#1F2937',
-    fontFamily: "'Poppins', sans-serif",
-    backgroundColor: '#F9FAFB',
-  },
-  heroSection: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '2.5rem',
-    padding: '5rem 1.5rem',
-    alignItems: 'center',
-    backgroundColor: '#EEF2FF',
-  },
-  heroGridMd: {
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-  heroTitle: {
-    fontSize: '3rem',
-    fontWeight: 800,
-    color: '#7C3AED',
-    marginBottom: '2rem',
-    lineHeight: 1.2,
-  },
-  heroParagraph: {
-    fontSize: '1.25rem',
-    marginBottom: '2rem',
-    color: '#374151',
-  },
-  heroStrong: {
-    fontWeight: 700,
-    color: '#7C3AED',
-  },
-  suporteSection: {
-    width: '100%',
-    padding: '4rem 1rem',
-    backgroundColor: '#fff',
-  },
-  suporteContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '0 1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '3rem',
-    justifyContent: 'space-between',
-  },
-  suporteGridLg: {
-    flexDirection: 'row',
-  },
-  suporteLeft: {
-    width: '100%',
-    maxWidth: '600px',
-  },
-  suporteTitle: {
-    fontSize: '2rem',
-    fontWeight: 700,
-    color: '#6D28D9',
-    marginBottom: '1.25rem',
-  },
-  suporteText: {
-    fontSize: '1.125rem',
-    color: '#4B5563',
-    lineHeight: 1.6,
-  },
-  suporteRight: {
-    width: '100%',
-    maxWidth: '400px',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  suporteBox: {
-    border: '1px solid #A78BFA',
-    borderRadius: '0.75rem',
-    padding: '2rem',
-    width: '100%',
-    maxWidth: '320px',
-    backgroundColor: '#fff',
-    boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-  },
-  suporteBoxTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    color: '#7C3AED',
-    marginBottom: '1.25rem',
-  },
-  suporteBoxItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '1rem',
-    marginBottom: '1rem',
-    fontWeight: 500,
-    color: '#374151',
-  },
-  beneficioSection: {
-    padding: '5rem 1.5rem',
-    backgroundColor: '#F3F4F6',
-    textAlign: 'center',
-  },
-  beneficioTitle: {
-    fontSize: '2.25rem',
-    fontWeight: 700,
-    color: '#1F2937',
-    marginBottom: '3rem',
-    maxWidth: '48rem',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  beneficioGrid: {
-    maxWidth: '80rem',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '2rem',
-  },
-  beneficioCard: {
-    height: '11rem',
-    borderRadius: '1rem',
-    backgroundColor: '#fff',
-    color: '#7C3AED',
-    border: '1px solid #DDD6FE',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.04)',
-  },
-  beneficioPercent: {
-    width: '3.25rem',
-    height: '3.25rem',
-    borderRadius: '9999px',
-    backgroundColor: '#DDD6FE',
-    color: '#6D28D9',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 700,
-    fontSize: '1.375rem',
-  },
-  beneficioLabel: {
-    marginTop: '0.5rem',
-    fontSize: '1.125rem',
-    fontWeight: 500,
-  },
-  planosSection: {
-    width: '100%',
-    padding: '5rem 1rem',
-    backgroundColor: '#fff',
-  },
-  planosTitle: {
-    textAlign: 'center',
-    fontSize: '2.25rem',
-    fontWeight: 800,
-    color: '#7C3AED',
-    marginBottom: '3rem',
-  },
-  planosCarrosselMobile: {
-    overflowX: 'auto' as const,
-    whiteSpace: 'nowrap' as const,
-    scrollbarWidth: 'none' as const,
-    msOverflowStyle: 'none' as const,
-    WebkitOverflowScrolling: 'touch',
-  },
-  planosCarrosselMobileContent: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '1.5rem',
-  },
-  planosGridMd: {
-    width: '100%',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, 1fr)',
-    gap: '2rem',
-  },
-};
+import Link from 'next/link';
+import styles from './page.module.css'; // Certifique-se que o nome do arquivo CSS é o mesmo
+import { FaGem, FaBolt, FaHeadset, FaQuoteLeft, FaCheckCircle, FaChevronDown } from 'react-icons/fa';
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
+  // --- DADOS PARA AS SEÇÕES (FÁCIL DE EDITAR AQUI) ---
+  const diferenciais = [
+    { icon: <FaGem size={28} />, title: 'Taxa 0% de Verdade', description: 'Venda sem se preocupar com taxas por transação. Seu lucro é 100% seu, sem pegadinhas.' },
+    { icon: <FaBolt size={28} />, title: 'Alta Performance', description: 'Sua loja carrega em um piscar de olhos, garantindo uma experiência rápida para o seu cliente.' },
+    { icon: <FaHeadset size={28} />, title: 'Suporte que Resolve', description: 'Converse com pessoas de verdade, prontas para te ajudar a resolver qualquer problema em tempo recorde.' }
+  ];
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile(); // Verifica no mount inicial
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const depoimentos = [
+    { texto: "A plataforma é incrivelmente fácil de usar e o suporte é o mais rápido que já vi. Minhas vendas aumentaram 30%!", autor: "Ana Souza", loja: "Ana Acessórios" },
+    { texto: "Finalmente encontrei uma plataforma com taxa zero de verdade. A liberdade e a economia fizeram toda a diferença.", autor: "Bruno Carvalho", loja: "Geek Point" },
+  ];
+  
+  const faqItems = [
+    { q: "Preciso de CNPJ para começar?", a: "Não, você pode começar a vender com o seu CPF e formalizar seu negócio quando se sentir pronto. Oferecemos flexibilidade total." },
+    { q: "Como funciona a taxa 0%?", a: "É simples: não existem taxas por venda! Nosso plano é uma assinatura mensal fixa, sem surpresas no final do mês." },
+    { q: "Posso usar meu próprio domínio?", a: "Sim! Você pode conectar seu próprio domínio (ex: www.sualoja.com.br) de forma fácil através do nosso painel." },
+    { q: "O suporte realmente ajuda?", a: "Nosso suporte é nosso maior orgulho. É formado por especialistas na plataforma, prontos para te ajudar via chat e e-mail em tempo recorde." },
+  ];
 
-  const heroSectionStyle = isMobile ? styles.heroSection : { ...styles.heroSection, ...styles.heroGridMd };
-  const suporteContainerStyle = isMobile ? styles.suporteContainer : { ...styles.suporteContainer, ...styles.suporteGridLg };
-const dynamicStyles = {
-  heroTitle: {
-    ...styles.heroTitle,
-    fontSize: isMobile ? '2rem' : '3rem',
-  },
-  heroParagraph: {
-    ...styles.heroParagraph,
-    fontSize: isMobile ? '1rem' : '1.25rem',
-  },
-  suporteTitle: {
-    ...styles.suporteTitle,
-    fontSize: isMobile ? '1.5rem' : '2rem',
-  },
-  suporteText: {
-    ...styles.suporteText,
-    fontSize: isMobile ? '1rem' : '1.125rem',
-  },
-  beneficioTitle: {
-    ...styles.beneficioTitle,
-    fontSize: isMobile ? '1.75rem' : '2.25rem',
-  },
-  beneficioLabel: {
-    ...styles.beneficioLabel,
-    fontSize: isMobile ? '1rem' : '1.125rem',
-  },
-};
+  // Lógica para o Acordeão (sanfona) do FAQ
+  const [openFaq, setOpenFaq] = React.useState<number | null>(0);
+  const toggleFaq = (index: number) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
 
   return (
-    <div style={styles.container}>
-    
-      {/* Hero */}
-      <section style={heroSectionStyle}>
-        <div>
-          <h1 style={styles.heroTitle}>
-            Ter sua loja online é mais simples do que você imagina.
-          </h1>
-          <p style={styles.heroParagraph}>
-            Venda 24 horas por dia com a cara da sua marca, temas personalizados e tudo o que você precisa para começar.
-            Taxa por venda <span style={styles.heroStrong}>0% </span>, a melhor taxa do mercado.
+    // O layout que envolve a página (com Header e Footer do site) virá do seu arquivo layout.tsx
+    <main>
+      
+      {/* ========= 1. SEÇÃO HERO ========= */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroTextWrapper}>
+          <h1 className={styles.heroTitle}>Sua loja online, simples e sem limites.</h1>
+          <p className={styles.heroSubtitle}>
+            Crie sua loja com temas personalizáveis, ferramentas de marketing e a menor taxa do mercado: <strong>0% por venda</strong>. Comece a vender hoje mesmo.
           </p>
+          <Link href="/cadastro" className={styles.heroButton}>
+            Criar minha loja grátis
+          </Link>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Adicionado alignItems para centralizar verticalmente se a altura permitir */}
-          <Image src="/site.png" alt="Ilustração Phandshop" width={900} height={900} style={{ maxWidth: '100%', height: 'auto' }} />
+        <div className={styles.heroImageWrapper}>
+          <Image
+            src="/site.png" // VERIFIQUE SE ESTE CAMINHO ESTÁ CORRETO
+            alt="Ilustração de uma loja online da Phandshop"
+            width={700}
+            height={700}
+            priority
+            className={styles.heroImage}
+          />
         </div>
       </section>
 
-      {/* Suporte */}
-      <section style={styles.suporteSection}>
-        <div style={suporteContainerStyle}>
-          <div style={styles.suporteLeft}>
-            <h2 style={styles.suporteTitle}>Suporte e Mentoria Phandshop</h2>
-            <p style={styles.suporteText}>
-              Na Phandshop, você conta com suporte rápido, mentorias ao vivo e acompanhamento especializado em cada etapa.
-              Nosso sucesso é o seu sucesso — estamos prontos para te orientar e garantir que você tenha segurança para focar apenas em vender.
-              Com 97% de avaliações positivas, nosso suporte responde em até 1 minuto e nossas mentorias te ajudam a dominar sua loja virtual.
-            </p>
-          </div>
-          <div style={styles.suporteRight}>
-            <div style={styles.suporteBox}>
-              <h3 style={styles.suporteBoxTitle}>Horário de Atendimento</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem' }}>
-                <div style={styles.suporteBoxItem}>
-                  <span>Segunda à Sexta</span>
-                  <span style={{ color: '#6D28D9', fontWeight: 600 }}>09h às 20h</span>
-                </div>
-                <div style={styles.suporteBoxItem}>
-                  <span>Finais de Semana e Feriados</span>
-                  <span style={{ color: '#6D28D9', fontWeight: 600 }}>10h às 15h</span>
-                </div>
-              </div>
+      {/* ========= 2. SEÇÃO DIFERENCIAIS ========= */}
+      <section className={styles.diferenciaisSection}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.preTitle}>POR QUE A PHANDSHOP?</span>
+          <h2>A plataforma completa para o seu sucesso</h2>
+        </div>
+        <div className={styles.diferenciaisGrid}>
+          {diferenciais.map((item) => (
+            <div key={item.title} className={styles.diferencialCard}>
+              <div className={styles.iconWrapper}>{item.icon}</div>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
-    </div>
+
+      {/* ========= 3. SEÇÃO DEPOIMENTOS (PROVA SOCIAL) ========= */}
+      <section className={styles.depoimentosSection}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.preTitle}>NOSSOS CLIENTES</span>
+          <h2>Lojas que confiam e crescem com a gente</h2>
+        </div>
+        <div className={styles.depoimentosGrid}>
+          {depoimentos.map((item, index) => (
+            <div key={index} className={styles.depoimentoCard}>
+              <FaQuoteLeft className={styles.quoteIcon} />
+              <p className={styles.depoimentoTexto}>{item.texto}</p>
+              <p className={styles.depoimentoAutor}>{item.autor}, <span>{item.loja}</span></p>
+            </div>
+          ))}
+        </div>
+      </section>
+      
+      {/* ========= 4. SEÇÃO DE PLANOS (SIMPLIFICADA COM BOTÃO) ========= */}
+      <section className={styles.planosSection}>
+        <div className={styles.sectionHeader}>
+          <h2>Um plano completo e sem surpresas</h2>
+          <p className={styles.planosSubtitle}>Tenha acesso a todas as nossas ferramentas com um preço justo e transparente.</p>
+          <Link href="/planos" className={styles.planosBotao}>
+            Conheça Nossos Planos
+          </Link>
+        </div>
+      </section>
+
+      {/* ========= 6. SEÇÃO FAQ (PERGUNTAS FREQUENTES) ========= */}
+      <section className={styles.faqSection}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.preTitle}>DÚVIDAS</span>
+          <h2>Perguntas Frequentes</h2>
+        </div>
+        <div className={styles.faqContainer}>
+          {faqItems.map((item, index) => (
+            <div key={index} className={`${styles.faqItem} ${openFaq === index ? styles.open : ''}`}>
+              <div className={styles.faqQuestion} onClick={() => toggleFaq(index)}>
+                <h4>{item.q}</h4>
+                <FaChevronDown className={styles.faqIcon} />
+              </div>
+              <div className={`${styles.faqAnswer} ${openFaq === index ? styles.open : ''}`}>
+                <p>{item.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+      
+      {/* ========= 7. SEÇÃO CTA FINAL ========= */}
+      <section className={styles.ctaSection}>
+        <div className={styles.sectionHeader}>
+          <h2>Pronto para vender para todo o Brasil?</h2>
+          <p>Crie sua loja virtual em poucos minutos. Sem cartão de crédito e sem compromisso.</p>
+          <Link href="/cadastro" className={styles.heroButton}>
+            Começar gratuitamente agora
+          </Link>
+        </div>
+      </section>
+
+    </main>
   );
 }

@@ -18,10 +18,6 @@ export function Footer() {
         fontFamily: 'inherit', // já pega do layout (Poppins)
       }}
     >
-      <div>
-        <Image src="/logo.png" alt="Logo" width={170} height={50} />
-        <p>© {new Date().getFullYear()} Phandshop. Todos os direitos reservados.</p>
-      </div>
 
       <div>
         <h4 style={{ fontWeight: 600, marginBottom: '0.75rem' }}>Menu</h4>
@@ -62,7 +58,11 @@ export function Footer() {
           </a>
         </div>
       </div>
-
+<div>
+        <Image src="/logo.png" alt="Logo" width={170} height={50} />
+        <p>© {new Date().getFullYear()} Phandshop. Todos os direitos reservados.</p>
+      </div>
+      
       <style jsx>{`
         @media (max-width: 600px) {
           footer {

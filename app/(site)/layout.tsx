@@ -2,8 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { FiShoppingBag } from 'react-icons/fi';
 import { Poppins } from 'next/font/google';
-import { Footer } from '../components/ui/FooterGlobal';
-import Header from '../components/HeaderGlobal';
+import { Footer } from './components/ui/FooterGlobal';
+import Header from './components/ui/HeaderGlobal';
 
 const poppins = Poppins({
   subsets: ['latin'],

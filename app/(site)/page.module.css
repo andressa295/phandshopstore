@@ -1,257 +1,268 @@
-/* src/app/home.module.css */
-
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  color: #1F2937;
-  /* font-family: 'Poppins', sans-serif; - A fonte já é definida no RootLayout/globals.css */
-  background-color: #fff;
+/* --- Estilos Gerais de Seção --- */
+.section {
+  width: 100%;
+  padding: 5rem 2rem;
+  text-align: center;
 }
 
-/* Hero Section */
+.sectionHeader {
+  max-width: 750px;
+  margin: 0 auto 4rem auto;
+}
+
+.preTitle {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6D28D9;
+  background-color: #f3e8ff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.sectionHeader p {
+  font-size: 1.25rem;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 1rem auto 0 auto;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* --- Hero Section --- */
 .heroSection {
+  background-color: #f3e8ff;
+  padding: 4rem 2rem;
   display: grid;
-  grid-template-columns: 1fr; /* Mobile: uma coluna */
-  gap: var(--spacing-xl); /* 2rem */
-  padding: 4rem var(--spacing-lg); /* 4rem 1.5rem */
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  background-color: #F5F3FF;
-}
-
-/* Desktop: duas colunas para Hero Section */
-@media (min-width: 768px) {
-  .heroSection {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  gap: 3rem;
 }
 
 .heroTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #5B21B6;
-  margin-bottom: var(--spacing-md); /* 1.5rem */
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #5b21b6;
   line-height: 1.2;
+  margin-bottom: 1.5rem;
 }
 
-.heroParagraph {
-  font-size: 1.125rem;
-  margin-bottom: var(--spacing-md); /* 1.5rem */
-  color: #4B5563;
-}
-
-.heroStrong {
-  font-weight: 700;
-  color: #6D28D9;
-}
-
-.heroImageContainer {
-  display: flex;
-  justify-content: center;
-  /* Adicione margin-bottom em mobile se a imagem ficar colada no próximo elemento */
-  margin-bottom: 2rem; /* Exemplo para mobile */
-}
-
-@media (min-width: 768px) {
-  .heroImageContainer {
-    margin-bottom: 0; /* Remove margin em desktop */
-  }
-}
-
-
-/* Suporte Section */
-.suporteSection {
-  width: 100%;
-  padding: 3rem var(--spacing-lg); /* 3rem 1rem */
-  background-color: #fff;
-}
-
-.suporteContainer {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg); /* 0 1rem */
-  display: flex;
-  flex-direction: column; /* Mobile: coluna */
-  gap: var(--spacing-xl); /* 2rem */
-  justify-content: space-between;
-}
-
-/* Desktop: linha para Suporte Container */
-@media (min-width: 1024px) { /* Use lg breakpoint se preferir */
-  .suporteContainer {
-    flex-direction: row;
-  }
-}
-
-.suporteLeft {
-  width: 100%;
-  max-width: 600px;
-}
-
-.suporteTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #6B21A8;
-  margin-bottom: var(--spacing-md); /* 1rem */
-}
-
-.suporteText {
-  font-size: 1.125rem;
-  color: #4B5563;
-}
-
-.suporteRight {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  justify-content: center;
-}
-
-.suporteBox {
-  border: 1px solid #6B21A8;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  width: 100%;
-  max-width: 320px;
-  background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.suporteBoxTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #6B21A8;
-  margin-bottom: var(--spacing-md); /* 1rem */
-}
-
-.suporteBoxItems { /* Classe para o container dos itens de horário */
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md); /* 1rem */
-  font-size: 0.875rem;
-}
-
-.suporteBoxItem {
-  display: flex;
-  justify-content: space-between;
-  /* margin-bottom: 1rem; - Movido para o gap do container pai */
-  font-weight: 500;
-}
-
-.suporteHighlight { /* Classe para os valores destacados */
-  color: #6D28D9;
-  font-weight: 600;
-}
-
-
-/* Benefício Section */
-.beneficioSection {
-  padding: 4rem var(--spacing-lg); /* 4rem 1.5rem */
-  background-color: #F9FAFB;
-  text-align: center;
-}
-
-.beneficioTitle {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 3rem;
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.beneficioGrid {
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr); /* Mobile: 1 coluna */
-  gap: var(--spacing-md); /* 1.5rem */
-}
-
-/* Tablet/Desktop: 2 colunas */
-@media (min-width: 640px) { /* Exemplo: sm breakpoint */
-  .beneficioGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Grande Desktop: 4 colunas */
-@media (min-width: 1024px) { /* Exemplo: lg breakpoint */
-  .beneficioGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-
-.beneficioCard {
-  width: 100%;
-  height: 10rem;
-  border-radius: 0.75rem;
-  background-color: #fff;
-  color: #6B21A8;
-  border: 1px solid #D8B4FE;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.beneficioPercent {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 9999px;
-  background-color: #DDD6FE;
-  color: #6B21A8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
+.heroSubtitle {
   font-size: 1.25rem;
-}
-
-.beneficioLabel {
-  margin-top: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-/* Planos Section */
-.planosSection {
-  width: 100%;
-  padding: 4rem var(--spacing-lg); /* 4rem 1rem */
-  background-color: #fff;
-}
-
-.planosTitle {
-  text-align: center;
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #6D28D9;
+  color: #4a5568;
+  max-width: 500px;
+  line-height: 1.7;
   margin-bottom: 2.5rem;
 }
 
-/* As classes planosCarrosselMobile e planosGridMd não serão mais usadas aqui */
-/* A classe planos-container em globals.css já faz o trabalho responsivo */
-/* Você pode remover as definições delas se ainda estiverem aqui */
-/* planosCarrosselMobile: {
-    overflowX: 'auto' as const,
-    whiteSpace: 'nowrap' as const,
-    scrollbarWidth: 'none' as const,
-    msOverflowStyle: 'none' as const,
-  },
-  planosCarrosselMobileContent: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '1rem',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'nowrap' as const,
-  },
-  planosGridMd: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '1.5rem',
-  }, */
+.heroButton {
+  display: inline-block;
+  background-color: #6d28d9;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.heroButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(109, 40, 217, 0.4);
+}
+
+.heroImageWrapper img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Diferenciais Section --- */
+.diferenciaisSection {
+  background-color: #f9fafb;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.diferenciaisGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.diferencialCard {
+  text-align: center;
+}
+
+.iconWrapper {
+  display: inline-flex;
+  padding: 1.25rem;
+  background-color: #e9d8fd;
+  color: #6d28d9;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s;
+}
+
+.diferencialCard:hover .iconWrapper {
+  transform: scale(1.1);
+}
+
+.diferencialCard h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.diferencialCard p {
+  font-size: 1.125rem;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+/* --- Depoimentos Section --- */
+.depoimentosSection {
+  background-color: #fff;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.depoimentosGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.depoimentoCard {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  position: relative;
+}
+
+.quoteIcon {
+  color: #c4b5fd;
+  font-size: 3rem;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  opacity: 0.5;
+}
+
+.depoimentoTexto {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #374151;
+  margin: 0 0 1.5rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.depoimentoAutor {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.depoimentoAutor span {
+  font-weight: 400;
+  color: #6b7280;
+}
+
+/* --- Planos Section --- */
+.planosSection {
+  background-color: #6d28d9;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.planosSection h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.planosSection p {
+  font-size: 1.25rem;
+  color: #e9d8fd;
+  margin-bottom: 2rem;
+}
+
+.planosBotao {
+  display: inline-block;
+  background-color: #fff;
+  color: #6d28d9;
+  padding: 16px 32px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.planosBotao:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* --- FAQ Section --- */
+.faqSection {
+  background-color: #fff;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.faqContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faqItem {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem 0;
+}
+
+.faqQuestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.faqIcon {
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.faqAnswer {
+  color: #4a5568;
+  line-height: 1.7;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out, padding-top 0.4s ease-out;
+}
+
+.faqAnswer.open {
+  padding-top: 1rem;
+  max-height: 200px;
+}

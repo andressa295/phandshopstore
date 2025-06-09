@@ -110,11 +110,17 @@ export default function PainelLayout({ children }: { children: React.ReactNode }
     }}>
       <HeaderPainel />
 
-      <div style={{
-        display: 'flex',
-        flexGrow: 1,
-        minHeight: 0,
-      }}>
+     <div style={{
+
+display: 'flex',
+
+ flexGrow: 1,
+
+ minHeight: 0,
+
+ paddingTop: 40, 
+
+}}>
         {/* Sidebar */}
         <aside style={{
           width: 280,

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const headerStyles: React.CSSProperties = {
-  position: 'relative',
+  position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',
@@ -59,7 +59,7 @@ export default function Header() {
         <Image
           src="/logo.png"
           alt="Phandshop"
-          width={200}
+          width={190}
           height={50}
           priority
         />
