@@ -1,94 +1,120 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+// Adicionado useState e ícones
+import React, { useState } from 'react'; 
 import Link from 'next/link';
 import Image from 'next/image';
-import styles from './Header.module.css'; // Supondo que você usa o CSS Module que te passei
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa'; // <<-- ADICIONADO
 
-// O seu arquivo Header.module.css da resposta anterior não precisa de alterações.
-// A mudança principal está no código do componente abaixo.
+// Seus objetos de estilo originais (NÃO FORAM MODIFICADOS)
+const headerStyles: React.CSSProperties = {
+  position: 'fixed', top: 0, left: 0, width: '100%', height: '64px',
+  backgroundColor: '#6b21a8', display: 'flex', alignItems: 'center',
+  justifyContent: 'space-between', padding: '0 2rem', zIndex: 1000,
+  fontFamily: "'Poppins', sans-serif",
+};
+const logoContainerStyle: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none',
+};
+const navStyle: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '1.5rem',
+};
+const linkStyle: React.CSSProperties = {
+  color: '#eee', textDecoration: 'none', fontWeight: 500,
+  fontSize: '0.95rem', transition: 'color 0.2s ease',
+};
+const buttonStyle: React.CSSProperties = {
+  padding: '0.5rem 1rem', backgroundColor: '#fff', color: '#4c1d95',
+  borderRadius: '0.5rem', fontWeight: 600, textDecoration: 'none',
+  fontSize: '0.95rem',
+};
+
+// Estilos APENAS para os novos elementos do menu mobile
+const hamburgerButtonStyle: React.CSSProperties = {
+  display: 'none', // Escondido por padrão no desktop
+  background: 'none', border: 'none', color: 'white', cursor: 'pointer', zIndex: 1002,
+};
+const mobileNavOverlayStyle: React.CSSProperties = {
+  position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+  backgroundColor: 'rgba(49, 18, 92, 0.98)', backdropFilter: 'blur(5px)',
+  display: 'flex', flexDirection: 'column', alignItems: 'center',
+  justifyContent: 'center', gap: '2rem',
+  transition: 'opacity 0.3s ease-in-out', zIndex: 1001,
+};
+const mobileNavLinkStyle: React.CSSProperties = { ...linkStyle, fontSize: '1.5rem' };
+const mobileNavButtonStyle: React.CSSProperties = { ...buttonStyle, fontSize: '1.2rem', padding: '0.75rem 1.5rem' };
+
 
 export default function Header() {
+  // <<-- ADICIONADO: Estado para controlar se o menu está aberto -->>
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Efeito para fechar o dropdown se clicar fora. Este é seguro e mantido.
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      // Verifica se o ref existe e se o clique não foi dentro do elemento do ref
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    // Função de limpeza: remove o listener quando o componente é desmontado
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []); // O array de dependências vazio garante que isso rode apenas uma vez (na montagem)
-
-  /*
-    ***** ALTERAÇÃO PRINCIPAL *****
-    O useEffect que controlava o 'document.body.style.overflow' foi REMOVIDO.
-    Ele era a causa mais provável do erro 'Cannot read properties of null (reading 'removeChild')'
-    durante as transições de página no Next.js.
-  */
+  // Função para fechar o menu, para ser usada nos links
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <>
-      <header className={styles.header}>
-        <Link href="/" className={styles.logoLink}>
+      <header style={headerStyles}>
+        <Link href="/" style={logoContainerStyle} onClick={closeMenu}>
           <Image
-            src="/logo.png" // Troque pelo caminho da sua logo
+            src="/logo.png"
             alt="Phandshop Logo"
-            width={170}
-            height={45}
+            width={190}
+            height={50}
             priority
-            className={styles.logoImage}
           />
         </Link>
 
-        {/* NAVEGAÇÃO PARA DESKTOP */}
-        <nav className={styles.navDesktop}>
-          <Link href="/planos" className={styles.navLink}>
+        {/* NAVEGAÇÃO DESKTOP (será escondida no mobile pelo <style jsx>) */}
+        <nav style={navStyle} className="nav-desktop">
+          <Link href="/planos" style={linkStyle}>
             Planos e Preços
           </Link>
-          <Link href="/login" className={styles.navLink}>
+          <Link href="/login" style={linkStyle}>
             Fazer Login
           </Link>
-          <Link href="/cadastro" className={styles.navButton}>
-            Criar loja grátis
+          <Link href="/cadastro" style={buttonStyle}>
+            Criar loja virtual
           </Link>
         </nav>
 
-        {/* BOTÃO HAMBÚRGUER PARA MOBILE */}
-        {/* Este botão agora só controla a abertura do menu mobile, sem o efeito de scroll lock */}
+        {/* <<-- ADICIONADO: Botão Hambúrguer/X que só aparece no mobile -->> */}
         <button 
-          className={styles.hamburgerButton} 
+          className="hamburger-button" 
+          style={hamburgerButtonStyle}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={isMenuOpen}
+          aria-label="Abrir menu"
         >
-          {/* O ícone muda entre hambúrguer e 'X' */}
-          {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isMenuOpen ? <FaTimes size={26} /> : <FaBars size={24} />}
         </button>
       </header>
 
-      {/* PAINEL DO MENU MOBILE */}
-      {/* A lógica de classe para abrir/fechar continua a mesma */}
-      <div className={`${styles.navMobile} ${isMenuOpen ? styles.isOpen : ''}`}>
-        <Link href="/planos" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
-          Planos e Preços
-        </Link>
-        <Link href="/login" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
-          Fazer Login
-        </Link>
-        <Link href="/cadastro" className={styles.navButton} onClick={() => setIsMenuOpen(false)}>
-          Criar loja grátis
-        </Link>
-      </div>
+      {/* <<-- ADICIONADO: Painel do menu que só aparece quando 'isMenuOpen' é true -->> */}
+      {isMenuOpen && (
+        <div style={mobileNavOverlayStyle}>
+          <Link href="/planos" style={mobileNavLinkStyle} onClick={closeMenu}>
+            Planos e Preços
+          </Link>
+          <Link href="/login" style={mobileNavLinkStyle} onClick={closeMenu}>
+            Fazer Login
+          </Link>
+          <Link href="/cadastro" style={mobileNavButtonStyle} onClick={closeMenu}>
+            Criar loja virtual
+          </Link>
+        </div>
+      )}
+
+      {/* <<-- ADICIONADO: Bloco de CSS para a responsividade -->> */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .nav-desktop {
+            display: none;
+          }
+          .hamburger-button {
+            display: block;
+          }
+        }
+      `}</style>
     </>
   );
 }
