@@ -3,37 +3,33 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './page.module.css'; // Mude aqui se seu arquivo CSS tiver outro nome
+import styles from './page.module.css'; // Mude o nome se o seu for page.module.css
 import { FaGem, FaBolt, FaHeadset, FaQuoteLeft, FaCheckCircle, FaChevronDown } from 'react-icons/fa';
 
 export default function Home() {
-  // --- DADOS PARA AS SEÇÕES ---
+  // --- DADOS E LÓGICA PARA AS SEÇÕES ---
   const diferenciais = [
     { icon: <FaGem size={28} />, title: 'Taxa 0% por Venda', description: 'Venda sem se preocupar com comissões sobre suas vendas. Seu lucro é 100% seu.' },
     { icon: <FaBolt size={28} />, title: 'Alta Performance', description: 'Sua loja carrega em um piscar de olhos, garantindo uma experiência rápida para o seu cliente.' },
     { icon: <FaHeadset size={28} />, title: 'Suporte que Resolve', description: 'Converse com pessoas de verdade, prontas para te ajudar a resolver qualquer problema em tempo recorde.' }
   ];
-
   const funcionalidades = [
     { icon: <FaCheckCircle />, title: "Design Flexível", text: "Personalize temas ou crie o seu do zero para ter uma loja com a sua cara." },
     { icon: <FaCheckCircle />, title: "Checkout Otimizado", text: "Processo de compra rápido e seguro, projetado para não perder vendas." },
     { icon: <FaCheckCircle />, title: "Ferramentas de Marketing", text: "Crie cupons, promoções e integre com as principais redes sociais facilmente." },
     { icon: <FaCheckCircle />, title: "Gestão Simplificada", text: "Controle pedidos, clientes e estoque em um painel intuitivo e poderoso." }
   ];
-
   const logosIntegracoes = [
     { src: "/logos/mercado-pago.png", alt: "Mercado Pago", width: 140, height: 140 },
     { src: "/logos/correios.png", alt: "Correios", width: 120, height: 120 },
-    { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 140, height: 140 },
-    { src: "/logos/instagram.png", alt: "Instagram", width: 130, height: 130 },
-    { src: "/logos/google.png", alt: "Google", width: 120, height: 120 },
+    { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 130, height: 130 },
+    { src: "/logos/instagram.png", alt: "Instagram", width: 120, height: 120 },
+    { src: "/logos/google.png", alt: "Google", width: 230, height: 230 },
   ];
-
   const depoimentos = [
     { texto: "A plataforma é incrivelmente fácil de usar e o suporte é o mais rápido que já vi. Minhas vendas aumentaram 30%!", autor: "Ana Souza", loja: "Ana Acessórios" },
     { texto: "Finalmente encontrei uma plataforma sem comissão por venda. A liberdade e a economia fizeram toda a diferença.", autor: "Bruno Carvalho", loja: "Geek Point" },
   ];
-
   const faqItems = [
     { q: "Preciso de CNPJ para começar?", a: "Não, você pode começar a vender com o seu CPF e formalizar seu negócio quando se sentir pronto." },
     { q: "Como funciona a taxa 0% por venda?", a: "É simples: não cobramos comissão sobre suas vendas! Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago, Stripe), que são inevitáveis em qualquer plataforma." },
@@ -42,7 +38,7 @@ export default function Home() {
 
   const [openFaq, setOpenFaq] = React.useState<number | null>(0);
   const toggleFaq = (index: number) => setOpenFaq(openFaq === index ? null : index);
-
+  
   const [faturamento, setFaturamento] = React.useState('10000');
   const [taxaConcorrente, setTaxaConcorrente] = React.useState(2.99);
   const economiaAnual = (parseFloat(faturamento || '0') * (taxaConcorrente / 100)) * 12;
@@ -63,6 +59,8 @@ export default function Home() {
               <p className={styles.heroSubtitle}>Crie sua loja com temas personalizáveis e ferramentas de marketing. Taxa de comissão por venda: <strong>0%</strong>. Sempre.</p>
               <div className={styles.heroActions}>
                 <Link href="/cadastro" className={styles.heroButtonPrimary}>Criar minha loja grátis</Link>
+                {/* Você pode adicionar um botão secundário se quiser */}
+                {/* <Link href="/planos" className={styles.heroButtonSecondary}>Conheça os planos</Link> */}
               </div>
             </div>
             <div className={styles.heroImageWrapper}>
@@ -90,8 +88,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* 3. FUNCIONALIDADES E INTEGRAÇÕES */}
+      
+      {/* 3. FUNCIONALIDADES & INTEGRAÇÕES */}
       <section className={styles.featuresSection}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
@@ -137,9 +135,9 @@ export default function Home() {
               <div>
                 <label htmlFor="taxa">Taxa de comissão que você paga hoje</label>
                 <select id="taxa" value={taxaConcorrente} onChange={e => setTaxaConcorrente(parseFloat(e.target.value))}>
-                  <option value={1.99}>1,99%</option>
-                  <option value={2.99}>2,99%</option>
-                  <option value={4.5}>4,5%</option>
+                  <option value={1.5}>1,5%</option>
+                  <option value={2.5}>2,5%</option>
+                  <option value={4.99}>4,99%</option>
                 </select>
               </div>
             </div>
@@ -207,14 +205,14 @@ export default function Home() {
         </div>
       </section>
       
-      {/* 8. SUPORTE */}
+      {/* 8. SUPORTE (DO SEU CÓDIGO ORIGINAL) */}
       <section className={styles.suporteSection}>
         <div className={styles.contentContainer}>
           <div className={styles.suporteContainer}>
             <div className={styles.suporteLeft}>
               <h2 className={styles.suporteTitle}>Suporte e Mentoria Phandshop</h2>
               <p className={styles.suporteText}>
-                Na Phandshop, você conta com suporte rápido, mentorias ao vivo e acompanhamento especializado em cada etapa. Nosso sucesso é o seu sucesso.
+                Na Phandshop, você conta com suporte rápido, mentorias ao vivo e acompanhamento especializado em cada etapa. Nosso sucesso é o seu sucesso. Com 97% de avaliações positivas, nosso suporte responde em até 1 minuto e nossas mentorias te ajudam a dominar sua loja virtual.
               </p>
             </div>
             <div className={styles.suporteRight}>
@@ -242,7 +240,7 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2>Pronto para vender para todo o Brasil?</h2>
             <p>Crie sua loja virtual em poucos minutos. Sem cartão de crédito e sem compromisso.</p>
-            <Link href="/cadastro" className={styles.heroButton}>Começar gratuitamente agora</Link>
+            <Link href="/cadastro" className={styles.heroButtonPrimary}>Começar gratuitamente agora</Link>
           </div>
         </div>
       </section>
