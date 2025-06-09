@@ -7,18 +7,10 @@ export const metadata = {
 
 const PaginaDePlanos = () => {
   return (
-    <main style={{ backgroundColor: "#f9fafb", minHeight: "100vh" }}>
-      <section style={{ textAlign: "center", padding: "4rem 1rem 2rem" }}>
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold", color: "#4b0082" }}>
-          Planos e Preços
-        </h1>
-        <p style={{ fontSize: "1rem", color: "#4b5563", marginTop: "0.5rem" }}>
-          Escolha o plano ideal para o seu negócio e comece a vender online hoje mesmo 🚀
-        </p>
-      </section>
+    
 
       <Planos />
-    </main>
+    
   );
 };
 
