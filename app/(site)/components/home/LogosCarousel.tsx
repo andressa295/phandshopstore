@@ -10,11 +10,11 @@ import 'swiper/css/pagination';
 import styles from './LogosCarousel.module.css';
 
 const logosIntegracoes = [
-  { src: "/logos/mercado-pago.svg", alt: "Mercado Pago", width: 140, height: 40 },
-  { src: "/logos/correios.svg", alt: "Correios", width: 120, height: 40 },
-  { src: "/logos/melhor-envio.svg", alt: "Melhor Envio", width: 150, height: 40 },
-  { src: "/logos/instagram.svg", alt: "Instagram", width: 110, height: 40 },
-  { src: "/logos/google.svg", alt: "Google", width: 100, height: 40 },
+  { src: "/logos/mercado-pago.png", alt: "Mercado Pago", width: 140, height: 40 },
+  { src: "/logos/correios.png", alt: "Correios", width: 120, height: 40 },
+  { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 150, height: 40 },
+  { src: "/logos/instagram.png", alt: "Instagram", width: 110, height: 40 },
+  { src: "/logos/google.png", alt: "Google", width: 100, height: 40 },
   // Adicione mais logos aqui se precisar
 ];
 
