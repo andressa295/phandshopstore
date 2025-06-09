@@ -3,15 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './page.module.css'; // Mude o nome se o seu for page.module.css
+import styles from './page.module.css'; // Mude aqui se seu arquivo CSS tiver outro nome
 import { FaGem, FaBolt, FaHeadset, FaQuoteLeft, FaCheckCircle, FaChevronDown } from 'react-icons/fa';
 
 export default function Home() {
-  // --- DADOS E LÓGICA PARA AS SEÇÕES ---
+  // --- Dados e Lógica para as Seções ---
   const diferenciais = [
     { icon: <FaGem size={28} />, title: 'Taxa 0% por Venda', description: 'Venda sem se preocupar com comissões sobre suas vendas. Seu lucro é 100% seu.' },
-    { icon: <FaBolt size={28} />, title: 'Alta Performance', description: 'Sua loja carrega em um piscar de olhos, garantindo uma experiência rápida para o seu cliente.' },
-    { icon: <FaHeadset size={28} />, title: 'Suporte que Resolve', description: 'Converse com pessoas de verdade, prontas para te ajudar a resolver qualquer problema em tempo recorde.' }
+    { icon: <FaBolt size={28} />, title: 'Alta Performance', description: 'Sua loja carrega em um piscar de olhos, garantindo uma experiência rápida.' },
+    { icon: <FaHeadset size={28} />, title: 'Suporte que Resolve', description: 'Converse com pessoas de verdade, prontas para te ajudar a resolver qualquer problema.' }
   ];
   const funcionalidades = [
     { icon: <FaCheckCircle />, title: "Design Flexível", text: "Personalize temas ou crie o seu do zero para ter uma loja com a sua cara." },
@@ -20,11 +20,11 @@ export default function Home() {
     { icon: <FaCheckCircle />, title: "Gestão Simplificada", text: "Controle pedidos, clientes e estoque em um painel intuitivo e poderoso." }
   ];
   const logosIntegracoes = [
-    { src: "/logos/mercado-pago.png", alt: "Mercado Pago", width: 140, height: 140 },
-    { src: "/logos/correios.png", alt: "Correios", width: 120, height: 120 },
-    { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 130, height: 130 },
-    { src: "/logos/instagram.png", alt: "Instagram", width: 120, height: 120 },
-    { src: "/logos/google.png", alt: "Google", width: 500, height: 500 },
+    { src: "/logos/mercado-pago.png", alt: "Mercado Pago", width: 140, height: 40 },
+    { src: "/logos/correios.png", alt: "Correios", width: 120, height: 40 },
+    { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 150, height: 40 },
+    { src: "/logos/instagram.png", alt: "Instagram", width: 110, height: 40 },
+    { src: "/logos/google.png", alt: "Google", width: 100, height: 40 },
   ];
   const depoimentos = [
     { texto: "A plataforma é incrivelmente fácil de usar e o suporte é o mais rápido que já vi. Minhas vendas aumentaram 30%!", autor: "Ana Souza", loja: "Ana Acessórios" },
@@ -32,20 +32,15 @@ export default function Home() {
   ];
   const faqItems = [
     { q: "Preciso de CNPJ para começar?", a: "Não, você pode começar a vender com o seu CPF e formalizar seu negócio quando se sentir pronto." },
-    { q: "Como funciona a taxa 0% por venda?", a: "É simples: não cobramos comissão sobre suas vendas! Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago, Stripe), que são inevitáveis em qualquer plataforma." },
+    { q: "O que é a taxa de comissão por venda 0%?", a: "Significa que não cobramos nenhuma porcentagem sobre suas vendas. Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago, Stripe), que são inevitáveis em qualquer plataforma." },
     { q: "Posso usar meu próprio domínio?", a: "Sim! Você pode conectar seu próprio domínio (ex: www.sualoja.com.br) de forma fácil em nosso painel." },
   ];
-
   const [openFaq, setOpenFaq] = React.useState<number | null>(0);
   const toggleFaq = (index: number) => setOpenFaq(openFaq === index ? null : index);
-  
   const [faturamento, setFaturamento] = React.useState('10000');
   const [taxaConcorrente, setTaxaConcorrente] = React.useState(2.99);
   const economiaAnual = (parseFloat(faturamento || '0') * (taxaConcorrente / 100)) * 12;
-  const formatCurrency = (value: number) => {
-    if (isNaN(value)) return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(0);
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-  };
+  const formatCurrency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(isNaN(value) ? 0 : value);
 
   return (
     <main>
@@ -56,11 +51,9 @@ export default function Home() {
           <div className={styles.heroGrid}>
             <div>
               <h1 className={styles.heroTitle}>Sua loja online, simples e sem limites.</h1>
-              <p className={styles.heroSubtitle}>Crie sua loja com temas personalizáveis e ferramentas de marketing. Taxa de comissão por venda: <strong>0%</strong>. Sempre.</p>
+              <p className={styles.heroSubtitle}>Crie sua loja com temas personalizáveis, ferramentas de marketing e a menor taxa do mercado: <strong>0% de comissão por venda</strong>.</p>
               <div className={styles.heroActions}>
                 <Link href="/cadastro" className={styles.heroButtonPrimary}>Criar minha loja grátis</Link>
-                {/* Você pode adicionar um botão secundário se quiser */}
-                {/* <Link href="/planos" className={styles.heroButtonSecondary}>Conheça os planos</Link> */}
               </div>
             </div>
             <div className={styles.heroImageWrapper}>
@@ -100,10 +93,7 @@ export default function Home() {
             {funcionalidades.map((item) => (
               <div key={item.title} className={styles.featureCard}>
                 <div className={styles.featureIcon}>{item.icon}</div>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
+                <div><h3>{item.title}</h3><p>{item.text}</p></div>
               </div>
             ))}
           </div>
@@ -205,14 +195,14 @@ export default function Home() {
         </div>
       </section>
       
-      {/* 8. SUPORTE (DO SEU CÓDIGO ORIGINAL) */}
+      {/* 8. SUPORTE */}
       <section className={styles.suporteSection}>
         <div className={styles.contentContainer}>
           <div className={styles.suporteContainer}>
             <div className={styles.suporteLeft}>
               <h2 className={styles.suporteTitle}>Suporte e Mentoria Phandshop</h2>
               <p className={styles.suporteText}>
-                Na Phandshop, você conta com suporte rápido, mentorias ao vivo e acompanhamento especializado em cada etapa. Nosso sucesso é o seu sucesso. Com 97% de avaliações positivas, nosso suporte responde em até 1 minuto e nossas mentorias te ajudam a dominar sua loja virtual.
+                Na Phandshop, você conta com suporte rápido, mentorias ao vivo e acompanhamento especializado em cada etapa. Nosso sucesso é o seu sucesso. Com 97% de avaliações positivas, nosso suporte responde em até 1 minuto.
               </p>
             </div>
             <div className={styles.suporteRight}>
