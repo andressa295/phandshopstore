@@ -1,0 +1,42 @@
+.carouselWrapper {
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoImage {
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  max-width: 150px;
+  height: auto; /* Deixa a altura se ajustar à largura */
+}
+
+.slide:hover .logoImage {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Estilizando os 'pontinhos' do carrossel */
+.paginationContainer {
+  margin-top: 2rem;
+  text-align: center;
+}
+/* Alvo nos pontinhos gerados pelo Swiper dentro do nosso container */
+.paginationContainer :global(.swiper-pagination-bullet) {
+  width: 10px;
+  height: 10px;
+  background-color: #d1d5db;
+  opacity: 1;
+  transition: background-color 0.3s ease;
+}
+
+.paginationContainer :global(.swiper-pagination-bullet-active) {
+  background-color: #6D28D9; /* Roxo nos pontinhos ativos */
+}

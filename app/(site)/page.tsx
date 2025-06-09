@@ -7,7 +7,7 @@ import styles from './page.module.css'; // Mude aqui se seu arquivo CSS tiver ou
 import { FaGem, FaBolt, FaHeadset, FaQuoteLeft, FaCheckCircle, FaChevronDown } from 'react-icons/fa';
 
 export default function Home() {
-  // --- Dados e Lógica para as Seções ---
+  // --- DADOS E LÓGICA PARA AS SEÇÕES ---
   const diferenciais = [
     { icon: <FaGem size={28} />, title: 'Taxa 0% por Venda', description: 'Venda sem se preocupar com comissões sobre suas vendas. Seu lucro é 100% seu.' },
     { icon: <FaBolt size={28} />, title: 'Alta Performance', description: 'Sua loja carrega em um piscar de olhos, garantindo uma experiência rápida.' },
@@ -20,11 +20,11 @@ export default function Home() {
     { icon: <FaCheckCircle />, title: "Gestão Simplificada", text: "Controle pedidos, clientes e estoque em um painel intuitivo e poderoso." }
   ];
   const logosIntegracoes = [
-    { src: "/logos/mercado-pago.png", alt: "Mercado Pago", width: 140, height: 40 },
-    { src: "/logos/correios.png", alt: "Correios", width: 120, height: 40 },
-    { src: "/logos/melhor-envio.png", alt: "Melhor Envio", width: 150, height: 40 },
-    { src: "/logos/instagram.png", alt: "Instagram", width: 110, height: 40 },
-    { src: "/logos/google.png", alt: "Google", width: 100, height: 40 },
+    { src: "/logos/mercado-pago.svg", alt: "Mercado Pago", width: 140, height: 40 },
+    { src: "/logos/correios.svg", alt: "Correios", width: 120, height: 40 },
+    { src: "/logos/melhor-envio.svg", alt: "Melhor Envio", width: 150, height: 40 },
+    { src: "/logos/instagram.svg", alt: "Instagram", width: 110, height: 40 },
+    { src: "/logos/google.svg", alt: "Google", width: 100, height: 40 },
   ];
   const depoimentos = [
     { texto: "A plataforma é incrivelmente fácil de usar e o suporte é o mais rápido que já vi. Minhas vendas aumentaram 30%!", autor: "Ana Souza", loja: "Ana Acessórios" },
@@ -32,11 +32,13 @@ export default function Home() {
   ];
   const faqItems = [
     { q: "Preciso de CNPJ para começar?", a: "Não, você pode começar a vender com o seu CPF e formalizar seu negócio quando se sentir pronto." },
-    { q: "O que é a taxa de comissão por venda 0%?", a: "Significa que não cobramos nenhuma porcentagem sobre suas vendas. Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago, Stripe), que são inevitáveis em qualquer plataforma." },
+    { q: "O que é a taxa de comissão por venda 0%?", a: "Significa que não cobramos nenhuma porcentagem sobre suas vendas. Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago), que são inevitáveis em qualquer plataforma." },
     { q: "Posso usar meu próprio domínio?", a: "Sim! Você pode conectar seu próprio domínio (ex: www.sualoja.com.br) de forma fácil em nosso painel." },
   ];
+
   const [openFaq, setOpenFaq] = React.useState<number | null>(0);
   const toggleFaq = (index: number) => setOpenFaq(openFaq === index ? null : index);
+
   const [faturamento, setFaturamento] = React.useState('10000');
   const [taxaConcorrente, setTaxaConcorrente] = React.useState(2.99);
   const economiaAnual = (parseFloat(faturamento || '0') * (taxaConcorrente / 100)) * 12;
@@ -50,8 +52,8 @@ export default function Home() {
         <div className={styles.contentContainer}>
           <div className={styles.heroGrid}>
             <div>
-              <h1 className={styles.heroTitle}>Sua loja online, simples e sem limites.</h1>
-              <p className={styles.heroSubtitle}>Crie sua loja com temas personalizáveis, ferramentas de marketing e a menor taxa do mercado: <strong>0% de comissão por venda</strong>.</p>
+              <h1 className={styles.heroTitle}>Ter sua loja online é mais simples do que você imagina.</h1>
+              <p className={styles.heroSubtitle}>Venda 24 horas por dia com a cara da sua marca, temas personalizados e tudo o que você precisa para começar. Taxa por venda <span style={{fontWeight: 700, color: '#5b21b6'}}>0%</span>, a melhor taxa do mercado.</p>
               <div className={styles.heroActions}>
                 <Link href="/cadastro" className={styles.heroButtonPrimary}>Criar minha loja grátis</Link>
               </div>
