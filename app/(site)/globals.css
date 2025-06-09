@@ -163,3 +163,6 @@ a {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
 }
+body.menu-is-open {
+  overflow: hidden;
+}
