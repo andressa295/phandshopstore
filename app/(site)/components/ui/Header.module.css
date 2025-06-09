@@ -6,10 +6,10 @@
   padding: 1rem 1.5rem;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* ESSENCIAL: Joga a logo para um lado e a navegação para o outro */
   align-items: center;
-  height: 70px;
-  position: fixed;
+  height: 70px; /* Um pouco mais de altura para conforto */
+  position: fixed; /* Mantém o header fixo no topo */
   top: 0;
   left: 0;
   z-index: 1000;
@@ -19,7 +19,7 @@
 .logoLink {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Impede que a logo encolha */
 }
 
 .logoImage {
@@ -27,14 +27,15 @@
   width: auto;
 }
 
+/* NAVEGAÇÃO PARA DESKTOP (VISÍVEL POR PADRÃO) */
 .navDesktop {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2rem; /* Espaçamento entre os links */
 }
 
 .navLink {
-  color: #f0e6ff;
+  color: #f0e6ff; /* Cor mais suave para os links */
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
@@ -52,8 +53,7 @@
   background-color: #fff;
   transition: width 0.3s ease;
 }
-.navLink:hover,
-.navLink:focus {
+.navLink:hover, .navLink:focus {
   color: #fff;
 }
 .navLink:hover::after {
@@ -72,12 +72,12 @@
 }
 .navButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 /* BOTÃO HAMBÚRGUER (ESCONDIDO NO DESKTOP) */
 .hamburgerButton {
-  display: none;
+  display: none; /* ESCONDIDO no desktop por padrão */
   background: none;
   border: none;
   color: white;
@@ -85,28 +85,29 @@
   z-index: 1002;
 }
 
-/* MENU MOBILE */
+/* MENU MOBILE (ESCONDIDO NO DESKTOP) */
 .navMobile {
-  display: none;
+  display: none; /* Totalmente escondido e sem impacto no layout do desktop */
 }
 
-/* ============ MEDIA QUERY PARA MOBILE ============ */
+/* ============ MEDIA QUERY PARA TABLETS E CELULARES ============ */
 @media (max-width: 768px) {
   .header {
-    padding: 0 1rem;
-    height: 64px;
+    padding: 0 1rem; /* Menos padding lateral no mobile */
+    height: 64px; /* Altura padrão para mobile */
   }
 
   .navDesktop {
-    display: none;
+    display: none; /* Esconde a navegação de desktop */
   }
 
   .hamburgerButton {
-    display: block;
+    display: block; /* Mostra o botão hambúrguer */
   }
 
+  /* Faz o painel do menu mobile ficar visível quando ele deve aparecer */
   .navMobile {
-    display: flex;
+    display: flex; /* Mudei para flex para ele se tornar visível */
     position: fixed;
     top: 0;
     left: 0;
@@ -120,7 +121,7 @@
     gap: 2rem;
     opacity: 0;
     pointer-events: none;
-    transform: translateX(100%);
+    transform: translateX(100%); /* Começa fora da tela à direita */
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
     z-index: 1001;
   }
@@ -128,7 +129,7 @@
   .navMobile.isOpen {
     opacity: 1;
     pointer-events: all;
-    transform: translateX(0);
+    transform: translateX(0); /* Entra na tela */
   }
 
   .navMobile .navLink,
