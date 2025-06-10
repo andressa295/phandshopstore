@@ -1,23 +1,44 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Poppins } from 'next/font/google';
+import styles from './Cadastro.module.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['400', '500', '600', '700'],
 });
 
-function formatPhone(value: string) {
-  const onlyNums = value.replace(/\D/g, '');
-  if (onlyNums.length <= 10) {
-    return onlyNums.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
-  } else {
-    return onlyNums.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
-  }
-}
 
-export default function CadastroPage() {
+const EyeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </svg>
+);
+
+const EyeOffIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+    <line x1="2" x2="22" y1="2" y2="22"></line>
+  </svg>
+);
+
+
+function CadastroForm() {
+  const searchParams = useSearchParams();
+  const [nomeDoPlano, setNomeDoPlano] = useState('');
+
+  const planoNomes: { [key: string]: string } = {
+    gratis: 'Plano Grátis',
+    essencial: 'Plano Essencial',
+    profissional: 'Plano Profissional',
+    premium: 'Plano Phand Premium',
+  };
+
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -33,6 +54,21 @@ export default function CadastroPage() {
   const [valid, setValid] = useState(false);
 
   const validarEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+
+  const formatPhone = (value: string) => {
+    const onlyNums = value.replace(/\D/g, '');
+    if (onlyNums.length <= 10) {
+      return onlyNums.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+    }
+    return onlyNums.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
+  };
+
+  useEffect(() => {
+    const planoQuery = searchParams.get('plano');
+    if (planoQuery && planoNomes[planoQuery]) {
+      setNomeDoPlano(planoNomes[planoQuery]);
+    }
+  }, [searchParams, planoNomes]);
 
   useEffect(() => {
     const isValid =
@@ -58,258 +94,70 @@ export default function CadastroPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-
     if (!valid) {
       setError('Preencha todos os campos corretamente e aceite os termos');
       return;
     }
-
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert('Cadastro realizado com sucesso (mock)!');
-      setForm({
-        nome: '',
-        email: '',
-        telefone: '',
-        senha: '',
-        confirmSenha: '',
-        aceitaTermos: false,
-      });
+      alert(`Cadastro com o ${nomeDoPlano} realizado com sucesso (mock)!`);
     }, 1500);
   }
 
   return (
-    <main
-      className={poppins.className}
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#f9f7fd',
-        padding: '1rem',
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        noValidate
-        style={{
-          background: '#fff',
-          padding: '2rem',
-          borderRadius: '1rem',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          width: '100%',
-          maxWidth: '450px',
-          boxSizing: 'border-box',
-          textAlign: 'center',
-        }}
-      >
-        <h2 style={{ color: '#6b21a8', fontWeight: 600, marginBottom: '0.5rem', fontSize: '1.5rem' }}>
-          Seja bem-vinda(o)!
-        </h2>
-        <h1 style={{ marginBottom: '1.5rem', color: '#6b21a8', fontSize: '2rem', fontWeight: 700 }}>
-          Criar Conta
-        </h1>
+    <main className={`${poppins.className} ${styles.mainContainer}`}>
+      <div className={styles.formWrapper}>
+        <h1 className={styles.title}>Crie sua conta</h1>
 
-        {/* Nome */}
-        <label htmlFor="nome" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
-          Nome completo
-        </label>
-        <input
-          id="nome"
-          name="nome"
-          type="text"
-          value={form.nome}
-          onChange={handleChange}
-          required
-          placeholder="Seu nome"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            marginBottom: '1rem',
-            borderRadius: '0.5rem',
-            border: form.nome.trim().length >= 2 ? '1px solid #4ade80' : '1px solid #ddd',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-
-        {/* Email */}
-        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          placeholder="email@exemplo.com"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            marginBottom: '1rem',
-            borderRadius: '0.5rem',
-            border: validarEmail(form.email) ? '1px solid #4ade80' : '1px solid #ddd',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-
-        {/* Telefone */}
-        <label htmlFor="telefone" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
-          Telefone
-        </label>
-        <input
-          id="telefone"
-          name="telefone"
-          type="tel"
-          value={form.telefone}
-          onChange={handleChange}
-          placeholder="(99) 99999-9999"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            marginBottom: '1rem',
-            borderRadius: '0.5rem',
-            border: form.telefone.length >= 14 ? '1px solid #4ade80' : '1px solid #ddd',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-
-        {/* Senha */}
-        <label htmlFor="senha" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
-          Senha
-        </label>
-        <div style={{ position: 'relative', marginBottom: '1rem' }}>
-          <input
-            id="senha"
-            name="senha"
-            type={showSenha ? 'text' : 'password'}
-            value={form.senha}
-            onChange={handleChange}
-            required
-            minLength={6}
-            placeholder="Mínimo 6 caracteres"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              borderRadius: '0.5rem',
-              border: form.senha.length >= 6 ? '1px solid #4ade80' : '1px solid #ddd',
-              fontSize: '1rem',
-              boxSizing: 'border-box',
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => setShowSenha(!showSenha)}
-            style={{
-              position: 'absolute',
-              right: '0.75rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 600,
-              color: '#6b21a8',
-            }}
-            aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}
-          >
-            {showSenha ? '🙈' : '👁️'}
-          </button>
-        </div>
-
-        {/* Confirmar senha */}
-        <label htmlFor="confirmSenha" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
-          Confirmar senha
-        </label>
-        <input
-          id="confirmSenha"
-          name="confirmSenha"
-          type="password"
-          value={form.confirmSenha}
-          onChange={handleChange}
-          required
-          minLength={6}
-          placeholder="Confirme a senha"
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            marginBottom: '1.5rem',
-            borderRadius: '0.5rem',
-            border: form.confirmSenha === form.senha && form.confirmSenha.length >= 6 ? '1px solid #4ade80' : '1px solid #ddd',
-            fontSize: '1rem',
-            boxSizing: 'border-box',
-          }}
-        />
-
-        {/* Aceita termos */}
-        <label
-          htmlFor="aceitaTermos"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '1rem',
-            fontWeight: 600,
-            fontSize: '0.9rem',
-            cursor: 'pointer',
-            color: '#6b21a8',
-          }}
-        >
-          <input
-            id="aceitaTermos"
-            name="aceitaTermos"
-            type="checkbox"
-            checked={form.aceitaTermos}
-            onChange={handleChange}
-            required
-            style={{ marginRight: '0.5rem' }}
-          />
-          Aceito os&nbsp;
-          <a href="/termos" target="_blank" style={{ color: '#7c3aed', textDecoration: 'underline' }}>
-            termos de uso
-          </a>
-          &nbsp;e&nbsp;
-          <a href="/privacidade" target="_blank" style={{ color: '#7c3aed', textDecoration: 'underline' }}>
-            política de privacidade
-          </a>
-        </label>
-
-        {/* Erro */}
-        {error && (
-          <p style={{ color: '#dc2626', marginBottom: '1rem', fontWeight: 600 }}>{error}</p>
+        {nomeDoPlano && (
+          <div className={styles.planoSelecionado}>
+            <p>Você está se cadastrando para o</p>
+            <strong>{nomeDoPlano}</strong>
+          </div>
         )}
 
-        {/* Botão */}
-        <button
-          type="submit"
-          disabled={!valid || loading}
-          style={{
-            width: '100%',
-            backgroundColor: valid && !loading ? '#6b21a8' : '#a78bfa',
-            color: '#fff',
-            padding: '0.75rem',
-            borderRadius: '9999px',
-            fontWeight: 700,
-            fontSize: '1.1rem',
-            border: 'none',
-            cursor: valid && !loading ? 'pointer' : 'not-allowed',
-            transition: 'background-color 0.3s',
-          }}
-          onMouseEnter={e => {
-            if (valid && !loading) (e.currentTarget.style.backgroundColor = '#7c3aed');
-          }}
-          onMouseLeave={e => {
-            if (valid && !loading) (e.currentTarget.style.backgroundColor = '#6b21a8');
-          }}
-        >
-          {loading ? 'Criando conta...' : 'Criar Conta'}
-        </button>
-      </form>
+        <form onSubmit={handleSubmit} noValidate>
+          <label htmlFor="nome" className={styles.label}>Nome completo</label>
+          <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required placeholder="Seu nome" className={`${styles.inputField} ${form.nome.trim().length >= 2 ? styles.inputValid : ''}`} />
+
+          <label htmlFor="email" className={styles.label}>Email</label>
+          <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required placeholder="email@exemplo.com" className={`${styles.inputField} ${validarEmail(form.email) ? styles.inputValid : ''}`} />
+
+          <label htmlFor="telefone" className={styles.label}>Telefone</label>
+          <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} placeholder="(99) 99999-9999" className={`${styles.inputField} ${form.telefone.length >= 14 ? styles.inputValid : ''}`} />
+
+          <label htmlFor="senha" className={styles.label}>Senha</label>
+          <div className={styles.passwordWrapper}>
+            <input id="senha" name="senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={handleChange} required minLength={6} placeholder="Mínimo 6 caracteres" className={`${styles.inputField} ${form.senha.length >= 6 ? styles.inputValid : ''}`} />
+            <button type="button" onClick={() => setShowSenha(!showSenha)} className={styles.togglePasswordButton} aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}>
+              {showSenha ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </div>
+
+          <label htmlFor="confirmSenha" className={styles.label}>Confirmar senha</label>
+          <input id="confirmSenha" name="confirmSenha" type="password" value={form.confirmSenha} onChange={handleChange} required minLength={6} placeholder="Confirme a senha" className={`${styles.inputField} ${form.confirmSenha === form.senha && form.confirmSenha.length >= 6 ? styles.inputValid : ''}`} />
+
+          <label htmlFor="aceitaTermos" className={styles.termsLabel}>
+            <input id="aceitaTermos" name="aceitaTermos" type="checkbox" checked={form.aceitaTermos} onChange={handleChange} required />
+            Aceito os&nbsp;<a href="/termos" target="_blank">termos de uso</a>&nbsp;e&nbsp;<a href="/privacidade" target="_blank">política de privacidade</a>
+          </label>
+
+          {error && <p className={styles.errorText}>{error}</p>}
+
+          <button type="submit" disabled={!valid || loading} className={styles.submitButton}>
+            {loading ? 'Criando conta...' : 'Criar Conta'}
+          </button>
+        </form>
+      </div>
     </main>
+  );
+}
+
+export default function PaginaDeCadastro() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <CadastroForm />
+    </Suspense>
   );
 }
