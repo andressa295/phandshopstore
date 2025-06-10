@@ -1,6 +1,5 @@
 
 import type { Metadata } from 'next';
-import { FiShoppingBag } from 'react-icons/fi';
 import { Poppins } from 'next/font/google';
 
 

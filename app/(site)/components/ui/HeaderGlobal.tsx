@@ -38,13 +38,10 @@ export default function Header() {
         </Link>
 
         <nav className={styles.navDesktop}>
-          <Link href="/planos" className={styles.navLink}>
-            Planos e Preços
-          </Link>
-          <Link href="/login" className={styles.navLink}>
-            Fazer Login
-          </Link>
-          <Link href="/cadastro" className={styles.navButton}>
+          <Link href="/criadores" className={styles.navLink}>Para Desenvolvedores</Link>
+          <Link href="/beneficios" className={styles.navLink}>Recursos</Link>
+          <Link href="/login" className={styles.navLink}>Fazer Login</Link>
+          <Link href="/planos" className={`${styles.navButton} ${styles.ovalButton}`}>
             Criar loja grátis
           </Link>
         </nav>
@@ -63,13 +60,13 @@ export default function Header() {
         ref={dropdownRef}
         className={`${styles.navMobile} ${isMenuOpen ? styles.isOpen : ''}`}
       >
-        <Link href="/planos" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
-          Planos e Preços
+        <Link href="/beneficios" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+          Recursos
         </Link>
         <Link href="/login" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
           Fazer Login
         </Link>
-        <Link href="/cadastro" className={styles.navButton} onClick={() => setIsMenuOpen(false)}>
+        <Link href="/planos" className={`${styles.navButton} ${styles.ovalButton}`} onClick={() => setIsMenuOpen(false)}>
           Criar loja grátis
         </Link>
       </div>

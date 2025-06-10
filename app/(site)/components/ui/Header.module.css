@@ -1,4 +1,4 @@
-/* Header.module.css (REVISADO PARA DESKTOP E MOBILE) */
+/* Header.module.css */
 
 .header {
   width: 100%;
@@ -6,10 +6,10 @@
   padding: 1rem 1.5rem;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between; /* ESSENCIAL: Joga a logo para um lado e a navegação para o outro */
+  justify-content: space-between;
   align-items: center;
-  height: 70px; /* Um pouco mais de altura para conforto */
-  position: fixed; /* Mantém o header fixo no topo */
+  height: 70px;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -19,7 +19,7 @@
 .logoLink {
   display: flex;
   align-items: center;
-  flex-shrink: 0; /* Impede que a logo encolha */
+  flex-shrink: 0;
 }
 
 .logoImage {
@@ -27,22 +27,23 @@
   width: auto;
 }
 
-/* NAVEGAÇÃO PARA DESKTOP (VISÍVEL POR PADRÃO) */
+/* NAV DESKTOP */
 .navDesktop {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Espaçamento entre os links */
+  gap: 2rem;
 }
 
 .navLink {
-  color: #f0e6ff; /* Cor mais suave para os links */
+  color: #f0e6ff;
   text-decoration: none;
   font-weight: 500;
   font-size: 1rem;
-  transition: color 0.2s ease;
   position: relative;
   padding-bottom: 4px;
+  transition: color 0.2s ease;
 }
+
 .navLink::after {
   content: '';
   position: absolute;
@@ -53,61 +54,70 @@
   background-color: #fff;
   transition: width 0.3s ease;
 }
-.navLink:hover, .navLink:focus {
+
+.navLink:hover,
+.navLink:focus {
   color: #fff;
 }
+
 .navLink:hover::after {
   width: 100%;
 }
 
+/* === BOTÃO OVAL === */
 .navButton {
-  padding: 0.6rem 1.2rem;
-  background-color: #fff;
-  color: #5b21b6;
-  border-radius: 6px;
+  padding: 0.6rem 1.8rem;
+  background-color: #ffffff;
+  color: #6b21a8;
+  border: none;
+  border-radius: 9999px; /* OVAL */
   font-weight: 600;
-  text-decoration: none;
   font-size: 1rem;
-  transition: all 0.2s ease;
-}
-.navButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 transparent;
 }
 
-/* BOTÃO HAMBÚRGUER (ESCONDIDO NO DESKTOP) */
+.navButton:hover {
+  background-color: #f3e8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* HAMBÚRGUER */
 .hamburgerButton {
-  display: none; /* ESCONDIDO no desktop por padrão */
+  display: none;
   background: none;
   border: none;
   color: white;
   cursor: pointer;
   z-index: 1002;
+  font-size: 1.8rem;
 }
 
-/* MENU MOBILE (ESCONDIDO NO DESKTOP) */
+/* MOBILE MENU */
 .navMobile {
-  display: none; /* Totalmente escondido e sem impacto no layout do desktop */
+  display: none;
 }
 
-/* ============ MEDIA QUERY PARA TABLETS E CELULARES ============ */
+/* ============ MOBILE ============ */
 @media (max-width: 768px) {
   .header {
-    padding: 0 1rem; /* Menos padding lateral no mobile */
-    height: 64px; /* Altura padrão para mobile */
+    padding: 0 1rem;
+    height: 64px;
   }
 
   .navDesktop {
-    display: none; /* Esconde a navegação de desktop */
+    display: none;
   }
 
   .hamburgerButton {
-    display: block; /* Mostra o botão hambúrguer */
+    display: block;
   }
 
-  /* Faz o painel do menu mobile ficar visível quando ele deve aparecer */
   .navMobile {
-    display: flex; /* Mudei para flex para ele se tornar visível */
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -121,7 +131,7 @@
     gap: 2rem;
     opacity: 0;
     pointer-events: none;
-    transform: translateX(100%); /* Começa fora da tela à direita */
+    transform: translateX(100%);
     transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
     z-index: 1001;
   }
@@ -129,12 +139,17 @@
   .navMobile.isOpen {
     opacity: 1;
     pointer-events: all;
-    transform: translateX(0); /* Entra na tela */
+    transform: translateX(0);
   }
 
   .navMobile .navLink,
   .navMobile .navButton {
     font-size: 1.5rem;
     text-align: center;
+  }
+
+  .navMobile .navButton {
+    border-radius: 9999px;
+    padding: 0.8rem 2rem;
   }
 }
