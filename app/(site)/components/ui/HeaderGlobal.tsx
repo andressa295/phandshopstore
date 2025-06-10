@@ -4,7 +4,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Header.module.css';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import {
+  FaBars,
+  FaTimes,
+  FaRocket,
+  FaCode,
+  FaSignInAlt,
+  FaStore,
+  FaArrowLeft
+} from 'react-icons/fa';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,14 +68,28 @@ export default function Header() {
         ref={dropdownRef}
         className={`${styles.navMobile} ${isMenuOpen ? styles.isOpen : ''}`}
       >
+        <Link href="/" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+          <FaArrowLeft style={{ marginRight: '8px' }} />
+          Voltar para início
+        </Link>
         <Link href="/beneficios" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+          <FaRocket style={{ marginRight: '8px' }} />
           Recursos
         </Link>
-        <Link href="/criadores" className={styles.navLink}>Para Desenvolvedores</Link>
+        <Link href="/criadores" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+          <FaCode style={{ marginRight: '8px' }} />
+          Para Desenvolvedores
+        </Link>
         <Link href="/login" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
+          <FaSignInAlt style={{ marginRight: '8px' }} />
           Fazer Login
         </Link>
-        <Link href="/planos" className={`${styles.navButton} ${styles.ovalButton}`} onClick={() => setIsMenuOpen(false)}>
+        <Link
+          href="/planos"
+          className={`${styles.navButton} ${styles.ovalButton}`}
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <FaStore style={{ marginRight: '8px' }} />
           Criar loja grátis
         </Link>
       </div>
