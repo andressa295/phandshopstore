@@ -1,9 +1,8 @@
-// Planos.tsx
-import React from 'react';
-import styles from './Planos.module.css';
+'use client';
 
-// --- Dados dos Planos ---
-// Manter os dados separados da lógica de renderização facilita a manutenção.
+import React from "react";
+import styles from './Planos.module.css'; 
+
 const planosData = [
   {
     icon: '🆓',
@@ -24,6 +23,7 @@ const planosData = [
     callout: 'Neste plano, é aplicada uma tarifa de 2.5% por venda aprovada.',
     buttonText: 'Começar agora',
     isFeatured: false,
+    buttonLink: '/cadastro?plano=gratis', // <-- LINK ADICIONADO
   },
   {
     icon: '💎',
@@ -43,6 +43,7 @@ const planosData = [
     callout: null,
     buttonText: 'Escolher Essencial',
     isFeatured: false,
+    buttonLink: '/cadastro?plano=essencial', // <-- LINK ADICIONADO
   },
   {
     icon: '🚀',
@@ -59,7 +60,8 @@ const planosData = [
     ],
     callout: null,
     buttonText: 'Escolher Profissional',
-    isFeatured: true, // Este será nosso plano em destaque
+    isFeatured: true,
+    buttonLink: '/cadastro?plano=profissional', // <-- LINK ADICIONADO
   },
   {
     icon: '👑',
@@ -76,6 +78,7 @@ const planosData = [
     callout: null,
     buttonText: 'Escolher Premium',
     isFeatured: false,
+    buttonLink: '/cadastro?plano=premium', // <-- LINK ADICIONADO
   },
 ];
 
@@ -110,8 +113,9 @@ const Planos = () => {
 
             <div className={styles.cardFooter}>
                 {plano.callout && <p className={styles.callout}>{plano.callout}</p>}
-                <a href="#" className={styles.ctaButton}>
-                {plano.buttonText}
+                {/* O href agora usa a propriedade buttonLink */}
+                <a href={plano.buttonLink} className={styles.ctaButton}>
+                  {plano.buttonText}
                 </a>
             </div>
 

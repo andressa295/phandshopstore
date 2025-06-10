@@ -1,30 +1,33 @@
+/* ================================================= */
+/* SEU CÓDIGO CORRIGIDO E COM ESTILOS PROFISSIONAIS */
+/* ================================================= */
+
 .planosSection {
   width: 100%;
-  padding: 40px 20px; /* Espaçamento para não colar nas bordas do celular */
+  padding: 40px 20px; 
   background-color: #f9f9f9;
 }
 
 .planosContainer {
   display: flex;
-  flex-direction: column; /* MOBILE-FIRST: Empilhados na vertical */
-  align-items: center;     /* Centraliza os cards no modo coluna */
-  gap: 32px;               /* Espaço entre os cards */
+  flex-direction: column; 
+  align-items: center;    
+  gap: 32px;              
   max-width: 1280px;
   margin: 0 auto;
 }
 
-/* --- Estilo do Card --- */
 .planoCard {
   width: 100%;
-  max-width: 400px; /* Evita que o card fique muito largo em telas intermediárias */
+  max-width: 400px; 
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  border-radius: 16px; /* Aumentei um pouco para um visual mais suave */
   padding: 24px;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative; /* Necessário para o badge de destaque */
+  position: relative; 
 }
 
 .planoCard:hover {
@@ -34,8 +37,9 @@
 
 /* --- Card em Destaque --- */
 .featured {
-  border: 2px solid #6a11cb; /* Cor de destaque */
-  transform: scale(1.05); /* Um pouco maior para chamar atenção */
+  /* --- MUDANÇA 1: Usando a variável de cor da marca --- */
+  border: 2px solid var(--brand-purple); 
+  transform: scale(1.05); 
 }
 
 .featuredBadge {
@@ -43,139 +47,88 @@
   top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  background-image: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  /* --- MUDANÇA 2: Usando a variável de gradiente --- */
+  background-image: var(--brand-gradient);
   color: #ffffff;
   padding: 6px 16px;
-  border-radius: 20px;
+  /* --- MUDANÇA 3: Deixando o badge oval também --- */
+  border-radius: 50px;
   font-size: 12px;
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* --- Conteúdo do Card --- */
-.cardHeader {
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.icon {
-  font-size: 40px;
-}
-
-.planoName {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-  margin-top: 8px;
-}
-
-.priceContainer {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-
-.price {
-  font-size: 36px;
-  font-weight: 700;
-  color: #111;
-}
-
-.priceDetails {
-  font-size: 16px;
-  font-weight: 500;
-  color: #666;
-}
+.cardHeader { text-align: center; margin-bottom: 16px; }
+.icon { font-size: 40px; }
+.planoName { font-size: 24px; font-weight: 600; color: var(--text-primary); margin-top: 8px; }
+.priceContainer { display: flex; justify-content: center; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.price { font-size: 36px; font-weight: 700; color: var(--text-primary); }
+.priceDetails { font-size: 16px; font-weight: 500; color: var(--text-secondary); }
 
 .annualPrice {
   text-align: center;
   font-size: 14px;
-  color: #2575fc;
+  /* --- MUDANÇA 4: Usando a cor da marca para o preço anual --- */
+  color: var(--brand-purple);
   margin: 0 0 16px 0;
-  font-weight: 500;
+  font-weight: 600; /* Aumentei o peso da fonte */
 }
 
-.separator {
-  border: 0;
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 16px 0;
-}
+.separator { border: 0; height: 1px; background-color: #e0e0e0; margin: 16px 0; }
+.featuresList { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+.featuresList li { font-size: 16px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+.cardFooter { margin-top: 24px; }
+.callout { font-size: 13px; text-align: center; color: var(--text-secondary); background-color: #f0f0f0; padding: 8px; border-radius: 6px; margin-bottom: 16px; }
 
-.featuresList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex-grow: 1; /* Faz a lista crescer para alinhar os botões no final */
-}
-
-.featuresList li {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-
-.cardFooter {
-    margin-top: 24px;
-}
-
-.callout {
-  font-size: 13px;
-  text-align: center;
-  color: #777;
-  background-color: #f0f0f0;
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 16px;
-}
-
+/* --- MUDANÇA 5: BOTÃO OVAL E COM A COR DA MARCA --- */
 .ctaButton {
   display: block;
   width: 100%;
   padding: 14px;
-  background-color: #1a1a1a;
+  background-color: var(--brand-purple); /* Cor padrão do botão agora é roxa */
   color: #ffffff;
   text-align: center;
   text-decoration: none;
   font-size: 16px;
   font-weight: 600;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+  border-radius: 50px; /* A MÁGICA PARA O FORMATO OVAL */
+  transition: all 0.3s ease; /* Transição mais suave */
+  border: 2px solid transparent; /* Prevenção de "pulo" no hover */
 }
 
 .ctaButton:hover {
-  background-color: #333;
+  transform: translateY(-3px); /* Efeito de elevação no hover */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 .featured .ctaButton {
-    background-image: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+  background-image: var(--brand-gradient); /* Mantém o gradiente para o destaque */
 }
 
-/* --- RESPONSIVIDADE --- */
+/* --- MUDANÇA 6: BOTÃO SECUNDÁRIO (PARA O PLANO GRÁTIS) --- */
+.secondaryButton {
+  background-color: transparent;
+  color: var(--brand-purple);
+  border: 2px solid var(--brand-purple);
+}
 
-/* Telas de Tablet */
+.secondaryButton:hover {
+  background-color: var(--brand-purple);
+  color: #ffffff;
+}
+
+/* --- RESPONSIVIDADE (Seu código original, sem alterações) --- */
 @media (min-width: 768px) {
   .planosContainer {
-    flex-direction: row;      /* Layout lado a lado */
-    flex-wrap: wrap;          /* Permite que os cards quebrem para a próxima linha */
-    justify-content: center;  /* Centraliza os cards na linha */
+    flex-direction: row;    
+    flex-wrap: wrap;        
+    justify-content: center; 
   }
-
-  .planoCard {
-    width: calc(50% - 16px); /* 2 cards por linha com um gap */
-  }
-
-  .featured {
-     transform: scale(1.02); /* Ajusta a escala para o modo lado a lado */
-  }
+  .planoCard { width: calc(50% - 16px); }
+  .featured { transform: scale(1.02); }
 }
 
-/* Telas de Desktop */
 @media (min-width: 1200px) {
-  .planoCard {
-    width: calc(25% - 24px); /* 4 cards por linha */
-  }
+  .planoCard { width: calc(25% - 24px); }
 }
