@@ -63,6 +63,7 @@ export default function Header() {
         <Link href="/beneficios" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
           Recursos
         </Link>
+        <Link href="/criadores" className={styles.navLink}>Para Desenvolvedores</Link>
         <Link href="/login" className={styles.navLink} onClick={() => setIsMenuOpen(false)}>
           Fazer Login
         </Link>
