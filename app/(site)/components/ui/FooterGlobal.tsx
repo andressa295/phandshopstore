@@ -13,7 +13,7 @@ export function Footer() {
   ];
 
   const atendimentoItems = [
-    { label: 'Central de ajuda', href: '/central-de-ajuda' },
+    { label: 'Central de ajuda', href: '/ajuda' },
     { label: 'Fale conosco', href: '/contato' },
     { label: 'Trabalhe conosco', href: '/carreiras' }
   ];
