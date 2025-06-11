@@ -240,7 +240,7 @@ export default function Home() {
           <div className={styles.sectionHeader}>
             <h2>Pronto para vender para todo o Brasil?</h2>
             <p>Crie sua loja virtual em poucos minutos. Sem cartão de crédito e sem compromisso.</p>
-            <Link href="/cadastro" className={styles.heroButtonPrimary}>Começar gratuitamente agora</Link>
+            <Link href="/planos" className={styles.heroButtonPrimary}>Começar gratuitamente agora</Link>
           </div>
         </div>
       </section>

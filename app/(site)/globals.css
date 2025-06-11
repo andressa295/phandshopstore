@@ -1,5 +1,15 @@
 /* src/app/globals.css (CONTEÚDO FORNECIDO POR VOCÊ) */
 :root {
+  --brand-purple: #6D28D9;
+  --brand-purple-light: #f3e8ff;
+  --brand-purple-dark: #5b21b6;
+  --brand-gradient: linear-gradient(45deg, #6D28D9, #8B5CF6);
+  --text-primary: #1f2937;
+  --text-secondary: #4a5568;
+  --success-color: #16a34a;
+}
+
+:root {
   --brand-purple: #7047eb;
   --brand-gradient: linear-gradient(45deg, #7047eb 0%, #a33cf3 100%);
   --text-primary: #1a1a2e;
