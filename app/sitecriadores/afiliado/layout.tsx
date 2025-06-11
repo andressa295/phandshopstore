@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient'; // Garanta que este caminho está correto
+import { supabase } from '@/lib/supabaseClient'; 
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Cadastro.module.css';
 
 export default function CadastroParceiroPage() {
-  // --- TODA A SUA LÓGICA ORIGINAL (useState, handleSubmit, etc) ---
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -64,9 +63,7 @@ export default function CadastroParceiroPage() {
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        {/* =======================================================
-            AQUI A MUDANÇA: A logo agora é um link para a página inicial
-            ======================================================= */}
+       
         <Link href="/">
           <Image 
             src="/logo.png" 
@@ -131,7 +128,6 @@ export default function CadastroParceiroPage() {
 
         <p className={styles.linkWrapper}>
           Já tem conta?{' '}
-          {/* Este link já estava aqui, levando para a página de login */}
           <Link href="/sitecriadores/login" className={styles.link}>
             Faça login
           </Link>
