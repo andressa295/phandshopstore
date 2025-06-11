@@ -1,0 +1,172 @@
+/* app/central-de-ajuda/HelpCenter.module.css */
+
+/* Usando as variáveis de cor do seu globals.css */
+
+.pageWrapper {
+  background-color: #f9fafb; /* Um cinza bem clarinho para o fundo geral */
+}
+
+.contentContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.sectionTitle {
+    font-size: clamp(1.8rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--text-primary, #1f2937);
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* 1. Hero e Barra de Busca */
+.heroSection {
+  background: var(--brand-gradient, linear-gradient(45deg, #6D28D9, #8B5CF6));
+  color: white;
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+.heroContent h1 {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.heroContent p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  max-width: 600px;
+  margin: 0 auto 2.5rem auto;
+  opacity: 0.9;
+}
+.searchBar {
+  position: relative;
+  max-width: 650px;
+  margin: 0 auto;
+}
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 1.5rem;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.2rem;
+}
+.searchBar input {
+  width: 100%;
+  padding: 1.2rem 1.5rem 1.2rem 4rem; /* Padding esquerdo para o ícone */
+  border-radius: 9999px;
+  border: none;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.searchBar input:focus {
+  outline: 2px solid var(--brand-purple, #6D28D9);
+}
+
+/* 2. Grid de Categorias */
+.categoriesSection {
+  padding: 5rem 0;
+}
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+.categoryCard {
+  background-color: #ffffff;
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.categoryCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+}
+.categoryIcon {
+  font-size: 2.5rem;
+  color: var(--brand-purple, #6D28D9);
+  margin-bottom: 1rem;
+}
+.categoryCard h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 0.5rem;
+}
+.categoryCard p {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #4a5568);
+  line-height: 1.6;
+}
+
+/* 3. Artigos Populares */
+.popularSection {
+    padding: 2rem 0 5rem 0;
+    border-top: 1px solid #e5e7eb;
+}
+.popularList {
+    list-style: none;
+    padding: 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.popularList li a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: var(--text-secondary, #4a5568);
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.popularList li a:hover {
+    background-color: var(--brand-purple-light, #f3e8ff);
+    color: var(--brand-purple, #6D28D9);
+}
+.popularList li svg {
+    color: var(--brand-purple, #6D28D9);
+    flex-shrink: 0;
+}
+
+/* 4. Seção de Contato */
+.contactSection {
+    padding: 5rem 0;
+    background-color: var(--brand-purple-light, #f3e8ff);
+}
+.contactBox {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.contactBox h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--brand-purple-dark, #5b21b6);
+    margin-bottom: 1rem;
+}
+.contactBox p {
+    color: var(--text-secondary, #4a5568);
+    margin-bottom: 2rem;
+    line-height: 1.7;
+}
+.contactButton {
+    display: inline-block;
+    background-color: var(--brand-purple, #6D28D9);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.contactButton:hover {
+    background-color: var(--brand-purple-dark, #5b21b6);
+    transform: translateY(-3px);
+}

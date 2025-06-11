@@ -34,6 +34,8 @@ export default function Home() {
     { q: "Preciso de CNPJ para começar?", a: "Não, você pode começar a vender com o seu CPF e formalizar seu negócio quando se sentir pronto." },
     { q: "Como funciona a taxa 0% por venda?", a: "É simples: não cobramos comissão sobre suas vendas! Nossos planos são assinaturas com valor fixo. As únicas taxas que você terá são as do provedor de pagamento que escolher (ex: Mercado Pago, Stripe), que são inevitáveis em qualquer plataforma." },
     { q: "Posso usar meu próprio domínio?", a: "Sim! Você pode conectar seu próprio domínio (ex: www.sualoja.com.br) de forma fácil em nosso painel." },
+    { q: "Preciso ter conhecimentos técnicos ou de design?", a: "Absolutamente não! A Phandshop foi criada para empreendedores, não para programadores. Nosso painel é totalmente intuitivo e você pode personalizar sua loja com temas prontos e fáceis de editar. Se você sabe usar redes sociais, você consegue criar uma loja incrível com a gente. E para qualquer dúvida, nosso suporte responde em 1 minuto para te ajudar." },
+
   ];
 
   const [openFaq, setOpenFaq] = React.useState<number | null>(0);
