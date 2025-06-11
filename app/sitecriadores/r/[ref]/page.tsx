@@ -1,48 +1,45 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import styles from './RefPage.module.css'
 
-// Função simples para transformar o slug em um nome mais amigável
-// Em um app real, isso poderia buscar o nome do parceiro no banco de dados
 function getNomeParceiro(ref: string) {
   if (!ref) return 'um parceiro Phandshop';
-  // Transforma 'britney-silva' em 'Britney Silva'
   return ref
     .split('-')
     .map(name => name.charAt(0).toUpperCase() + name.slice(1))
     .join(' ');
 }
 
-export default function RefPage({ params }: { params: { ref: string } }) {
+// MUDANÇA 2: A função agora não recebe mais 'params' como propriedade
+export default function RefPage() {
   const router = useRouter()
+  // MUDANÇA 3: Usamos o hook para pegar os parâmetros da URL
+  const params = useParams<{ ref: string }>();
+
   const nomeParceiro = getNomeParceiro(params.ref);
 
   useEffect(() => {
-    // A lógica de salvar no localStorage continua a mesma
+    // O resto do código funciona exatamente igual!
     if (typeof window !== 'undefined' && params.ref) {
       localStorage.setItem('phandshop_ref', params.ref)
     }
 
-    // Após um pequeno delay para o usuário ler a mensagem, redireciona
     const timer = setTimeout(() => {
-      // MUDANÇA: Redireciona para o cadastro, que é o próximo passo lógico
       router.replace('/cadastro') 
-    }, 2000); // 2 segundos de delay
+    }, 2000);
 
-    // Limpa o timer se o componente for desmontado
     return () => clearTimeout(timer);
 
   }, [params.ref, router])
 
-  // Em vez de retornar 'null', agora retornamos uma página de boas-vindas
   return (
     <main className={styles.container}>
       <div className={styles.box}>
         <Image 
-          src="/logo.png" // Use a logo branca para o modo dark
+          src="/logo.png"
           alt="Phandshop"
           width={200}
           height={50}
