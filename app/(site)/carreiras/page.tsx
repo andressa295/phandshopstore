@@ -72,7 +72,7 @@ function CarreirasPage() {
         <div className={styles.contentContainer}>
           <h2>O Caminho para Vender Temas</h2>
           <p className={styles.subtitle}>Transforme sua criatividade em uma fonte de renda contínua.</p>
-          <Link href="/parceiros/temas/documentacao" className={styles.ctaButton}>Ver Diretrizes de Design</Link>
+          <Link href="/parceiros/temas" className={styles.ctaButton}>Ver Diretrizes de Design</Link>
         </div>
       </section>
       
@@ -80,7 +80,7 @@ function CarreirasPage() {
         <div className={styles.contentContainer}>
           <h2>Construa Apps para a Nossa App Store</h2>
           <p className={styles.subtitle}>Resolva problemas reais dos lojistas e crie um negócio de sucesso com nossa API.</p>
-          <Link href="/desenvolvedores/api" className={styles.ctaButton}>Acessar Documentação da API</Link>
+          <Link href="/desenvolvedores" className={styles.ctaButton}>Acessar Documentação da API</Link>
         </div>
       </section>
 
