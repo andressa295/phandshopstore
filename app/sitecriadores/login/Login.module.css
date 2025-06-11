@@ -1,0 +1,147 @@
+/* Login.module.css (Tema Dark Consistente) */
+
+/* Container principal para centralizar tudo */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  /* CORREÇÃO: Usando o fundo do seu layout */
+  background-color: #121212;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  color: #EDEDED; /* Cor de texto padrão */
+}
+
+/* Cabeçalho com a logo */
+.header {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* A caixa de login principal */
+.box {
+  width: 100%;
+  max-width: 420px;
+  /* CORREÇÃO: Usando um tom mais claro que o fundo, mas ainda escuro */
+  background-color: #1E1E1E; 
+  padding: 2.5rem;
+  border-radius: 1rem;
+  /* CORREÇÃO: Usando a cor de borda do seu layout */
+  border: 1px solid #2C2C2C;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #EDEDED; /* Texto principal claro */
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #888888; /* Cinza médio para o subtítulo */
+  margin: 0 0 2.5rem 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #A0A0A0; /* Cinza um pouco mais claro para labels */
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background-color: #2C2C2C; /* Fundo do input */
+  border: 1px solid #424242; /* Borda do input */
+  border-radius: 0.5rem;
+  color: #EDEDED; /* Cor do texto digitado */
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: #6B6B6B;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand-purple, #8B5CF6);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+.error {
+  color: #f87171;
+  font-weight: 500;
+  text-align: center;
+  margin: -0.5rem 0 0.5rem 0;
+}
+
+.button {
+  width: 100%;
+  padding: 0.85rem;
+  /* Mantendo o roxo da marca para o botão principal */
+  background: var(--brand-purple, #6D28D9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.button:hover {
+  background: var(--brand-purple-dark, #5b21b6);
+  transform: translateY(-2px);
+}
+
+.linkWrapper {
+  margin-top: 2.5rem;
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+.link {
+  /* Mantendo o roxo da marca para links clicáveis */
+  color: var(--brand-purple, #8B5CF6);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Rodapé */
+.footer {
+  width: 100%;
+  text-align: center;
+  /* CORREÇÃO: Usando a cor do rodapé do seu layout */
+  color: #6B6B6B;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}

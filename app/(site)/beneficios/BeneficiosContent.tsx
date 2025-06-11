@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link'; 
 import { motion } from 'framer-motion';
 import { FaRocket, FaMoneyBillWave, FaLock, FaCode, FaChartLine, FaSearch } from 'react-icons/fa';
 import React from 'react';
@@ -58,7 +59,6 @@ export default function RecursosPage() {
         ))}
       </div>
 
-      {/* Seção extra para criadores de site */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -73,9 +73,25 @@ export default function RecursosPage() {
         <div style={{ background: 'white', color: '#6c63ff', padding: 20, borderRadius: 12, fontSize: 14 }}>
           Exemplo: Plano Profissional R$149/mês → Você recebe R$22,35 por mês enquanto o cliente estiver ativo.
         </div>
-        <button style={{ marginTop: 12, alignSelf: 'flex-start', background: 'white', color: '#6c63ff', padding: '10px 20px', borderRadius: 8, fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
+
+       <Link
+       href="/criadores"
+       style={{
+       marginTop: 12,
+       alignSelf: 'flex-start',
+       background: 'white',
+       color: '#6c63ff',
+       padding: '10px 20px',
+       borderRadius: 8,
+       fontWeight: 'bold',
+      textDecoration: 'none',
+      border: 'none',
+      display: 'inline-block',
+     cursor: 'pointer'
+  }}
+>
           Quero ser parceiro
-        </button>
+</Link>
       </motion.div>
     </div>
   );

@@ -1,0 +1,140 @@
+/* Cadastro.module.css (Tema Dark) */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  background-color: #121212;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  color: #EDEDED;
+}
+
+.header {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.box {
+  width: 100%;
+  max-width: 420px;
+  background-color: #1E1E1E;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  border: 1px solid #2C2C2C;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--brand-purple, #8B5CF6); /* Usando o roxo no título */
+  margin: 0 0 2rem 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.inputGroup {
+  margin-bottom: 1.25rem; /* Espaço entre os grupos de input */
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #A0A0A0;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background-color: #2C2C2C;
+  border: 1px solid #424242;
+  border-radius: 0.5rem;
+  color: #EDEDED;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: #6B6B6B;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand-purple, #8B5CF6);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+/* Classe para erro no input */
+.inputError {
+  border-color: #E74C3C;
+}
+
+.errorText {
+  color: #E74C3C;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.button {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--brand-purple, #6D28D9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-top: 1rem;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--brand-purple-dark, #5b21b6);
+  transform: translateY(-2px);
+}
+
+.button:disabled {
+  background: #374151;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.linkWrapper {
+  margin-top: 2.5rem;
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+.link {
+  color: var(--brand-purple, #8B5CF6);
+  font-weight: 600;
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  width: 100%;
+  text-align: center;
+  color: #6B6B6B;
+  font-size: 0.8rem;
+  margin-top: 2rem;
+  padding-bottom: 1rem;
+}

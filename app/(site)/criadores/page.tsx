@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Link from 'next/link'; 
 
 export default function ParceirosDevPage() {
   return (
@@ -99,19 +100,24 @@ export default function ParceirosDevPage() {
           textAlign: "center",
         }}
       >
-        <button
-          style={{
-            padding: "12px 24px",
-            fontSize: 18,
-            borderRadius: 8,
-            background: "#6B38FB",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Quero me tornar parceiro agora
-        </button>
+        <Link
+  href="/sitecriadores/afiliado"
+  style={{
+    marginTop: 12,
+    alignSelf: 'flex-start',
+    background: '#5b21b6',
+    color: '#fff',
+    padding: '10px 20px',
+    borderRadius: 8,
+    fontWeight: 'bold',
+    textDecoration: 'none',
+    border: 'none',
+    display: 'inline-block',
+    cursor: 'pointer'
+  }}
+>
+  Quero ser parceiro
+</Link>
       </motion.div>
     </main>
   );

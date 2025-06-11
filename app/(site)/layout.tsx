@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={poppins.className}>
-      <body>
+    <main lang="pt-BR" className={poppins.className}>
+      
         <Header />
 
         <main style={{ paddingTop: '70px' }}>
@@ -40,7 +40,7 @@ export default function RootLayout({
         </div>
 
         <Footer />
-      </body>
-    </html>
+      
+    </main>
   );
 }
