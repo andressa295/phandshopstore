@@ -1,9 +1,215 @@
-html,
+/* src/app/globals.css (CONTEÚDO FORNECIDO POR VOCÊ) */
+:root {
+  --brand-purple: #6D28D9;
+  --brand-purple-light: #f3e8ff;
+  --brand-purple-dark: #5b21b6;
+  --brand-gradient: linear-gradient(45deg, #6D28D9, #8B5CF6);
+  --text-primary: #1f2937;
+  --text-secondary: #4a5568;
+  --success-color: #16a34a;
+}
+
+:root {
+  --brand-purple: #7047eb;
+  --brand-gradient: linear-gradient(45deg, #7047eb 0%, #a33cf3 100%);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a6a;
+}
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Cores */
+  --purple-main: #6b21a8; /* Roxo principal para botões, etc. */
+  --purple-dark: #4b0082; /* Roxo escuro para o plano Master */
+  --purple-accent: #a259ff; /* Roxo mais claro para preços, borda do card */
+  --purple-light: #f0e6ff; /* Lilás leve para o card base (cor do .card) */
+  --gray-light: #f3f4f6; /* Cinza claro para o toggle */
+  --gray-medium: #e5e7eb; /* Cinza médio para bordas */
+  --gray-dark-text: #374151; /* Cinza escuro para texto */
+  --gray-text: #6b7280; /* Cinza para texto secundário */
+  --green-success: #10b981; /* Verde para ícones de sucesso */
+
+  /* Espaçamentos */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px; /* 1rem */
+  --spacing-lg: 24px;
+  --spacing-xl: 32px; /* 2rem */
+  --spacing-xxl: 40px;
+}
+
+html {
+  color-scheme: light; 
+}
+
+
 body {
-  padding: 0;
-  margin: 0;
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5; 
 }
 
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; 
+}
+
+@keyframes pulse {
+  0% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* LAYOUT DOS PLANOS: planos-container */
+.planos-container {
+  display: flex; 
+  flex-wrap: nowrap; 
+  overflow-x: auto; 
+  gap: var(--spacing-md); 
+  padding: 0 var(--spacing-md); 
+  scroll-snap-type: x mandatory; 
+  -webkit-overflow-scrolling: touch; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.planos-container::-webkit-scrollbar { /* Adicionado para consistência com .hide-scrollbar */
+  display: none;
+}
+
+
+@media (min-width: 768px) {
+  .planos-container {
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas para desktop */
+    gap: var(--spacing-lg); 
+    overflow-x: visible; 
+    scroll-snap-type: none; 
+    padding: 0; 
+    max-width: 1280px; 
+    margin: 0 auto; 
+    justify-items: stretch; 
+    align-items: stretch; 
+  }
+}
+
+/* CARD BASE REUTILIZÁVEL */
+.card {
+  min-width: 240px; 
+  flex-shrink: 0; 
+  scroll-snap-align: start; 
+  background: var(--purple-light); 
+  border: 2px solid var(--purple-accent); 
+  border-radius: 12px;
+  padding: var(--spacing-md); 
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(162, 89, 255, 0.2), 0 2px 4px rgba(162, 89, 255, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+  position: relative; 
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-between; 
+  color: var(--foreground); 
+}
+
+.card--hoverable:hover { /* Se você usar esta classe para hover genérico */
+  transform: translateY(-4px) scale(1.02); 
+  box-shadow: 0 10px 20px rgba(162, 89, 255, 0.3), 0 4px 8px rgba(162, 89, 255, 0.15); 
+}
+
+@media (min-width: 768px) {
+  .card {
+    min-width: auto; 
+    flex-shrink: 1; 
+    scroll-snap-align: unset; 
+    width: 100%; /* Garante que o card ocupe 100% da sua coluna no grid */
+  }
+}
+.phand-marquee-container {
+  width: 100%;
+  background: linear-gradient(to right, #4b0082, #9b59b6);
+  overflow: hidden;
+}
+
+.phand-marquee {
+  display: flex;
+  gap: 2.5rem;
+  white-space: nowrap;
+  padding: 0.75rem 0;
+  animation: marquee 20s linear infinite;
+  align-items: center;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+body.menu-is-open {
+  overflow: hidden;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.botao-oval {
+  background-color: #9333ea;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.botao-oval:hover {
+  background-color: #7e22ce;
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: #000; /* ou a cor roxa padrão */
+  overflow-x: hidden;
 }

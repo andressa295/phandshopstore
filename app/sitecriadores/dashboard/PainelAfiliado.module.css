@@ -16,7 +16,7 @@
   border-bottom: 1px solid #e0d8f0;
   
   /* Mantendo o topo fixo/sticky */
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 1000;
   width: 100%;
@@ -119,3 +119,21 @@
     background: var(--brand-purple-dark, #5b21b6);
     transform: translateY(-2px);
 }
+
+.footer {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background-color: var(--brand-purple-dark, #5b21b6); /* Roxo mais escuro para o rodapé */
+  text-align: center;
+  color: var(--brand-purple-light, #f3e8ff); /* Texto clarinho para contraste */
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+.footer p {
+  margin: 0;
+}
+
+
+/* Responsividade */
+@media (max-width: 992px) { .mainGrid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .header { position: static; } .mainContent { padding: 1rem; } }

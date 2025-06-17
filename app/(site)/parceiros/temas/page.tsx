@@ -51,6 +51,7 @@ function ParceirosDeTemasPage() {
          <div className={styles.contentContainer}>
             <h2>Pronto para começar?</h2>
             <p className={styles.subtitle}>Junte-se à nossa comunidade de criadores e ajude a moldar a aparência do e-commerce no Brasil.</p>
+           
             <Link href="/parceiros/cadastro" className={styles.ctaButton}>Quero ser um parceiro</Link>
          </div>
       </section>

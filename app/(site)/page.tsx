@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from './page.module.css'; // Mude o nome se o seu for page.module.css
+import styles from './page.module.css'; 
 import { FaGem, FaBolt, FaHeadset, FaQuoteLeft, FaCheckCircle, FaChevronDown } from 'react-icons/fa';
 
 export default function Home() {
@@ -53,6 +53,7 @@ export default function Home() {
     <main>
       
       {/* 1. HERO */}
+      
       <section className={styles.heroSection}>
         <div className={styles.contentContainer}>
           <div className={styles.heroGrid}>
@@ -71,7 +72,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+<div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+</div>
       {/* 2. DIFERENCIAIS */}
       <section className={styles.diferenciaisSection}>
         <div className={styles.contentContainer}>

@@ -75,7 +75,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap; /* Para quebrar no mobile */
+  flex-wrap: wrap; 
   gap: 1.5rem;
 }
 
@@ -84,10 +84,9 @@
   font-size: 0.85rem;
 }
 
-/* ESTILO PARA OS DADOS DA EMPRESA (PEQUENININHO E CENTRALIZADO) */
 .companyDetails {
-  margin-top: 2rem; /* Espaço entre o copyright e os dados */
-  font-size: 0.75rem; /* Fonte bem pequena */
+  margin-top: 2rem; 
+  font-size: 0.75rem; 
   line-height: 1.5;
   opacity: 0.8; 
 }

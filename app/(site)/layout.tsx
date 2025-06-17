@@ -22,7 +22,16 @@ export default function RootLayout({
 }) {
   return (
     <main lang="pt-BR" className={poppins.className}>
-      
+      <div
+        style={{
+          margin: 0,
+          padding: 0,
+          backgroundColor: '#fff', // Ou roxo da Phandshop
+          width: '100vw',
+          minHeight: '100vh',
+          overflowX: 'hidden',
+        }}
+      >
         <Header />
 
         <main style={{ paddingTop: '70px' }}>
@@ -33,14 +42,14 @@ export default function RootLayout({
           <div className="phand-marquee">
             {Array.from({ length: 20 }).map((_, i) => (
               <span key={i} style={{ display: 'flex', alignItems: 'center' }}>
-                Criar loja grátis <FiShoppingBag style={{ marginLeft: '0.5rem', marginRight: '0.5rem' }} />
+                Criar loja grátis <FiShoppingBag style={{ margin: '0 0.5rem' }} />
               </span>
             ))}
           </div>
         </div>
 
         <Footer />
-      
+      </div>
     </main>
   );
 }

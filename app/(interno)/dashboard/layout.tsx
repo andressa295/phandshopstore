@@ -60,6 +60,7 @@ const menuItems: MenuItem[] = [
   { icon: <FaStore />, label: 'Canais de venda', href: '/dashboard/canais' },
   {
     icon: <FaStore />, label: 'Loja online', children: [
+      { label: 'Loja Temas', href: '/dashboard/loja/temas' },
       { label: 'Editar loja', href: '/dashboard/loja/editar' },
       { label: 'Páginas', href: '/dashboard/loja/paginas' },
       { label: 'Menus', href: '/dashboard/loja/menus' },

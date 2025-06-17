@@ -32,7 +32,6 @@ export default function PainelAfiliado() {
     { title: "Total de Indicações", value: 35, icon: <FaUserCircle /> },
   ];
 
-  // Para testar o "Estado Vazio", basta trocar para: const indicacoes = [];
   const indicacoes = [
     { id: 1, loja: "Loja da Ana S.", data: "10/06/2025", plano: "Profissional", status: "Ativo", comissao: "R$ 22,50" },
     { id: 2, loja: "Império Geek", data: "05/06/2025", plano: "Essencial", status: "Ativo", comissao: "R$ 12,00" },
@@ -45,14 +44,45 @@ export default function PainelAfiliado() {
     { mes: "Abr", clientes: 7 }, { mes: "Mai", clientes: 15 }, { mes: "Jun", clientes: 14 }
   ];
 
+  // --- LÓGICA DO COMPONENTE ---
   const [paymentMethod, setPaymentMethod] = useState('pix');
   const [copied, setCopied] = useState(false);
+
+  // ESTADO PARA O FORMULÁRIO DE PAGAMENTO
+  const [paymentInfo, setPaymentInfo] = useState({
+    pixTipo: 'CPF',
+    pixChave: '',
+    banco: '',
+    agencia: '',
+    conta: ''
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(parceiro.linkIndicacao);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // FUNÇÃO PARA ATUALIZAR OS DADOS DO FORMULÁRIO DE PAGAMENTO
+  function handlePaymentInfoChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const { name, value } = e.target;
+    setPaymentInfo(prev => ({ ...prev, [name]: value }));
+  }
+
+  // FUNÇÃO PARA "SALVAR" AS INFORMAÇÕES
+  async function handleSavePaymentInfo(e: React.FormEvent) {
+    e.preventDefault();
+    setIsSaving(true);
+    
+    console.log("Salvando informações:", paymentInfo);
+
+    // Simula uma chamada de API para salvar os dados
+    await new Promise(resolve => setTimeout(resolve, 1500)); 
+    
+    setIsSaving(false);
+    alert("Informações de pagamento salvas com sucesso!");
+  }
 
   return (
     <div className={styles.dashboardContainer}>
@@ -69,8 +99,8 @@ export default function PainelAfiliado() {
 
       <main className={styles.mainContent}>
         <section className={styles.kpiGrid}>
-          {kpis.map(kpi => (
-            <div key={kpi.title} className={styles.card}>
+          {kpis.map((kpi, index) => (
+            <div key={kpi.title} className={`${styles.card} ${styles.kpiCard} ${index === 0 ? styles.primary : ''}`}>
               <div className={styles.kpiIcon}>{kpi.icon}</div>
               <div className={styles.kpiInfo}>
                 <p>{kpi.title}</p>
@@ -142,62 +172,66 @@ export default function PainelAfiliado() {
 
           <div className={styles.rightColumn}>
             <div className={styles.card}>
-              <h2>Informações para Recebimento</h2>
-              <p className={styles.cardSubtitle}>Mantenha seus dados atualizados para receber suas comissões em dia.</p>
-              <div className={styles.tabs}>
-                <button onClick={() => setPaymentMethod('pix')} className={paymentMethod === 'pix' ? styles.activeTab : ''}><FaPiggyBank /> PIX</button>
-                <button onClick={() => setPaymentMethod('banco')} className={paymentMethod === 'banco' ? styles.activeTab : ''}><FaUniversity /> Conta Bancária</button>
-              </div>
+              {/* O Formulário agora tem um 'onSubmit' */}
+              <form onSubmit={handleSavePaymentInfo}>
+                <h2>Informações para Recebimento</h2>
+                <p className={styles.cardSubtitle}>Mantenha seus dados atualizados para receber suas comissões em dia.</p>
+                
+                <div className={styles.tabs}>
+                  <button type="button" onClick={() => setPaymentMethod('pix')} className={paymentMethod === 'pix' ? styles.activeTab : ''}><FaPiggyBank /> PIX</button>
+                  <button type="button" onClick={() => setPaymentMethod('banco')} className={paymentMethod === 'banco' ? styles.activeTab : ''}><FaUniversity /> Conta Bancária</button>
+                </div>
 
-              {paymentMethod === 'pix' ? (
-                <div className={styles.formContent}>
-                  <label htmlFor="pix-tipo">Tipo de Chave PIX</label>
-                  <select id="pix-tipo">
-                    <option>CPF</option>
-                    <option>CNPJ</option>
-                  </select>
-                  <label htmlFor="pix-chave">Chave PIX</label>
-                  <input id="pix-chave" type="text" placeholder="Sua chave PIX" />
-                </div>
-              ) : (
-                <div className={styles.formContent}>
-                  <label htmlFor="banco">Banco</label>
-                  <input id="banco" type="text" placeholder="Ex: 260 - Nu Pagamentos S.A." />
-                  <label htmlFor="agencia">Agência</label>
-                  <input id="agencia" type="text" placeholder="0001" />
-                  <label htmlFor="conta">Conta com dígito</label>
-                  <input id="conta" type="text" placeholder="123456-7" />
-                </div>
-              )}
-              <button className={styles.saveButton}>Salvar Informações</button>
+                {paymentMethod === 'pix' ? (
+                  <div className={styles.formContent}>
+                    <label htmlFor="pixTipo">Tipo de Chave PIX</label>
+                    <select id="pixTipo" name="pixTipo" value={paymentInfo.pixTipo} onChange={handlePaymentInfoChange}>
+                      <option>CPF</option>
+                      <option>CNPJ</option>
+                    </select>
+                    <label htmlFor="pixChave">Chave PIX</label>
+                    <input id="pixChave" name="pixChave" type="text" placeholder="Sua chave PIX" value={paymentInfo.pixChave} onChange={handlePaymentInfoChange} />
+                  </div>
+                ) : (
+                  <div className={styles.formContent}>
+                    <label htmlFor="banco">Banco</label>
+                    <input id="banco" name="banco" type="text" placeholder="Ex: 260 - Nu Pagamentos S.A." value={paymentInfo.banco} onChange={handlePaymentInfoChange} />
+                    <label htmlFor="agencia">Agência</label>
+                    <input id="agencia" name="agencia" type="text" placeholder="0001" value={paymentInfo.agencia} onChange={handlePaymentInfoChange} />
+                    <label htmlFor="conta">Conta com dígito</label>
+                    <input id="conta" name="conta" type="text" placeholder="123456-7" value={paymentInfo.conta} onChange={handlePaymentInfoChange} />
+                  </div>
+                )}
+                <button type="submit" className={styles.saveButton} disabled={isSaving}>
+                  {isSaving ? 'Salvando...' : 'Salvar Informações'}
+                </button>
+              </form>
             </div>
 
             <div className={styles.card}>
-                <h2>Novos Clientes Indicados</h2>
-                <div className={styles.graficoWrapper}>
-                    <svg viewBox="0 0 300 120" aria-label="Gráfico de clientes últimos meses" role="img">
-                        {/* Linhas de fundo do gráfico */}
-                        {[...Array(5)].map((_, i) => <line key={i} x1="0" y1={i * 25} x2="300" y2={i * 25} stroke="#e9e9f2" strokeWidth="1"/>)}
-                        
-                        {/* Linha de dados do gráfico */}
-                        <polyline fill="none" stroke="var(--brand-purple)" strokeWidth="2"
-                            points={graficoData.map((d, i) => `${(i * 50) + 25},${100 - d.clientes * 6}`).join(' ')}
-                        />
-                        
-                        {/* Pontos e legendas do gráfico */}
-                        {graficoData.map((d, i) => (
-                            <g key={d.mes}>
-                                <circle cx={(i * 50) + 25} cy={100 - d.clientes * 6} r="3" fill="var(--brand-purple)" />
-                                <text x={(i * 50) + 25} y="115" className={styles.chartLabel}>{d.mes}</text>
-                            </g>
-                            
-                        ))}
-                    </svg>
-                </div>
+              <h2>Novos Clientes Indicados</h2>
+              <div className={styles.graficoWrapper}>
+                  <svg viewBox="0 0 300 120" aria-label="Gráfico de clientes últimos meses" role="img">
+                      {[...Array(5)].map((_, i) => <line key={i} x1="0" y1={i * 25} x2="300" y2={i * 25} stroke="#e9e9f2" strokeWidth="1"/>)}
+                      <polyline fill="none" stroke="var(--brand-purple)" strokeWidth="2"
+                          points={graficoData.map((d, i) => `${(i * 50) + 25},${100 - d.clientes * 6}`).join(' ')}
+                      />
+                      {graficoData.map((d, i) => (
+                          <g key={d.mes}>
+                              <circle cx={(i * 50) + 25} cy={100 - d.clientes * 6} r="3" fill="var(--brand-purple)" />
+                              <text x={(i * 50) + 25} y="115" className={styles.chartLabel}>{d.mes}</text>
+                          </g>
+                      ))}
+                  </svg>
+              </div>
             </div>
           </div>
         </div>
       </main>
+
+      <footer className={styles.footer}>
+        <p>© {new Date().getFullYear()} Phandshop. Todos os direitos reservados.</p>
+      </footer>
     </div>
   );
 }

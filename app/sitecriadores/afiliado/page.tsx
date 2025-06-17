@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient'; // Garanta que este caminho está correto
+import { supabase } from '@/lib/supabaseClient'; // Verifica se esse caminho tá correto
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Cadastro.module.css';
 
 export default function CadastroParceiroPage() {
-  // --- TODA A SUA LÓGICA ORIGINAL (useState, handleSubmit, etc) ---
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -35,6 +34,25 @@ export default function CadastroParceiroPage() {
     return Object.keys(newErrors).length === 0;
   }
 
+  async function enviarEmailBoasVindas(nome: string, email: string) {
+    try {
+      const res = await fetch('/api/enviar-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, email }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Erro desconhecido no envio de e-mail');
+      }
+      // Pode opcionalmente exibir um console.log ou toast aqui: email enviado
+    } catch (error: any) {
+      console.error('Falha ao enviar e-mail de boas-vindas:', error.message);
+      // Se quiser, pode mostrar um erro amigável no UI, mas não bloqueia o fluxo
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
@@ -47,32 +65,34 @@ export default function CadastroParceiroPage() {
         data: { nome: form.nome },
       },
     });
-    setLoading(false);
 
     if (error) {
+      setLoading(false);
       if (error.message.includes('User already registered')) {
         setErrors({ email: 'Este e-mail já está cadastrado.' });
       } else {
         setErrors({ form: 'Erro ao criar conta: ' + error.message });
       }
-    } else {
-      alert('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
-      setForm({ nome: '', email: '', senha: '', confirmaSenha: '' });
+      return;
     }
+
+    // Se cadastro ok, tenta enviar o e-mail de boas-vindas (async, não bloqueia o front)
+    enviarEmailBoasVindas(form.nome, form.email);
+
+    setLoading(false);
+    alert('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
+    setForm({ nome: '', email: '', senha: '', confirmaSenha: '' });
   }
 
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        {/* =======================================================
-            AQUI A MUDANÇA: A logo agora é um link para a página inicial
-            ======================================================= */}
         <Link href="/">
-          <Image 
-            src="/logo.png" 
-            alt="Phandshop - Voltar para a página inicial" 
-            width={180} 
-            height={45} 
+          <Image
+            src="/logo.png"
+            alt="Phandshop - Voltar para a página inicial"
+            width={180}
+            height={45}
             style={{ cursor: 'pointer' }}
           />
         </Link>
@@ -80,7 +100,7 @@ export default function CadastroParceiroPage() {
 
       <div className={styles.box}>
         <h2 className={styles.title}>Crie sua conta de Parceiro</h2>
-        
+
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
           <div className={styles.inputGroup}>
             <label htmlFor="nome" className={styles.label}>Nome completo</label>
@@ -123,7 +143,7 @@ export default function CadastroParceiroPage() {
           </div>
 
           {errors.form && <p className={styles.errorText}>{errors.form}</p>}
-          
+
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? 'Criando conta...' : 'Criar conta'}
           </button>
@@ -131,7 +151,6 @@ export default function CadastroParceiroPage() {
 
         <p className={styles.linkWrapper}>
           Já tem conta?{' '}
-          {/* Este link já estava aqui, levando para a página de login */}
           <Link href="/sitecriadores/login" className={styles.link}>
             Faça login
           </Link>
