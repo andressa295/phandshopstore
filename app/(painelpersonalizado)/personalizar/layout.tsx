@@ -1,222 +1,276 @@
+// app\(painelpersonalizado)\personalizar\layout.tsx
 'use client';
 
-import React, { useState, ReactNode } from 'react';
+import React, { useState, ReactNode, useEffect } from 'react';
 import Link from 'next/link';
-import {
-    FaDesktop, FaMobileAlt, FaArrowRight
-} from 'react-icons/fa';
-
+import { FaDesktop, FaMobileAlt, FaArrowRight, FaQuestionCircle } from 'react-icons/fa';
 import PersonalizarClientWrapper from './components/PersonalizarClientWrapper';
 
-// Componente Principal do Layout
-export default function PersonalizarLayout({ children }: { children: React.ReactNode }) {
+import type { CSSProperties } from 'react';
+
+// Alturas ajustadas pra deixar o header mais fino e clean
+const HEADER_HEIGHT_TOP_PANEL = '3rem'; // 48px - menos espaço, mais elegante
+const FOOTER_HEIGHT_BOTTOM_PANEL = '2rem'; // 32px mantém o rodapé discreto
+
+export default function PersonalizarLayout({ children }: { children: ReactNode }) {
     const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+    const [showHelpModal, setShowHelpModal] = useState(false);
 
-    const HEADER_HEIGHT = '64px';
-    const BUTTON_BAR_HEIGHT = '60px'; // Aumentei um pouco a altura para melhor visualização dos novos botões
+    useEffect(() => {
+        // Reset estilos overflow para deixar rolagem global OK
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        document.body.style.height = 'auto';
+        document.documentElement.style.height = 'auto';
+        document.body.style.margin = '0';
+        document.documentElement.style.margin = '0';
+        document.body.style.boxSizing = 'border-box';
+        document.documentElement.style.boxSizing = 'border-box';
 
-    // CALCULANDO A ALTURA TOTAL OCUPADA PELOS CABEÇALHOS FIXOS
-    const totalFixedHeaderHeight = `calc(${HEADER_HEIGHT} + ${BUTTON_BAR_HEIGHT})`;
+        return () => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            document.body.style.height = '';
+            document.documentElement.style.height = '';
+            document.body.style.margin = '';
+            document.documentElement.style.margin = '';
+            document.body.style.boxSizing = '';
+            document.documentElement.style.boxSizing = '';
+        };
+    }, []);
 
     return (
+        
         <div style={{
             display: 'flex',
             flexDirection: 'column',
+            width: '100%',
+            boxSizing: 'border-box' as 'border-box',
+            fontFamily: 'Inter, sans-serif',
+            backgroundColor: '#F3E8FF', // Fundo levemente lilás pra combinar com o roxo, sem agredir os olhos
             minHeight: '100vh',
-            fontFamily: 'Poppins, sans-serif',
-            backgroundColor: '#f8f9fa', // Adicionado um background suave para o layout
-        }}>
-            {/* Top Bar (Cabeçalho Superior do Personalizador) - FIXO */}
+            
+        } as CSSProperties}>
+
+            {/* HEADER MODERNO E ENXUTO */}
             <header style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
+                height: HEADER_HEIGHT_TOP_PANEL,
+                backgroundColor: '#6A0DAD', // Roxo Phandshop topzera
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '0 2rem',
-                backgroundColor: '#6b21a8', // Cor primária (roxo)
-                color: '#fff',
-                height: HEADER_HEIGHT,
+                padding: '0 1.25rem',
+                color: '#F3E8FF', // Texto claro pro contraste
+                boxShadow: '0 2px 6px rgba(106, 13, 173, 0.3)',
                 flexShrink: 0,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)', // Sombra mais proeminente
-                zIndex: 1100,
-                fontFamily: "'Poppins', sans-serif",
-                overflow: 'visible'
+                boxSizing: 'border-box',
+                fontWeight: 300, // Fonte fina e elegante
+                fontSize: '0.9rem',
+                
             }}>
-                <Link href="/painel" style={{
-                    textDecoration: 'none',
-                    color: '#fff',
-                    fontWeight: '600', // Levemente mais bold
-                    fontSize: '1.1rem', // Um pouco maior
+                {/* Lado Esquerdo */}
+                <Link href="/dashboard" style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    transition: 'opacity 0.2s ease-in-out'
+                    gap: '0.3rem',
+                    color: '#F3E8FF',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    fontWeight: 400,
+                    fontSize: '0.85rem',
+                    transition: 'color 0.2s ease',
+                    flexShrink: 0,
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                >
-                    <FaArrowRight size={14} style={{ transform: 'rotate(180deg)' }} /> Voltar para o Painel
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#D6BCFA'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = '#F3E8FF'}>
+                    <FaArrowRight style={{ transform: 'rotate(180deg)', fontSize: '1.1rem' }} /> Voltar
                 </Link>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}> {/* Aumentei o gap */}
+                {/* Centro - Botões compactos desktop/mobile */}
+                <div style={{
+                    backgroundColor: '#7C3AED88', // Roxo translúcido para suavizar
+                    borderRadius: '0.375rem',
+                    padding: '0.15rem',
+                    display: 'flex',
+                    gap: '0.3rem',
+                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)'
+                }}>
+                    {['desktop', 'mobile'].map(mode => (
+                        <button
+                            key={mode}
+                            onClick={() => setPreviewMode(mode as 'desktop' | 'mobile')}
+                            style={{
+                                padding: '0.3rem 0.6rem',
+                                borderRadius: '0.375rem',
+                                border: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.35rem',
+                                fontWeight: previewMode === mode ? 600 : 300,
+                                fontSize: '0.8rem',
+                                backgroundColor: previewMode === mode ? '#A78BFA' : 'transparent',
+                                color: previewMode === mode ? '#3C096C' : '#E9D8FD',
+                                boxShadow: previewMode === mode ? '0 2px 6px rgba(106, 13, 173, 0.5)' : 'none',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease-in-out',
+                                userSelect: 'none',
+                            }}
+                        >
+                            {mode === 'desktop' ? <FaDesktop /> : <FaMobileAlt />}
+                            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Lado Direito */}
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', minWidth: 0 }}>
                     <button
-                        onClick={() => alert('Abrir ajuda...')}
+                        onClick={() => setShowHelpModal(true)}
                         style={{
-                            background: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#E9D8FD',
                             border: 'none',
-                            color: '#fff',
-                            fontSize: '1rem',
                             cursor: 'pointer',
-                            opacity: 0.8,
-                            transition: 'opacity 0.2s ease-in-out'
+                            fontSize: '0.85rem',
+                            fontWeight: 400,
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '0.375rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                            transition: 'background-color 0.2s ease, color 0.2s ease',
+                            userSelect: 'none',
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#9F7AEA'; e.currentTarget.style.color = '#3C096C'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#E9D8FD'; }}
                     >
-                        Ajuda
+                        <FaQuestionCircle /> Ajuda
                     </button>
                     <a
                         href="https://sua-loja-real.com"
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                            background: '#8a2be2', // Um tom de roxo mais claro
-                            border: 'none',
-                            color: '#fff',
-                            padding: '0.6rem 1.2rem', // Padding ajustado
+                            backgroundColor: '#9F7AEA',
+                            color: '#FFF',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '9999px',
                             textDecoration: 'none',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.6rem',
-                            fontSize: '0.95rem',
-                            fontWeight: 'bold',
-                            borderRadius: '25px', // Botão mais arredondado
-                            cursor: 'pointer',
-                            transition: 'background-color 0.2s ease-in-out, transform 0.2s ease-in-out',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                            gap: '0.4rem',
+                            fontWeight: 600,
+                            fontSize: '0.9rem',
+                            boxShadow: '0 4px 8px rgba(159, 122, 234, 0.5)',
+                            transition: 'all 0.2s ease-in-out',
+                            userSelect: 'none',
                         }}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#9932cc'; // Roxo mais escuro no hover
+                            e.currentTarget.style.backgroundColor = '#7C3AED';
                             e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 10px 20px rgba(124, 58, 237, 0.6)';
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#8a2be2';
+                            e.currentTarget.style.backgroundColor = '#9F7AEA';
                             e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(159, 122, 234, 0.5)';
                         }}
                     >
-                        Ver sua loja <FaArrowRight size={14} style={{ transform: 'rotate(-45deg)' }} />
+                        Ver loja <FaArrowRight style={{ marginLeft: '0.25rem', fontSize: '1rem' }} />
                     </a>
                 </div>
             </header>
 
-            {/* Nova barra para os botões de visualização (desktop/mobile) - FIXA E CENTRALIZADA */}
+            {/* Conteúdo principal */}
             <div style={{
-                position: 'fixed',
-                top: HEADER_HEIGHT,
-                left: 0,
-                right: 0,
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#ffffff', // Fundo branco
-                height: BUTTON_BAR_HEIGHT,
-                zIndex: 1099,
-                boxShadow: '0 2px 6px rgba(0,0,0,0.08)', // Sombra mais sutil
-                gap: '0', // Remover gap padrão, o gap será interno aos botões
-                borderBottom: '1px solid #e0e0e0', // Borda sutil na parte inferior
-            }}>
-                <div style={{
-                    display: 'flex',
-                    backgroundColor: '#e9ecef', // Fundo cinza claro para o container dos botões
-                    borderRadius: '8px', // Bordas arredondadas para o container
-                    padding: '4px', // Padding interno
-                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)', // Sombra interna para dar profundidade
-                }}>
-                    <button
-                        onClick={() => setPreviewMode('desktop')}
-                        style={{
-                            background: previewMode === 'desktop' ? '#6b21a8' : 'transparent', // Cor de fundo ativa
-                            border: 'none',
-                            color: previewMode === 'desktop' ? '#fff' : '#6c757d', // Cor do texto ativa/inativa
-                            fontSize: '0.95rem',
-                            cursor: 'pointer',
-                            padding: '0.6rem 1.2rem',
-                            borderRadius: '6px', // Bordas arredondadas para os botões individuais
-                            transition: 'all 0.3s ease-in-out', // Transição suave para todas as propriedades
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontWeight: previewMode === 'desktop' ? 'bold' : 'normal',
-                            boxShadow: previewMode === 'desktop' ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
-                            outline: 'none', // Remove o outline padrão ao focar
-                        }}
-                        onMouseEnter={(e) => {
-                            if (previewMode !== 'desktop') e.currentTarget.style.backgroundColor = '#dee2e6';
-                        }}
-                        onMouseLeave={(e) => {
-                            if (previewMode !== 'desktop') e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
-                    >
-                        <FaDesktop size={18} /> Desktop
-                    </button>
-                    <button
-                        onClick={() => setPreviewMode('mobile')}
-                        style={{
-                            background: previewMode === 'mobile' ? '#6b21a8' : 'transparent',
-                            border: 'none',
-                            color: previewMode === 'mobile' ? '#fff' : '#6c757d',
-                            fontSize: '0.95rem',
-                            cursor: 'pointer',
-                            padding: '0.6rem 1.2rem',
-                            borderRadius: '6px',
-                            transition: 'all 0.3s ease-in-out',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontWeight: previewMode === 'mobile' ? 'bold' : 'normal',
-                            boxShadow: previewMode === 'mobile' ? '0 2px 5px rgba(0,0,0,0.2)' : 'none',
-                            outline: 'none',
-                        }}
-                        onMouseEnter={(e) => {
-                            if (previewMode !== 'mobile') e.currentTarget.style.backgroundColor = '#dee2e6';
-                        }}
-                        onMouseLeave={(e) => {
-                            if (previewMode !== 'mobile') e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
-                    >
-                        <FaMobileAlt size={18} /> Mobile
-                    </button>
-                </div>
-            </div>
-
-            {/* Container principal do conteúdo do painel (Sidebar + Preview) */}
-            <div style={{
-                display: 'flex',
+                alignItems: 'flex-start',
+                padding: '20px',
+                overflowX: 'hidden',
+                boxSizing: 'border-box' as 'border-box',
                 flexGrow: 1,
-                width: '100%',
-                paddingTop: totalFixedHeaderHeight,
-                backgroundColor: '#f8f9fa', // Cor de fundo do conteúdo principal
+                minHeight: 0, // Pra rolagem funcionar direito
             }}>
                 <PersonalizarClientWrapper previewMode={previewMode} />
             </div>
 
-            {/* Rodapé do Layout - NÃO FIXO */}
+            {/* Rodapé */}
             <footer style={{
-                backgroundColor: '#ffffff', // Fundo branco para o rodapé
-                color: '#6c757d', // Cor de texto mais suave
-                padding: '1rem',
+                height: FOOTER_HEIGHT_BOTTOM_PANEL,
+                backgroundColor: '#FFFFFF',
+                color: '#6c757d',
+                padding: '0.75rem',
                 textAlign: 'center',
-                fontFamily: 'Poppins, sans-serif',
-                borderTop: '1px solid #e0e0e0', // Borda superior sutil
-                fontSize: '0.85rem',
+                borderTop: '1px solid #E2E8F0',
+                fontSize: '0.75rem',
+                boxShadow: '0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -1px 2px 0 rgba(0, 0, 0, 0.06)',
                 flexShrink: 0,
-                boxShadow: '0 -2px 6px rgba(0,0,0,0.05)', // Sombra para o rodapé
+                fontFamily: 'Inter, sans-serif',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxSizing: 'border-box' as 'border-box',
             }}>
-                <p>&copy; 2024 Painel de Personalização. Desenvolvido por PhandCo.</p>
+                <p>© 2024 Painel de Personalização. Desenvolvido por PhandCo.</p>
             </footer>
+
+            {/* Modal Ajuda */}
+            {showHelpModal && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 1200,
+                    boxSizing: 'border-box' as 'border-box',
+                }}>
+                    <div style={{
+                        backgroundColor: '#fff',
+                        padding: '2rem',
+                        borderRadius: '0.5rem',
+                        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        maxWidth: '24rem',
+                        textAlign: 'center',
+                        boxSizing: 'border-box' as 'border-box',
+                    }}>
+                        <h3 style={{
+                            marginTop: 0,
+                            color: '#2D3748',
+                            fontSize: '1.125rem',
+                            fontWeight: 600,
+                        }}>Ajuda e Documentação</h3>
+                        <p style={{
+                            color: '#4A5568',
+                            lineHeight: '1.625',
+                            marginTop: '1rem',
+                            marginBottom: '1.5rem',
+                        }}>
+                            A funcionalidade de ajuda e documentação completa está em desenvolvimento e estará disponível em breve!
+                        </p>
+                        <button
+                            onClick={() => setShowHelpModal(false)}
+                            style={{
+                                backgroundColor: '#6A0DAD',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '0.625rem 1.25rem',
+                                borderRadius: '0.375rem',
+                                cursor: 'pointer',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                transition: 'background-color 0.2s ease',
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#580BA0'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6A0DAD'}
+                        >
+                            Entendi
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

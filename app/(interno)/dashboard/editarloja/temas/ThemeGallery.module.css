@@ -1,0 +1,25 @@
+
+.galleryGrid {
+  display: grid;
+  /* Celular: 1 coluna */
+  grid-template-columns: repeat(1, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  background-color: #f8f9fa; /* Um fundo branco suave */
+  min-height: calc(100vh - 64px); /* Ajuste a altura considerando seu header/footer */
+  align-items: flex-start; /* Alinha os itens no topo */
+}
+
+/* Tablet: 2 colunas */
+@media (min-width: 768px) {
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+  }
+}
+
+/* Notebook/Desktop: 3 colunas */
+@media (min-width: 1024px) {
+  .galleryGrid {
+    grid-template-columns: repeat(3, minmax(320px, 1fr));
+  }
+}

@@ -1,7 +1,6 @@
 // tsconfig.json
 {
   "compilerOptions": {
-    "target": "es5", // Ou "es2016", "es2017", "es2018", "es2019", "es2020", "es2021", "es2022", "esnext" dependendo da sua versão do Node.js
     "lib": [
       "dom",
       "dom.iterable",
@@ -9,15 +8,14 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true, // Bom para manter estrito para evitar 'any' implícito
-    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler", // Ou "node" para versões mais antigas do Node.js/Next.js
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve", // ESSENCIAL para React/Next.js
+    "jsx": "preserve",
     "incremental": true,
     "plugins": [
       {
@@ -28,7 +26,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",

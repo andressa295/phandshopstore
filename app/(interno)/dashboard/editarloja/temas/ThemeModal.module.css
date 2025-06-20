@@ -1,0 +1,109 @@
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.45); /* Sombra mais escura */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* Z-index alto para ficar acima de tudo */
+  backdrop-filter: blur(3px); /* Efeito de blur no fundo */
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 40px; /* Mais padding */
+  border-radius: 16px; /* Cantos arredondados */
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* Sombra elegante */
+  max-width: 480px; /* Um pouco mais largo */
+  width: 90%;
+  text-align: center;
+  font-family: 'Poppins', sans-serif; /* Certifique-se que essa fonte está carregada */
+  color: #333;
+  position: relative;
+  animation: fadeInScale 0.3s ease-out forwards; /* Animação de entrada */
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.content h2 {
+  font-family: 'Playfair Display', serif; /* Fonte chique para o título do modal */
+  font-weight: 700;
+  font-size: 1.8rem; /* Tamanho maior */
+  margin-bottom: 20px; /* Mais espaço */
+  color: #222;
+}
+
+.content strong {
+  color: #6B46C1; /* Destaca o nome do tema */
+}
+
+.buttonsGroup { /* Nome da classe em camelCase para CSS Modules */
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column; /* Botões um embaixo do outro no celular */
+  gap: 15px;
+}
+
+@media (min-width: 480px) { /* Para telas um pouco maiores, botões lado a lado */
+  .buttonsGroup {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.button { /* Classe base para os botões do modal */
+  padding: 12px 25px;
+  border: none;
+  border-radius: 9999px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  flex-grow: 1;
+}
+
+.buttonPrimary {
+  background-color: #6B46C1;
+  color: #fff;
+}
+
+.buttonPrimary:hover {
+  background-color: #5a3a9e;
+  transform: translateY(-2px);
+}
+
+.buttonSecondary {
+  background-color: #9F7AEA;
+  color: #fff;
+}
+
+.buttonSecondary:hover {
+  background-color: #8a6bc8;
+  transform: translateY(-2px);
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #666;
+  transform: rotate(90deg);
+}

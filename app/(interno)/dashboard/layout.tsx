@@ -36,7 +36,7 @@ const menuItems: MenuItem[] = [
   {
     icon: <FaBoxOpen />, label: 'Produtos', children: [
       { label: 'Lista de produtos', href: '/dashboard/produtos/lista' },
-      { label: 'Categorias', href: '/dashboard/produtos/categorias' }
+      { label: 'Categorias', href: '/dashboard/categorias' }
     ]
   },
   {
@@ -60,12 +60,12 @@ const menuItems: MenuItem[] = [
   { icon: <FaStore />, label: 'Canais de venda', href: '/dashboard/canais' },
   {
     icon: <FaStore />, label: 'Loja online', children: [
-      { label: 'Loja Temas', href: '/dashboard/loja/temas' },
-      { label: 'Editar loja', href: '/dashboard/loja/editar' },
-      { label: 'Páginas', href: '/dashboard/loja/paginas' },
+      { label: 'Loja Temas', href: '/dashboard/editarloja/temas' },
+      { label: 'Editar loja', href: '/personalizar' },
+      { label: 'Páginas', href: '/dashboard/paginas' },
       { label: 'Menus', href: '/dashboard/loja/menus' },
-      { label: 'Página em construção', href: '/dashboard/loja/pagina-em-construcao' },
-      { label: 'Informação de contato', href: '/dashboard/loja/contato' }
+      { label: 'Página em construção', href: '/dashboard/construcao' },
+      { label: 'Informação de contato', href: '/dashboard/contato' }
     ]
   },
   {
