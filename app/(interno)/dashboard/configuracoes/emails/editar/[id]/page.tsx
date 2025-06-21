@@ -1,12 +1,9 @@
-// app\(interno)\dashboard\configuracoes\emails\editar\[id]\page.tsx (CORRIGIDO: TYPO EM CONTEUDOHTMLPADRAO)
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import FormularioEmail from '../../components/FormularioEmail'; // Caminho para o FormularioEmail
-import type { EmailTemplate } from '../../../../../../../types/EmailTemplate'; // <<< AJUSTE O CAMINHO
-
-// Definindo cores e fontes (repetido para auto-suficiência da página)
+import FormularioEmail from '../../components/FormularioEmail'; 
+import type { EmailTemplate } from '../../../../../../../types/EmailTemplate'; 
 const colors = {
     primary: '#6b21a8',
     background: '#f8f9fa',

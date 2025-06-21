@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import type { FormaEntrega } from '../../../../../../types/FormaEntrega'; // <<< AJUSTE O CAMINHO
+import type { FormaEntrega } from '../../../../../../types/FormaEntrega';
 
 // Definindo cores e fontes (repetido para auto-suficiência)
 const colors = {
@@ -29,7 +29,7 @@ const typography = {
 
 // interface para as opções do select
 interface TipoFreteOption {
-    value: FormaEntrega['tipo'];
+    value: FormaEntrega['tipo']; // O valor agora é tipado como um dos tipos literais ou string vazia
     label: string;
 }
 
@@ -45,8 +45,14 @@ const FormularioFormaEntrega: React.FC<FormularioFormaEntregaProps> = ({ formaEn
         formaEntregaInicial || {
             id: 0,
             nome: '',
-            tipo: '',
+            tipo: '', // CORREÇÃO: Inicializa com string vazia, que é um valor permitido pela interface agora
             ativa: true,
+            // Inicializa as propriedades opcionais para evitar 'undefined' em algumas operações
+            precoFixo: null, 
+            prazoDiasMin: null, 
+            prazoDiasMax: null, 
+            regiaoAtiva: '', 
+            pedidoMinimoFreteGratis: null,
         }
     );
 
@@ -70,13 +76,11 @@ const FormularioFormaEntrega: React.FC<FormularioFormaEntregaProps> = ({ formaEn
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
         if (!formData.nome.trim()) newErrors.nome = 'Nome é obrigatório.';
-        if (!formData.tipo || formData.tipo.trim() === '') newErrors.tipo = 'Tipo de entrega é obrigatório.';
+        if (!formData.tipo || formData.tipo.trim() === '') newErrors.tipo = 'Tipo de entrega é obrigatório.'; // Valida que um tipo foi selecionado
 
-        // CORREÇÃO: Verificação explícita de nulidade para precoFixo
         if (formData.tipo === 'frete_fixo' && (formData.precoFixo === null || formData.precoFixo === undefined || formData.precoFixo <= 0)) {
             newErrors.precoFixo = 'Preço fixo deve ser maior que zero.';
         }
-        // CORREÇÃO: Verificação explícita de nulidade para pedidoMinimoFreteGratis
         if (formData.tipo === 'frete_gratis' && (formData.pedidoMinimoFreteGratis === null || formData.pedidoMinimoFreteGratis === undefined || formData.pedidoMinimoFreteGratis < 0)) {
             newErrors.pedidoMinimoFreteGratis = 'Valor mínimo para frete grátis não pode ser negativo.';
         }
@@ -162,6 +166,7 @@ const FormularioFormaEntrega: React.FC<FormularioFormaEntregaProps> = ({ formaEn
                     onChange={handleChange}
                     style={{ ...inputStyle, borderColor: errors.tipo ? colors.danger : colors.border, appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center', backgroundSize: '16px' }}
                 >
+                    {/* Opções do select agora vêm de tipoFreteOptions */}
                     {tipoFreteOptions.map(option => (
                         <option key={option.value} value={option.value}>
                             {option.label}

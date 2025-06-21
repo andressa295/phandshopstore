@@ -1,8 +1,7 @@
-// app\(interno)\dashboard\contato\page.tsx (CORRIGIDO: REMOVIDO INSCRIÇÃO ESTADUAL, AJUSTADO REDES SOCIAIS)
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Para mostrar/esconder senha, se aplicável (reutilizado)
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 
 // Definindo cores e fontes
 const colors = {
