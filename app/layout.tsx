@@ -1,7 +1,6 @@
-
+// app/layout.tsx (CORRIGIDO: REMOVIDO PADDING/MARGIN DO <MAIN>)
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
-
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -17,13 +16,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={poppins.className}>
       <body style={{ margin: 0, padding: 0, background: '#fff' }}>
-        
-        <main style={{ padding: '2rem 1rem', maxWidth: '1440px', margin: '0 auto' }}>
+        {/* CORREÇÃO: Removido padding e maxWidth/margin da tag <main> */}
+        {/* Deixa que os layouts internos gerenciem seu próprio espaçamento */}
+        <main style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}> 
           {children}
         </main>
-
-        
-        
       </body>
     </html>
   );

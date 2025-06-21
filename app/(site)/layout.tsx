@@ -23,14 +23,7 @@ export default function RootLayout({
   return (
     <main lang="pt-BR" className={poppins.className}>
       <div
-        style={{
-          margin: 0,
-          padding: 0,
-          backgroundColor: '#fff', // Ou roxo da Phandshop
-          width: '100vw',
-          minHeight: '100vh',
-          overflowX: 'hidden',
-        }}
+        
       >
         <Header />
 
