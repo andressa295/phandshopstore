@@ -56,7 +56,16 @@ export interface YoutubeVideoItem {
 
 export interface InfoItem {
     id: string;
-    iconType: 'imagemPropria' | 'seguranca' | 'trocasDevolucoes' | 'entregas' | 'dinheiro' | 'cartaoCredito' | 'promocoes' | 'whatsapp' | 'anelSolitario';
+    iconType:
+        | 'imagemPropria'
+        | 'seguranca'
+        | 'trocasDevolucoes'
+        | 'entregas'
+        | 'dinheiro'
+        | 'cartaoCredito'
+        | 'promocoes'
+        | 'whatsapp'
+        | 'anelSolitario';
     imageUrl?: string | null;
     title: string;
     description: string;
@@ -68,14 +77,20 @@ export interface HomePageModuleConfig {
     title?: string;
     layout?: 'grid' | 'carousel';
     productIds?: string[];
-    categoryImages?: {id: string; name: string; imageUrl: string; link: string}[];
+    categoryImages?: { id: string; name: string; imageUrl: string; link: string }[];
     text?: string;
     banners?: BannerItem[];
-    bannerLayoutType?: 'carousel' | 'grid_2x1' | 'grid_3x1' | 'diagonal_left' | 'diagonal_right' | 'full_width';
+    bannerLayoutType?:
+        | 'carousel'
+        | 'grid_2x1'
+        | 'grid_3x1'
+        | 'diagonal_left'
+        | 'diagonal_right'
+        | 'full_width';
     videos?: YoutubeVideoItem[];
     testimonials?: TestimonialItem[];
     infoItems?: InfoItem[];
-    highlightBanners?: { id: string; imageUrl: string; link: string; title?: string; description?: string; }[];
+    highlightBanners?: { id: string; imageUrl: string; link: string; title?: string; description?: string }[];
 }
 
 export interface HomePageModule {
@@ -83,7 +98,18 @@ export interface HomePageModule {
     label: string;
     fullLabel?: string;
     icon: string;
-    type: 'banner' | 'product_list' | 'text' | 'social' | 'newsletter' | 'info' | 'product_section' | 'category_grid' | 'highlight_banners' | 'youtube_video' | 'testimonials';
+    type:
+        | 'banner'
+        | 'product_list'
+        | 'text'
+        | 'social'
+        | 'newsletter'
+        | 'info'
+        | 'product_section'
+        | 'category_grid'
+        | 'highlight_banners'
+        | 'youtube_video'
+        | 'testimonials';
     isVisible: boolean;
     config?: HomePageModuleConfig;
 }
@@ -157,6 +183,8 @@ interface EditorContextType {
     tema: Tema;
     setTema: React.Dispatch<React.SetStateAction<Tema>>;
     saveTheme: (theme: Tema) => void;
+    previewMode: 'desktop' | 'mobile';
+    setPreviewMode: React.Dispatch<React.SetStateAction<'desktop' | 'mobile'>>;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -167,15 +195,16 @@ interface EditorProviderProps {
 
 export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
     const [tema, setTema] = useState<Tema>(TEMPLATES['Velvete']);
+    const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
 
     const saveTheme = (theme: Tema) => {
-        console.log("Tema salvo:", theme);
-        alert("Tema salvo com sucesso! (Simulado)");
+        console.log('Tema salvo:', theme);
+        alert('Tema salvo com sucesso! (Simulado)');
         setTema(theme);
     };
 
     return (
-        <EditorContext.Provider value={{ tema, setTema, saveTheme }}>
+        <EditorContext.Provider value={{ tema, setTema, saveTheme, previewMode, setPreviewMode }}>
             {children}
         </EditorContext.Provider>
     );
