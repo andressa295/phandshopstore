@@ -1,6 +1,3 @@
-// types/Tema.ts (DEFINIÇÃO ÚNICA E COMPLETA DO TEMA - **CRIAR ESTE ARQUIVO E COLAR TUDO AQUI**)
-
-// Sub-interfaces para organização
 export interface CoresTema {
     primaria: string;
     secundaria: string;
@@ -86,7 +83,6 @@ export interface HomePageModule {
     config?: HomePageModuleConfig
 }
 
-// Interface para as Configurações de Contato (copiada de ContatoSettingsPage)
 export type ContactConfig = {
     nomeEmpresa: string;
     cnpj: string;
@@ -113,7 +109,6 @@ export type ContactConfig = {
 };
 
 
-// ** INTERFACE TEMA COMPLETA (CRÍTICA) **
 export interface Tema {
     nome: string;
     cores: CoresTema;
@@ -128,6 +123,7 @@ export interface Tema {
     newsletterSucesso?: string;
     redesSociaisLinks?: { instagram?: string; whatsapp?: string; facebook?: string }; // Formato simples
     rodapeTextoFinal?: string;
+    usarBordasArredondadas?: boolean;
     formatoBotoes?: 'quadrado' | 'oval' | 'redondo';
     logoUrl?: string;
     tamanhoLogo?: 'pequeno' | 'medio' | 'grande';
@@ -154,7 +150,6 @@ export interface Tema {
     detalhesProduto_linkGuiaMedida: string;
     detalhesProduto_mostrarEstoque: boolean;
     detalhesProduto_mostrarUltimasUnidades: boolean;
-    detalhesProduto_limiteUltimasUnidades: number;
     detalhesProduto_mensagemUltimaUnidade: string;
     detalhesProduto_tituloProdutosRelacionados: string;
     detalhesProduto_tituloProdutosComplementares: string;
@@ -177,9 +172,7 @@ export interface Tema {
     rodape_seloHtmlCode: string;
     advancedCss: string;
     homePageModules: HomePageModule[];
-    usarBordasArredondadas?: boolean;
 
-    // Propriedades de estado do UI da personalização (agora parte da interface Tema para persistir)
     previewMode: 'desktop' | 'mobile';
     activeScreenKey: string;
     editingModuleId: string | null;

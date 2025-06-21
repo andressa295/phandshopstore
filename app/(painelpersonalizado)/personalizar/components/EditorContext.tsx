@@ -1,38 +1,162 @@
-// app\(painelpersonalizado)\personalizar\components\EditorContext.tsx (CORRIGIDO: INICIALIZAÇÃO DE TEMA E CONTEXTO COMPLETO)
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { TEMPLATES } from '../templates'; // Suas bases de tema
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { TEMPLATES } from '../../personalizar/templates';
 
-// Importar TODAS as interfaces do arquivo types/Tema.ts
-import type { 
-    Tema, HomePageModule, HomePageModuleConfig, BannerItem, TestimonialItem, YoutubeVideoItem, InfoItem, ContactConfig,
-    CoresTema, TipografiaTema // Importar também sub-interfaces se usadas separadamente
-} from '../../../../types/Tema'; // <<< AJUSTE O CAMINHO AQUI PARA SEU TYPES/TEMA.TS
+export interface CoresTema {
+    primaria: string;
+    secundaria: string;
+    destaque: string;
+    fundo: string;
+    texto: string;
+    headerBg: string;
+    headerText: string;
+    footerBg: string;
+    footerText: string;
+    buttonBg?: string;
+}
 
+export interface TipografiaTema {
+    titulo: string;
+    tituloPeso: string;
+    tituloTamanho: string;
+    texto: string;
+    textoPeso: string;
+    textoTamanho: string;
+}
+
+export interface BannerItem {
+    id: string;
+    imageUrlDesktop: string | null;
+    imageUrlMobile: string | null;
+    linkUrl: string;
+    altText: string;
+    title?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+}
+
+export interface TestimonialItem {
+    id: string;
+    text: string;
+    author: string;
+    avatarUrl?: string | null;
+    rating?: number;
+}
+
+export interface YoutubeVideoItem {
+    id: string;
+    youtubeId: string;
+    title?: string;
+    description?: string;
+    autoplay?: boolean;
+    loop?: boolean;
+}
+
+export interface InfoItem {
+    id: string;
+    iconType: 'imagemPropria' | 'seguranca' | 'trocasDevolucoes' | 'entregas' | 'dinheiro' | 'cartaoCredito' | 'promocoes' | 'whatsapp' | 'anelSolitario';
+    imageUrl?: string | null;
+    title: string;
+    description: string;
+    link?: string;
+    isVisible: boolean;
+}
+
+export interface HomePageModuleConfig {
+    title?: string;
+    layout?: 'grid' | 'carousel';
+    productIds?: string[];
+    categoryImages?: {id: string; name: string; imageUrl: string; link: string}[];
+    text?: string;
+    banners?: BannerItem[];
+    bannerLayoutType?: 'carousel' | 'grid_2x1' | 'grid_3x1' | 'diagonal_left' | 'diagonal_right' | 'full_width';
+    videos?: YoutubeVideoItem[];
+    testimonials?: TestimonialItem[];
+    infoItems?: InfoItem[];
+    highlightBanners?: { id: string; imageUrl: string; link: string; title?: string; description?: string; }[];
+}
+
+export interface HomePageModule {
+    id: string;
+    label: string;
+    fullLabel?: string;
+    icon: string;
+    type: 'banner' | 'product_list' | 'text' | 'social' | 'newsletter' | 'info' | 'product_section' | 'category_grid' | 'highlight_banners' | 'youtube_video' | 'testimonials';
+    isVisible: boolean;
+    config?: HomePageModuleConfig;
+}
+
+export interface Tema {
+    cores: CoresTema;
+    tipografia: TipografiaTema;
+    layoutTipo?: 'grid' | 'carrossel';
+    produtosPorLinha?: number;
+    cardBorda?: string;
+    cardSombra?: string;
+    depoimentos?: { texto: string; nome: string; avatar: string }[];
+    newsletterTexto?: string;
+    newsletterPlaceholder?: string;
+    newsletterSucesso?: string;
+    redesSociaisLinks?: { instagram?: string; whatsapp?: string; facebook?: string };
+    rodapeTextoFinal?: string;
+    usarBordasArredondadas?: boolean;
+    formatoBotoes?: 'quadrado' | 'oval' | 'redondo';
+    logoUrl?: string;
+    tamanhoLogo?: 'pequeno' | 'medio' | 'grande';
+    posicaoLogoMobile?: 'esquerda' | 'centralizado';
+    estiloCabecalhoMobile?: 'menuBuscadorCarrinho' | 'barraHorizontalCategorias' | 'barraPesquisaGrande';
+    posicaoLogoDesktop?: 'esquerda' | 'centralizado';
+    estiloIconesDesktop?: 'grande' | 'pequeno';
+    mostrarBarraAnuncio?: boolean;
+    mensagemBarraAnuncio?: string;
+    linkBarraAnuncio?: string;
+    quantidadeProdutosPorLinha?: '1_cel_3_comp' | '2_cel_4_comp';
+    compraRapidaAtiva?: boolean;
+    mostrarVariacoesCor?: boolean;
+    mostrarSegundaFotoHover?: boolean;
+    exibirCarrosselFotos?: boolean;
+    mostrarParcelasListaProdutos?: boolean;
+    detalhesProduto_mostrarCalculadoraFrete: boolean;
+    detalhesProduto_mostrarLojasFisicas: boolean;
+    detalhesProduto_mostrarParcelas: boolean;
+    detalhesProduto_mostrarEconomiaPromocional: boolean;
+    detalhesProduto_descontoPagamentoVisivel: boolean;
+    detalhesProduto_variacoesBotao: boolean;
+    detalhesProduto_variacaoCorFotoBotao: boolean;
+    detalhesProduto_linkGuiaMedida: string;
+    detalhesProduto_mostrarEstoque: boolean;
+    detalhesProduto_mostrarUltimasUnidades: boolean;
+    detalhesProduto_limiteUltimasUnidades: number;
+    detalhesProduto_mensagemUltimaUnidade: string;
+    detalhesProduto_tituloProdutosRelacionados: string;
+    detalhesProduto_tituloProdutosComplementares: string;
+    carrinho_mostrarBotaoVerMaisProdutos: boolean;
+    carrinho_valorMinimoCompra: number;
+    carrinho_compraRapidaAtiva: boolean;
+    carrinho_sugerirProdutosComplementares: boolean;
+    carrinho_mostrarCalculadoraFrete: boolean;
+    carrinho_mostrarLojasFisicas: boolean;
+    rodape_usarCoresPersonalizadas: boolean;
+    rodape_fundo: string;
+    rodape_textoIcones: string;
+    rodape_exibirMenu: boolean;
+    rodape_mostrarDadosContato: boolean;
+    rodape_tituloDadosContato: string;
+    rodape_tituloRedesSociais: string;
+    rodape_mostrarOpcoesFrete: boolean;
+    rodape_mostrarOpcoesPagamento: boolean;
+    rodape_seloImagemUrl: string;
+    rodape_seloHtmlCode: string;
+    advancedCss: string;
+    homePageModules: HomePageModule[];
+}
 
 interface EditorContextType {
     tema: Tema;
     setTema: React.Dispatch<React.SetStateAction<Tema>>;
-    
-    // Funções de manipulação do tema (passadas para o contexto)
-    handleTemaChange: (key: keyof Tema, value: any) => void;
-    handleNestedTemaChange: (parentKey: keyof Tema, subKey: string, value: any) => void;
-    saveTheme: (theme: Tema) => void; // Função para salvar o tema no backend/localStorage
-
-    // Propriedades de estado do UI da personalização (expostas pelo contexto)
-    previewMode: 'desktop' | 'mobile';
-    setPreviewMode: React.Dispatch<React.SetStateAction<'desktop' | 'mobile'>>;
-    activeScreenKey: string;
-    setActiveScreenKey: React.Dispatch<React.SetStateAction<string>>;
-    editingModuleId: string | null;
-    setEditingModuleId: React.Dispatch<React.SetStateAction<string | null>>;
-    currentSidebarScreen: 'mainMenu' | 'modulesList' | 'moduleConfig' | 'settings'; // CORRIGIDO: Inclui 'mainMenu'
-    setCurrentSidebarScreen: React.Dispatch<React.SetStateAction<'mainMenu' | 'modulesList' | 'moduleConfig' | 'settings'>>; // CORRIGIDO: Inclui 'mainMenu'
-    
-    // NOVO: Adicionado para gerenciar o estado de abertura dos menus na sidebar do personalizador
-    openSidebarSections: Record<string, boolean>;
-    setOpenSidebarSections: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+    saveTheme: (theme: Tema) => void;
 }
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -42,114 +166,16 @@ interface EditorProviderProps {
 }
 
 export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
-
-    const getInitialContactConfig = (): ContactConfig => {
-        if (typeof window !== 'undefined') {
-            const storedContactConfig = localStorage.getItem('contactConfig');
-            return storedContactConfig ? JSON.parse(storedContactConfig) : {
-                nomeEmpresa: 'Minha Loja (Default)', cnpj: '', telefoneGeral: '', emailGeral: '',
-                cep: '', rua: '', numero: '', bairro: '', cidade: '', estado: '',
-                mostrarPaginaContato: false, tituloPaginaContato: '', mensagemPaginaContato: '', mostrarFormularioNaPagina: false,
-                instagramUrl: '', facebookUrl: '', whatsappNumero: '', linkedinUrl: '', youtubeUrl: '', mapaUrl: '', horarioAtendimento: '', complemento: '',
-            };
-        }
-        return {} as ContactConfig;
-    };
-
-    // Estados que serão compartilhados via contexto (e inicializados para evitar hidratação)
-    const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
-    const [activeScreenKey, setActiveScreenKey] = useState<string>('mainMenu'); // CORRIGIDO: Default é 'mainMenu'
-    const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
-    const [currentSidebarScreen, setCurrentSidebarScreen] = useState<'mainMenu' | 'modulesList' | 'moduleConfig' | 'settings'>('mainMenu'); // CORRIGIDO: 'mainMenu' é o default
-    const [openSidebarSections, setOpenSidebarSections] = useState<Record<string, boolean>>({}); // NOVO: Estado para menus da sidebar
-
-    // Estado Tema (Inicialização Robustecida para evitar problemas de hidratação)
-    const [tema, setTema] = useState<Tema>(() => {
-        if (typeof window !== 'undefined') {
-            const storedTema = localStorage.getItem('temaConfig');
-            if (storedTema) {
-                const loadedTema: Tema = JSON.parse(storedTema);
-                // Mescla as configurações de contato (que podem ter sido salvas separadamente)
-                loadedTema.infoContato = getInitialContactConfig(); 
-
-                // Garante que as propriedades de UI do tema (previewMode, etc.) sejam inicializadas
-                // ou carregadas se existirem no tema salvo, evitando undefined.
-                loadedTema.previewMode = loadedTema.previewMode || previewMode;
-                loadedTema.activeScreenKey = loadedTema.activeScreenKey || activeScreenKey;
-                loadedTema.editingModuleId = loadedTema.editingModuleId || editingModuleId;
-                loadedTema.currentSidebarScreen = loadedTema.currentSidebarScreen || currentSidebarScreen;
-
-                return loadedTema;
-            }
-        }
-        // Fallback para SSR ou primeira carga sem localStorage
-        const defaultTema = TEMPLATES['Velvete']; // CRÍTICO: TEMPLATES['Velvete'] DEVE SER Tema
-        const initialContactConfig = getInitialContactConfig();
-        return {
-            ...defaultTema,
-            infoContato: initialContactConfig,
-            previewMode: 'desktop',
-            activeScreenKey: 'mainMenu', // Corrigido aqui também
-            editingModuleId: null,
-            currentSidebarScreen: 'mainMenu', // Corrigido aqui também
-        } as Tema;
-    });
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('temaConfig', JSON.stringify(tema));
-            // Salva as configurações de contato separadamente também para consistência
-            if (tema.infoContato) {
-                localStorage.setItem('contactConfig', JSON.stringify(tema.infoContato));
-            }
-        }
-    }, [tema]);
-
-    const handleTemaChange = (key: keyof Tema, value: any) => {
-        setTema(prevTema => ({
-            ...prevTema,
-            [key]: value
-        }));
-    };
-
-    const handleNestedTemaChange = (parentKey: keyof Tema, subKey: string, value: any) => {
-        setTema(prevTema => ({
-            ...prevTema,
-            [parentKey]: {
-                ...(prevTema[parentKey] as any),
-                [subKey]: value
-            }
-        }));
-    };
+    const [tema, setTema] = useState<Tema>(TEMPLATES['Velvete']);
 
     const saveTheme = (theme: Tema) => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('temaConfig', JSON.stringify(theme));
-            alert('Tema salvo com sucesso! (Simulado)');
-        }
-    };
-
-
-    const contextValue: EditorContextType = {
-        tema,
-        setTema,
-        handleTemaChange,
-        handleNestedTemaChange,
-        saveTheme,
-        previewMode,
-        setPreviewMode,
-        activeScreenKey,
-        setActiveScreenKey,
-        editingModuleId,
-        setEditingModuleId,
-        currentSidebarScreen,
-        setCurrentSidebarScreen,
-        openSidebarSections, // NOVO: Expondo o estado dos menus
-        setOpenSidebarSections, // NOVO: Expondo o setter dos menus
+        console.log("Tema salvo:", theme);
+        alert("Tema salvo com sucesso! (Simulado)");
+        setTema(theme);
     };
 
     return (
-        <EditorContext.Provider value={contextValue}>
+        <EditorContext.Provider value={{ tema, setTema, saveTheme }}>
             {children}
         </EditorContext.Provider>
     );
