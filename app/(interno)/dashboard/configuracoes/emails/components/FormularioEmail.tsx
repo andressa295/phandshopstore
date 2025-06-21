@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Editor } from '@tinymce/tinymce-react'; // Importar o Editor do TinyMCE
-import type { EmailTemplate } from '../../../../../../types/EmailTemplate'; // <<< AJUSTE O CAMINHO
-import { FaBrain } from 'react-icons/fa'; // Ícone para IA
+import { Editor } from '@tinymce/tinymce-react'; 
+import type { EmailTemplate } from '../../../../../../types/EmailTemplate'; 
+import { FaBrain } from 'react-icons/fa'; 
 
 // Definindo cores e fontes (no topo do arquivo)
 const colors = {
