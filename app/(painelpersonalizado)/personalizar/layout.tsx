@@ -1,4 +1,3 @@
-// app\(painelpersonalizado)\personalizar\layout.tsx
 'use client';
 
 import React, { useState, ReactNode, useEffect } from 'react';
@@ -13,7 +12,6 @@ const HEADER_HEIGHT_TOP_PANEL = '3rem'; // 48px - menos espaço, mais elegante
 const FOOTER_HEIGHT_BOTTOM_PANEL = '2rem'; // 32px mantém o rodapé discreto
 
 export default function PersonalizarLayout({ children }: { children: ReactNode }) {
-    const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
     const [showHelpModal, setShowHelpModal] = useState(false);
 
     useEffect(() => {
@@ -40,90 +38,79 @@ export default function PersonalizarLayout({ children }: { children: ReactNode }
     }, []);
 
     return (
-        
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            boxSizing: 'border-box' as 'border-box',
-            fontFamily: 'Inter, sans-serif',
-            backgroundColor: '#F3E8FF', // Fundo levemente lilás pra combinar com o roxo, sem agredir os olhos
-            minHeight: '100vh',
-            
-        } as CSSProperties}>
-
-            {/* HEADER MODERNO E ENXUTO */}
-            <header style={{
-                height: HEADER_HEIGHT_TOP_PANEL,
-                backgroundColor: '#6A0DAD', // Roxo Phandshop topzera
+        <div
+            style={{
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0 1.25rem',
-                color: '#F3E8FF', // Texto claro pro contraste
-                boxShadow: '0 2px 6px rgba(106, 13, 173, 0.3)',
-                flexShrink: 0,
-                boxSizing: 'border-box',
-                fontWeight: 300, // Fonte fina e elegante
-                fontSize: '0.9rem',
-                
-            }}>
-                {/* Lado Esquerdo */}
-                <Link href="/dashboard" style={{
+                flexDirection: 'column',
+                width: '100%',
+                boxSizing: 'border-box' as 'border-box',
+                fontFamily: 'Inter, sans-serif',
+                backgroundColor: '#F3E8FF', // Fundo levemente lilás pra combinar com o roxo, sem agredir os olhos
+                minHeight: '100vh',
+            } as CSSProperties}
+        >
+            {/* HEADER MODERNO E ENXUTO */}
+            <header
+                style={{
+                    height: HEADER_HEIGHT_TOP_PANEL,
+                    backgroundColor: '#6A0DAD', // Roxo Phandshop topzera
                     display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    gap: '0.3rem',
-                    color: '#F3E8FF',
-                    textDecoration: 'none',
-                    cursor: 'pointer',
-                    fontWeight: 400,
-                    fontSize: '0.85rem',
-                    transition: 'color 0.2s ease',
+                    padding: '0 1.25rem',
+                    color: '#F3E8FF', // Texto claro pro contraste
+                    boxShadow: '0 2px 6px rgba(106, 13, 173, 0.3)',
                     flexShrink: 0,
+                    boxSizing: 'border-box',
+                    fontWeight: 300, // Fonte fina e elegante
+                    fontSize: '0.9rem',
                 }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#D6BCFA'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = '#F3E8FF'}>
+            >
+                {/* Lado Esquerdo */}
+                <Link
+                    href="/dashboard"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.3rem',
+                        color: '#F3E8FF',
+                        textDecoration: 'none',
+                        cursor: 'pointer',
+                        fontWeight: 400,
+                        fontSize: '0.85rem',
+                        transition: 'color 0.2s ease',
+                        flexShrink: 0,
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#D6BCFA')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '#F3E8FF')}
+                >
                     <FaArrowRight style={{ transform: 'rotate(180deg)', fontSize: '1.1rem' }} /> Voltar
                 </Link>
 
                 {/* Centro - Botões compactos desktop/mobile */}
-                <div style={{
-                    backgroundColor: '#7C3AED88', // Roxo translúcido para suavizar
-                    borderRadius: '0.375rem',
-                    padding: '0.15rem',
-                    display: 'flex',
-                    gap: '0.3rem',
-                    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)'
-                }}>
-                    {['desktop', 'mobile'].map(mode => (
-                        <button
-                            key={mode}
-                            onClick={() => setPreviewMode(mode as 'desktop' | 'mobile')}
-                            style={{
-                                padding: '0.3rem 0.6rem',
-                                borderRadius: '0.375rem',
-                                border: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.35rem',
-                                fontWeight: previewMode === mode ? 600 : 300,
-                                fontSize: '0.8rem',
-                                backgroundColor: previewMode === mode ? '#A78BFA' : 'transparent',
-                                color: previewMode === mode ? '#3C096C' : '#E9D8FD',
-                                boxShadow: previewMode === mode ? '0 2px 6px rgba(106, 13, 173, 0.5)' : 'none',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease-in-out',
-                                userSelect: 'none',
-                            }}
-                        >
-                            {mode === 'desktop' ? <FaDesktop /> : <FaMobileAlt />}
-                            {mode.charAt(0).toUpperCase() + mode.slice(1)}
-                        </button>
-                    ))}
+                <div
+                    style={{
+                        backgroundColor: '#7C3AED88', // Roxo translúcido para suavizar
+                        borderRadius: '0.375rem',
+                        padding: '0.15rem',
+                        display: 'flex',
+                        gap: '0.3rem',
+                        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
+                    }}
+                >
+                    {/* Remove previewMode aqui, pois agora é interno ao contexto */}
+                    {/* Pode adicionar controles aqui se quiser, mas sem afetar o PersonalizarClientWrapper */}
                 </div>
 
                 {/* Lado Direito */}
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', minWidth: 0 }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        alignItems: 'center',
+                        minWidth: 0,
+                    }}
+                >
                     <button
                         onClick={() => setShowHelpModal(true)}
                         style={{
@@ -141,8 +128,14 @@ export default function PersonalizarLayout({ children }: { children: ReactNode }
                             transition: 'background-color 0.2s ease, color 0.2s ease',
                             userSelect: 'none',
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#9F7AEA'; e.currentTarget.style.color = '#3C096C'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#E9D8FD'; }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#9F7AEA';
+                            e.currentTarget.style.color = '#3C096C';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                            e.currentTarget.style.color = '#E9D8FD';
+                        }}
                     >
                         <FaQuestionCircle /> Ajuda
                     </button>
@@ -182,73 +175,91 @@ export default function PersonalizarLayout({ children }: { children: ReactNode }
             </header>
 
             {/* Conteúdo principal */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                padding: '20px',
-                overflowX: 'hidden',
-                boxSizing: 'border-box' as 'border-box',
-                flexGrow: 1,
-                minHeight: 0, // Pra rolagem funcionar direito
-            }}>
-                <PersonalizarClientWrapper previewMode={previewMode} />
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    padding: '20px',
+                    overflowX: 'hidden',
+                    boxSizing: 'border-box' as 'border-box',
+                    flexGrow: 1,
+                    minHeight: 0, // Pra rolagem funcionar direito
+                }}
+            >
+                {/* REMOVIDO previewMode daqui */}
+                <PersonalizarClientWrapper />
             </div>
 
             {/* Rodapé */}
-            <footer style={{
-                height: FOOTER_HEIGHT_BOTTOM_PANEL,
-                backgroundColor: '#FFFFFF',
-                color: '#6c757d',
-                padding: '0.75rem',
-                textAlign: 'center',
-                borderTop: '1px solid #E2E8F0',
-                fontSize: '0.75rem',
-                boxShadow: '0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -1px 2px 0 rgba(0, 0, 0, 0.06)',
-                flexShrink: 0,
-                fontFamily: 'Inter, sans-serif',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxSizing: 'border-box' as 'border-box',
-            }}>
+            <footer
+                style={{
+                    height: FOOTER_HEIGHT_BOTTOM_PANEL,
+                    backgroundColor: '#FFFFFF',
+                    color: '#6c757d',
+                    padding: '0.75rem',
+                    textAlign: 'center',
+                    borderTop: '1px solid #E2E8F0',
+                    fontSize: '0.75rem',
+                    boxShadow:
+                        '0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -1px 2px 0 rgba(0, 0, 0, 0.06)',
+                    flexShrink: 0,
+                    fontFamily: 'Inter, sans-serif',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxSizing: 'border-box' as 'border-box',
+                }}
+            >
                 <p>© 2024 Painel de Personalização. Desenvolvido por PhandCo.</p>
             </footer>
 
             {/* Modal Ajuda */}
             {showHelpModal && (
-                <div style={{
-                    position: 'fixed',
-                    inset: 0,
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 1200,
-                    boxSizing: 'border-box' as 'border-box',
-                }}>
-                    <div style={{
-                        backgroundColor: '#fff',
-                        padding: '2rem',
-                        borderRadius: '0.5rem',
-                        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                        maxWidth: '24rem',
-                        textAlign: 'center',
+                <div
+                    style={{
+                        position: 'fixed',
+                        inset: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 1200,
                         boxSizing: 'border-box' as 'border-box',
-                    }}>
-                        <h3 style={{
-                            marginTop: 0,
-                            color: '#2D3748',
-                            fontSize: '1.125rem',
-                            fontWeight: 600,
-                        }}>Ajuda e Documentação</h3>
-                        <p style={{
-                            color: '#4A5568',
-                            lineHeight: '1.625',
-                            marginTop: '1rem',
-                            marginBottom: '1.5rem',
-                        }}>
-                            A funcionalidade de ajuda e documentação completa está em desenvolvimento e estará disponível em breve!
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: '#fff',
+                            padding: '2rem',
+                            borderRadius: '0.5rem',
+                            boxShadow:
+                                '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                            maxWidth: '24rem',
+                            textAlign: 'center',
+                            boxSizing: 'border-box' as 'border-box',
+                        }}
+                    >
+                        <h3
+                            style={{
+                                marginTop: 0,
+                                color: '#2D3748',
+                                fontSize: '1.125rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Ajuda e Documentação
+                        </h3>
+                        <p
+                            style={{
+                                color: '#4A5568',
+                                lineHeight: '1.625',
+                                marginTop: '1rem',
+                                marginBottom: '1.5rem',
+                            }}
+                        >
+                            A funcionalidade de ajuda e documentação completa está em
+                            desenvolvimento e estará disponível em breve!
                         </p>
                         <button
                             onClick={() => setShowHelpModal(false)}
@@ -263,8 +274,12 @@ export default function PersonalizarLayout({ children }: { children: ReactNode }
                                 fontWeight: 600,
                                 transition: 'background-color 0.2s ease',
                             }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#580BA0'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6A0DAD'}
+                            onMouseEnter={(e) =>
+                                (e.currentTarget.style.backgroundColor = '#580BA0')
+                            }
+                            onMouseLeave={(e) =>
+                                (e.currentTarget.style.backgroundColor = '#6A0DAD')
+                            }
                         >
                             Entendi
                         </button>
