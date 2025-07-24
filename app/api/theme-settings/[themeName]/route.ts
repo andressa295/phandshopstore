@@ -1,17 +1,17 @@
-// app/api/theme-settings/[themeName]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-// Certifique-se de que os caminhos abaixo estão corretos
 import dbConnect from '@/lib/mongodb'; 
 import ThemeConfigModel from '@/models/ThemeConfig'; 
-// Importe a configuração padrão para usar como fallback no carregamento
 import defaultThemeConfig from '../../../(painel)/personalizar/context/defaultThemeConfig'; 
-// Importe a ThemeConfig do seu arquivo de tipos, para tipar o que vem da requisição
 import { ThemeConfig } from '@/app/(painel)/personalizar/types'; 
 
 // Handler para GET (carregar configuração do tema)
-export async function GET(request: NextRequest, { params }: { params: { themeName: string } }) {
-    await dbConnect(); // Conecta ao banco de dados
-    const { themeName } = params;
+export async function GET(
+  request: NextRequest,
+  // A tipagem correta para o segundo argumento, conforme a documentação do Next.js App Router
+  context: { params: { themeName: string } } 
+) {
+    await dbConnect(); 
+    const { themeName } = context.params; // Acessa themeName via context.params
 
     try {
         const themeConfigDoc = await ThemeConfigModel.findOne({ themeName: themeName });
@@ -31,8 +31,9 @@ export async function GET(request: NextRequest, { params }: { params: { themeNam
 }
 
 // Handler para POST (salvar/atualizar configuração do tema)
+// Este já está com a tipagem correta para o segundo argumento
 export async function POST(request: NextRequest, { params }: { params: { themeName: string } }) {
-    await dbConnect(); // Conecta ao banco de dados
+    await dbConnect(); 
     const { themeName } = params;
     const config: ThemeConfig = await request.json(); 
 
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest, { params }: { params: { themeNa
 
     } catch (error: any) { 
         console.error(`[API POST - ERRO]: Erro ao salvar/atualizar configuração do tema para ${themeName}:`, error);
-        if (error.name === 'ValidationError') { // Verificar erro de validação do Mongoose
+        if (error.name === 'ValidationError') { 
             return NextResponse.json({ message: 'Erro de validação ao salvar a configuração.', details: error.message }, { status: 400 });
         }
         return NextResponse.json({ message: 'Erro interno do servidor ao salvar a configuração.' }, { status: 500 });
