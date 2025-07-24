@@ -4,12 +4,13 @@ import ThemeConfigModel from '@/models/ThemeConfig';
 import defaultThemeConfig from '../../../(painel)/personalizar/context/defaultThemeConfig'; 
 import { ThemeConfig } from '@/app/(painel)/personalizar/types'; 
 
+
 export async function GET(
   request: NextRequest,
   context: { params: { themeName: string } } 
 ) {
-    await dbConnect(); 
-    const { themeName } = context.params; 
+    await dbConnect(); // Conecta ao banco de dados
+    const { themeName } = context.params; // Acessa themeName através de context.params
 
     try {
         const themeConfigDoc = await ThemeConfigModel.findOne({ themeName: themeName });
@@ -28,9 +29,11 @@ export async function GET(
     }
 }
 
-
-export async function POST(request: NextRequest, { params }: { params: { themeName: string } }) {
-    await dbConnect(); 
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { themeName: string } } 
+) {
+    await dbConnect(); // Conecta ao banco de dados
     const { themeName } = params;
     const config: ThemeConfig = await request.json(); 
 
@@ -40,9 +43,9 @@ export async function POST(request: NextRequest, { params }: { params: { themeNa
 
     try {
         const updatedDoc = await ThemeConfigModel.findOneAndUpdate(
-            { themeName: themeName }, 
-            { config: config, lastUpdated: new Date() }, 
-            { new: true, upsert: true, runValidators: true } 
+            { themeName: themeName }, // Critério de busca: o nome do tema
+            { config: config, lastUpdated: new Date() }, // Dados a serem atualizados/inseridos
+            { new: true, upsert: true, runValidators: true } // Opções: retorna o doc atualizado, cria se não existe, roda validações do Schema
         );
 
         console.log(`[API POST - SUCESSO]: Configuração para "${themeName}" salva/atualizada no DB.`);
@@ -50,7 +53,7 @@ export async function POST(request: NextRequest, { params }: { params: { themeNa
 
     } catch (error: any) { 
         console.error(`[API POST - ERRO]: Erro ao salvar/atualizar configuração do tema para ${themeName}:`, error);
-        if (error.name === 'ValidationError') { 
+        if (error.name === 'ValidationError') { // Erro específico do Mongoose para validação de Schema
             return NextResponse.json({ message: 'Erro de validação ao salvar a configuração.', details: error.message }, { status: 400 });
         }
         return NextResponse.json({ message: 'Erro interno do servidor ao salvar a configuração.' }, { status: 500 });
