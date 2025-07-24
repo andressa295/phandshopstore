@@ -14,8 +14,10 @@ interface HighlightsModuleProps {
 }
 
 const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange, onRemove }) => {
+  const highlightItems = data.highlightItems ?? []; // fallback defensivo
+
   const handleHighlightItemChange = (index: number, field: 'icon' | 'text', value: string) => {
-    const updatedItems = data.highlightItems.map((item, i) =>
+    const updatedItems = highlightItems.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
     onChange({ highlightItems: updatedItems });
@@ -23,12 +25,12 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
 
   const handleAddHighlightItem = () => {
     const newItem = { icon: '✨', text: 'Novo Destaque' };
-    onChange({ highlightItems: [...data.highlightItems, newItem] });
+    onChange({ highlightItems: [...highlightItems, newItem] });
   };
 
   const handleRemoveHighlightItem = (index: number) => {
     if (window.confirm('Tem certeza que deseja remover este item de destaque?')) {
-      const updatedItems = data.highlightItems.filter((_, i) => i !== index);
+      const updatedItems = highlightItems.filter((_, i) => i !== index);
       onChange({ highlightItems: updatedItems });
     }
   };
@@ -80,10 +82,10 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
 
       {/* Itens de Destaque */}
       <h5 className={styles.nestedTitle}>Itens de Destaque:</h5>
-      {data.highlightItems.length === 0 && (
+      {highlightItems.length === 0 && (
         <p className={styles.fieldDescription}>Nenhum item de destaque adicionado ainda.</p>
       )}
-      {data.highlightItems.map((item, index) => (
+      {highlightItems.map((item, index) => (
         <div key={index} className={styles.highlightItem}>
           <span className={styles.highlightItemIcon}>{item.icon}</span>
           <input
@@ -93,7 +95,6 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
             onChange={(e) => handleHighlightItemChange(index, 'text', e.target.value)}
             placeholder="Texto do Destaque"
           />
-          {/* Campo para o ícone/emoji */}
           <input
             type="text"
             className={styles.textInput}

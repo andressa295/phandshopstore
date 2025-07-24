@@ -29,81 +29,88 @@ const ProductShowcaseModule: React.FC<ProductShowcaseModuleProps> = ({ id, data,
 
     {/* Campo Título */}
     <div className={styles.inputGroup}>
-        <label htmlFor={`ps-title-${id}`} className={styles.inputLabel}>Título:</label>
-        <input
-            type="text"
-            id={`ps-title-${id}`}
-            className={styles.textInput}
-            value={data.title}
-            onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Ex: Nossos Produtos"
-        />
-        <p className={styles.fieldDescription}>Título exibido acima da vitrine de produtos.</p>
+      <label htmlFor={`ps-title-${id}`} className={styles.inputLabel}>Título:</label>
+      <input
+        type="text"
+        id={`ps-title-${id}`}
+        className={styles.textInput}
+        value={data.title}
+        onChange={(e) => onChange({ title: e.target.value })}
+        placeholder="Ex: Nossos Produtos"
+      />
+      <p className={styles.fieldDescription}>Título exibido acima da vitrine de produtos.</p>
     </div>
 
     {/* Campo Tipo de Exibição */}
     <div className={styles.inputGroup}>
-        <label htmlFor={`ps-display-${id}`} className={styles.inputLabel}>Tipo de Exibição:</label>
-        <select
-            id={`ps-display-${id}`}
-            className={styles.selectInput}
-            value={data.displayType}
-            onChange={(e) => onChange({ displayType: e.target.value as 'latest' | 'best_sellers' | 'featured' | 'selected' })}
-        >
-            <option value="latest">Últimos Produtos Adicionados</option>
-            <option value="best_sellers">Produtos Mais Vendidos</option>
-            <option value="featured">Produtos em Destaque</option>
-            <option value="selected">Produtos Selecionados (Manualmente)</option>
-        </select>
-        <p className={styles.fieldDescription}>Define quais produtos serão exibidos na vitrine.</p>
+      <label htmlFor={`ps-display-${id}`} className={styles.inputLabel}>Tipo de Exibição:</label>
+      <select
+        id={`ps-display-${id}`}
+        className={styles.selectInput}
+        value={data.displayType}
+        onChange={(e) => onChange({ displayType: e.target.value as 'latest' | 'best_sellers' | 'featured' | 'selected' })}
+      >
+        <option value="latest">Últimos Produtos Adicionados</option>
+        <option value="best_sellers">Produtos Mais Vendidos</option>
+        <option value="featured">Produtos em Destaque</option>
+        <option value="selected">Produtos Selecionados (Manualmente)</option>
+      </select>
+      <p className={styles.fieldDescription}>Define quais produtos serão exibidos na vitrine.</p>
     </div>
 
     {/* Campo Produtos Selecionados (Condicional) */}
     {data.displayType === 'selected' && (
-        <div className={styles.inputGroup}>
-            <label htmlFor={`ps-selected-products-${id}`} className={styles.inputLabel}>IDs dos Produtos Selecionados (separados por vírgula):</label>
-            <textarea
-                id={`ps-selected-products-${id}`}
-                className={styles.textArea}
-                value={data.productIds.join(', ')}
-                onChange={(e) => {
-                    const ids = e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean);
-                    onChange({ productIds: ids });
-                }}
-                rows={4}
-                placeholder="Ex: prod123, prod456, prod789"
-            ></textarea>
-            <p className={styles.fieldDescription}>Insira os IDs únicos dos produtos que deseja exibir, separados por vírgula.</p>
-        </div>
+      <div className={styles.inputGroup}>
+        <label htmlFor={`ps-selected-products-${id}`} className={styles.inputLabel}>
+          IDs dos Produtos Selecionados (separados por vírgula):
+        </label>
+        <textarea
+          id={`ps-selected-products-${id}`}
+          className={styles.textArea}
+          value={(data.productIds ?? []).join(', ')}
+          onChange={(e) => {
+            const ids = e.target.value
+              .split(',')
+              .map((s: string) => s.trim())
+              .filter(Boolean);
+            onChange({ productIds: ids });
+          }}
+          rows={4}
+          placeholder="Ex: prod123, prod456, prod789"
+        ></textarea>
+        <p className={styles.fieldDescription}>
+          Insira os IDs únicos dos produtos que deseja exibir, separados por vírgula.
+        </p>
+      </div>
     )}
 
     {/* Campo Número de Produtos */}
     <div className={styles.inputGroup}>
-        <label htmlFor={`ps-num-${id}`} className={styles.inputLabel}>Número de Produtos a Exibir:</label>
-        <input
-            type="number"
-            id={`ps-num-${id}`}
-            className={styles.textInput}
-            value={data.numberOfProducts}
-            onChange={(e) => onChange({ numberOfProducts: parseInt(e.target.value) || 0 })}
-            min="1"
-            placeholder="Ex: 8"
-        />
-        <p className={styles.fieldDescription}>Quantos produtos serão mostrados na vitrine.</p>
+      <label htmlFor={`ps-num-${id}`} className={styles.inputLabel}>Número de Produtos a Exibir:</label>
+      <input
+        type="number"
+        id={`ps-num-${id}`}
+        className={styles.textInput}
+        value={data.numberOfProducts}
+        onChange={(e) => onChange({ numberOfProducts: parseInt(e.target.value) || 0 })}
+        min={1}
+        placeholder="Ex: 8"
+      />
+      <p className={styles.fieldDescription}>Quantos produtos serão mostrados na vitrine.</p>
     </div>
-    
+
     {/* Campo Ativo */}
     <div className={styles.inputGroup}>
-        <label htmlFor={`ps-active-${id}`} className={styles.checkboxLabel}>
-            <input
-                type="checkbox"
-                id={`ps-active-${id}`}
-                className={styles.checkboxInput}
-                checked={data.isActive}
-                onChange={(e) => onChange({ isActive: e.target.checked })}
-            /> Ativo
-        </label>
-        <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
+      <label htmlFor={`ps-active-${id}`} className={styles.checkboxLabel}>
+        <input
+          type="checkbox"
+          id={`ps-active-${id}`}
+          className={styles.checkboxInput}
+          checked={data.isActive}
+          onChange={(e) => onChange({ isActive: e.target.checked })}
+        /> Ativo
+      </label>
+      <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
     </div>
   </div>
 );
