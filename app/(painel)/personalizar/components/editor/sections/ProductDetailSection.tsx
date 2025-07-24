@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { ThemeConfig, ThemeUpdateFn } from '../../../types';
-// Importa o NOVO arquivo de estilos específico para ProductDetailSection
-import styles from './ProductDetailSection.module.css'; 
+import styles from './ProductDetailSection.module.css';
 
 export interface ProductDetailConfig {
   galleryLayout: 'carousel' | 'grid';
@@ -43,17 +42,22 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
     trustBadgesImages: [],
   };
 
+  // Garanto que trustBadgesImages é um array
+  const trustBadgesImages = Array.isArray(productDetailConfig.trustBadgesImages)
+    ? productDetailConfig.trustBadgesImages
+    : [];
+
   const handleUpdate = (field: keyof typeof productDetailConfig, value: any) => {
     updateConfig({
       productDetail: {
-        ...productDetailConfig, 
-        [field]: value, 
+        ...productDetailConfig,
+        [field]: value,
       },
     });
   };
 
   return (
-    <div className={styles.sectionBlock}> 
+    <div className={styles.sectionBlock}>
       <h3 className={styles.sectionTitle}>Página de Detalhes do Produto</h3>
       <p className={styles.sectionDescription}>
         Ajuste como os produtos individuais são exibidos na sua loja.
@@ -72,97 +76,31 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
         </select>
       </div>
 
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showPrice}
-            onChange={(e) => handleUpdate('showPrice', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Preço
-        </label>
-      </div>
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showSku}
-            onChange={(e) => handleUpdate('showSku', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir SKU
-        </label>
-      </div>
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showStock}
-            onChange={(e) => handleUpdate('showStock', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Quantidade em Estoque
-        </label>
-      </div>
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.enableQuantitySelector}
-            onChange={(e) => handleUpdate('enableQuantitySelector', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Habilitar Seletor de Quantidade
-        </label>
-      </div>
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showVariations}
-            onChange={(e) => handleUpdate('showVariations', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Variações do Produto (Tamanho, Cor, etc.)
-        </label>
-      </div>
+      {/* Checkboxes gerais */}
+      {[
+        { label: 'Exibir Preço', field: 'showPrice' },
+        { label: 'Exibir SKU', field: 'showSku' },
+        { label: 'Exibir Quantidade em Estoque', field: 'showStock' },
+        { label: 'Habilitar Seletor de Quantidade', field: 'enableQuantitySelector' },
+        { label: 'Exibir Variações do Produto (Tamanho, Cor, etc.)', field: 'showVariations' },
+        { label: 'Exibir Descrição Completa do Produto', field: 'showProductDescription' },
+        { label: 'Exibir Abas de Informações Adicionais (Especificações, Dimensões, etc.)', field: 'showAdditionalInfoTabs' },
+        { label: 'Exibir Seção de Avaliações de Clientes', field: 'showReviewsSection' },
+      ].map(({ label, field }) => (
+        <div className={styles.inputGroup} key={field}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={productDetailConfig[field as keyof typeof productDetailConfig] as boolean}
+              onChange={(e) => handleUpdate(field as keyof typeof productDetailConfig, e.target.checked)}
+              className={styles.checkboxInput}
+            />
+            {label}
+          </label>
+        </div>
+      ))}
 
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showProductDescription}
-            onChange={(e) => handleUpdate('showProductDescription', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Descrição Completa do Produto
-        </label>
-      </div>
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showAdditionalInfoTabs}
-            onChange={(e) => handleUpdate('showAdditionalInfoTabs', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Abas de Informações Adicionais (Especificações, Dimensões, etc.)
-        </label>
-      </div>
-
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={productDetailConfig.showReviewsSection}
-            onChange={(e) => handleUpdate('showReviewsSection', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Seção de Avaliações de Clientes
-        </label>
-      </div>
-
+      {/* Produtos Relacionados */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -174,7 +112,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
           Exibir Seção de Produtos Relacionados
         </label>
         {productDetailConfig.showRelatedProducts && (
-          <div className={styles.nestedInputGroup}> {/* Usando classe CSS */}
+          <div className={styles.nestedInputGroup}>
             <label htmlFor="relatedProductsTitle" className={styles.inputLabel}>Título da Seção de Relacionados:</label>
             <input
               type="text"
@@ -188,6 +126,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
         )}
       </div>
 
+      {/* Selos de Confiança */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -199,12 +138,14 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
           Exibir Selos de Confiança (Segurança, Pagamento, etc.)
         </label>
         {productDetailConfig.showTrustBadges && (
-          <div className={styles.nestedInputGroup}> {/* Usando classe CSS */}
-            <label htmlFor="trustBadgesImages" className={styles.inputLabel}>URLs dos Selos de Confiança (uma por linha):</label>
+          <div className={styles.nestedInputGroup}>
+            <label htmlFor="trustBadgesImages" className={styles.inputLabel}>
+              URLs dos Selos de Confiança (uma por linha):
+            </label>
             <textarea
               id="trustBadgesImages"
               className={styles.textArea}
-              value={productDetailConfig.trustBadgesImages.join('\n')}
+              value={trustBadgesImages.join('\n')}
               onChange={(e) => handleUpdate('trustBadgesImages', e.target.value.split('\n'))}
               placeholder="Ex: /images/selo-seguro.png\n/images/selo-pagamento.png"
               rows={4}
@@ -212,8 +153,8 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
             <small className={styles.fieldDescription}>
               Coloque uma URL de imagem por linha. Estas imagens aparecerão próximas ao botão "Comprar".
             </small>
-            <div className={styles.imagePreviewContainer}> {/* Usando classe CSS */}
-              {productDetailConfig.trustBadgesImages.map((src, idx) => src && (
+            <div className={styles.imagePreviewContainer}>
+              {trustBadgesImages.map((src, idx) => src && (
                 <img key={idx} src={src} alt="Selo de Confiança" className={styles.imagePreviewSmall} />
               ))}
             </div>

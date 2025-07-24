@@ -11,15 +11,14 @@ interface Props {
 }
 
 const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
-  // Define uma configuração padrão completa com IDs
   const defaultFooterConfig: FooterConfig = {
     showQuickLinks: true,
-    quickLinksTitle: 'Links Rápidos',
     quickLinks: [
       { id: uuidv4(), text: 'Sobre Nós', url: '/sobre' },
       { id: uuidv4(), text: 'Contato', url: '/contato' },
       { id: uuidv4(), text: 'Política de Privacidade', url: '/politica-privacidade' },
     ],
+    quickLinksTitle: 'Links Rápidos',
     showSocialMediaIcons: true,
     socialMediaTitle: 'Siga-nos',
     socialMediaLinks: [
@@ -43,107 +42,102 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
     footerTextColor: '#ffffff',
   };
 
-  // Inicialização robusta de footerConfig
-  // Garante que todos os arrays e objetos têm as propriedades esperadas, incluindo 'id'
   const footerConfig: FooterConfig = {
-    ...defaultFooterConfig, // Começa com todos os valores padrão
-    ...(config.footer || {}), // Sobrescreve com os valores existentes da config, se houver
-    
-    // Processa quickLinks para garantir que todos os itens tenham 'id'
-    quickLinks: (config.footer?.quickLinks || defaultFooterConfig.quickLinks).map(link => ({
-      id: (link as any).id || uuidv4(), // Usa 'id' existente ou gera um novo
+    ...defaultFooterConfig,
+    ...(config.footer || {}),
+
+    quickLinks: (config.footer?.quickLinks ?? defaultFooterConfig.quickLinks ?? []).map(link => ({
+      id: (link as any).id || uuidv4(),
       text: link.text,
       url: link.url,
     })),
-    
-    // Processa socialMediaLinks para garantir que todos os itens tenham 'id'
-    socialMediaLinks: (config.footer?.socialMediaLinks || defaultFooterConfig.socialMediaLinks).map(link => ({
-      id: (link as any).id || uuidv4(), // Usa 'id' existente ou gera um novo
+
+    socialMediaLinks: (config.footer?.socialMediaLinks ?? defaultFooterConfig.socialMediaLinks ?? []).map(link => ({
+      id: (link as any).id || uuidv4(),
       platform: link.platform,
       url: link.url,
     })),
 
-    // Processa paymentMethodsImages para garantir que todos os itens tenham 'id' e 'imageUrl'
-    paymentMethodsImages: (config.footer?.paymentMethodsImages || defaultFooterConfig.paymentMethodsImages).map(image => {
-      // Se o item for uma string (formato antigo), converte para o novo formato de objeto
+    paymentMethodsImages: (config.footer?.paymentMethodsImages ?? defaultFooterConfig.paymentMethodsImages ?? []).map(image => {
       if (typeof image === 'string') {
         return { id: uuidv4(), imageUrl: image };
       }
-      // Se já for um objeto, garante que tem 'id' ou adiciona um
       return { id: (image as any).id || uuidv4(), imageUrl: image.imageUrl };
     }),
   };
 
-  // Refs para os inputs de cor ocultos
   const footerBgColorInputRef = useRef<HTMLInputElement>(null);
   const footerTextColorInputRef = useRef<HTMLInputElement>(null);
-
-  // Refs para os inputs de upload de imagens de pagamento
   const paymentImageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpdate = (field: keyof FooterConfig, value: any) => { 
+  const handleUpdate = (field: keyof FooterConfig, value: any) => {
     updateConfig({
       footer: {
-        ...footerConfig, 
-        [field]: value, 
+        ...footerConfig,
+        [field]: value,
       },
     });
   };
 
-  // Funções de manipulação para Quick Links
+  // Definindo variáveis locais para garantir que não sejam undefined
+  const quickLinks = footerConfig.quickLinks ?? [];
+  const socialMediaLinks = footerConfig.socialMediaLinks ?? [];
+  const paymentMethodsImages = footerConfig.paymentMethodsImages ?? [];
+
+  // Funções para Quick Links
   const handleQuickLinkChange = (id: string, field: 'text' | 'url', value: string) => {
-    const newLinks = footerConfig.quickLinks.map(link => 
+    const newLinks = quickLinks.map(link => 
       link.id === id ? { ...link, [field]: value } : link
     );
     handleUpdate('quickLinks', newLinks);
   };
 
   const handleAddQuickLink = () => {
-    handleUpdate('quickLinks', [...footerConfig.quickLinks, { id: uuidv4(), text: '', url: '' }]);
+    handleUpdate('quickLinks', [...quickLinks, { id: uuidv4(), text: '', url: '' }]);
   };
 
   const handleRemoveQuickLink = (id: string) => {
-    const newLinks = footerConfig.quickLinks.filter(link => link.id !== id);
+    const newLinks = quickLinks.filter(link => link.id !== id);
     handleUpdate('quickLinks', newLinks);
   };
 
-  // Funções de manipulação para Social Media Links
+  // Funções para Social Media Links
   const handleSocialMediaLinkChange = (id: string, field: 'platform' | 'url', value: string) => {
-    const newLinks = footerConfig.socialMediaLinks.map(link => 
+    const newLinks = socialMediaLinks.map(link =>
       link.id === id ? { ...link, [field]: value as any } : link
     );
     handleUpdate('socialMediaLinks', newLinks);
   };
 
   const handleAddSocialMediaLink = () => {
-    handleUpdate('socialMediaLinks', [...footerConfig.socialMediaLinks, { id: uuidv4(), platform: 'instagram', url: '' }]);
+    handleUpdate('socialMediaLinks', [...socialMediaLinks, { id: uuidv4(), platform: 'instagram', url: '' }]);
   };
 
   const handleRemoveSocialMediaLink = (id: string) => {
-    const newLinks = footerConfig.socialMediaLinks.filter(link => link.id !== id);
+    const newLinks = socialMediaLinks.filter(link => link.id !== id);
     handleUpdate('socialMediaLinks', newLinks);
   };
 
-  // Funções de manipulação para Payment Methods Images
+  // Funções para Payment Methods Images
   const handlePaymentImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         const newImage = { id: uuidv4(), imageUrl: reader.result as string };
-        handleUpdate('paymentMethodsImages', [...footerConfig.paymentMethodsImages, newImage]);
+        handleUpdate('paymentMethodsImages', [...paymentMethodsImages, newImage]);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleRemovePaymentImage = (id: string) => {
-    const newImages = footerConfig.paymentMethodsImages.filter(image => image.id !== id);
+    const newImages = paymentMethodsImages.filter(image => image.id !== id);
     handleUpdate('paymentMethodsImages', newImages);
   };
 
   return (
-    <div className={styles.sectionBlock}> 
+    <div className={styles.sectionBlock}>
       <h3 className={styles.sectionTitle}>Configurações do Rodapé da Página</h3>
       <p className={styles.sectionDescription}>
         Ajuste o conteúdo e o estilo do rodapé da sua loja.
@@ -157,7 +151,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
             className={styles.colorSwatch}
             style={{ backgroundColor: footerConfig.footerBackgroundColor }}
             onClick={() => footerBgColorInputRef.current?.click()}
-          ></div>
+          />
           <input
             ref={footerBgColorInputRef}
             type="color"
@@ -177,7 +171,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
             className={styles.colorSwatch}
             style={{ backgroundColor: footerConfig.footerTextColor }}
             onClick={() => footerTextColorInputRef.current?.click()}
-          ></div>
+          />
           <input
             ref={footerTextColorInputRef}
             type="color"
@@ -211,28 +205,27 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               onChange={(e) => handleUpdate('quickLinksTitle', e.target.value)}
             />
             <h4 className={styles.nestedTitle}>Gerenciar Links:</h4>
-            {footerConfig.quickLinks.map((link) => ( 
-              <div key={link.id} className={styles.arrayItem}> 
+            {quickLinks.map((link) => (
+              <div key={link.id} className={styles.arrayItem}>
                 <input
                   type="text"
                   placeholder="Texto do Link"
                   value={link.text}
                   onChange={(e) => handleQuickLinkChange(link.id, 'text', e.target.value)}
-                  className={styles.textInput} 
+                  className={styles.textInput}
                 />
                 <input
                   type="text"
                   placeholder="URL do Link"
                   value={link.url}
                   onChange={(e) => handleQuickLinkChange(link.id, 'url', e.target.value)}
-                  className={styles.textInput} 
+                  className={styles.textInput}
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveQuickLink(link.id)}
                   className={styles.removeButton}
                 >
-                  {/* Ícone de lixeira */}
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
                     <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
                   </svg>
@@ -268,8 +261,8 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               onChange={(e) => handleUpdate('socialMediaTitle', e.target.value)}
             />
             <h4 className={styles.nestedTitle}>Gerenciar Redes:</h4>
-            {footerConfig.socialMediaLinks.map((link) => ( 
-              <div key={link.id} className={styles.arrayItem}> 
+            {socialMediaLinks.map((link) => (
+              <div key={link.id} className={styles.arrayItem}>
                 <select
                   value={link.platform}
                   onChange={(e) => handleSocialMediaLinkChange(link.id, 'platform', e.target.value)}
@@ -288,14 +281,13 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
                   placeholder="URL da Rede Social"
                   value={link.url}
                   onChange={(e) => handleSocialMediaLinkChange(link.id, 'url', e.target.value)}
-                  className={styles.textInput} 
+                  className={styles.textInput}
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveSocialMediaLink(link.id)}
                   className={styles.removeButton}
                 >
-                  {/* Ícone de lixeira */}
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
                     <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
                   </svg>
@@ -309,40 +301,47 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         )}
       </div>
 
-      {/* Exibir Campo de Assinatura de Newsletter */}
+      {/* Exibir Imagens de Métodos de Pagamento */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showNewsletterSignup}
-            onChange={(e) => handleUpdate('showNewsletterSignup', e.target.checked)}
+            checked={footerConfig.showPaymentMethods}
+            onChange={(e) => handleUpdate('showPaymentMethods', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Campo de Assinatura de Newsletter
+          Exibir Métodos de Pagamento
         </label>
-        {footerConfig.showNewsletterSignup && (
+        {footerConfig.showPaymentMethods && (
           <div className={styles.nestedInputGroup}>
-            <label htmlFor="newsletterTitle" className={styles.inputLabel}>Título da Newsletter:</label>
+            <label htmlFor="paymentMethodsUpload" className={styles.inputLabel}>Adicionar Imagem de Método de Pagamento:</label>
             <input
-              type="text"
-              id="newsletterTitle"
-              className={styles.textInput}
-              value={footerConfig.newsletterTitle}
-              onChange={(e) => handleUpdate('newsletterTitle', e.target.value)}
+              type="file"
+              id="paymentMethodsUpload"
+              accept="image/*"
+              ref={paymentImageInputRef}
+              onChange={handlePaymentImageUpload}
+              className={styles.fileInput}
             />
-            <label htmlFor="newsletterSubtitle" className={styles.inputLabel}>Subtítulo da Newsletter:</label>
-            <textarea
-              id="newsletterSubtitle"
-              className={styles.textArea}
-              value={footerConfig.newsletterSubtitle}
-              onChange={(e) => handleUpdate('newsletterSubtitle', e.target.value)}
-              rows={2}
-            />
+            <div className={styles.paymentMethodsList}>
+              {paymentMethodsImages.map((image) => (
+                <div key={image.id} className={styles.paymentMethodItem}>
+                  <img src={image.imageUrl} alt="Método de Pagamento" className={styles.paymentMethodImage} />
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePaymentImage(image.id)}
+                    className={styles.removeButton}
+                  >
+                    Remover
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Exibir Informações de Contato */}
+      {/* Informações de Contato */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -383,56 +382,40 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         )}
       </div>
 
-      {/* Exibir Bandeiras de Métodos de Pagamento - AGORA COM UPLOAD */}
+      {/* Newsletter */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showPaymentMethods}
-            onChange={(e) => handleUpdate('showPaymentMethods', e.target.checked)}
+            checked={footerConfig.showNewsletterSignup}
+            onChange={(e) => handleUpdate('showNewsletterSignup', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Bandeiras de Métodos de Pagamento
+          Exibir Cadastro de Newsletter
         </label>
-        {footerConfig.showPaymentMethods && (
+        {footerConfig.showNewsletterSignup && (
           <div className={styles.nestedInputGroup}>
-            <h4 className={styles.nestedTitle}>Gerenciar Imagens de Pagamento:</h4>
-            <div className={styles.imagePreviewContainer}>
-              {/* Mapeia sobre o array de objetos 'image' */}
-              {footerConfig.paymentMethodsImages.map((image) => (
-                <div key={image.id} className={styles.paymentImageItem}> 
-                  <img src={image.imageUrl} alt="Método de Pagamento" className={styles.imagePreviewSmall} />
-                  <button
-                    type="button"
-                    onClick={() => handleRemovePaymentImage(image.id)}
-                    className={styles.removeImageButton} 
-                  >
-                    {/* Ícone de fechar/remover */}
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeImageIcon}>
-                      <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 10.5858L9.70711 8.29289C9.31658 7.90237 8.68342 7.90237 8.29289 8.29289C7.90237 8.68342 7.90237 9.31658 8.29289 9.70711L10.5858 12L8.29289 14.2929C7.90237 14.6834 7.90237 15.3166 8.29289 15.7071C8.68342 16.0976 9.31658 16.0976 9.70711 15.7071L12 13.4142L14.2929 15.7071C14.6834 16.0976 15.3166 16.0976 15.7071 15.7071C16.0976 15.3166 16.0976 14.6834 15.7071 14.2929L13.4142 12L15.7071 9.70711C16.0976 9.31658 16.0976 8.68342 15.7071 8.29289C15.3166 7.90237 14.6834 7.90237 14.2929 8.29289L12 10.5858Z"></path>
-                    </svg>
-                  </button>
-                </div>
-              ))}
-              <div
-                className={styles.logoUploadBox} 
-                onClick={() => paymentImageInputRef.current?.click()}
-              >
-                <span className={styles.logoPlaceholder}>Adicionar Imagem</span>
-              </div>
-              <input
-                ref={paymentImageInputRef}
-                type="file"
-                accept="image/*"
-                style={{ display: 'none' }}
-                onChange={handlePaymentImageUpload}
-              />
-            </div>
+            <label htmlFor="newsletterTitle" className={styles.inputLabel}>Título:</label>
+            <input
+              type="text"
+              id="newsletterTitle"
+              className={styles.textInput}
+              value={footerConfig.newsletterTitle}
+              onChange={(e) => handleUpdate('newsletterTitle', e.target.value)}
+            />
+            <label htmlFor="newsletterSubtitle" className={styles.inputLabel}>Subtítulo:</label>
+            <input
+              type="text"
+              id="newsletterSubtitle"
+              className={styles.textInput}
+              value={footerConfig.newsletterSubtitle}
+              onChange={(e) => handleUpdate('newsletterSubtitle', e.target.value)}
+            />
           </div>
         )}
       </div>
 
-      {/* Exibir Texto de Copyright */}
+      {/* Copyright */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -441,24 +424,23 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
             onChange={(e) => handleUpdate('showCopyright', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Texto de Copyright
+          Exibir Copyright
         </label>
         {footerConfig.showCopyright && (
           <div className={styles.nestedInputGroup}>
-            <label htmlFor="copyrightText" className={styles.inputLabel}>Texto de Copyright:</label>
+            <label htmlFor="copyrightText" className={styles.inputLabel}>Texto do Copyright:</label>
             <input
               type="text"
               id="copyrightText"
               className={styles.textInput}
               value={footerConfig.copyrightText}
               onChange={(e) => handleUpdate('copyrightText', e.target.value)}
-              placeholder={`© ${new Date().getFullYear()} Sua Loja. Todos os direitos reservados.`}
             />
           </div>
         )}
       </div>
 
-      {/* Exibir CNPJ */}
+      {/* CNPJ */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -471,14 +453,13 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         </label>
         {footerConfig.showCnpj && (
           <div className={styles.nestedInputGroup}>
-            <label htmlFor="cnpjText" className={styles.inputLabel}>Número do CNPJ:</label>
+            <label htmlFor="cnpjText" className={styles.inputLabel}>Texto do CNPJ:</label>
             <input
               type="text"
               id="cnpjText"
               className={styles.textInput}
               value={footerConfig.cnpjText}
               onChange={(e) => handleUpdate('cnpjText', e.target.value)}
-              placeholder="XX.XXX.XXX/XXXX-XX"
             />
           </div>
         )}
