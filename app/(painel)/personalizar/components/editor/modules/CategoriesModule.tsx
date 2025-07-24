@@ -1,9 +1,7 @@
-// app/(painel)/personalizar/components/editor/modules/CategoriesModule.tsx
 'use client';
 
 import React from 'react';
 import { CategoriesModuleData } from '../../../types';
-// Importa os estilos específicos do CategoriesModule
 import styles from './CategoriesModule.module.css';
 
 interface CategoriesModuleProps {
@@ -31,62 +29,69 @@ const CategoriesModule: React.FC<CategoriesModuleProps> = ({ id, data, onChange,
 
     {/* Campo Título */}
     <div className={styles.inputGroup}>
-        <label className={styles.inputLabel} htmlFor={`cat-title-${id}`}>Título:</label>
-        <input
-            type="text"
-            id={`cat-title-${id}`}
-            className={styles.textInput}
-            value={data.title}
-            onChange={(e) => onChange({ title: e.target.value })}
-            placeholder="Ex: Nossas Categorias"
-        />
-        <p className={styles.fieldDescription}>Título exibido acima das categorias.</p>
+      <label className={styles.inputLabel} htmlFor={`cat-title-${id}`}>Título:</label>
+      <input
+        type="text"
+        id={`cat-title-${id}`}
+        className={styles.textInput}
+        value={data.title}
+        onChange={(e) => onChange({ title: e.target.value })}
+        placeholder="Ex: Nossas Categorias"
+      />
+      <p className={styles.fieldDescription}>Título exibido acima das categorias.</p>
     </div>
 
     {/* Campo Layout */}
     <div className={styles.inputGroup}>
-        <label className={styles.inputLabel} htmlFor={`cat-layout-${id}`}>Layout:</label>
-        <select
-            id={`cat-layout-${id}`}
-            className={styles.selectInput}
-            value={data.layout}
-            onChange={(e) => onChange({ layout: e.target.value as 'grid' | 'carousel' })}
-        >
-            <option value="grid">Grade (Itens lado a lado)</option>
-            <option value="carousel">Carrossel (Itens deslizantes)</option>
-        </select>
-        <p className={styles.fieldDescription}>Define como as categorias serão dispostas.</p>
+      <label className={styles.inputLabel} htmlFor={`cat-layout-${id}`}>Layout:</label>
+      <select
+        id={`cat-layout-${id}`}
+        className={styles.selectInput}
+        value={data.layout}
+        onChange={(e) => onChange({ layout: e.target.value as 'grid' | 'carousel' })}
+      >
+        <option value="grid">Grade (Itens lado a lado)</option>
+        <option value="carousel">Carrossel (Itens deslizantes)</option>
+      </select>
+      <p className={styles.fieldDescription}>Define como as categorias serão dispostas.</p>
     </div>
 
     {/* Campo Categorias Selecionadas */}
     <div className={styles.inputGroup}>
-        <label className={styles.inputLabel} htmlFor={`cat-selected-${id}`}>Categorias Selecionadas (slugs, separados por vírgula):</label>
-        <textarea
-            id={`cat-selected-${id}`}
-            className={styles.textArea}
-            value={data.selectedCategories.join(', ')}
-            onChange={(e) => {
-                const items = e.target.value.split(',').map((s: string) => s.trim()).filter(Boolean);
-                onChange({ selectedCategories: items });
-            }}
-            rows={4}
-            placeholder="Ex: eletronicos, moda-feminina, acessorios"
-        ></textarea>
-        <p className={styles.fieldDescription}>Liste os 'slugs' das categorias que você deseja exibir, separados por vírgula.</p>
+      <label className={styles.inputLabel} htmlFor={`cat-selected-${id}`}>
+        Categorias Selecionadas (slugs, separados por vírgula):
+      </label>
+      <textarea
+        id={`cat-selected-${id}`}
+        className={styles.textArea}
+        value={(data.selectedCategories ?? []).join(', ')}
+        onChange={(e) => {
+          const items = e.target.value
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
+          onChange({ selectedCategories: items });
+        }}
+        rows={4}
+        placeholder="Ex: eletronicos, moda-feminina, acessorios"
+      ></textarea>
+      <p className={styles.fieldDescription}>
+        Liste os 'slugs' das categorias que você deseja exibir, separados por vírgula.
+      </p>
     </div>
 
     {/* Campo Ativo */}
     <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel} htmlFor={`cat-active-${id}`}>
-            <input
-                type="checkbox"
-                id={`cat-active-${id}`}
-                className={styles.checkboxInput}
-                checked={data.isActive}
-                onChange={(e) => onChange({ isActive: e.target.checked })}
-            /> Ativo
-        </label>
-        <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
+      <label className={styles.checkboxLabel} htmlFor={`cat-active-${id}`}>
+        <input
+          type="checkbox"
+          id={`cat-active-${id}`}
+          className={styles.checkboxInput}
+          checked={data.isActive}
+          onChange={(e) => onChange({ isActive: e.target.checked })}
+        /> Ativo
+      </label>
+      <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
     </div>
   </div>
 );
