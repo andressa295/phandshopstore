@@ -1,0 +1,1060 @@
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+/* --- FIM DA CORREÇÃO CRÍTICA --- */
+
+/* --- 1. Importação da Fonte Poppins do Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- 2. Variáveis CSS para o Tema Phandlandia (Cores e Fontes Clássicas/Neutras) --- */
+:root {
+    /* Cores Principais (Paleta Clássica/Neutras) */
+    --primary-color: #333333; /* Um cinza escuro / quase preto para destaques, títulos, botões */
+    --secondary-color: #A8A8A8; /* Um cinza médio para hover, bordas de destaque, detalhes secundários */
+    --text-color: #444444; /* Cinza escuro para o texto geral do corpo, garantindo legibilidade */
+    --background-color: #F8F8F8; /* Um cinza muito claro / quase branco para o fundo geral do site */
+    --nude-color: #E0DCD4; /* Um tom de nude claro, para uso em seções específicas que demandem essa nuance */
+    --white-color: #FFFFFF; /* Branco puro, para fundos de módulos e texto em fundos escuros */
+    --black-color: #000000; /* Preto puro, para contrastes fortes se necessário */
+
+    /* Cores Específicas de Componentes */
+    --header-background-color: var(--white-color); /* Fundo do cabeçalho branco */
+    --header-text-color: var(--text-color); /* Cor do texto e ícones do cabeçalho */
+    --navbar-background-color: var(--primary-color); /* Fundo da barra de navegação principal (cinza escuro) */
+    --navbar-text-color: var(--white-color); /* Cor do texto da navegação (branco) */
+    --search-bar-background-color: #F5F5F5; /* Fundo da barra de pesquisa, um cinza claro */
+    --search-bar-text-color: var(--text-color); /* Cor do texto digitado na busca */
+    --search-icon-color: var(--header-text-color); /* Cor do ícone de busca */
+
+
+    /* Cores do Footer */
+    --footer-background-color: #222222; /* Fundo do rodapé preto/cinza muito escuro */
+    --footer-text-color: var(--white-color); /* Cor do texto e links do rodapé (branco) */
+    --footer-invert-social-icons: 1; /* Valor 1 para inverter ícones escuros para branco em fundo escuro, 0 para manter cor original */
+
+    /* Tipografia (Poppins) */
+    --primary-font: 'Poppins', sans-serif; /* Fonte para títulos, headings e elementos de destaque */
+    --secondary-font: 'Poppins', sans-serif; /* Fonte para o texto do corpo, parágrafos e elementos gerais */
+    --text-base-font-size-value: 16px; /* Tamanho base do texto em pixels para consistência entre navegadores */
+    --title-base-font-size-value: 2.2em; /* Tamanho base dos títulos, relativo ao font-size do body ou elemento pai */
+    --icon-base-size: 1.2em; /* Tamanho base para ícones, para escalabilidade */
+
+    /* Elementos Visuais (Sombras, Bordas, Arredondamento) */
+    --shadow-style: 0 2px 8px rgba(0,0,0,0.08); /* Sombra suave e clássica para profundidade */
+    --button-border-radius: 5px; /* Raio de borda padrão para botões, levemente arredondado */
+    --image-border-radius: 8px; /* Raio de borda padrão para imagens, harmonizando com o estilo */
+
+    /* Variável para altura do cabeçalho (pode ser definida dinamicamente pelo JS) */
+    --header-height: 60px; /* Valor padrão, ajuste se necessário */
+}
+
+/* --- 3. Estilos Globais e Resets Básicos --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--secondary-font); /* Aplica Poppins ao corpo */
+    color: var(--text-color); /* Aplica a cor de texto padrão */
+    line-height: 1.6;
+    background-color: var(--background-color); /* Fundo cinza claro/quase branco */
+    -webkit-font-smoothing: antialiased; /* Suavização de fonte para WebKit (Chrome, Safari) */
+    -moz-osx-font-smoothing: grayscale; /* Suavização de fonte para Firefox no macOS */
+    font-size: var(--text-base-font-size-value); /* Aplica o tamanho de texto global */
+    overflow-x: hidden; /* Garante que não haja rolagem horizontal no body */
+}
+
+body.no-scroll {
+    overflow: hidden; /* Para desativar a rolagem da página quando o menu mobile estiver aberto */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--primary-font); /* Aplica Poppins para títulos */
+    color: var(--primary-color); /* Aplica a cor primária aos títulos */
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+    font-size: var(--title-base-font-size-value); /* Aplica o tamanho de título global */
+}
+/* Ajustes para hierarquia de títulos, baseado na variável global */
+h1 { font-size: calc(var(--title-base-font-size-value) * 1.2); }
+h2 { font-size: calc(var(--title-base-font-size-value) * 1); } /* H2 será o tamanho base dos títulos */
+h3 { font-size: calc(var(--title-base-font-size-value) * 0.8); }
+h4 { font-size: calc(var(--title-base-font-size-value) * 0.7); }
+h5 { font-size: calc(var(--title-base-font-size-value) * 0.6); }
+h6 { font-size: calc(var(--title-base-font-size-value) * 0.5); }
+
+
+a {
+    color: var(--primary-color); /* Cor de link padrão */
+    text-decoration: none;
+    transition: color 0.3s ease; /* Transição suave na cor */
+}
+a:hover {
+    color: var(--secondary-color); /* Cor de link ao passar o mouse */
+}
+
+/* --- 4. Layout Geral dos Módulos --- */
+#theme-main-content {
+    max-width: 1200px; /* Largura máxima do conteúdo principal */
+    margin: 20px auto; /* Centraliza o conteúdo com margem superior/inferior */
+    padding: 0 20px; /* Padding nas laterais para telas menores */
+}
+
+.theme-module {
+    margin-bottom: 40px; /* Espaçamento entre os módulos */
+    background-color: var(--white-color); /* Fundo branco para os módulos */
+    padding: 20px;
+    border-radius: 8px; /* Borda padrão arredondada para módulos */
+    box-shadow: var(--shadow-style); /* Aplica a sombra definida nas variáveis */
+    overflow: hidden; /* Garante que conteúdos não vazem dos módulos */
+}
+
+.module-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2em; /* Tamanho do título do módulo */
+    color: var(--primary-color); /* Cor primária para o título do módulo */
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--secondary-color); /* Borda inferior com cor secundária */
+    display: inline-block; /* Para que a borda fique apenas no texto do título */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- 5. Header --- */
+.theme-header {
+    background-color: var(--header-background-color); /* Fundo do cabeçalho */
+    color: var(--header-text-color); /* Cor do texto do cabeçalho */
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column; /* Padrão coluna para mobile, linha para desktop */
+    align-items: center;
+    gap: 15px; /* Espaçamento entre os elementos do header */
+    /* **CORREÇÃO**: Necessário para posicionamento absoluto do menu mobile */
+    position: relative;
+    /* --- FIM DA CORREÇÃO --- */
+}
+
+.theme-header.fixed-header {
+    position: sticky; /* Cabeçalho fixo ao rolar */
+    top: 0;
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+    width: 100%;
+}
+
+.theme-header .header-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ocupa a largura total do cabeçalho */
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    gap: 15px; /* Espaçamento entre os itens da linha principal */
+    /* **CORREÇÃO**: Limitar a largura e centralizar a linha principal do cabeçalho */
+    max-width: 1200px; /* Alinhe com a largura máxima do seu conteúdo principal */
+    margin: 0 auto; /* Centraliza o conteúdo do cabeçalho */
+    /* --- FIM DA CORREÇÃO --- */
+}
+
+.header-logo {
+    flex-shrink: 0; /* Não encolhe a logo */
+}
+
+.theme-header-logo {
+    /* max-height é definida dinamicamente no CSS injetado pelo Preview.tsx */
+    height: auto;
+    width: auto; /* Mantém a proporção */
+}
+
+.theme-header #theme-header-title {
+    margin: 0;
+    font-size: 1.8em; /* Tamanho do título do site no header */
+    font-weight: 600;
+}
+
+/* Estilos para a barra de pesquisa */
+#theme-search-bar-container-desktop,
+#theme-search-bar-container-mobile {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--header-text-color); /* Borda com a cor do texto do header */
+    border-radius: var(--button-border-radius); /* Borda arredondada como os botões */
+    overflow: hidden; /* Garante que a borda se aplique a todo o input/button */
+    background-color: var(--search-bar-background-color); /* Fundo da barra de pesquisa */
+    /* **CORREÇÃO**: Limitar a largura da barra de pesquisa no desktop */
+    max-width: 400px; /* Ou um valor que faça sentido para o seu design */
+    flex-grow: 1; /* Permite que ela cresça até o max-width */
+    transition: all 0.3s ease; /* Transição para o toggle */
+}
+
+#theme-search-bar-container-desktop .theme-search-bar,
+#theme-search-bar-container-mobile .theme-search-bar {
+    padding: 8px 12px;
+    border: none; /* Remove a borda padrão do input */
+    flex-grow: 1; /* Permite que o input preencha o espaço disponível */
+    font-size: 0.9em;
+    background-color: transparent; /* Permite que a cor de fundo do container apareça */
+    color: var(--search-bar-text-color); /* Cor do texto digitado na busca */
+    width: 100%; /* Garante que o input preencha 100% da largura disponível */
+}
+
+/* Estilo para o input de busca quando ativado por ícone (mobile/desktop) */
+.theme-search-bar.active {
+    display: block; /* Garante que o input seja visível */
+}
+
+#theme-search-bar-container-desktop .theme-search-button,
+#theme-search-bar-container-mobile .theme-search-button {
+    background-color: var(--primary-color); /* Cor de fundo do botão de pesquisa */
+    color: var(--white-color); /* Cor do ícone/texto do botão de pesquisa */
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#theme-search-bar-container-desktop .theme-search-button:hover,
+#theme-search-bar-container-mobile .theme-search-button:hover {
+    background-color: var(--secondary-color); /* Cor de hover do botão de pesquisa */
+}
+
+/* **CORREÇÃO**: Tamanho do ícone da lupa dentro do botão de busca */
+#theme-search-bar-container-desktop .theme-search-button i,
+#theme-search-bar-container-mobile .theme-search-button i {
+    font-size: var(--icon-base-size); /* Usa a variável global para tamanho do ícone */
+    color: inherit; /* Herda a cor do botão */
+}
+
+
+/* Ícones no cabeçalho (Carrinho, Lupa, etc.) */
+.header-user-actions .user-action-link,
+.theme-search-icon, /* Ícone de lupa que abre a busca mobile */
+.mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espaçamento entre ícone e texto */
+    color: var(--header-text-color); /* Cor do texto/ícone */
+    font-size: var(--icon-base-size); /* Tamanho base dos ícones */
+    transition: color 0.3s ease;
+}
+
+/* **CORREÇÃO**: Garante que o ícone em si tenha o tamanho correto, se for uma tag <i> ou similar */
+.header-user-actions .user-action-link i,
+.theme-search-icon i,
+.mobile-menu-toggle i {
+    font-size: 1em; /* Garante que o ícone dentro do link/botão use o tamanho do pai */
+    color: var(--search-icon-color); /* Usa a cor definida para o ícone de busca */
+}
+
+.header-user-actions .user-action-link:hover,
+.theme-search-icon:hover,
+.mobile-menu-toggle:hover {
+    color: var(--secondary-color); /* Cor de hover */
+}
+
+.header-user-actions {
+    display: flex;
+    gap: 20px; /* Espaçamento entre os links de ação */
+    align-items: center;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    margin-left: auto; /* Empurra para a direita em desktop */
+}
+
+.cart-link {
+    font-weight: bold;
+}
+.cart-count {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 0.8em;
+    margin-left: 5px;
+    display: inline-block;
+    min-width: 20px; /* Garante que o círculo seja visível mesmo com 0 */
+    text-align: center;
+}
+
+/* Navegação Principal */
+.header-main-nav {
+    width: 100%; /* Ocupa toda a largura abaixo da barra principal */
+    background-color: var(--navbar-background-color); /* Fundo da barra de navegação */
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: var(--shadow-style);
+    transition: all 0.3s ease;
+}
+.header-main-nav.active { /* Para menu mobile ativo (controlado por JS) */
+    display: flex;
+    flex-direction: column;
+}
+
+.main-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Espaçamento entre os itens do menu */
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+.main-nav-list li a {
+    color: var(--navbar-text-color); /* Cor do texto do menu */
+    font-weight: 600;
+    padding: 5px 0;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.main-nav-list li a:hover {
+    color: var(--secondary-color); /* Cor de hover do menu */
+    border-bottom: 2px solid var(--secondary-color);
+}
+
+/* Pesquisa Mobile (oculta por padrão, mostrada via JS/Media Query) */
+.header-search-mobile {
+    width: 100%;
+    /* **CORREÇÃO**: Oculto por padrão no desktop */
+    display: none; 
+    justify-content: center;
+    margin-top: 15px; /* Espaçamento do restante do header */
+    padding: 0 20px; /* Adiciona padding lateral para não colar nas bordas da tela */
+    box-sizing: border-box; /* Garante que o padding não adicione largura extra */
+}
+
+.mobile-menu-toggle {
+    display: none; /* Oculto por padrão, visível em mobile */
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    cursor: pointer;
+    color: var(--header-text-color);
+}
+
+
+/* --- 6. Barra de Anúncio --- */
+.theme-announcement-bar {
+    font-size: 0.9em;
+    font-weight: 500;
+    overflow: hidden;
+    position: relative; /* Para o efeito marquee */
+    text-align: center;
+    padding: 8px 15px;
+    /* Cores de fundo e texto serão aplicadas via JS inline style para flexibilidade */
+}
+.theme-announcement-bar a {
+    color: inherit; /* Herda a cor do texto do anúncio */
+    text-decoration: none;
+}
+.theme-announcement-bar.marquee .announcement-content {
+    display: inline-block;
+    padding-left: 100%; /* Inicia o texto fora da tela à direita */
+    animation: marquee 15s linear infinite; /* Animação de rolagem */
+}
+@keyframes marquee {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); } /* Move o texto para a esquerda */
+}
+
+
+/* --- 7. Buttons --- */
+.theme-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--button-border-radius); /* Raio de borda dos botões */
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease; /* Transição suave em todas as propriedades */
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap; /* Evita quebras de linha em botões pequenos */
+    background-color: var(--primary-color); /* Cor de fundo do botão */
+    color: var(--white-color); /* Cor do texto do botão */
+}
+.theme-button:hover {
+    filter: brightness(1.1); /* Um pequeno brilho no hover, ou pode ser var(--secondary-color) */
+}
+
+
+/* --- 8. Hover Effects (Classes adicionadas via JS para flexibilidade) --- */
+.theme-hover-scale { transform: scale(1); transition: transform 0.3s ease; }
+.theme-hover-scale:hover { transform: scale(1.03); }
+
+.theme-hover-opacity { opacity: 1; transition: opacity 0.3s ease; }
+.theme-hover-opacity:hover { opacity: 0.8; }
+
+.theme-hover-image-zoom { transform: scale(1); transition: transform 0.3s ease; }
+.theme-hover-image-zoom:hover { transform: scale(1.05); }
+
+/* --- 9. Footer --- */
+.theme-footer {
+    background-color: var(--footer-background-color); /* Fundo do rodapé */
+    color: var(--footer-text-color); /* Cor do texto do rodapé */
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Layout responsivo em grid */
+    gap: 30px;
+}
+
+.footer-section {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.footer-section h4 {
+    color: var(--footer-text-color);
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-section ul li a {
+    color: var(--footer-text-color);
+    line-height: 2;
+    opacity: 0.8;
+}
+.footer-section ul li a:hover {
+    opacity: 1;
+}
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+.social-icons img {
+    width: 24px;
+    height: 24px;
+    filter: invert(var(--footer-invert-social-icons)); /* Para ícones claros/escuros conforme fundo */
+}
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.newsletter-form input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.payment-icons img {
+    margin: 0;
+    max-height: 30px;
+}
+.footer-bottom-info {
+    grid-column: 1 / -1; /* Ocupa todas as colunas do grid */
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    margin-top: 20px;
+}
+.footer-copyright, .footer-cnpj {
+    font-size: 0.9em;
+    margin: 5px 0;
+    opacity: 0.7;
+}
+
+/* --- 10. Banner Module Specifics --- */
+.theme-banner-module {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px;
+    text-align: center;
+}
+.theme-banner-module .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+.theme-banner-module .banner-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    text-align: center;
+}
+.theme-banner-module h2 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.theme-banner-module p {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+
+/* --- 11. Mini Banners Module Specifics --- */
+.theme-mini-banners-module {
+    text-align: center;
+}
+.mini-banners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.mini-banners-carousel {
+    display: flex; /* Para simular um carousel */
+    overflow-x: auto; /* Permite rolagem horizontal */
+    gap: 20px;
+    padding-bottom: 10px; /* Para a barra de rolagem não cortar o conteúdo */
+}
+.mini-banner-item {
+    flex-shrink: 0; /* Impede que os itens do carousel encolham */
+    width: 280px; /* Largura fixa para itens do carousel */
+    text-align: center;
+    padding: 15px;
+    display: flex; /* Para alinhar imagem/texto/subtítulo */
+    flex-direction: column;
+    align-items: center;
+}
+.mini-banner-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--image-border-radius);
+    margin-bottom: 10px;
+}
+.mini-banner-item h4 {
+    margin-bottom: 5px;
+    color: #333;
+}
+.mini-banner-item p {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* --- 12. Product Showcase Module Specifics --- */
+.theme-product-showcase-module {
+    text-align: center;
+}
+.theme-product-grid-container {
+    display: grid;
+    gap: 20px;
+    /* As colunas podem ser definidas dinamicamente pelo painel/JS via CSS var ou inline style */
+    /* Fallback para caso não haja a config: */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.theme-product-item {
+    border: 1px solid #eee;
+    padding: 15px;
+    text-align: center;
+    background-color: var(--white-color);
+    border-radius: var(--image-border-radius);
+    box-shadow: var(--shadow-style);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empurra o botão "Comprar" para baixo se necessário */
+}
+.theme-product-item .product-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--image-border-radius);
+    margin-bottom: 10px;
+}
+.theme-product-item .product-title {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #333;
+}
+.theme-product-item .product-price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* --- 13. Text/Image Module Specifics --- */
+.theme-text-image-module {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+.theme-text-image-module.image-left .image-content { order: -1; } /* Imagem primeiro na ordem visual */
+.theme-text-image-module .text-content { flex: 1; }
+.theme-text-image-module .image-content { flex: 1; }
+.theme-text-image-module .image-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--image-border-radius);
+}
+
+/* --- 14. Newsletter Module Specifics --- */
+.theme-newsletter-module {
+    text-align: center;
+    background-color: var(--secondary-color); /* Fundo com a cor secundária para destaque */
+    color: var(--white-color);
+    padding: 40px;
+    border-radius: 8px;
+}
+.theme-newsletter-module .module-title {
+    color: var(--white-color); /* Título branco em fundo escuro */
+    border-bottom-color: rgba(255,255,255,0.3); /* Borda branca transparente */
+}
+.theme-newsletter-module p {
+    margin-bottom: 25px;
+}
+.theme-newsletter-module .newsletter-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.theme-newsletter-module .newsletter-form input {
+    background-color: rgba(255,255,255,0.9); /* Fundo semi-transparente para o input */
+    border: none;
+    color: #333;
+}
+.theme-newsletter-module .newsletter-form button {
+    background-color: var(--primary-color); /* Botão de destaque com a cor primária */
+    color: var(--white-color);
+    font-weight: bold;
+}
+.theme-newsletter-module .privacy-link a {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9em;
+    margin-top: 15px;
+    display: block;
+}
+
+/* --- 15. Categories Module Specifics --- */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+.categories-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding-bottom: 10px;
+}
+.category-item {
+    flex-shrink: 0;
+    width: 160px;
+    text-align: center;
+    padding: 15px;
+    cursor: pointer;
+}
+.category-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 50%; /* Categorias podem ter ícones redondos */
+    border: 1px solid #eee;
+}
+.category-item h4 {
+    margin-bottom: 0;
+    font-size: 1em;
+    color: #333;
+}
+
+/* --- 16. Highlights Module Specifics --- */
+.highlights-icons-text-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    text-align: center;
+}
+.highlights-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+.highlight-item {
+    padding: 20px;
+    text-align: center;
+}
+.highlight-item .highlight-icon {
+    font-size: 3em;
+    display: block;
+    margin-bottom: 10px;
+}
+.highlight-item .highlight-text {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #555;
+}
+
+/* --- 17. Video Module Specifics --- */
+.theme-video-module {
+    text-align: center;
+}
+.theme-video-module .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio para vídeos responsivos */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    margin: 20px auto;
+}
+.theme-video-module .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* --- 18. Product Detail Mock Specifics --- */
+.product-detail-mock {
+    padding: 30px;
+}
+.product-detail-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+.product-detail-layout.top-gallery {
+    flex-direction: column;
+    align-items: center;
+}
+.product-detail-layout .product-gallery {
+    flex-shrink: 0;
+    width: 450px; /* Largura fixa para a galeria principal no desktop */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.product-detail-layout.top-gallery .product-gallery {
+    width: 100%;
+    max-width: 600px; /* Para não ficar muito largo */
+}
+
+.product-detail-layout .product-gallery .main-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--image-border-radius);
+    box-shadow: var(--shadow-style);
+}
+.product-detail-layout .product-gallery .thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+.product-detail-layout .product-gallery .thumbnails img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--image-border-radius);
+    cursor: pointer;
+    border: 1px solid #eee;
+    transition: border-color 0.2s ease;
+}
+.product-detail-layout .product-gallery .thumbnails img:hover {
+    border-color: var(--primary-color);
+}
+
+.product-detail-layout .product-info {
+    flex-grow: 1;
+    text-align: left;
+}
+.product-detail-layout .product-info h2 {
+    font-size: 2em;
+    margin-top: 0;
+    color: #333;
+}
+.product-detail-layout .product-info .price {
+    font-size: 1.8em;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.product-detail-layout .product-info .sku,
+.product-detail-layout .product-info .stock {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+.product-detail-layout .product-info .description {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+.product-detail-layout .product-info .reviews {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    color: #777;
+}
+.product-detail-layout .product-info .trust-badges {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.product-detail-layout .product-info .trust-badges img {
+    max-height: 40px;
+}
+.related-products {
+    margin-top: 50px;
+    text-align: center;
+}
+.related-products h3 {
+    font-size: 1.8em;
+    margin-bottom: 30px;
+}
+
+/* --- 19. Product List Mock Specifics (layout list) --- */
+.theme-product-list-layout-list .product-list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.theme-product-list-layout-list .theme-list-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+    padding: 15px;
+}
+.theme-product-list-layout-list .theme-list-item .product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.theme-product-list-layout-list .theme-list-item .list-item-details {
+    flex-grow: 1;
+}
+.theme-product-list-layout-list .theme-list-item .product-title {
+    font-size: 1.2em;
+}
+.theme-product-list-layout-list .theme-list-item .product-price {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+.theme-product-list-layout-list .theme-list-item .product-description-snippet {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+/* --- 20. Cart Mock Specifics --- */
+.cart-mock {
+    padding: 30px;
+    text-align: center;
+}
+.cart-items {
+    border: 1px solid #eee;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+.cart-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+.cart-item:last-child {
+    border-bottom: none;
+}
+.wholesale-notice, .shipping-estimator, .coupon-field, .cart-notes {
+    background-color: #f2f2f2;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    color: #555;
+}
+.cross-sell-products {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+.cross-sell-products h3 {
+    font-size: 1.6em;
+    margin-bottom: 20px;
+}
+
+
+/* --- 21. Responsive Design (@media Queries) --- */
+@media (max-width: 992px) { /* Ajuste para tablets e mobile */
+    .theme-header .header-main-row {
+        flex-direction: column; /* Elementos do cabeçalho empilhados */
+        align-items: center;
+    }
+    .header-user-actions {
+        width: 100%;
+        justify-content: center; /* Centraliza as ações do usuário em mobile */
+        margin-left: 0; /* Remove o empurrão para a direita */
+    }
+
+    /* **CORREÇÃO**: Menu mobile - Esconde por padrão e posiciona */
+    .header-main-nav {
+        display: none; /* Esconde a navegação por padrão em mobile */
+        position: absolute; /* Permite que o menu se sobreponha ao conteúdo */
+        top: var(--header-height, 60px); /* Posiciona o menu logo abaixo do cabeçalho */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - var(--header-height, 60px)); /* Ocupa o restante da altura da tela */
+        background-color: var(--navbar-background-color); /* Fundo do menu mobile */
+        z-index: 999; /* Garante que fique acima de outros elementos */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Sombra para destacá-lo */
+        overflow-y: auto; /* Adiciona rolagem se o menu for muito longo */
+        padding-bottom: 20px; /* Padding extra para o final da lista em mobile */
+        order: unset; /* Remove o 'order: 1' para position absolute, se existir */
+    }
+    /* --- FIM DA CORREÇÃO --- */
+
+    .header-main-nav.active { /* Para menu mobile ativo (controlado por JS) */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-nav-list {
+        flex-direction: column; /* Menu de navegação em coluna em mobile */
+        gap: 10px;
+    }
+    .main-nav-list li a {
+        padding: 8px 0;
+        display: block; /* Ocupa a largura total para facilitar o clique */
+    }
+
+    #theme-search-bar-container-desktop {
+        display: none; /* Oculta a barra de pesquisa desktop em mobile */
+    }
+    .header-search-mobile {
+        display: flex; /* Mostra a barra de pesquisa mobile */
+        padding: 0 20px; /* Adiciona padding lateral para não colar nas bordas da tela */
+    }
+    /* **CORREÇÃO**: Oculta o input da barra de busca mobile por padrão se o setting for 'icon' */
+    .header-search-mobile .theme-search-bar {
+        display: none; /* Oculto por padrão, será ativado via JS se for tipo 'icon' */
+    }
+    .mobile-menu-toggle {
+        display: block; /* Mostra o botão de menu mobile */
+        position: absolute; /* Posiciona o toggle do menu no canto */
+        top: 20px;
+        right: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    #theme-main-content {
+        padding: 0 15px; /* Reduz o padding lateral em telas menores */
+    }
+    .theme-header {
+        padding: 15px;
+        gap: 10px;
+    }
+    .theme-header .header-main-row {
+        gap: 10px;
+    }
+    .theme-search-bar {
+        width: 100%;
+        max-width: 100%; /* Permite que a barra de pesquisa ocupe mais espaço */
+    }
+    /* Barra de anúncio em mobile */
+    .theme-announcement-bar {
+        font-size: 0.8em;
+        padding: 6px 10px;
+    }
+    .theme-banner-module {
+        min-height: 250px;
+        padding: 20px;
+    }
+    .theme-banner-module h2 {
+        font-size: 2em !important; /* Ajuste para garantir tamanho em mobile */
+    }
+    .theme-banner-module p {
+        font-size: 1em !important; /* Ajuste para garantir tamanho em mobile */
+    }
+    .theme-product-grid-container,
+    .mini-banners-grid,
+    .categories-grid,
+    .highlights-icons-text-container,
+    .highlights-cards-container {
+        grid-template-columns: 1fr; /* Uma coluna em mobile para a maioria dos grids */
+    }
+    .mini-banners-carousel {
+        width: 100%;
+    }
+    .mini-banner-item {
+        width: 90%; /* Ajuste para preencher melhor em mobile carousel */
+        margin: 0 auto;
+    }
+
+    .theme-text-image-module {
+        flex-direction: column; /* Empilha o texto e imagem em mobile */
+        text-align: center;
+    }
+    .theme-text-image-module.image-left .image-content { order: unset; } /* Reseta a ordem em mobile */
+    .theme-text-image-module .text-content,
+    .theme-text-image-module .image-content {
+        width: 100%;
+    }
+
+    .theme-newsletter-module {
+        padding: 30px 15px;
+    }
+
+    .theme-footer {
+        grid-template-columns: 1fr; /* Uma coluna no rodapé em mobile */
+        padding: 30px 15px;
+    }
+    .footer-section {
+        text-align: center; /* Centraliza seções do rodapé */
+    }
+    .newsletter-form {
+        flex-direction: column; /* Formulário de newsletter empilhado */
+        width: 100%;
+    }
+    .newsletter-form input, .newsletter-form button {
+        width: 100%;
+    }
+
+    .product-detail-layout {
+        flex-direction: column; /* Layout de detalhes do produto empilhado */
+        align-items: center;
+        gap: 20px;
+    }
+    .product-detail-layout .product-gallery {
+        width: 100%;
+        max-width: 400px; /* Limita a largura da imagem principal */
+    }
+    .product-detail-layout .product-info {
+        text-align: center;
+    }
+    .product-detail-layout .product-gallery .thumbnails {
+        justify-content: center;
+    }
+
+    .theme-product-list-layout-list .theme-list-item {
+        flex-direction: column; /* Itens da lista de produtos empilhados */
+        text-align: center;
+        gap: 10px;
+    }
+    .theme-product-list-layout-list .theme-list-item .product-image {
+        width: 150px;
+        height: 150px;
+    }
+}

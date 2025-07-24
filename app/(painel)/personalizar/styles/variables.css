@@ -1,0 +1,30 @@
+:root {
+  /* Cores */
+  --color-primary: #6b21a8; /* Seu roxo principal */
+  --color-primary-rgb: 107, 33, 168; /* Versão RGB para rgba() */
+  --color-text-strong: #333333; /* Cor para títulos */
+  --color-text-primary: #666666; /* Cor para texto geral e labels */
+  --color-text-inverted: #ffffff; /* Cor para texto em fundos escuros (ex: botões primários) */
+  --color-border-input: #e0e0e0; /* Borda dos inputs */
+  --color-background-input: #ffffff; /* Fundo dos inputs */
+  --color-background-light: #f9f9f9; /* Fundo de grupos aninhados, bom para secundário */
+  --color-danger: #dc3545; /* Vermelho para ações de perigo */
+  --color-danger-rgb: 220, 53, 69; /* Versão RGB para rgba() */
+
+  /* Espaçamento */
+  --spacing-sm: 0.75rem; /* 12px */
+  --spacing-md: 1.25rem; /* 20px - usado em inputGroup, padding section */
+  --spacing-lg: 2rem; /* 32px - usado em sectionDescription */
+
+  /* Fontes */
+  --font-size-sm: 0.85em; /* Pequeno e discreto */
+  --font-size-md: 0.95em; /* Tamanho confortável para inputs/texto */
+  --font-size-lg: 1.6rem; /* Tamanho para títulos */
+
+  /* Transições */
+  --transition-fast: 0.2s ease;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.03); /* Sombra mais sutil */
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.04); /* Sombra de sectionBlock */
+}

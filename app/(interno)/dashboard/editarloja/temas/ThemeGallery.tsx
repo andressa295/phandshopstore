@@ -3,8 +3,10 @@
 import React, { useState, useCallback } from 'react';
 import temasData from './themes.json';
 import ThemeCard from './ThemeCard';
-import { ThemeModal } from './ThemeModal';
-import styles from './ThemeGallery.module.css'; // <-- Importa o CSS Module da Galeria
+import dynamic from 'next/dynamic';
+import styles from './ThemeGallery.module.css';
+
+const ThemeModal = dynamic(() => import('./ThemeModal'), { ssr: false }); // <-- Força render client-only
 
 interface Tema {
   id: string;
@@ -14,7 +16,7 @@ interface Tema {
   imagemUrl: string;
 }
 
-const temas: Tema[] = temasData as Tema[];
+const temas: Tema[] = temasData;
 
 export default function ThemeGallery() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -32,15 +34,13 @@ export default function ThemeGallery() {
 
   const aplicarTema = useCallback((somenteAplicar: boolean) => {
     if (!temaSelecionado) return;
-
-    console.log(`Aplicando tema: ${temaSelecionado.nome}, personalizar: ${!somenteAplicar}`);
     window.location.href = `/personalizar?tema=${temaSelecionado.id}&personalizar=${!somenteAplicar}`;
   }, [temaSelecionado]);
 
   return (
     <>
-      <div className={styles.galleryGrid}> {/* Usando a classe do CSS Module */}
-        {temas.map((tema: Tema) => (
+      <div className={styles.galleryGrid}>
+        {temas.map((tema) => (
           <ThemeCard key={tema.id} tema={tema} onSelecionar={abrirModal} />
         ))}
       </div>

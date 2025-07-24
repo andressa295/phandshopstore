@@ -1,10 +1,9 @@
-// app/(interno)/dashboard/produtos/editar/[id]/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import FormularioProduto from '../../components/FormularioProduto'; // Caminho para o FormularioProduto
-import type { Produto } from '../../../../../../types/Produto'; // <<< AJUSTE ESTE CAMINHO PARA O SEU ARQUIVO Produto.ts
+import FormularioProduto from '../../components/FormularioProduto'; 
+import type { Produto } from '../../../../../../types/Produto'; 
 
 export default function EditarProdutoPage() {
     const router = useRouter();

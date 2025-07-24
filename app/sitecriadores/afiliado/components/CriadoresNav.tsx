@@ -1,7 +1,7 @@
-// components/CriadoresNav.tsx
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 
 const links = [
   { href: "/", label: "Voltar ao site" },
@@ -13,24 +13,36 @@ export default function CriadoresNav() {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   return (
-    <nav style={{ display: "flex", gap: "1.5rem" }}>
+    <nav
+      style={{
+        display: "flex",
+        gap: "2rem",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "1rem 0",
+        fontSize: "1rem",
+        fontFamily: "'Segoe UI', sans-serif",
+      }}
+    >
       {links.map(({ href, label }, idx) => (
-        <a
-          key={href}
-          href={href}
-          style={{
-            color: hoverIndex === idx ? "#9B59B6" : "#B3B3B3",
-            textDecoration: "none",
-            fontWeight: 500,
-            alignSelf: "center",
-            cursor: "pointer",
-            transition: "color 0.3s",
-          }}
-          onMouseEnter={() => setHoverIndex(idx)}
-          onMouseLeave={() => setHoverIndex(null)}
-        >
-          {label}
-        </a>
+        <Link key={href} href={href} passHref>
+          <span
+            style={{
+              color: hoverIndex === idx ? "#7c3aed" : "#666",
+              textDecoration: "none",
+              fontWeight: 500,
+              cursor: "pointer",
+              transition: "color 0.3s ease-in-out",
+              padding: "4px 8px",
+              borderRadius: "6px",
+              backgroundColor: hoverIndex === idx ? "#f5f0ff" : "transparent",
+            }}
+            onMouseEnter={() => setHoverIndex(idx)}
+            onMouseLeave={() => setHoverIndex(null)}
+          >
+            {label}
+          </span>
+        </Link>
       ))}
     </nav>
   );

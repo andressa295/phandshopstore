@@ -1,68 +1,57 @@
 .cardItem {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px; /* Bordas mais arredondadas */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Sombra mais pronunciada */
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Garante que todos os cards tenham a mesma altura na linha */
+  height: 100%;
 }
 
 .cardItem:hover {
-  transform: translateY(-5px); /* Efeito de "levantar" */
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 .image {
   width: 100%;
-  height: 200px; /* Altura um pouco maior para a imagem */
+  height: 140px;
   object-fit: cover;
-  display: block; /* Remove espaços extras abaixo da imagem */
 }
 
 .info {
-  padding: 20px; /* Mais padding interno */
+  padding: 16px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Empurra o botão para baixo */
+  justify-content: space-between;
 }
 
 .title {
-  font-family: var(--font-playfair-display); /* Usando a variável da Playfair Display */
-  font-weight: 300;
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 8px;
-  line-height: 1.2;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 4px;
 }
 
 .category {
-  font-family: var(--font-montserrat); /* Usando a variável da Montserrat, que é mais fina */
-  font-weight: 300; /* Para ser "fininha" */
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #666;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .button {
-  background-color: #6B46C1; /* Roxo principal */
-  color: #fff;
-  padding: 10px 20px;
+  padding: 8px 16px;
+  background-color: #6B46C1;
+  color: white;
   border: none;
-  border-radius: 9999px; /* Botão oval/redondo */
+  border-radius: 8px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: uppercase; /* Deixa o texto em maiúsculas */
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  width: 100%; /* Ocupa a largura total */
+  font-size: 0.9rem;
 }
 
 .button:hover {
-  background-color: #5a3a9e; /* Roxo mais escuro no hover */
-  transform: translateY(-2px); /* Efeito de "levantar" no botão */
+  background-color: #553c9a;
 }

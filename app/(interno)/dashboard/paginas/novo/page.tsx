@@ -1,4 +1,3 @@
-// app\(interno)\dashboard\paginas\novo\page.tsx (NOVO ARQUIVO: PÁGINA PARA ADICIONAR PÁGINA)
 'use client';
 
 import React, { useEffect, useState } from 'react';

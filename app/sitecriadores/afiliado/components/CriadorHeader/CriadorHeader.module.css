@@ -1,0 +1,35 @@
+.header {
+  width: 100%;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.left, .center, .right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.center {
+  justify-content: center;
+  flex: 1;
+}
+
+.voltar {
+  color: #7c3aed;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.loginLink {
+  margin-left: 4px;
+  color: #7c3aed;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 14px;
+}

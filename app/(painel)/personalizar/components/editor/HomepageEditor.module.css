@@ -1,0 +1,250 @@
+.editorWrapper {
+  padding: 1.2rem;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  color: #222222;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  text-align: left;
+  letter-spacing: -0.03em;
+}
+
+.fieldDescription {
+  color: #666666;
+  font-size: 0.6em;
+  margin-top: 0px;
+  line-height: 1.2;
+  margin-bottom: 15px;
+}
+
+.noContentMessage {
+  text-align: center;
+  color: #a0a0a0;
+  padding: 30px 20px;
+  border: 1px dashed #cccccc;
+  border-radius: 10px;
+  background-color: #ffffff;
+  font-style: italic;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.modulesListContainer {
+    margin-top: 10px;
+}
+
+.modulesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- FAB (Floating Action Button) Container - CENTRALIZADO E MAIS ALTO --- */
+.addModuleFabContainer {
+  position: relative; 
+  margin: 10px auto 0 auto; /* MUDANÇA: Centraliza horizontalmente com auto e sobe (20px top, 0 bottom) */
+  width: fit-content; /* MUDANÇA: Ocupa apenas a largura do conteúdo para centralizar corretamente */
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.addModuleFab {
+  background-color: #8d4edb;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em; /* AJUSTADO para se adequar ao 50x50 */
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+  transition: all 0.25s ease-in-out;
+}
+
+.addModuleFab:hover {
+  background-color: #6b21a8;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.35);
+}
+
+.addModuleFab:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* --- Dropdown de Adicionar Módulo - POSICIONADO ACIMA DO FAB --- */
+.addModuleDropdown {
+  position: absolute;
+  bottom: 60px; /* MUDANÇA: Altura do FAB (50px) + 10px de gap */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  padding: 15px;
+  z-index: 1001;
+  min-width: 280px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s;
+  box-sizing: border-box;
+}
+
+.addModuleDropdown.isActive {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.addModuleDropdown h4 {
+  color: #333333;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 12px; /* AJUSTADO */
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.moduleSelectionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+}
+
+.moduleSelectionButton {
+  background-color: #f0f0f0;
+  color: #444444;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.8em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+  white-space: normal;
+  line-height: 1.2;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.moduleSelectionButton:hover {
+  background-color: #e5e5e5;
+  border-color: #8d4edb;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.moduleSelectionButton:active {
+  background-color: #d0d0d0;
+  transform: translateY(0);
+}
+
+
+.backToModulesButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #8d4edb;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  margin-bottom: 25px;
+  text-decoration: none;
+}
+
+.backToModulesButton:hover {
+  background-color: rgba(141, 78, 219, 0.1);
+  color: #6b21a8;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .editorWrapper {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .sectionTitle {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  .fieldDescription {
+    font-size: 0.85em;
+    margin-bottom: 20px;
+  }
+  .noContentMessage {
+    padding: 30px 20px;
+  }
+  .modulesList {
+    gap: 12px;
+  }
+  .addModuleFabContainer {
+    bottom: 15px;
+    margin-top: 20px;
+  }
+  .addModuleFab {
+    width: 45px;
+    height: 45px;
+    font-size: 1.1em;
+  }
+  .addModuleDropdown {
+    bottom: 60px; /* AJUSTADO para mobile */
+    padding: 15px;
+    min-width: unset;
+    width: 90%;
+    left: 5%;
+    transform: translateX(0);
+    box-sizing: border-box;
+  }
+  .addModuleDropdown.isActive {
+    transform: translateY(0);
+  }
+  .addModuleDropdown h4 {
+    font-size: 0.95em;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+  .moduleSelectionGrid {
+    gap: 6px;
+    grid-template-columns: 1fr;
+  }
+  .moduleSelectionButton {
+    padding: 10px 6px;
+    font-size: 0.75em;
+  }
+  .moduleEditorBlock {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  .backToModulesButton {
+    font-size: 0.95em;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+  }
+}

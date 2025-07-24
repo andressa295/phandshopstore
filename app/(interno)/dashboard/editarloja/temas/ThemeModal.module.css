@@ -1,32 +1,31 @@
 .overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0,0,0,0.45); /* Sombra mais escura */
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000; /* Z-index alto para ficar acima de tudo */
-  backdrop-filter: blur(3px); /* Efeito de blur no fundo */
+  z-index: 9999;
 }
 
 .content {
-  background-color: #ffffff;
-  padding: 40px; /* Mais padding */
-  border-radius: 16px; /* Cantos arredondados */
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* Sombra elegante */
-  max-width: 480px; /* Um pouco mais largo */
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
   width: 90%;
-  text-align: center;
-  font-family: 'Poppins', sans-serif; /* Certifique-se que essa fonte está carregada */
-  color: #333;
+  max-width: 480px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   position: relative;
-  animation: fadeInScale 0.3s ease-out forwards; /* Animação de entrada */
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeInScale {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
@@ -34,76 +33,72 @@
   }
 }
 
-.content h2 {
-  font-family: 'Playfair Display', serif; /* Fonte chique para o título do modal */
-  font-weight: 700;
-  font-size: 1.8rem; /* Tamanho maior */
-  margin-bottom: 20px; /* Mais espaço */
-  color: #222;
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
 }
 
-.content strong {
-  color: #6B46C1; /* Destaca o nome do tema */
+.title strong {
+  color: #6B46C1;
 }
 
-.buttonsGroup { /* Nome da classe em camelCase para CSS Modules */
-  margin-top: 30px;
+.buttonsGroup {
   display: flex;
-  flex-direction: column; /* Botões um embaixo do outro no celular */
-  gap: 15px;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-@media (min-width: 480px) { /* Para telas um pouco maiores, botões lado a lado */
+@media (min-width: 480px) {
   .buttonsGroup {
     flex-direction: row;
     justify-content: center;
   }
 }
 
-.button { /* Classe base para os botões do modal */
-  padding: 12px 25px;
+.button {
+  padding: 12px 20px;
   border: none;
   border-radius: 9999px;
-  font-size: 1.1rem;
   font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  flex-grow: 1;
+  flex: 1;
+  transition: background-color 0.2s ease;
 }
 
 .buttonPrimary {
   background-color: #6B46C1;
-  color: #fff;
+  color: white;
 }
 
 .buttonPrimary:hover {
   background-color: #5a3a9e;
-  transform: translateY(-2px);
 }
 
 .buttonSecondary {
   background-color: #9F7AEA;
-  color: #fff;
+  color: white;
 }
 
 .buttonSecondary:hover {
   background-color: #8a6bc8;
-  transform: translateY(-2px);
 }
 
 .closeButton {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 12px;
+  right: 12px;
+  font-size: 24px;
   background: transparent;
   border: none;
-  font-size: 28px;
-  cursor: pointer;
   color: #aaa;
-  transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .closeButton:hover {
-  color: #666;
+  color: #555;
   transform: rotate(90deg);
+  transition: transform 0.3s ease, color 0.3s ease;
 }

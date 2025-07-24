@@ -1,15 +1,21 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Poppins } from 'next/font/google';
 import styles from './Cadastro.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
+type PlanosKeys = 'gratis' | 'essencial' | 'profissional' | 'premium';
+
+const planoNomes: Record<PlanosKeys, string> = {
+  gratis: 'Plano Grátis',
+  essencial: 'Plano Essencial',
+  profissional: 'Plano Profissional',
+  premium: 'Plano Phand Premium',
+};
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -23,23 +29,26 @@ const EyeOffIcon = () => (
     <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
     <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
     <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
-    <line x1="2" x2="22" y1="2" y2="22"></line>
+    <line x1="2" y1="2" x2="22" y2="22"></line>
   </svg>
 );
 
+interface FormState {
+  nome: string;
+  email: string;
+  telefone: string;
+  senha: string;
+  confirmSenha: string;
+  aceitaTermos: boolean;
+}
 
 function CadastroForm() {
+  const supabase = createClientComponentClient();
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const [nomeDoPlano, setNomeDoPlano] = useState('');
+  const [nomeDoPlano, setNomeDoPlano] = useState<string>('');
 
-  const planoNomes: { [key: string]: string } = {
-    gratis: 'Plano Grátis',
-    essencial: 'Plano Essencial',
-    profissional: 'Plano Profissional',
-    premium: 'Plano Phand Premium',
-  };
-
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     nome: '',
     email: '',
     telefone: '',
@@ -48,10 +57,11 @@ function CadastroForm() {
     aceitaTermos: false,
   });
 
-  const [showSenha, setShowSenha] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [valid, setValid] = useState(false);
+  const [showSenha, setShowSenha] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [valid, setValid] = useState<boolean>(false);
 
   const validarEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
@@ -64,11 +74,11 @@ function CadastroForm() {
   };
 
   useEffect(() => {
-    const planoQuery = searchParams.get('plano');
+    const planoQuery = searchParams.get('plano') as PlanosKeys | null;
     if (planoQuery && planoNomes[planoQuery]) {
       setNomeDoPlano(planoNomes[planoQuery]);
     }
-  }, [searchParams, planoNomes]);
+  }, [searchParams]);
 
   useEffect(() => {
     const isValid =
@@ -78,78 +88,138 @@ function CadastroForm() {
       form.senha === form.confirmSenha &&
       form.aceitaTermos;
     setValid(isValid);
-  }, [form]);
+    if (error) setError('');
+    if (successMessage) setSuccessMessage('');
+  }, [form, error, successMessage]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value, type, checked } = e.target;
-    if (name === 'telefone') {
-      setForm(prev => ({ ...prev, telefone: formatPhone(value) }));
-    } else if (type === 'checkbox') {
-      setForm(prev => ({ ...prev, [name]: checked }));
-    } else {
-      setForm(prev => ({ ...prev, [name]: value }));
-    }
-  }
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
     if (!valid) {
-      setError('Preencha todos os campos corretamente e aceite os termos');
+      setError('Preencha todos os campos corretamente e aceite os termos de uso.');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.senha,
+      });
+
+      if (signUpError || !signUpData?.user) {
+        setError('Erro ao criar usuário: ' + (signUpError?.message || 'Erro desconhecido.'));
+        setLoading(false);
+        return;
+      }
+
+      const { error: insertError } = await supabase.from('usuarios').insert({
+        id: signUpData.user.id,
+        nome: form.nome,
+        email: form.email,
+        telefone: form.telefone,
+        plano: nomeDoPlano || 'Gratuito',
+      });
+
+      if (insertError) {
+        console.error("Erro ao inserir dados na tabela 'usuarios':", insertError);
+        setError('Erro ao salvar dados do usuário: ' + insertError.message);
+        setLoading(false);
+        return;
+      }
+
+      await fetch('/api/email/boasvindas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: form.nome, email: form.email, plano: nomeDoPlano || 'Gratuito' }),
+      });
+
       setLoading(false);
-      alert(`Cadastro com o ${nomeDoPlano} realizado com sucesso (mock)!`);
-    }, 1500);
+      setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano || 'Plano Grátis'}! Redirecionando...`);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError('Erro inesperado: ' + err.message);
+      } else {
+        setError('Erro inesperado: Tente novamente.');
+      }
+      setLoading(false);
+    }
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : type === 'tel' ? formatPhone(value) : value,
+    }));
   }
 
   return (
     <main className={`${poppins.className} ${styles.mainContainer}`}>
-      <div className={styles.formWrapper}>
-        <h1 className={styles.title}>Crie sua conta</h1>
+      <form onSubmit={handleSubmit} noValidate>
+        <h1>Cadastro {nomeDoPlano}</h1>
 
-        {nomeDoPlano && (
-          <div className={styles.planoSelecionado}>
-            <p>Você está se cadastrando para o</p>
-            <strong>{nomeDoPlano}</strong>
-          </div>
-        )}
+        <label htmlFor="nome">Nome</label>
+        <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required minLength={2} />
 
-        <form onSubmit={handleSubmit} noValidate>
-          <label htmlFor="nome" className={styles.label}>Nome completo</label>
-          <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required placeholder="Seu nome" className={`${styles.inputField} ${form.nome.trim().length >= 2 ? styles.inputValid : ''}`} />
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required />
 
-          <label htmlFor="email" className={styles.label}>Email</label>
-          <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required placeholder="email@exemplo.com" className={`${styles.inputField} ${validarEmail(form.email) ? styles.inputValid : ''}`} />
+        <label htmlFor="telefone">Telefone</label>
+        <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} />
 
-          <label htmlFor="telefone" className={styles.label}>Telefone</label>
-          <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} placeholder="(99) 99999-9999" className={`${styles.inputField} ${form.telefone.length >= 14 ? styles.inputValid : ''}`} />
-
-          <label htmlFor="senha" className={styles.label}>Senha</label>
-          <div className={styles.passwordWrapper}>
-            <input id="senha" name="senha" type={showSenha ? 'text' : 'password'} value={form.senha} onChange={handleChange} required minLength={6} placeholder="Mínimo 6 caracteres" className={`${styles.inputField} ${form.senha.length >= 6 ? styles.inputValid : ''}`} />
-            <button type="button" onClick={() => setShowSenha(!showSenha)} className={styles.togglePasswordButton} aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}>
-              {showSenha ? <EyeOffIcon /> : <EyeIcon />}
-            </button>
-          </div>
-
-          <label htmlFor="confirmSenha" className={styles.label}>Confirmar senha</label>
-          <input id="confirmSenha" name="confirmSenha" type="password" value={form.confirmSenha} onChange={handleChange} required minLength={6} placeholder="Confirme a senha" className={`${styles.inputField} ${form.confirmSenha === form.senha && form.confirmSenha.length >= 6 ? styles.inputValid : ''}`} />
-
-          <label htmlFor="aceitaTermos" className={styles.termsLabel}>
-            <input id="aceitaTermos" name="aceitaTermos" type="checkbox" checked={form.aceitaTermos} onChange={handleChange} required />
-            Aceito os&nbsp;<a href="/termos" target="_blank">termos de uso</a>&nbsp;e&nbsp;<a href="/privacidade" target="_blank">política de privacidade</a>
-          </label>
-
-          {error && <p className={styles.errorText}>{error}</p>}
-
-          <button type="submit" disabled={!valid || loading} className={styles.submitButton}>
-            {loading ? 'Criando conta...' : 'Criar Conta'}
+        <label htmlFor="senha">Senha</label>
+        <div style={{ position: 'relative' }}>
+          <input
+            id="senha"
+            name="senha"
+            type={showSenha ? 'text' : 'password'}
+            value={form.senha}
+            onChange={handleChange}
+            required
+            minLength={6}
+          />
+          <button
+            type="button"
+            onClick={() => setShowSenha(!showSenha)}
+            style={{ position: 'absolute', right: 8, top: 8, background: 'none', border: 'none', cursor: 'pointer' }}
+            aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}
+          >
+            {showSenha ? <EyeOffIcon /> : <EyeIcon />}
           </button>
-        </form>
-      </div>
+        </div>
+
+        <label htmlFor="confirmSenha">Confirmar Senha</label>
+        <input
+          id="confirmSenha"
+          name="confirmSenha"
+          type={showSenha ? 'text' : 'password'}
+          value={form.confirmSenha}
+          onChange={handleChange}
+          required
+          minLength={6}
+        />
+
+        <label>
+          <input
+            type="checkbox"
+            name="aceitaTermos"
+            checked={form.aceitaTermos}
+            onChange={handleChange}
+            required
+          />
+          Aceito os termos de uso
+        </label>
+
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Cadastrando...' : 'Cadastrar'}
+        </button>
+      </form>
     </main>
   );
 }

@@ -1,7 +1,7 @@
-'use client'; 
+'use client';
 
 import React, { useEffect } from 'react';
-import styles from './ThemeModal.module.css'; 
+import styles from './ThemeModal.module.css';
 
 interface Tema {
   id: string;
@@ -18,83 +18,40 @@ interface ThemeModalProps {
   onApply: (somenteAplicar: boolean) => void;
 }
 
-export const ThemeModal: React.FC<ThemeModalProps> = ({ isOpen, onClose, tema, onApply }) => {
+const ThemeModal: React.FC<ThemeModalProps> = ({ isOpen, onClose, tema, onApply }) => {
   if (!isOpen || !tema) return null;
 
-  const handleEscapeKey = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  };
-
   useEffect(() => {
-    // Adiciona o listener de teclado
-    document.addEventListener('keydown', handleEscapeKey);
-
-    // Adiciona a classe no body para desabilitar o scroll
-    // Adiciona uma verificação para garantir que document.body existe
-    if (document.body) {
-      document.body.style.overflow = 'hidden';
-    }
+    const handleEscape = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', handleEscape);
+    document.body.style.overflow = 'hidden';
 
     return () => {
-      // Remove o listener de teclado
-      document.removeEventListener('keydown', handleEscapeKey);
-
-      // Remove a classe do body ao fechar o modal
-      // Adiciona uma verificação para garantir que document.body existe antes de manipulá-lo
-      if (document.body) {
-        document.body.style.overflow = '';
-      }
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
     };
-  }, [onClose]); // Dependência em onClose
+  }, [onClose]);
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      className={styles.overlay} 
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-    >
-      <div className={styles.content}> 
-        <h2 id="modal-title">
+    <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className={styles.content}>
+        <h2 className={styles.title}>
           Deseja aplicar o tema <strong>{tema.nome}</strong> e personalizar agora?
         </h2>
-        <div className={styles.buttonsGroup}> 
-          <button
-            className={`${styles.button} ${styles.buttonPrimary}`} 
-            onClick={() => {
-              onApply(true);
-              onClose();
-            }}
-            aria-label={`Só aplicar tema ${tema.nome}`}
-          >
+
+        <div className={styles.buttonsGroup}>
+          <button className={`${styles.button} ${styles.buttonPrimary}`} onClick={() => { onApply(true); onClose(); }}>
             Só aplicar
           </button>
-          <button
-            className={`${styles.button} ${styles.buttonSecondary}`} 
-            onClick={() => {
-              onApply(false);
-              onClose();
-            }}
-            aria-label={`Aplicar e personalizar tema ${tema.nome}`}
-          >
+          <button className={`${styles.button} ${styles.buttonSecondary}`} onClick={() => { onApply(false); onClose(); }}>
             Aplicar e personalizar
           </button>
         </div>
-        <button
-          onClick={onClose}
-          className={styles.closeButton} 
-          aria-label="Fechar modal"
-        >
-          ✕
-        </button>
+
+        <button className={styles.closeButton} onClick={onClose} aria-label="Fechar modal">✕</button>
       </div>
     </div>
   );
 };
+
+export default ThemeModal;

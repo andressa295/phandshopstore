@@ -1,6 +1,4 @@
-// app\(interno)\dashboard\integracoes\facebook-meta\page.tsx (CORRIGIDO: REMOVIDO EXPORT DEFAULT DUPLICADO)
-'use client'; // ESSENCIAL: DEVE SER A PRIMEIRA LINHA
-
+'use client'; 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaFacebookF, FaSyncAlt, FaToggleOn, FaToggleOff, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPlug } from 'react-icons/fa';

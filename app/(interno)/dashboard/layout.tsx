@@ -18,7 +18,7 @@ import { MdSettings } from 'react-icons/md';
 // DEFINIÇÕES DE COLORS E TYPOGRAPHY
 const colors = {
     primary: '#6b21a8',
-    secondary: '#a21caf',
+    secondary: '#820AD1',
     accent: '#7C3AED',
     text: '#333333',
     lightText: '#666666',
@@ -95,8 +95,8 @@ const menuItems: MenuItem[] = [
     },
     {
         icon: <FaFacebook />, label: 'Redes sociais', children: [
-            { label: 'Facebook / Meta', href: '/dashboard/integracoes/facebook-meta' },
-            { label: 'Instagram Shopping', href: '/dashboard/redes/instagram' },
+            { label: 'Facebook / Meta', href: '/dashboard/facebook-meta' },
+            { label: 'Instagram Shopping', href: '/dashboard/instagram' },
             { label: 'Google Shopping', href: '/dashboard/google-shopping' }
         ]
     },

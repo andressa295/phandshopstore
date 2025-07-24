@@ -1,4 +1,3 @@
-// app\(interno)\dashboard\categorias\page.tsx (CORRIGIDO: ESCOPO E TIPAGEM)
 'use client';
 
 import React, { useState, useEffect } from 'react';

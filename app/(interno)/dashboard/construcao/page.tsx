@@ -1,5 +1,4 @@
-// app\(interno)\dashboard\construcao\page.tsx (CORRIGIDO: ERRO DE HIDRATAÇÃO ROBUSTO)
-'use client'; // ESSENCIAL: DEVE SER A PRIMEIRA LINHA
+'use client'; 
 
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';

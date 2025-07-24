@@ -99,7 +99,7 @@ export default function DashboardPage() {
     return (
         <div style={{ padding: '20px', fontFamily: typography.fontFamily, color: colors.text }}>
             <h1 style={{ fontSize: typography.headingSize, fontWeight: 'bold', marginBottom: '8px', color: colors.primary }}>
-                👋 Bem-vindo de volta!
+                 Bem-vindo de volta!
             </h1>
             <p style={{ fontSize: typography.bodySize, color: colors.lightText, marginBottom: '32px' }}>
                 Aqui está um resumo do desempenho da sua loja.

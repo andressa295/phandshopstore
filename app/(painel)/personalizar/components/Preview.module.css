@@ -1,0 +1,80 @@
+.previewContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 100%; 
+  height: 100%; 
+  padding: 20px;
+  background-color: #f8f9fa; 
+  transition: all 0.3s ease-in-out; 
+  overflow: hidden; 
+}
+
+
+
+.themeIframe {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff; /* Fundo do iframe */
+  transition: all 0.3s ease-in-out; /* Transição para redimensionamento */
+}
+
+
+.desktop .themeIframe {
+  width: 100%; 
+  height: 100%; 
+  max-width: 1280px; 
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mobile .themeIframe {
+  width: 375px; /* Largura padrão de um iPhone X/XR/11 Pro */
+  height: 667px; /* Altura padrão de um iPhone X/XR/11 Pro */
+  border-radius: 20px; /* Bordas arredondadas para simular um celular */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Sombra mais pronunciada */
+}
+
+/* Opcional: Adicionar estilos para simulação de bordas de telefone */
+/* Isso exigiria que o iframe fosse um elemento flexível dentro de um container com as bordas */
+/*
+.mobile::before,
+.mobile::after {
+    content: '';
+    position: absolute;
+    background-color: #333;
+    border-radius: 5px;
+    z-index: 10;
+}
+.mobile::before { // Notch (parte superior)
+    top: 0px; // Ajuste para a posição exata
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 25px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+.mobile::after { // Botão home (parte inferior)
+    bottom: 0px; // Ajuste para a posição exata
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 8px;
+    border-radius: 4px;
+}
+*/
+
+/* Media query para lidar com telas do navegador menores que o próprio mobile preview */
+@media (max-width: 420px) { /* Se a tela for menor que a largura do iPhone X */
+  .mobile .themeIframe {
+    width: 90vw; /* Ajusta a largura para 90% da viewport */
+    height: 80vh; /* Ajusta a altura para 80% da viewport */
+    border-radius: 15px; /* Borda um pouco menor */
+  }
+  .previewContainer {
+    padding: 10px; /* Reduz o padding do container para telas pequenas */
+  }
+}

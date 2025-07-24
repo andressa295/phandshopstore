@@ -14,7 +14,7 @@ import { MdSettings } from 'react-icons/md';
 // Definindo cores e tipografia (copiadas para autossuficiência do componente)
 const colors = {
     primary: '#6b21a8',
-    secondary: '#a21caf',
+    secondary: '#6b21a8',
     accent: '#7C3AED',
     text: '#333333',
     lightText: '#666666',
@@ -41,17 +41,17 @@ const HeaderPainel: React.FC = () => {
 
     // Itens do dropdown de perfil do usuário
     const dropdownItems = [
-        { label: 'Minha conta', icon: <FaUserCircle />, href: '/dashboard/minha-conta' },
-        { label: 'Pagamentos e assinaturas', icon: <FaCreditCard />, href: '/dashboard/pagamentos-assinaturas' },
-        { label: 'Histórico de faturas', icon: <FaFileInvoiceDollar />, href: '/dashboard/historico-faturas' },
-        { label: 'Tarifas por vendas', icon: <FaDollarSign />, href: '/dashboard/tarifas-vendas' },
-        { label: 'Planos', icon: <FaHistory />, href: '/dashboard/planos' },
-        { label: 'Medidas de segurança', icon: <FaShieldAlt />, href: '/dashboard/medidas-seguranca' },
-        { label: 'Usuários e notificações', icon: <FaUsers />, href: '/dashboard/usuarios-notificacoes' },
-        { label: 'Sessões e dispositivos', icon: <FaBell />, href: '/dashboard/sessoes-dispositivos' },
-        { label: 'Dados da minha conta', icon: <FaUserCircle />, href: '/dashboard/dados-conta' },
-        { label: 'Redes sociais', icon: <FaShareAlt />, href: '/dashboard/redes-sociais' },
-        { label: 'Dados do meu negócio', icon: <FaBuilding />, href: '/dashboard/dados-negocio' },
+        { label: 'Minha conta', icon: <FaUserCircle />, href: '/dashboard/menu/minha-conta' },
+        { label: 'Pagamentos e assinaturas', icon: <FaCreditCard />, href: '/dashboard/menu/pagamentos-assinaturas' },
+        { label: 'Histórico de faturas', icon: <FaFileInvoiceDollar />, href: '/dashboard/menu/historico-faturas' },
+        { label: 'Tarifas por vendas', icon: <FaDollarSign />, href: '/dashboard/menu/tarifas-por-vendas' },
+        { label: 'Planos', icon: <FaHistory />, href: '/dashboard/menu/planos' },
+        { label: 'Medidas de segurança', icon: <FaShieldAlt />, href: '/dashboard/menu/medidas-seguranca' },
+        { label: 'Usuários e notificações', icon: <FaUsers />, href: '/dashboard/menu/usuarios-notificacoes' },
+        { label: 'Sessões e dispositivos', icon: <FaBell />, href: '/dashboard/menu/sessoes-dispositivos' },
+        { label: 'Dados da minha conta', icon: <FaUserCircle />, href: '/dashboard/menu/dados-conta' },
+        { label: 'Redes sociais', icon: <FaShareAlt />, href: '/dashboard/menu/redes-sociais' },
+        { label: 'Dados do meu negócio', icon: <FaBuilding />, href: '/dashboard/menu/dados-negocio' },
         { label: 'Sair', icon: <FaSignOutAlt />, href: '/logout' },
     ];
 

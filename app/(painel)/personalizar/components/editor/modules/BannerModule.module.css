@@ -1,0 +1,150 @@
+.sectionBlock {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #8d4edb;
+}
+
+.nestedTitle {
+  color: #222;
+  font-size: 1.1em;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputLabel {
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.textInput,
+.textArea,
+.selectInput {
+  width: 100%;
+  padding: 12px 17px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  font-size: 1em;
+  font-family: inherit;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.03);
+}
+
+.textInput:focus,
+.textArea:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
+  outline: none;
+}
+
+.textArea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.fieldDescription {
+  font-size: 0.85em;
+  color: #777;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95em;
+}
+
+.checkboxInput {
+  width: 20px;
+  height: 20px;
+  accent-color: #8d4edb;
+}
+
+.logoUploadBox {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border: 2px dashed #d0d0d0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.logoUploadBox:hover {
+  border-color: #8d4edb;
+}
+
+.uploadIconPlaceholder {
+  font-size: 2.5em;
+  color: #bbb;
+}
+
+.logoPlaceholder {
+  font-size: 0.9em;
+  color: #999;
+}
+
+.uploadInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  text-align: center;
+}
+
+.fullBleedImagePreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  transition: color 0.2s ease;
+}
+
+.removeButton:hover {
+  color: #dc3545;
+}
+
+.removeIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}

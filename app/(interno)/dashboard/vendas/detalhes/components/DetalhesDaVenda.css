@@ -1,0 +1,896 @@
+/* app/(interno)/dashboard/vendas/detalhes-venda/components/DetalhesDaVenda.css */
+
+/* --- Importação da Fonte Poppins --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif; /* Garante que Poppins seja a fonte padrão aqui */
+    margin: 0;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* --- Container Principal --- */
+.detalhes-venda-container {
+    padding: 30px;
+}
+
+/* --- Cabeçalho da Página --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.page-header h1 {
+    font-size: 2em;
+    color: #2c3e50;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    flex-grow: 1;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Estilos para Botões de Ação no Header */
+.page-header button {
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+
+.back-button {
+    background-color: #E0E0E0;
+    color: #757575;
+    border-color: #E0E0E0;
+}
+.back-button:hover {
+    background-color: #F5F5F5;
+    border-color: #F5F5F5;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.edit-button { /* Botão "Editar Venda Completa" */
+    background-color: #820AD1;
+    color: white;
+    border-color: #820AD1;
+}
+.edit-button:hover {
+    background-color: #9C46D8;
+    border-color: #9C46D8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+.cancel-button:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.reabrir-button {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+.reabrir-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+/* --- NOVA BARRA: Controle de Status e Ações --- */
+.status-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaçamento entre os elementos da barra */
+    background-color: white;
+    padding: 15px 30px; /* Padding um pouco maior para destaque */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 30px; /* Espaçamento com o grid de detalhes */
+    flex-wrap: wrap; /* Para responsividade */
+}
+
+.current-status-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    font-weight: bold;
+}
+/* O status-badge já tem seu estilo definido abaixo */
+
+.status-change-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.status-change-control label {
+    font-weight: bold;
+    color: #555;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95em;
+}
+.status-select-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px; /* Oval */
+    background-color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-family: 'Poppins', sans-serif;
+    min-width: 180px;
+    appearance: none; /* Remove seta padrão do select */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+.status-select-dropdown optgroup {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botões de Ação na barra de status (Arquivar) */
+.archive-button {
+    background-color: #7f8c8d; /* Cinza para arquivar */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+.archive-button:hover {
+    background-color: #616e78;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+/* --- Grid Principal de Detalhes da Venda (Duas Colunas) --- */
+.venda-details-grid {
+    display: grid;
+    /* Ajuste as proporções das colunas para que a coluna da esquerda (itens) seja maior */
+    grid-template-columns: 2fr 1fr; /* Esquerda (Itens/Histórico) 2x maior que Direita (Info cards) */
+    gap: 25px; /* Espaçamento entre as colunas */
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Espaçamento entre os cards na coluna esquerda */
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Espaçamento entre os cards na coluna direita */
+}
+
+.detail-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.detail-card h3 {
+    font-size: 1.3em;
+    color: #2980b9;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+    display: flex; /* Para alinhar título e ícone */
+    align-items: center;
+    justify-content: space-between; /* Ícone no final */
+}
+
+/* Estilo para o ícone de edição (SVG) */
+.detail-card h3 .icon-edit { /* Usando classe para ícone de editar */
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23820AD1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.detail-card h3 .icon-edit:hover {
+    transform: scale(1.1);
+}
+
+.detail-card p {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 0.95em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.detail-card p strong {
+    color: #555;
+    font-weight: 500;
+}
+
+/* Estilo para a linha do WhatsApp, para que o número não seja negrito */
+.whatsapp-info-line {
+    font-weight: normal; /* Sobrescreve negrito do strong se aplicado */
+    display: flex; /* Para alinhar o conteúdo interno do p */
+    align-items: center;
+    gap: 5px; /* Espaçamento entre o ícone e o número */
+}
+
+/* --- Estilo para link WhatsApp --- */
+.whatsapp-link {
+    color: #28a745; /* Verde para WhatsApp */
+    text-decoration: none;
+    font-weight: normal; /* Remove negrito padrão de link */
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+.whatsapp-link:hover {
+    color: #218838;
+    text-decoration: underline;
+}
+/* Estilo para o ícone FaWhatsapp (se usar classes globais de react-icons, pode não ser necessário) */
+.whatsapp-link svg {
+    font-size: 1.1em; /* Ajuste o tamanho do ícone */
+    color: #25D366; /* Cor verde do WhatsApp */
+    flex-shrink: 0; /* Impede que o ícone encolha */
+}
+
+
+/* Link de rastreamento no painel de Informações de Envio */
+.tracking-link {
+    color: #007bff; /* Azul padrão de link */
+    text-decoration: none;
+    font-weight: normal;
+    transition: text-decoration 0.2s ease;
+}
+.tracking-link:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Estilo dos Badges de Status (Reutilizados da lista de vendas) --- */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 15px; /* Oval */
+    font-size: 0.85em;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+    display: inline-block;
+    margin-left: 5px; /* Espaçamento para o texto "Status Atual" */
+    font-family: 'Poppins', sans-serif;
+}
+/* Cores dos badges de status (incluindo os novos) */
+.status-badge.concluida { background-color: #28a745; }
+.status-badge.pendente { background-color: #ffc107; color: #333; }
+.status-badge.cancelada { background-color: #dc3545; }
+.status-badge.em_processamento { background-color: #007bff; }
+.status-badge.enviada { background-color: #17a2b8; }
+.status-badge.entregue { background-color: #6f42c1; }
+.status-badge.separando { background-color: #fd7e14; }
+.status-badge.confeccao { background-color: #6610f2; }
+.status-badge.fabricacao { background-color: #20c997; }
+.status-badge.arquivado { background-color: #7f8c8d; }
+
+
+/* --- Tabela de Itens da Venda (com Imagem) --- */
+.itens-venda-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+.itens-venda-table th, .itens-venda-table td {
+    padding: 10px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9em;
+    font-family: 'Poppins', sans-serif;
+}
+.itens-venda-table th {
+    background-color: #f8f8f8;
+    color: #555;
+    font-weight: bold;
+}
+/* Coluna da Imagem */
+.itens-venda-table td:first-child {
+    width: 60px; /* Tamanho fixo para a imagem */
+    padding-right: 5px;
+    text-align: center; /* Centraliza a imagem */
+}
+.product-item-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover; /* Corta a imagem para preencher */
+    border-radius: 4px;
+    vertical-align: middle;
+}
+.no-image-placeholder { /* Estilo para quando não há imagem */
+    width: 50px;
+    height: 50px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7em;
+    color: #999;
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden; /* Garante que o texto "Sem Imagem" não vaze */
+}
+
+/* Alinhamento para colunas de quantidade/preço/subtotal */
+.itens-venda-table td:nth-child(4), /* Qtd */
+.itens-venda-table td:nth-child(5), /* Preço Unit. */
+.itens-venda-table td:nth-child(6) { /* Subtotal */
+    text-align: center;
+    white-space: nowrap; /* Evita quebra de linha em valores */
+}
+
+
+/* --- Histórico de Status --- */
+.status-history-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+.status-history-list li {
+    background-color: #f9f9f9;
+    border-left: 4px solid #2980b9; /* Linha azul para destaque */
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: 'Poppins', sans-serif;
+}
+.status-history-list li strong {
+    color: #333;
+}
+
+
+/* --- Campos de Edição Inline --- */
+.edit-input, .edit-textarea { /* Inclui textarea aqui */
+    width: calc(100% - 22px); /* Com padding e borda */
+    padding: 10px; /* Aumentado padding para melhor toque */
+    margin-top: 5px;
+    margin-bottom: 15px; /* Espaçamento entre campos */
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Mais suave que 4px */
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+}
+.edit-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Estilos para os botões "Salvar" e "Cancelar" da edição inline */
+.edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-end; /* Alinha os botões à direita */
+}
+.edit-actions .save-button,
+.edit-actions .cancel-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px; /* Oval */
+    cursor: pointer;
+    font-size: 0.85em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+.edit-actions .save-button {
+    background-color: #820AD1; /* Roxo Nubank */
+    color: white;
+}
+.edit-actions .save-button:hover {
+    background-color: #9C46D8;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.edit-actions .cancel-button {
+    background-color: #E0E0E0; /* Cinza claro */
+    color: #757575;
+}
+.edit-actions .cancel-button:hover {
+    background-color: #F5F5F5;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+
+/* Estilo para o link de enviar e-mail (usado no painel de envio) */
+.send-email-text-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    color: #820AD1;
+    font-weight: bold;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    justify-content: center;
+}
+
+.send-email-text-link:hover {
+    background-color: #F5F5F5;
+    border-color: #ddd;
+    text-decoration: underline;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+
+.send-tracking-button { /* Botão para Abrir Edição/Configurar Envio */
+    background-color: #2980b9; /* Um azul para diferenciar */
+    color: white;
+    padding: 8px 15px; /* Estilo de botão */
+    border: none;
+    border-radius: 20px; /* Oval */
+    cursor: pointer;
+    font-size: 0.85em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.send-tracking-button:hover { background-color: #2471a3; }
+
+.send-email-text-link svg, .send-tracking-button svg { /* Estilo para o ícone de foguete (SVG) */
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* --- Estilos do Modal (AGORA ESCONDIDO POR DISPLAY:NONE) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* transition: opacity 0.3s ease; */ /* Não usar opacity para display:none */
+}
+
+/* CLASSE PRINCIPAL PARA ESCONDER MODAIS QUANDO NÃO ESTÃO ABERTOS */
+.modal-overlay.modal-hidden {
+    display: none; /* ESSENCIAL: Esconde o modal completamente para que não cause problemas */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    font-family: 'Poppins', sans-serif;
+    animation: fadeInScale 0.3s ease-out forwards;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.confirm-modal-content {
+    max-width: 400px;
+    text-align: center;
+}
+.confirm-modal-content p {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+}
+
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #2c3e50;
+}
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #999;
+}
+.modal-close-button:hover {
+    color: #333;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+.modal-body label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.95em;
+}
+.modal-body input[type="text"],
+.modal-body input[type="email"],
+.modal-body input[type="tel"],
+.modal-body input[type="number"],
+.modal-body textarea {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em;
+}
+.modal-body textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+.modal-save-button, .modal-cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
+.modal-save-button {
+    background-color: #820AD1;
+    color: white;
+}
+.modal-save-button:hover {
+    background-color: #9C46D8;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.modal-cancel-button {
+    background-color: #E0E0E0;
+    color: #757575;
+}
+.modal-cancel-button:hover {
+    background-color: #F5F5F5;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilo para a mensagem de loading do CEP */
+.loading-message {
+    font-size: 0.85em;
+    color: #2980b9;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* Estilos para a lista de itens no modal de edição completa */
+.modal-itens-list {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.modal-item-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+.modal-item-row:last-child {
+    border-bottom: none;
+}
+.modal-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+.modal-item-info img.modal-item-thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+.modal-item-info p {
+    margin: 0;
+    font-size: 0.9em;
+}
+.modal-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.modal-qty-input {
+    width: 50px !important;
+    text-align: center;
+    margin-bottom: 0 !important;
+}
+.modal-remove-item-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #dc3545;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.modal-remove-item-button:hover {
+    background-color: #fdd;
+}
+.modal-add-item-button {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.modal-add-item-button:hover {
+    background-color: #218838;
+}
+.modal-add-product-search {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #eee;
+}
+.hint-text {
+    font-size: 0.8em;
+    color: #777;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* Animação para o Modal */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* --- TOAST NOTIFICATIONS --- */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 1001; /* Acima dos modais */
+    animation: slideInFromRight 0.3s ease-out forwards;
+}
+
+.toast-notification.toast-success {
+    background-color: #28a745; /* Verde para sucesso */
+}
+.toast-notification.toast-error {
+    background-color: #dc3545; /* Vermelho para erro */
+}
+.toast-notification.toast-info {
+    background-color: #007bff; /* Azul para informação */
+}
+
+.toast-close-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 5px;
+}
+.toast-close-button:hover {
+    opacity: 0.8;
+}
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+/* --- Mensagens de Estado (Loading, Erro, Sem Dados) --- */
+.loading, .error, .no-data {
+    text-align: center;
+    padding: 50px 20px;
+    font-size: 1.5em;
+    color: #555;
+    font-family: 'Poppins', sans-serif;
+}
+
+.error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .venda-details-grid {
+        grid-template-columns: 1fr;
+    }
+    .left-column, .right-column {
+        gap: 20px;
+    }
+    .status-action-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .detalhes-venda-container {
+        padding: 15px;
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .page-header h1 {
+        font-size: 1.5em;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .detail-card {
+        padding: 15px;
+    }
+    .detail-card h3 {
+        font-size: 1.1em;
+    }
+    /* Ajustes para a tabela de itens em mobile */
+    .itens-venda-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    .itens-venda-table thead {
+        display: none;
+    }
+    .itens-venda-table tbody, .itens-venda-table tr {
+        display: block;
+        width: 100%;
+    }
+    .itens-venda-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    .itens-venda-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 10px;
+        border-bottom: 1px solid #eee;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .itens-venda-table td:last-child {
+        border-bottom: none;
+    }
+    .itens-venda-table td:first-child { /* Imagem */
+        width: auto;
+        justify-content: center;
+        padding: 10px;
+    }
+    .itens-venda-table td:first-child img {
+        margin: 0 auto;
+    }
+    .itens-venda-table td::before { /* Adiciona "cabeçalhos virtuais" */
+        content: attr(data-label);
+        font-weight: bold;
+        color: #555;
+        margin-right: 10px;
+    }
+    /* Definir data-label no TSX para cada TD da tabela de itens vendidos */
+    /* Já está no TSX, apenas para referência aqui */
+    /*
+    .itens-venda-table td:nth-child(2)::before { content: 'Produto:'; }
+    .itens-venda-table td:nth-child(3)::before { content: 'SKU:'; }
+    .itens-venda-table td:nth-child(4)::before { content: 'Qtd:'; }
+    .itens-venda-table td:nth-child(5)::before { content: 'Preço Unit.:'; }
+    .itens-venda-table td:nth-child(6)::before { content: 'Subtotal:'; }
+    */
+
+    .itens-venda-table td span { /* Para os valores */
+        text-align: right;
+        flex-grow: 1;
+    }
+}

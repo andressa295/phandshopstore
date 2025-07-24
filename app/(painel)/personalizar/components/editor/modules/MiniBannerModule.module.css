@@ -1,0 +1,383 @@
+.sectionBlock {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* --- Cabeçalho do Módulo --- */
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* Espaço entre o cabeçalho e o conteúdo */
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0; /* Linha divisória suave */
+}
+
+/* --- Títulos dentro de grupos aninhados / Títulos de Módulo --- */
+.nestedTitle {
+  color: #222222; /* Cor forte para títulos */
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* --- Grupos de Input (Label + Input/TextArea + Descrição) --- */
+.inputGroup {
+  margin-bottom: 16px; /* Espaçamento entre grupos de input */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento entre label e input */
+}
+
+/* --- Labels dos Inputs --- */
+.inputLabel {
+  display: block;
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.95em;
+  margin-bottom: 0;
+}
+
+/* --- Inputs de Texto, TextArea e Select --- */
+.textInput,
+.textArea,
+.selectInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px; /* Cantos arredondados */
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+  font-family: inherit;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03); /* Sombra interna sutil */
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: #a0a0a0;
+  opacity: 0.8;
+}
+
+.textInput:focus,
+.textArea:focus,
+.selectInput:focus {
+  border-color: #8d4edb; /* Roxo principal no foco */
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.2); /* Sombra de foco */
+  outline: none;
+  background-color: #fafafa; /* Fundo levemente mais claro no foco */
+}
+
+.textArea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* --- Select Inputs (Dropdowns) --- */
+.selectInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+/* --- Checkbox Customizado --- */
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px; /* Espaçamento entre o checkbox e o texto */
+  color: #333333;
+  font-size: 0.95em;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s ease-in-out;
+}
+
+.checkboxLabel:hover {
+  color: #6b21a8; /* Roxo escuro no hover */
+}
+
+.checkboxInput {
+  margin-right: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: #8d4edb;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+  margin-top: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  display: grid;
+  place-content: center;
+}
+
+.checkboxInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.15s ease-in-out;
+  box-shadow: inset 1em 1em #8d4edb;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
+}
+
+.checkboxInput:checked {
+  background-color: #8d4edb;
+  border-color: #8d4edb;
+}
+
+.checkboxInput:checked::before {
+  transform: scale(1);
+}
+
+/* --- Descrições de Campo --- */
+.fieldDescription {
+  color: #666666;
+  font-size: 0.8em;
+  margin-top: 4px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* --- Estilos para o Box de Upload de Imagem (comum entre módulos que precisam) --- */
+.logoUploadBox {
+  border: 1px dashed #ccc; /* Borda fina tracejada */
+  border-radius: 8px; /* Arredondamento */
+  padding: 16px; /* Espaçamento interno */
+  background-color: #f8f8f8; /* Fundo claro */
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02); /* Sombra interna sutil */
+  position: relative; /* Para imagem de preview absoluta */
+}
+
+.logoUploadBox:hover {
+  border-color: #8d4edb; /* Roxo principal no hover */
+  background-color: #f0f0f0; /* Fundo um pouco mais escuro no hover */
+}
+
+.logoPlaceholder {
+  color: #a0a0a0;
+  font-size: 0.9em;
+}
+
+/* --- Imagem de Preview em Full-Bleed (para preencher o container de upload) --- */
+.fullBleedImagePreview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px; /* Consistente com arredondamento do box */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Botão de Remover Módulo (lixeira) --- */
+.removeButton {
+  background-color: transparent;
+  border: none;
+  color: #666666; /* Cor cinza */
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.removeButton:hover {
+  color: #dc3545; /* Vermelho no hover */
+  background-color: rgba(220, 53, 69, 0.08); /* Fundo suave no hover */
+  transform: translateY(-1px);
+}
+.removeButton:active {
+  transform: translateY(0);
+}
+
+.removeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* --- Estilos Específicos do Item de Mini Banner --- */
+.miniBannerItemEditor {
+  background-color: #f8f8f8; /* Fundo mais claro para aninhados */
+  border: 1px solid #e0e0e0; /* Borda suave */
+  border-radius: 8px; /* Arredondamento */
+  padding: 16px; /* Padding interno */
+  margin-bottom: 16px; /* Espaço entre itens */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); /* Sombra sutil */
+  position: relative; /* Para o botão de remover */
+}
+
+.miniBannerItemTitle {
+  font-size: 1em;
+  font-weight: 600;
+  color: #333333;
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed #cccccc; /* Linha tracejada */
+}
+
+/* Botão de remover imagem individual (usado para remover mini banner item) */
+.removeImageButton {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #dc3545; /* Vermelho */
+  color: #ffffff; /* Branco */
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.removeImageButton:hover {
+  background-color: #c82333; /* Vermelho escuro no hover */
+  transform: scale(1.1);
+}
+
+.removeImageIcon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* --- Botão de Adicionar --- */
+.addButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-top: 16px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.addButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+
+/* --- Responsividade (Ajustes para telas menores) --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+  .moduleHeader {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+  .nestedTitle {
+    font-size: 1em;
+  }
+  .inputGroup {
+    margin-bottom: 12px;
+    gap: 6px;
+  }
+  .inputLabel {
+    font-size: 0.9em;
+  }
+  .textInput,
+  .textArea,
+  .selectInput {
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+  .textArea {
+    min-height: 80px;
+  }
+  .checkboxLabel {
+    font-size: 0.9em;
+    gap: 6px;
+  }
+  .checkboxInput {
+    width: 18px;
+    height: 18px;
+  }
+  .fieldDescription {
+    font-size: 0.75em;
+  }
+  .removeButton {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+  .removeIcon {
+    width: 16px;
+    height: 16px;
+  }
+  /* Estilos responsivos específicos para MiniBanner */
+  .miniBannerItemEditor {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .miniBannerItemTitle {
+    font-size: 0.95em;
+  }
+  .removeImageButton {
+    width: 20px;
+    height: 20px;
+    top: -8px;
+    right: -8px;
+  }
+  .removeImageIcon {
+    width: 12px;
+    height: 12px;
+  }
+  .addButton {
+    padding: 8px 16px;
+    font-size: 0.85em;
+    width: 100%;
+  }
+}

@@ -1,4 +1,3 @@
-// app/layout.tsx (CORRIGIDO: REMOVIDO PADDING/MARGIN DO <MAIN>)
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 

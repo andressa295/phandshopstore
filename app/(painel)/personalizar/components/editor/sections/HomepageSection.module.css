@@ -1,0 +1,160 @@
+/* --- Container Principal da Seção --- */
+.sectionBlock {
+  padding: 24px; /* Espaçamento interno generoso */
+  background-color: #ffffff; /* Fundo branco e limpo */
+  border-radius: 8px; /* Cantos levemente arredondados */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
+  margin-bottom: 32px; /* Espaço entre seções */
+}
+
+/* --- Títulos da Seção --- */
+.sectionTitle {
+  color: #333333; /* Cor de texto principal */
+  font-size: 1.2em; /* Levemente maior para destaque */
+  font-weight: 700; /* Forte, mas não excessivo */
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
+}
+
+/* --- Descrições de Seção --- */
+.sectionDescription {
+  color: #666666; /* Cor de texto secundária para descrições */
+  font-size: 0.95em;
+  line-height: 1.6;
+  margin-bottom: 32px; /* Espaçamento generoso para respirar */
+  font-weight: 400; /* Sem negrito excessivo */
+}
+
+/* --- Separador de Seções (Linha divisória com espaçamento) --- */
+.sectionSeparator {
+  border-top: 1px solid #e0e0e0; /* Linha divisória suave */
+  margin-top: 30px; /* Espaçamento antes da linha */
+  margin-bottom: 20px; /* Espaçamento depois da linha */
+  padding-top: 20px; /* Espaçamento acima do h5 */
+}
+
+.sectionSeparator:first-child {
+    margin-top: 0; /* Remove top margin if it's the very first separator */
+    padding-top: 0;
+    border-top: none;
+}
+
+/* --- Subtítulos dentro das seções (h5) --- */
+.sectionSubheading {
+  color: #555555;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 0; /* Ajustado para ser controlado pelo padding-top do sectionSeparator */
+  margin-bottom: 0; /* Ajustado para ser controlado pelo padding-bottom do sectionSeparator */
+}
+
+
+/* --- Container para os botões de adicionar módulo --- */
+.addModuleButtonsContainer {
+  display: flex;
+  flex-wrap: wrap; /* Quebra linha se não houver espaço */
+  gap: 15px; /* Espaçamento entre os botões */
+  margin-bottom: 30px; /* Espaçamento abaixo do grupo de botões */
+}
+
+/* --- Estilo para o botão "Adicionar Novo Módulo" --- */
+.addModuleButton {
+  background-color: #6b21a8; /* Cor primária roxa */
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease; /* Adicionado transform para um efeito leve */
+  flex-grow: 1; /* Permite que os botões cresçam para preencher o espaço */
+  min-width: 160px; /* Largura mínima para botões */
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+}
+
+.addModuleButton:hover {
+  background-color: #4a199a; /* Escurece no hover */
+  transform: translateY(-1px); /* Efeito de elevação sutil */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Sombra um pouco maior no hover */
+}
+
+.addModuleButton:active {
+  background-color: #3a137a; /* Mais escuro ao clicar */
+  transform: translateY(0); /* Volta à posição original ao clicar */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* --- Estilo para o botão "Ver Todos os Módulos" --- */
+.manageModulesButton {
+  background-color: #007bff; /* Cor azul secundária */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.manageModulesButton:hover {
+  background-color: #0056b3; /* Escurece no hover */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.manageModulesButton:active {
+  background-color: #004085; /* Mais escuro ao clicar */
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* --- Responsividade (Ajustes para telas menores) --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 1.5em;
+  }
+
+  .sectionDescription {
+    font-size: 0.9em;
+    margin-bottom: 24px;
+  }
+
+  .sectionSeparator {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    padding-top: 15px;
+  }
+
+  .sectionSubheading {
+    font-size: 1em;
+  }
+
+  .addModuleButtonsContainer {
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .addModuleButton {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    min-width: unset; /* Remove min-width on small screens */
+    flex-grow: unset; /* Remove flex-grow on small screens */
+    width: 100%; /* Make buttons full width on small screens */
+  }
+
+  .manageModulesButton {
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    width: 100%; /* Make button full width on small screens */
+  }
+}

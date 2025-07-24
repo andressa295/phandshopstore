@@ -1,0 +1,284 @@
+/* --- Container Principal da Seção --- */
+.sectionBlock {
+  padding: 24px; /* Espaçamento interno geral */
+  background-color: #ffffff; /* Fundo branco e limpo */
+  border-radius: 8px; /* Cantos levemente arredondados */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
+  margin-bottom: 32px; /* Espaço entre seções */
+}
+
+/* --- Títulos da Seção --- */
+.sectionTitle {
+  color: #333333; /* Cor de texto principal */
+  font-size: 1.2em; /* Levemente maior para destaque (mantido como no seu exemplo) */
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
+}
+
+/* --- Descrições de Seção --- */
+.sectionDescription {
+  color: #666666; /* Cor de texto secundária para descrições */
+  font-size: 0.95em;
+  line-height: 1.6;
+  margin-bottom: 32px; /* Espaçamento generoso para respirar */
+  font-weight: 400; /* Sem negrito excessivo */
+}
+
+/* --- Grupos de Input (Label + Input/TextArea + Descrição) --- */
+.inputGroup {
+  margin-bottom: 20px; /* Ajustado para 20px para consistência */
+  display: flex; /* Adicionado para consistência */
+  flex-direction: column; /* Adicionado para consistência */
+  gap: 8px; /* Espaçamento entre label e input */
+}
+
+/* --- Labels dos Inputs --- */
+.inputLabel {
+  display: block;
+  color: #333333;
+  font-size: 0.9em; /* Menor e mais delicado */
+  font-weight: 600; /* Suficiente para destaque, mas não pesado */
+  margin-bottom: 0; /* Ajustado para 0, controlado pelo gap do inputGroup */
+}
+
+/* --- Inputs de Texto, TextArea e Select (Base Consistente) --- */
+.textInput,
+.textAreaInput, /* Mantido o nome que você usou */
+.selectInput { /* Adicionado para consistência */
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0; /* Borda suave */
+  border-radius: 4px; /* Cantos arredondados */
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em; /* Tamanho confortável */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
+}
+
+.textInput:focus,
+.textAreaInput:focus,
+.selectInput:focus { /* Foco consistente para todos os tipos de input */
+  border-color: #6b21a8; /* Borda roxa no foco */
+  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra suave de foco */
+  outline: none;
+}
+
+.textAreaInput {
+  resize: vertical; /* Permite redimensionar verticalmente */
+  min-height: 100px; /* Altura mínima para textareas */
+}
+
+/* --- Select Inputs (Dropdowns - Estilos Específicos, Copiado do modelo geral) --- */
+.selectInput {
+  appearance: none; /* Remove a seta padrão do select */
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+/* --- Color Input (Bolinha Perfeita para Cor - Copiado do modelo geral) --- */
+.colorSwatchContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.colorSwatch {
+  width: 32px; /* Tamanho da bolinha */
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ddd; /* Borda da bolinha */
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.colorSwatch:hover {
+  transform: scale(1.05);
+  border-color: #6b21a8; /* Cor de destaque no hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hiddenColorInput {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+}
+
+
+/* --- Descrições de Campo (Texto abaixo dos inputs) --- */
+.fieldDescription {
+  color: #666666;
+  font-size: 0.85em; /* Pequeno e discreto */
+  margin-top: 8px; /* Espaçamento para o input */
+  line-height: 1.5;
+  font-weight: 400; /* Sem negrito */
+}
+
+/* --- Texto de Atenção em Descrições --- */
+.attentionText {
+  color: #dc3545; /* Vermelho para atenção */
+  font-weight: 600; /* Negrito aqui é justificado para chamar atenção */
+}
+
+/* --- Preview do Favicon --- */
+.faviconPreviewContainer {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px; /* Ajustado para 8px para consistência */
+  background-color: #f9f9f9; /* Ajustado para #f9f9f9 para consistência com nestedInputGroup */
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Ajustado para consistência */
+}
+
+.faviconImagePreview {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+  background-color: #ffffff; /* Ajustado para #ffffff */
+  padding: 2px;
+  border: 1px solid #ddd; /* Adicionado para consistência com imagePreviewSmall */
+}
+
+/* --- Checkbox Customizado --- */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espaçamento entre checkbox e texto */
+  color: #333333;
+  font-size: 0.95em;
+  cursor: pointer;
+  margin-bottom: 8px; /* Espaçamento para a descrição abaixo */
+}
+
+.checkboxInput {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ccc; /* Borda cinza */
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+
+.checkboxInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.2s ease-in-out;
+  box-shadow: inset 1em 1em #6b21a8; /* Cor roxa para o checkmark */
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
+}
+
+.checkboxInput:checked {
+  background-color: #6b21a8;
+  border-color: #6b21a8;
+}
+
+.checkboxInput:checked::before {
+  transform: scale(1);
+}
+
+/* --- Divisor (Linha tracejada) --- */
+.divider {
+  border: none;
+  border-top: 1px dashed #e0e0e0; /* Ajustado para #e0e0e0 para consistência */
+  margin: 32px 0; /* Espaçamento generoso */
+}
+
+/* --- Grupo de Botões (se houver mais de um) --- */
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end; /* Alinha o botão à direita */
+  margin-top: 24px; /* Espaço acima do botão */
+  gap: 15px; /* Adicionado gap para consistência entre botões */
+}
+
+/* --- Botão Salvar (Oval e Leve) --- */
+.saveButton {
+  background-color: #6b21a8; /* Roxo principal */
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px; /* AJUSTADO: Padding para tornar o botão menos "gordo" */
+  border-radius: 50px; /* OVAL */
+  cursor: pointer;
+  font-size: 0.95em; /* AJUSTADO: Levemente menor para acompanhar o padding */
+  font-weight: 600;
+  transition: all 0.2s ease; /* Ajustado para 0.2s ease */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08); /* Sombra suave */
+  letter-spacing: 0.5px;
+  text-transform: uppercase; /* Para um toque profissional */
+}
+
+.saveButton:hover {
+  background-color: #8d4edb; /* Roxo mais claro no hover */
+  transform: translateY(-2px); /* Efeito de elevação sutil */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12); /* Sombra mais pronunciada no hover */
+}
+
+/* --- Responsividade (Ajustes para telas menores) --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 1.5em;
+  }
+
+  .sectionDescription {
+    font-size: 0.9em;
+    margin-bottom: 24px;
+  }
+
+  .inputLabel {
+    font-size: 0.85em;
+  }
+
+  .textInput,
+  .textAreaInput,
+  .selectInput { /* Adicionado selectInput */
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+
+  .fieldDescription {
+    font-size: 0.8em;
+  }
+
+  .checkboxLabel {
+    font-size: 0.9em;
+  }
+
+  .nestedInputGroup {
+    margin-left: 16px;
+    padding: 12px;
+  }
+
+  .saveButton {
+    width: 100%; /* Ocupa a largura total em mobile */
+    padding: 10px 20px;
+    font-size: 0.95em;
+  }
+
+  /* Ajuste para a bolinha de cor em mobile, se for usada aqui */
+  .colorSwatch {
+    width: 28px;
+    height: 28px;
+  }
+}

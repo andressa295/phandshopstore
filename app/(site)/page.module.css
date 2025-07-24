@@ -117,7 +117,14 @@
 .iconWrapper { display: inline-flex; padding: 1.25rem; background-color: #e9d8fd; color: #6d28d9; border-radius: 50%; margin-bottom: 1.5rem; }
 .diferencialCard h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; }
 .diferencialCard p { color: #4a5568; line-height: 1.6; font-size: 0.95rem; }
+.diferencialCard:hover {
+  transform: translateY(-8px);
+  transition: transform 0.3s ease;
+}
 
+.diferencialCard:hover .iconWrapper {
+  color: #6D28D9; /* Cor da sua marca */
+}
 /* --- 3. Funcionalidades (sem alterações) --- */
 .featuresSection { composes: section; background-color: #f9fafb; }
 .featuresGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 3rem; text-align: left; margin-bottom: 5rem; }
@@ -130,7 +137,15 @@
 .logosContainer { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4rem; }
 .logoImage { filter: grayscale(100%); opacity: 0.6; transition: all 0.3s ease; height: 90px; width: auto; object-fit: contain; }
 .logoImage:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+/* Adicionar ao seu page.module.css */
+.logoImage {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease;
+}
 
+.logoImage:hover {
+  filter: grayscale(0%);
+}
 
 /* --- 4. Calculadora --- */
 .calculadoraSection { composes: section; background-color: #fff; }
@@ -191,7 +206,14 @@
 .faqItem.open .faqIcon { transform: rotate(180deg); }
 .faqAnswer { color: #4a5568; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding-bottom 0.4s ease-out; font-size: 0.95rem; }
 .faqItem.open .faqAnswer { padding-bottom: 1.5rem; max-height: 200px; }
+/* Adicionar ao seu page.module.css */
+.faqIcon {
+  transition: transform 0.3s ease;
+}
 
+.faqItem.open .faqIcon {
+  transform: rotate(180deg);
+}
 
 /* --- 8. Suporte --- */
 .suporteSection { composes: section; background-color: #f9fafb; }
@@ -260,4 +282,13 @@
     max-width: 100%;
   }
   .faqQuestion h4 { font-size: 1rem; }
+}
+/* Adicionar ao seu page.module.css */
+.diferencialCard:hover {
+  transform: translateY(-8px);
+  transition: transform 0.3s ease;
+}
+
+.diferencialCard:hover .iconWrapper {
+  color: #6D28D9; /* Cor da sua marca */
 }

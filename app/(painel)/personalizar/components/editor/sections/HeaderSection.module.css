@@ -1,0 +1,268 @@
+/* app/(painel)/personalizar/components/editor/sections/HeaderSection.module.css */
+
+/* --- Container Principal da Seção (COMO NO CARRINHO/FONTES) --- */
+.sectionBlock {
+  padding: 24px; /* Espaçamento interno generoso */
+  background-color: #ffffff; /* Fundo branco e limpo */
+  border-radius: 8px; /* Cantos levemente arredondados */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
+  margin-bottom: 32px; /* Espaço entre seções */
+}
+
+/* --- Títulos da Seção (COMO NO CARRINHO/FONTES) --- */
+.sectionTitle {
+  color: #333333; /* Cor de texto principal */
+  font-size: 1.2em; /* Levemente maior para destaque */
+  font-weight: 700; /* Forte, mas não excessivo */
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
+  text-align: left; /* Alinhado à esquerda */
+}
+
+/* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição - COMO NO CARRINHO/FONTES) --- */
+.inputGroup {
+  margin-bottom: 20px; /* Bom espaçamento entre os grupos de configuração */
+  display: flex; /* Para alinhar labels com inputs/selects */
+  flex-direction: column; /* Coloca os elementos em coluna */
+}
+
+/* --- Labels dos Inputs e Selects (COMO NO CARRINHO/FONTES) --- */
+.inputLabel {
+  display: block; /* Garante que a label ocupe sua própria linha */
+  color: #333333;
+  font-size: 0.9em; /* Menor e mais delicado */
+  font-weight: 600; /* Suficiente para destaque, mas não pesado */
+  margin-bottom: 8px; /* Espaçamento entre label e o campo (input/select) */
+}
+
+/* --- Inputs de Texto, Número, Select, Textarea (COMO NO CARRINHO/FONTES) --- */
+.textInput,
+.numberInput,
+.selectInput,
+.textArea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0; /* Borda padrão */
+  border-radius: 4px; /* Arredondamento de 4px */
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em; /* Tamanho confortável */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: #999999; /* Cor de placeholder padrão */
+  opacity: 0.8;
+}
+
+.textInput:focus,
+.numberInput:focus,
+.selectInput:focus,
+.textArea:focus {
+  border-color: #6b21a8; /* Borda roxa no foco */
+  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra suave de foco */
+  outline: none;
+  background-color: #ffffff; /* Mantém fundo no foco */
+}
+
+.textArea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* --- Select Customizado (Seta - COMO NO CARRINHO/FONTES) --- */
+.selectInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+/* --- Color Input (Bolinha Perfeita para Cor - NOVO ESTILO) --- */
+.colorSwatchContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.colorSwatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.colorSwatch:hover {
+  transform: scale(1.05);
+  border-color: #6b21a8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hiddenColorInput {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+}
+
+/* --- Checkbox Customizado (COMO NO CARRINHO/FONTES) --- */
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espaçamento ENTRE o checkbox e o texto */
+  color: #333333;
+  font-size: 0.95em;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.checkboxInput {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.checkboxInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.2s ease-in-out;
+  box-shadow: inset 1em 1em #6b21a8; /* Cor roxa para o checkmark */
+  background-color: CanvasText; /* Fallback */
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
+}
+
+.checkboxInput:checked {
+  background-color: #6b21a8;
+  border-color: #6b21a8;
+}
+.checkboxInput:checked::before { transform: scale(1); }
+
+/* --- Descrições de Campo (Texto abaixo dos inputs/selects - COMO NO CARRINHO/FONTES) --- */
+.fieldDescription {
+  color: #666666;
+  font-size: 0.85em; /* Pequeno e discreto */
+  margin-top: 8px; /* Espaçamento para o campo acima */
+  line-height: 1.5;
+  font-weight: 400; /* Sem negrito */
+}
+
+/* --- Grupos de Input Aninhados (indentados quando dependem de um checkbox/select - COMO NO CARRINHO/FONTES) --- */
+.nestedInputGroup {
+  margin-left: 24px; /* Indentação para clareza visual */
+  margin-top: 16px; /* Espaçamento superior */
+  padding: 16px; /* Padding interno */
+  background-color: #f9f9f9; /* Fundo levemente diferente para destacar */
+  border: 1px solid #f0f0f0; /* Borda muito leve */
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Sombra mais sutil ainda */
+}
+
+/* --- Upload clean com preview (ESPECÍFICO DESTA SEÇÃO - AJUSTADO) --- */
+.logoUploadBox {
+  border: 1px dashed #e0e0e0; /* Borda fina tracejada */
+  border-radius: 4px; /* Arredondamento de 4px */
+  padding: 10px; /* Espaçamento interno consistente */
+  background-color: #fafafa; /* Fundo claro */
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.logoUploadBox:hover {
+  border-color: #6b21a8; /* Cor de destaque no hover */
+}
+
+.logoPreview {
+  margin-top: 10px; /* Espaçamento consistente */
+  width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+  border-radius: 3px; /* Arredondamento como imagePreviewSmall */
+  background-color: #ffffff;
+  border: 1px solid #ddd; /* Borda como imagePreviewSmall */
+}
+
+/* Input + checkbox ao lado, USAR SÓ QUANDO QUISER (ESPECÍFICO DESTA SEÇÃO - AJUSTADO) */
+.inlineGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espaçamento consistente com checkboxLabel */
+}
+
+/* Campos da barra de anúncio (ESPECÍFICO DESTA SEÇÃO - AJUSTADO) */
+.announcementFields {
+  margin-top: 10px; /* Espaçamento consistente */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento consistente com inputLabel margin-bottom */
+}
+
+/* --- Responsividade (Ajustes Gerais para Mobile - COMO NO CARRINHO/FONTES) --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+  }
+  .sectionTitle {
+    font-size: 1.5em;
+    margin-bottom: 12px;
+  }
+  /* Ajustes para inputs em mobile */
+  .textInput, .numberInput, .selectInput, .textArea {
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+  /* Ajustes para a bolinha de cor em mobile */
+  .colorSwatch {
+    width: 28px;
+    height: 28px;
+  }
+  .checkboxLabel {
+    font-size: 0.9em;
+  }
+  .nestedInputGroup {
+    margin-left: 16px;
+    padding: 12px;
+  }
+  /* Responsividade para estilos específicos desta seção */
+  .logoUploadBox {
+    padding: 8px; /* Ajuste para mobile */
+  }
+  .logoPreview {
+    max-height: 80px; /* Ajuste para mobile */
+  }
+  .inlineGroup {
+    flex-direction: column; /* Empilha em mobile se necessário */
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .announcementFields {
+    gap: 6px;
+  }
+}

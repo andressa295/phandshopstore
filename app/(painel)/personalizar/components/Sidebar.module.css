@@ -1,0 +1,111 @@
+.sidebar {
+  width: 260px; 
+  height: 100%;
+  overflow-y: auto; 
+  background: #fcfcfc; 
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04); 
+  padding: 1.5rem 0; 
+  
+
+  display: flex;
+  flex-direction: column;
+}
+
+.title { /* Adicionado para um título do painel, se você tiver um */
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem; /* Reduzido de 1.5rem para 1rem */
+  text-align: left;
+  
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 1rem; /* Reduzido de 1.5rem para 1rem */
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  color: #333; /* Cor do texto padrão */
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, font-weight 0.2s ease; /* Adicionado transição para font-weight */
+  text-align: left;
+  width: 100%; /* Faz o botão preencher a largura total */
+  box-sizing: border-box; /* Garante que padding não adicione largura extra */
+  font-family: 'Poppins', sans-serif;
+}
+
+.menuItem:hover {
+  background-color: #f0f0f0;
+  color: #6b21a8; /* Cor do texto no hover para combinar com o tema */
+}
+
+.active {
+  /* Cor e efeito para o item de menu ativo */
+  background-color: #e6e0f5; /* Um roxo claro mais suave para o fundo ativo */
+  border-left: 4px solid #6b21a8; /* Borda da cor principal da marca */
+  color: #6b21a8; /* Cor do texto ativo (roxa principal) */
+  font-weight: 600; /* Negrito para destacar */
+}
+
+.icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: inherit; /* Faz o ícone herdar a cor do .menuItem ou .active */
+}
+
+.menuText {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 100%; /* Ocupa a largura total em mobile */
+    height: auto; /* Altura se ajusta ao conteúdo */
+    flex-direction: row; /* Itens em linha em mobile */
+    overflow-x: auto; /* Permite scroll horizontal se muitos itens */
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding: 0.5rem; /* Padding reduzido para mobile */
+    box-shadow: none; /* Remove sombra em mobile para um visual mais limpo */
+    white-space: nowrap; /* Impede quebras de linha nos items */
+  }
+
+  .title {
+      display: none; /* Oculta o título do painel em mobile, se houver */
+  }
+
+  .menuItem {
+    padding: 0.5rem 0.8rem; /* Ajuste padding para itens menores em mobile */
+    font-size: 14px;
+    flex-direction: column; /* Ícone e texto empilhados */
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px; /* Garante que o item tenha uma largura mínima */
+  }
+
+  .menuItem .icon {
+    font-size: 18px; /* Ícone menor em mobile */
+  }
+
+  .menuText {
+    font-size: 12px;
+    flex: none; /* Não cresce em mobile, para evitar cortar texto */
+    white-space: normal; /* Permite quebras de linha para texto curto */
+    text-align: center;
+  }
+}

@@ -1,8 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function LoginPage() {
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
@@ -14,15 +19,31 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    if (!validarEmail(email)) return setError('Email inválido');
-    if (senha.length < 6) return setError('Senha muito curta');
+    if (!validarEmail(email)) {
+      setError('Email inválido');
+      return;
+    }
+    if (senha.length < 6) {
+      setError('Senha muito curta');
+      return;
+    }
 
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      alert('Login mock sucesso!');
-    }, 1000);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password: senha,
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError('Falha no login: ' + error.message);
+      return;
+    }
+
+    // Login bem sucedido, manda pra dashboard
+    router.push('/dashboard');
   };
 
   return (
@@ -50,14 +71,36 @@ export default function LoginPage() {
         }}
         noValidate
       >
-        <h2 style={{ color: '#6b21a8', fontWeight: 600, marginBottom: '0.5rem', fontSize: '1.5rem' }}>
+        <h2
+          style={{
+            color: '#6b21a8',
+            fontWeight: 600,
+            marginBottom: '0.5rem',
+            fontSize: '1.5rem',
+          }}
+        >
           Bem-vinda(o) de volta!
         </h2>
-        <h1 style={{ marginBottom: '1.5rem', color: '#6b21a8', fontSize: '2rem', fontWeight: 700 }}>
+        <h1
+          style={{
+            marginBottom: '1.5rem',
+            color: '#6b21a8',
+            fontSize: '2rem',
+            fontWeight: 700,
+          }}
+        >
           Fazer Login
         </h1>
 
-        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
+        <label
+          htmlFor="email"
+          style={{
+            display: 'block',
+            marginBottom: '0.5rem',
+            fontWeight: 600,
+            textAlign: 'left',
+          }}
+        >
           Email
         </label>
         <input
@@ -77,7 +120,15 @@ export default function LoginPage() {
           }}
         />
 
-        <label htmlFor="senha" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, textAlign: 'left' }}>
+        <label
+          htmlFor="senha"
+          style={{
+            display: 'block',
+            marginBottom: '0.5rem',
+            fontWeight: 600,
+            textAlign: 'left',
+          }}
+        >
           Senha
         </label>
         <input
@@ -112,12 +163,23 @@ export default function LoginPage() {
           }}
           onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
           onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
+          onClick={e => {
+            e.preventDefault();
+            alert('Funcionalidade de recuperação de senha ainda não implementada.');
+          }}
         >
           Esqueci a senha
         </a>
 
         {error && (
-          <p style={{ color: '#dc2626', marginBottom: '1rem', fontWeight: 600, textAlign: 'center' }}>
+          <p
+            style={{
+              color: '#dc2626',
+              marginBottom: '1rem',
+              fontWeight: 600,
+              textAlign: 'center',
+            }}
+          >
             {error}
           </p>
         )}

@@ -1,0 +1,399 @@
+/* app/(interno)/dashboard/menu/planos/PlanosPage.module.css */
+
+.container {
+    font-family: var(--font-poppins), sans-serif;
+    max-width: 1300px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+.mainTitle {
+    font-size: 1.8em;
+    color: #34495e;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.section {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.sectionTitle {
+    font-size: 1.3em;
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+}
+
+/* Seção do Plano Atual do Usuário */
+.currentPlanSection {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.currentPlanName {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #007bff;
+    text-transform: uppercase;
+}
+
+.currentPlanDetails p {
+    margin-top: 6px;
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.4;
+}
+
+.currentPlanInfo {
+    margin-top: 3px;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.currentPlanFee {
+    font-weight: 700;
+    color: #dc3545;
+}
+
+/* Grid de Planos */
+.plansGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.planCard {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.planCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.planCard.currentPlanCard {
+    border-color: #007bff;
+    box-shadow: 0 3px 12px rgba(0, 123, 255, 0.18);
+    background-color: #f0f8ff;
+}
+
+.badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Estilos para o badge "Mais Popular" */
+.popularBadge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #8a2be2;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(138, 43, 226, 0.15);
+    text-transform: uppercase;
+}
+
+.popularPlanCard {
+    border-color: #8a2be2;
+    box-shadow: 0 3px 12px rgba(138, 43, 226, 0.18);
+    background-color: #f6e6ff;
+}
+
+.planIcon {
+    margin-bottom: 8px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.planIcon img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.planName {
+    font-size: 1.4em;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.planPrice {
+    font-size: 1.2em; /* *** MUITO REDUZIDO AQUI! DE 1.6em PARA 1.2em *** */
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 2px;
+    line-height: 1.1;
+}
+
+.annualPrice {
+    font-size: 0.65em; /* *** LEVEMENTE REDUZIDO AQUI! MANTIDO PARA PROPORÇÃO *** */
+    font-weight: 400;
+    color: #777;
+    display: block;
+    margin-top: 2px;
+}
+
+.salesFeeDisplay {
+    font-size: 0.9em;
+    margin-bottom: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.salesFeeZero {
+    color: #28a745;
+    font-weight: 700;
+}
+
+.salesFeeValue {
+    color: #dc3545;
+    font-weight: 700;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.featureItem {
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 0.85em;
+    display: flex;
+    align-items: flex-start;
+}
+
+.featureIconTrue,
+.featureIconFalse {
+    margin-right: 7px;
+    font-size: 0.9em;
+    font-weight: bold;
+    flex-shrink: 0;
+    line-height: 1;
+    padding-top: 1px;
+}
+
+.featureIconTrue {
+    color: #28a745;
+}
+
+.featureIconFalse {
+    color: #dc3545;
+}
+
+.planCardActions {
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Botões (mantidos como estavam, pois você já aprovou o tamanho deles) */
+.primaryButton,
+.secondaryButton,
+.currentPlanButton {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    font-family: var(--font-poppins), sans-serif;
+}
+
+.primaryButton {
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+}
+
+.primaryButton:hover {
+    background-color: #0056b3;
+    transform: translateY(-0.5px);
+    box-shadow: 0 3px 8px rgba(0, 123, 255, 0.25);
+}
+
+.primaryButton:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 123, 255, 0.15);
+}
+
+.secondaryButton {
+    background-color: #6c757d;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.secondaryButton:hover {
+    background-color: #5a6268;
+    transform: translateY(-0.5px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.secondaryButton:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.currentPlanButton {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* Mensagens de feedback */
+.successMessage {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.errorMessage {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+/* Estado de carregamento */
+.loadingState {
+    padding: 30px;
+    font-size: 1em;
+}
+
+/* Links de Ação */
+.actionLink {
+    font-size: 0.9em;
+}
+
+/* Responsividade */
+@media (min-width: 1201px) {
+    .plansGrid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .plansGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 15px;
+        padding: 15px;
+    }
+
+    .mainTitle {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+    }
+
+    .sectionTitle {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+
+    .plansGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .planCard {
+        padding: 18px 12px;
+    }
+
+    .planName {
+        font-size: 1.3em;
+    }
+
+    .planPrice {
+        font-size: 1.5em; /* Mantido um pouco maior em mobile para legibilidade */
+    }
+
+    .annualPrice {
+        font-size: 0.65em;
+    }
+
+    .salesFeeDisplay {
+        font-size: 0.85em;
+    }
+
+    .featureItem {
+        font-size: 0.8em;
+    }
+
+    .primaryButton,
+    .secondaryButton,
+    .currentPlanButton {
+        padding: 7px 12px;
+        font-size: 0.85em;
+    }
+}

@@ -1,0 +1,240 @@
+.sectionBlock {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* --- Cabeçalho do Módulo --- */
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px; /* Espaço entre o cabeçalho e o conteúdo */
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0; /* Linha divisória suave */
+}
+
+/* --- Títulos dentro de grupos aninhados / Títulos de Módulo --- */
+.nestedTitle {
+  color: #222222; /* Cor forte para títulos */
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* --- Grupos de Input (Label + Input/TextArea + Descrição) --- */
+.inputGroup {
+  margin-bottom: 16px; /* Espaçamento entre grupos de input */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento entre label e input */
+}
+
+/* --- Labels dos Inputs --- */
+.inputLabel {
+  display: block;
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.95em;
+  margin-bottom: 0;
+}
+
+/* --- Inputs de Texto, TextArea e Select --- */
+.textInput,
+.textArea,
+.selectInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px; /* Cantos arredondados */
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
+  font-family: inherit;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03); /* Sombra interna sutil */
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: #a0a0a0;
+  opacity: 0.8;
+}
+
+.textInput:focus,
+.textArea:focus,
+.selectInput:focus {
+  border-color: #8d4edb; /* Roxo principal no foco */
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.2); /* Sombra de foco */
+  outline: none;
+  background-color: #fafafa; /* Fundo levemente mais claro no foco */
+}
+
+.textArea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* --- Select Inputs (Dropdowns) --- */
+.selectInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+/* --- Checkbox Customizado --- */
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px; /* Espaçamento entre o checkbox e o texto */
+  color: #333333;
+  font-size: 0.95em;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s ease-in-out;
+}
+
+.checkboxLabel:hover {
+  color: #6b21a8; /* Roxo escuro no hover */
+}
+
+.checkboxInput {
+  margin-right: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: #8d4edb;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+  margin-top: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  display: grid;
+  place-content: center;
+}
+
+.checkboxInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.15s ease-in-out;
+  box-shadow: inset 1em 1em #8d4edb;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
+}
+
+.checkboxInput:checked {
+  background-color: #8d4edb;
+  border-color: #8d4edb;
+}
+
+.checkboxInput:checked::before {
+  transform: scale(1);
+}
+
+/* --- Descrições de Campo --- */
+.fieldDescription {
+  color: #666666;
+  font-size: 0.8em;
+  margin-top: 4px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* --- Botão de Remover --- */
+.removeButton {
+  background-color: transparent;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.removeButton:hover {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.08);
+  transform: translateY(-1px);
+}
+.removeButton:active {
+  transform: translateY(0);
+}
+
+.removeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+  .moduleHeader {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+  .nestedTitle {
+    font-size: 1em;
+  }
+  .inputGroup {
+    margin-bottom: 12px;
+    gap: 6px;
+  }
+  .inputLabel {
+    font-size: 0.9em;
+  }
+  .textInput,
+  .textArea,
+  .selectInput {
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+  .textArea {
+    min-height: 80px;
+  }
+  .checkboxLabel {
+    font-size: 0.9em;
+    gap: 6px;
+  }
+  .checkboxInput {
+    width: 18px;
+    height: 18px;
+  }
+  .fieldDescription {
+    font-size: 0.75em;
+  }
+  .removeButton {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 4px;
+  }
+  .removeIcon {
+    width: 16px;
+    height: 16px;
+  }
+}

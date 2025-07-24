@@ -1,4 +1,3 @@
-// app\(interno)\dashboard\paginas\page.tsx (CORRIGIDO: TIPAGEM DOS EVENTOS DE MOUSE)
 'use client';
 
 import React, { useState, useEffect } from 'react';
