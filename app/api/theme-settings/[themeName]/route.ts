@@ -4,14 +4,12 @@ import ThemeConfigModel from '@/models/ThemeConfig';
 import defaultThemeConfig from '../../../(painel)/personalizar/context/defaultThemeConfig'; 
 import { ThemeConfig } from '@/app/(painel)/personalizar/types'; 
 
-// Handler para GET (carregar configuração do tema)
 export async function GET(
   request: NextRequest,
-  // A tipagem correta para o segundo argumento, conforme a documentação do Next.js App Router
   context: { params: { themeName: string } } 
 ) {
     await dbConnect(); 
-    const { themeName } = context.params; // Acessa themeName via context.params
+    const { themeName } = context.params; 
 
     try {
         const themeConfigDoc = await ThemeConfigModel.findOne({ themeName: themeName });
@@ -30,8 +28,7 @@ export async function GET(
     }
 }
 
-// Handler para POST (salvar/atualizar configuração do tema)
-// Este já está com a tipagem correta para o segundo argumento
+
 export async function POST(request: NextRequest, { params }: { params: { themeName: string } }) {
     await dbConnect(); 
     const { themeName } = params;
