@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers'; 
-import SupabaseProvider from '../app/(site)/components/SupabaseProvider'; 
-
-import VisitTracker from './(site)/components/VisitTracker'; 
+// Removido: import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies, headers } from 'next/headers'; // cookies ainda é necessário para o utilitário
+import SupabaseProvider from './(site)/components/SupabaseProvider'; // Ajuste o caminho se necessário
+import VisitTracker from './(site)/components/VisitTracker'; // Ajuste o caminho se necessário
+import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Ajuste o caminho se 'lib' não estiver na raiz ou se o alias não estiver configurado
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -17,15 +17,15 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createServerComponentClient({ cookies });
-  const { data: { session } } = await supabase.auth.getSession();
+  // CORREÇÃO: Usando o utilitário para criar o cliente Supabase
+  const supabase = getSupabaseServerClient();
+  
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // --- Lógica para obter o ID da loja com base no domínio/subdomínio ---
   let lojaId: string | null = null;
   const host = (await headers()).get('host'); // Obtém o hostname da requisição (ex: minhaloja.phandshop.com.br ou customdomain.com)
 
   if (host) {
-    // Tenta encontrar a loja pelo subdomínio ou domínio personalizado
     const { data: lojaData, error: lojaError } = await supabase
       .from('lojas')
       .select('id')
@@ -38,7 +38,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       lojaId = lojaData.id;
     }
   }
-  // --- Fim da lógica para obter o ID da loja ---
 
   return (
     <html lang="pt-BR" className={poppins.className}>
@@ -54,12 +53,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body style={{ margin: 0, padding: 0, background: '#fff' }}>
         <main style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <SupabaseProvider initialSession={session}>
+          {/* Passa o objeto 'user' para o SupabaseProvider */}
+          {/* Você precisará ajustar o SupabaseProvider para aceitar 'initialUser' em vez de 'initialSession' */}
+          <SupabaseProvider initialUser={user}>
             {children}
           </SupabaseProvider>
         </main>
 
-        
+        {/* Componente de rastreamento de visitas para CADA LOJA */}
+        {/* Ele só será renderizado e ativado se um lojaId for encontrado */}
         {lojaId && <VisitTracker lojaId={lojaId} />}
       </body>
     </html>

@@ -1,11 +1,11 @@
-// app/(site)/cadastro/page.tsx
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Poppins } from 'next/font/google';
-import styles from './Cadastro.module.css'; // Importa seu CSS Module
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import styles from './Cadastro.module.css';
+import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
+import { PostgrestError } from '@supabase/supabase-js';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
@@ -35,13 +35,16 @@ const EyeOffIcon = () => (
   </svg>
 );
 
+
 interface FormState {
   nome: string;
   email: string;
-  telefone: string;
+  telefone: string; 
   senha: string;
   confirmSenha: string;
   aceitaTermos: boolean;
+  plano?: string; 
+  recorrencia?: string; 
 }
 
 function CadastroForm() {
@@ -54,7 +57,7 @@ function CadastroForm() {
   const [form, setForm] = useState<FormState>({
     nome: '',
     email: '',
-    telefone: '',
+    telefone: '', 
     senha: '',
     confirmSenha: '',
     aceitaTermos: false,
@@ -97,18 +100,23 @@ function CadastroForm() {
     const isValid =
       form.nome.trim().length >= 2 &&
       validarEmail(form.email) &&
+      form.telefone.trim().length >= 10 && 
       form.senha.length >= 6 &&
       form.senha === form.confirmSenha &&
       form.aceitaTermos;
     setValid(isValid);
-    if (error) setError('');
-    if (successMessage) setSuccessMessage('');
-  }, [form, error, successMessage]);
+    // Limpar mensagens de erro/sucesso apenas se os campos forem modificados
+    // e o formulário se tornar válido ou inválido.
+    // Evita limpar mensagens enquanto o usuário está digitando.
+    // if (error && isValid) setError(''); // Deixei comentado, pois pode ser útil para ver o erro até o usuário corrigir
+    // if (successMessage && !isValid) setSuccessMessage('');
+  }, [form]); // Removi error e successMessage das dependências
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
+    setError(''); // Limpa erros anteriores antes de tentar novamente
+    setSuccessMessage(''); // Limpa mensagens de sucesso anteriores
+    
     if (!valid) {
       setError('Preencha todos os campos corretamente e aceite os termos de uso.');
       return;
@@ -116,13 +124,14 @@ function CadastroForm() {
     setLoading(true);
 
     try {
+      console.log("Iniciando processo de cadastro para:", form.email);
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: form.email,
         password: form.senha,
       });
 
       if (signUpError) {
-        console.error("Erro no signUp do Supabase:", signUpError.message);
+        console.error("Erro no signUp do Supabase:", signUpError.message, signUpError.name, signUpError.status);
         setError('Erro ao criar conta: ' + signUpError.message);
         setLoading(false);
         return;
@@ -133,36 +142,178 @@ function CadastroForm() {
         setLoading(false);
         return;
       }
+      console.log("Usuário cadastrado com sucesso:", signUpData.user.id);
 
-      const { error: insertError } = await supabase.from('usuarios').insert({
-        id: signUpData.user.id,
+      // Explicitamente definir a sessão no cliente Supabase após o signUp
+      if (signUpData.session) {
+        console.log("Sessão Supabase definida para o novo usuário.");
+        await supabase.auth.setSession(signUpData.session);
+      } else {
+        // Se não houver sessão, pode significar que é necessário confirmar e-mail.
+        console.warn("Nenhuma sessão retornada após signUp. Usuário pode precisar confirmar e-mail.");
+        setSuccessMessage("Verifique seu e-mail para confirmar sua conta e fazer login!");
+        setLoading(false);
+        // Redireciona para uma página de sucesso ou instrução de verificação de e-mail
+        router.push('/verificar-email'); 
+        return; // Sai da função, não tenta inserir dados no BD sem sessão ativa
+      }
+
+      // Chamar getUser() novamente para garantir que a sessão está ativa e o usuário é retornado
+      const { data: { user }, error: getUserError } = await supabase.auth.getUser();
+
+      if (getUserError || !user) {
+          console.error("Erro ao obter usuário após signUp e setSession:", getUserError?.message || "Usuário não encontrado.");
+          setError('Erro de autenticação após cadastro. Tente novamente.');
+          setLoading(false);
+          return;
+      }
+      console.log("Usuário autenticado e obtido com sucesso:", user.id);
+
+      // Prepara os dados para inserção na tabela 'usuarios'
+      const userDataToInsert: {
+        id: string;
+        nome: string;
+        email: string;
+        telefone: string;
+        plano: string;
+        recorrencia: string;
+      } = {
+        id: user.id, // Usando o ID do usuário retornado pelo getUser()
         nome: form.nome,
         email: form.email,
         telefone: form.telefone,
         plano: nomeDoPlano,
         recorrencia: recorrenciaDoPlano,
-      });
+      };
 
-      if (insertError) {
-        console.error("Erro ao inserir dados na tabela 'usuarios':", insertError);
-        setError('Erro ao salvar dados do usuário: ' + (insertError.message || 'Verifique se o e-mail já está cadastrado ou dados inválidos.'));
+      console.log("Tentando inserir dados na tabela 'usuarios':", userDataToInsert);
+
+      const { error: insertUserError } = await supabase.from('usuarios').insert(userDataToInsert);
+
+      if (insertUserError) {
+        const supabaseError = insertUserError as PostgrestError; 
+        console.error("Erro ao inserir dados na tabela 'usuarios':", supabaseError.message); // Loga a mensagem de erro
+        console.error("Detalhes do erro de inserção:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
+        
+        // Verifica se é erro de chave duplicada (e-mail já existe, etc.)
+        if (supabaseError.code === '23505') { // Código comum para violação de unique constraint
+          setError('Este e-mail já está cadastrado ou já existe um usuário com este ID. Por favor, faça login ou use outro e-mail.');
+        } else {
+          setError('Erro ao salvar dados do usuário: ' + (supabaseError?.message || 'Erro desconhecido.'));
+        }
         setLoading(false);
         return;
       }
+      console.log("Dados do usuário inseridos com sucesso na tabela 'usuarios'.");
 
+
+      // --- Lógica para criar a loja do usuário na tabela 'lojas' ---
+      // Verifique se o subdomínio já existe (se houver uma restrição de unicidade)
+      const proposedSubdomain = `${form.nome.toLowerCase().replace(/\s/g, '')}-loja-${Math.random().toString(36).substring(2, 7)}`;
+      console.log("Tentando criar loja com subdomínio:", proposedSubdomain);
+
+      const { error: insertStoreError } = await supabase.from('lojas').insert({
+        user_id: user.id,
+        nome: `${form.nome}'s Loja`,
+        subdominio: proposedSubdomain,
+        plano: nomeDoPlano,
+      });
+
+      if (insertStoreError) {
+        const supabaseError = insertStoreError as PostgrestError;
+        console.error("Erro ao criar loja para o usuário:", supabaseError.message); // Loga a mensagem de erro
+        console.error("Detalhes do erro de criação de loja:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
+        
+        // Se o subdomínio já existe (violação de unique constraint)
+        if (supabaseError.code === '23505' && supabaseError.message.includes('subdominio')) {
+          setError('Cadastro realizado, mas o subdomínio da loja já existe. Tente novamente ou entre em contato.');
+        } else {
+          setError('Cadastro realizado, mas houve um erro ao criar sua loja: ' + (supabaseError?.message || 'Erro desconhecido. Tente novamente ou entre em contato.'));
+        }
+        setLoading(false);
+        return;
+      }
+      console.log("Loja criada com sucesso para o usuário:", user.id);
+      // --- FIM NOVO ---
+
+      // Envia e-mail de boas-vindas APÓS o cadastro e criação da loja
+      console.log("Enviando e-mail de boas-vindas...");
       await fetch('/api/email/boasvindas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome: form.nome, email: form.email, plano: nomeDoPlano, recorrencia: recorrenciaDoPlano }),
       });
+      console.log("E-mail de boas-vindas enviado (ou tentativa de envio).");
+
+
+      // *** IMPORTANTE: A lógica de checkout do Stripe deve ser iniciada AQUI se o plano NÃO for grátis ***
+      if (nomeDoPlano !== 'Plano Grátis') {
+        // Obtenha o priceId do Stripe. Você precisa ter um mapeamento aqui.
+        // Este é um exemplo de MAPA, você precisa ter os IDs reais dos seus planos Stripe
+        const stripePriceIds: Record<string, Record<string, string>> = {
+          'Plano Básico': {
+            'mensal': 'YOUR_BASIC_MONTHLY_PRICE_ID',
+            'anual': 'YOUR_BASIC_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+          },
+          'Plano Essencial': {
+            'mensal': 'YOUR_ESSENTIAL_MONTHLY_PRICE_ID',
+            'anual': 'YOUR_ESSENTIAL_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+          },
+          'Plano Profissional': {
+            'mensal': 'YOUR_PROFESSIONAL_MONTHLY_PRICE_ID',
+            'anual': 'YOUR_PROFESSIONAL_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+          },
+          'Plano Premium': {
+            'mensal': 'YOUR_PREMIUM_MONTHLY_PRICE_ID',
+            'anual': 'YOUR_PREMIUM_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+          },
+          // ... adicione outros planos
+        };
+
+        const selectedPriceId = stripePriceIds[nomeDoPlano]?.[recorrenciaDoPlano];
+
+        if (!selectedPriceId) {
+          console.error("Erro: priceId do Stripe não encontrado para o plano selecionado:", nomeDoPlano, recorrenciaDoPlano);
+          setError('Erro ao processar o plano de pagamento. Entre em contato.');
+          setLoading(false);
+          return;
+        }
+
+        console.log("Iniciando checkout do Stripe para priceId:", selectedPriceId);
+        const stripeResponse = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            priceId: selectedPriceId,
+            planName: nomeDoPlano, 
+            isAnnual: recorrenciaDoPlano === 'anual',
+            supabaseUserId: user.id
+          }),
+        });
+
+        const stripeData = await stripeResponse.json();
+
+        if (stripeData.url) {
+          console.log("Redirecionando para o Stripe Checkout:", stripeData.url);
+          window.location.href = stripeData.url; // Redireciona para o checkout do Stripe
+          return; // Sair da função para evitar o redirecionamento para o dashboard
+        } else if (stripeData.error) {
+          console.error("Erro retornado da API do Stripe:", stripeData.error);
+          setError('Erro ao iniciar o processo de pagamento: ' + stripeData.error);
+          setLoading(false);
+          return;
+        }
+      }
 
       setLoading(false);
       setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano} (${recorrenciaDoPlano})! Redirecionando...`);
-      router.push('/dashboard');
+      router.push('/dashboard'); // Redireciona para o dashboard após um cadastro de sucesso (incluindo grátis)
     } catch (err: unknown) {
       if (err instanceof Error) {
+        console.error('Erro inesperado no handleSubmit:', err.message, err.stack);
         setError('Erro inesperado: ' + err.message);
       } else {
+        console.error('Erro inesperado no handleSubmit (não-Error object):', err);
         setError('Erro inesperado: Tente novamente.');
       }
       setLoading(false);
@@ -193,15 +344,15 @@ function CadastroForm() {
 
         <p className={styles.subtitle}>Preencha seus dados para começar a vender online!</p>
 
-        <form onSubmit={handleSubmit} noValidate className={styles.cadastroForm}> {/* <-- CORREÇÃO AQUI */}
+        <form onSubmit={handleSubmit} noValidate className={styles.cadastroForm}>
           <label htmlFor="nome" className={styles.label}>Nome</label>
           <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required minLength={2} className={styles.inputField} />
 
           <label htmlFor="email" className={styles.label}>Email</label>
           <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required className={styles.inputField} />
 
-          <label htmlFor="telefone" className={styles.label}>Telefone (opcional)</label>
-          <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} className={styles.inputField} />
+          <label htmlFor="telefone" className={styles.label}>Telefone</label>
+          <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} required minLength={10} className={styles.inputField} />
 
           <label htmlFor="senha" className={styles.label}>Senha</label>
           <div className={styles.passwordWrapper}>
