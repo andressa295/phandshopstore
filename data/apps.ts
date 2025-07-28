@@ -1,0 +1,70 @@
+// data/apps.ts
+
+export interface AppItem {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    status: 'Instalado' | 'Não Instalado';
+    planRequired: 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium';
+    link: string;
+    type: string;
+    category: string;
+}
+
+// Dados mockados de aplicativos
+export const apps: AppItem[] = [
+    // --- Logística & Fulfillment ---
+    { id: '6', name: 'Melhor Envio', description: 'Compare fretes das principais transportadoras e emita etiquetas com desconto.', icon: '/images/app-icons/melhor-envio.png', status: 'Não Instalado', planRequired: 'plano_basico', link: 'https://melhorenvio.com.br/', type: 'Envios', category: '📦 Logística & Fulfillment' },
+    { id: '7', name: 'Frenet', description: 'Alternativa ao Melhor Envio com mais transportadoras e opções de frete.', icon: '/images/app-icons/frenet.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://frenet.com.br/', type: 'Envios', category: '📦 Logística & Fulfillment' },
+    { id: '16', name: 'Intelipost', description: 'Cálculo inteligente de frete e roteirização para lojas de grande volume.', icon: '/images/app-icons/intelipost.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://intelipost.com.br/', type: 'Envios', category: '📦 Logística & Fulfillment' },
+
+    // --- Checkout & Conversão ---
+    { id: '17', name: 'Recart', description: 'Automação para carrinho abandonado via WhatsApp e Messenger, recuperando vendas.', icon: '/images/app-icons/recart.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://recart.com/', type: 'Conversão', category: '🛒 Checkout & Conversão' },
+    { id: '18', name: 'One Click Upsell', description: 'Ofereça upsells e cross-sells imediatos no checkout para aumentar o ticket médio.', icon: '/images/app-icons/one-click-upsell.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: '/dashboard/marketing/aplicativos/one-click-upsell-config', type: 'Conversão', category: '🛒 Checkout & Conversão' },
+    { id: '19', name: 'Checkout Transparente Pagar.me', description: 'Mantenha o cliente dentro da loja durante a compra, otimizando a experiência.', icon: '/images/app-icons/pagarme.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://pagar.me/', type: 'Pagamento', category: '🛒 Checkout & Conversão' },
+
+    // --- Marketing & Performance ---
+    { id: '1', name: 'Google Analytics', description: 'Monitore o tráfego da sua loja e o comportamento dos visitantes.', icon: '/images/app-icons/google-analytics.png', status: 'Instalado', planRequired: 'plano_gratis', link: 'https://analytics.google.com/', type: 'Analytics', category: '🎯 Marketing & Performance' },
+    { id: '2', name: 'Facebook Pixel', description: 'Rastreie eventos e otimize suas campanhas de anúncios no Facebook e Instagram.', icon: '/images/app-icons/facebook-pixel.png', status: 'Não Instalado', planRequired: 'plano_basico', link: 'https://facebook.com/business/help/facebook-pixel', type: 'Advertising', category: '🎯 Marketing & Performance' },
+    { id: '3', name: 'Mailchimp', description: 'Automatize suas campanhas de e-mail marketing e newsletters.', icon: '/images/app-icons/mailchimp.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://mailchimp.com/', type: 'Email Marketing', category: '🎯 Marketing & Performance' },
+    { id: '4', name: 'SEO Booster', description: 'Otimize sua loja para motores de busca e melhore seu ranking no Google.', icon: '/images/app-icons/seo-booster.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: '/dashboard/marketing/aplicativos/seo-booster-config', type: 'SEO', category: '🎯 Marketing & Performance' },
+    { id: '5', name: 'Google Shopping', description: 'Conecte seus produtos ao Google Shopping para aumentar a visibilidade.', icon: '/images/app-icons/google-shopping.png', status: 'Instalado', planRequired: 'plano_profissional', link: 'https://merchants.google.com/', type: 'Advertising', category: '🎯 Marketing & Performance' },
+    { id: '20', name: 'RD Station', description: 'CRM e automação de marketing nacional poderoso para suas estratégias.', icon: '/images/app-icons/rd-station.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://rdstation.com/', type: 'Automação', category: '🎯 Marketing & Performance' },
+    { id: '21', name: 'Hotjar', description: 'Grave sessões de usuários e crie mapas de calor para entender o comportamento na loja.', icon: '/images/app-icons/hotjar.png', status: 'Não Instalado', planRequired: 'plano_premium', link: 'https://www.hotjar.com/', type: 'Analytics', category: '🎯 Marketing & Performance' },
+    { id: '22', name: 'PushOwl', description: 'Envie notificações push via navegador para engajar clientes e recuperar vendas.', icon: '/images/app-icons/pushowl.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://pushowl.com/', type: 'Notificação', category: '🎯 Marketing & Performance' },
+
+    // --- Social e Vendas Multicanal ---
+    { id: '23', name: 'Instagram Shopping', description: 'Conexão direta com seu catálogo de produtos para vendas no Instagram.', icon: '/images/app-icons/instagram-shopping.png', status: 'Não Instalado', planRequired: 'plano_basico', link: 'https://business.facebook.com/instagram/shopping/', type: 'Social Commerce', category: '📱 Social e Vendas Multicanal' },
+    { id: '24', name: 'TikTok Ads', description: 'Integração com pixel e otimização de conversões para suas campanhas no TikTok.', icon: '/images/app-icons/tiktok.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://ads.tiktok.com/', type: 'Publicidade', category: '📱 Social e Vendas Multicanal' },
+    { id: '25', name: 'Clube de Afiliados Phandshop', description: 'Sistema próprio para criar e gerenciar seu programa de afiliados, impulsionando vendas.', icon: '/images/app-icons/phandshop-afiliados.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/afiliados-config', type: 'Afiliados', category: '📱 Social e Vendas Multicanal' },
+    { id: '26', name: 'Venda no Mercado Livre', description: 'Integração direta com a API de produtos e pedidos para vender no Mercado Livre.', icon: '/images/app-icons/mercado-livre.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://developers.mercadolivre.com.br/', type: 'Marketplace', category: '📱 Social e Vendas Multicanal' },
+
+    // --- Atendimento & Relacionamento ---
+    { id: '12', name: 'JivoChat', description: 'Adicione um chat online à sua loja para atendimento em tempo real.', icon: '/images/app-icons/jivochat.png', status: 'Não Instalado', planRequired: 'plano_gratis', link: 'https://www.jivochat.com.br/', type: 'Chat Online', category: '💬 Atendimento & Relacionamento' },
+    { id: '13', name: 'WhatsApp Business', description: 'Integre o WhatsApp para atendimento e envio de notificações.', icon: '/images/app-icons/whatsapp.png', status: 'Não Instalado', planRequired: 'plano_basico', link: 'https://business.whatsapp.com/', type: 'Mensagens', category: '💬 Atendimento & Relacionamento' },
+    { id: '27', name: 'Zendesk', description: 'Solução completa de chat, ticket e CRM para atendimento profissional ao cliente.', icon: '/images/app-icons/zendesk.png', status: 'Não Instalado', planRequired: 'plano_premium', link: 'https://www.zendesk.com.br/', type: 'CRM/Suporte', category: '💬 Atendimento & Relacionamento' },
+    { id: '28', name: 'ChatGPT Assistente Lojista', description: 'IA interna para responder perguntas frequentes dos clientes e automatizar o suporte.', icon: '/images/app-icons/chatgpt.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/chatgpt-config', type: 'IA/Suporte', category: '💬 Atendimento & Relacionamento' },
+    { id: '29', name: 'ReclameAqui', description: 'Responda avaliações e gerencie a reputação da sua loja diretamente do painel.', icon: '/images/app-icons/reclame-aqui.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://www.reclameaqui.com.br/', type: 'Reputação', category: '💬 Atendimento & Relacionamento' },
+
+    // --- Relatórios & BI ---
+    { id: '30', name: 'Metabase (embed)', description: 'Crie dashboards personalizados e visualize seus dados de forma intuitiva.', icon: '/images/app-icons/metabase.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://www.metabase.com/', type: 'Business Intelligence', category: '📊 Relatórios & BI' },
+    { id: '31', name: 'Google Data Studio Connector', description: 'Conecte seus dados da Phandshop para painéis externos no Google Data Studio.', icon: '/images/app-icons/google-data-studio.png', status: 'Não Instalado', planRequired: 'plano_premium', link: 'https://lookerstudio.google.com/', type: 'Business Intelligence', category: '📊 Relatórios & BI' },
+
+    // --- Financeiro & Fiscal ---
+    { id: '8', name: 'NFe.io', description: 'Automatize a emissão de Notas Fiscais Eletrônicas (NF-e) para produtos e serviços.', icon: '/images/app-icons/nfe-io.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: 'https://nfe.io/', type: 'Nota Fiscal', category: '🧾 Financeiro & Fiscal' },
+    { id: '32', name: 'Asaas', description: 'Gestão de cobranças completa com link de pagamento, Pix, boleto e cartão de crédito.', icon: '/images/app-icons/asaas.png', status: 'Não Instalado', planRequired: 'plano_basico', link: 'https://www.asaas.com/', type: 'Gestão Financeira', category: '🧾 Financeiro & Fiscal' },
+    { id: '14', name: 'PagSeguro', description: 'Ofereça diversas opções de pagamento, incluindo boleto, Pix e parcelamento.', icon: '/images/app-icons/pagseguro.png', status: 'Não Instalado', planRequired: 'plano_gratis', link: 'https://pagseguro.uol.com.br/', type: 'Pagamento', category: '🧾 Financeiro & Fiscal' },
+    { id: '15', name: 'Mercado Pago', description: 'Aceite pagamentos de forma simples e segura com as soluções de checkout do Mercado Pago.', icon: '/images/app-icons/mercado-pago.png', status: 'Não Instalado', planRequired: 'plano_gratis', link: 'https://www.mercadopago.com.br/', type: 'Pagamento', category: '🧾 Financeiro & Fiscal' },
+
+    // --- Automação e IA ---
+    { id: '33', name: 'Zapier/Make', description: 'Crie automações sem código entre a Phandshop e milhares de outras ferramentas.', icon: '/images/app-icons/zapier.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://zapier.com/', type: 'Automação', category: '🤖 Automação e IA' },
+    { id: '34', name: 'IA de Precificação', description: 'Sugestão automática de preço competitivo com base em análise de mercado e IA.', icon: '/images/app-icons/ai-pricing.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/ai-pricing-config', type: 'Inteligência Artificial', category: '🤖 Automação e IA' },
+    { id: '35', name: 'Ferramenta de Prova Social', description: 'Exiba notificações de "Fulano acabou de comprar" para aumentar a urgência e confiança.', icon: '/images/app-icons/social-proof.png', status: 'Não Instalado', planRequired: 'plano_essencial', link: '/dashboard/marketing/aplicativos/social-proof-config', type: 'Conversão', category: '🤖 Automação e IA' },
+
+    // --- Extras Visionários ---
+    { id: '36', name: 'App de Gamificação', description: 'Crie programas de fidelidade com pontos e recompensas para engajar seus clientes.', icon: '/images/app-icons/gamification.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/gamification-config', type: 'Engajamento', category: '🧠 Extras Visionários' },
+    { id: '37', name: 'Agendador de Posts', description: 'Agende posts para suas redes sociais diretamente da dashboard da Phandshop.', icon: '/images/app-icons/post-scheduler.png', status: 'Não Instalado', planRequired: 'plano_profissional', link: 'https://www.post-scheduler-config/', type: 'Conteúdo', category: '🧠 Extras Visionários' },
+    { id: '38', name: 'Construtor de Landing Pages', description: 'Crie páginas personalizadas de campanha dentro da Phandshop para suas promoções.', icon: '/images/app-icons/landing-page-builder.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/landing-page-config', type: 'Web Design', category: '🧠 Extras Visionários' },
+    { id: '39', name: 'IA de Geração de Produto', description: 'Use IA para gerar descrições, imagens e otimizar seus produtos automaticamente.', icon: '/images/app-icons/ai-product-gen.png', status: 'Não Instalado', planRequired: 'plano_premium', link: '/dashboard/marketing/aplicativos/ai-product-gen-config', type: 'Inteligência Artificial', category: '🧠 Extras Visionários' },
+];
