@@ -4,8 +4,8 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers'; // Importe 'headers' para pegar o hostname
 import SupabaseProvider from '../app/(site)/components/SupabaseProvider'; // Ajuste o caminho se necessário
 
-// Importe o novo componente de rastreamento
-import VisitTracker from '../app/(site)/components/VisitTracker';
+// CORREÇÃO: Ajuste o caminho de importação para o VisitTracker
+import VisitTracker from './(site)/components/VisitTracker'; // Caminho relativo correto
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,7 +23,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   // --- Lógica para obter o ID da loja com base no domínio/subdomínio ---
   let lojaId: string | null = null;
-  // CORREÇÃO: Adicionado 'await' antes de headers()
   const host = (await headers()).get('host'); // Obtém o hostname da requisição (ex: minhaloja.phandshop.com.br ou customdomain.com)
 
   if (host) {
