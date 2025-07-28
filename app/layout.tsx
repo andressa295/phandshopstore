@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers'; // Importe 'headers' para pegar o hostname
-import SupabaseProvider from '../app/(site)/components/SupabaseProvider'; // Ajuste o caminho se necessário
+import { cookies, headers } from 'next/headers'; 
+import SupabaseProvider from '../app/(site)/components/SupabaseProvider'; 
 
-// CORREÇÃO: Ajuste o caminho de importação para o VisitTracker
-import VisitTracker from './(site)/components/VisitTracker'; // Caminho relativo correto
+import VisitTracker from './(site)/components/VisitTracker'; 
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -60,8 +59,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </SupabaseProvider>
         </main>
 
-        {/* Componente de rastreamento de visitas para CADA LOJA */}
-        {/* Ele só será renderizado e ativado se um lojaId for encontrado */}
+        
         {lojaId && <VisitTracker lojaId={lojaId} />}
       </body>
     </html>
