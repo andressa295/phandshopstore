@@ -1,20 +1,22 @@
+// app/(site)/cadastro/page.tsx
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Poppins } from 'next/font/google';
-import styles from './Cadastro.module.css';
+import styles from './Cadastro.module.css'; // Importa seu CSS Module
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
-type PlanosKeys = 'gratis' | 'essencial' | 'profissional' | 'premium';
+type PlanosKeys = 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium';
 
 const planoNomes: Record<PlanosKeys, string> = {
-  gratis: 'Plano Grátis',
-  essencial: 'Plano Essencial',
-  profissional: 'Plano Profissional',
-  premium: 'Plano Phand Premium',
+  plano_gratis: 'Plano Grátis',
+  plano_basico: 'Plano Básico',
+  plano_essencial: 'Plano Essencial',
+  plano_profissional: 'Plano Profissional',
+  plano_premium: 'Plano Premium',
 };
 
 const EyeIcon = () => (
@@ -47,6 +49,7 @@ function CadastroForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [nomeDoPlano, setNomeDoPlano] = useState<string>('');
+  const [recorrenciaDoPlano, setRecorrenciaDoPlano] = useState<string>('');
 
   const [form, setForm] = useState<FormState>({
     nome: '',
@@ -75,8 +78,18 @@ function CadastroForm() {
 
   useEffect(() => {
     const planoQuery = searchParams.get('plano') as PlanosKeys | null;
+    const recorrenciaQuery = searchParams.get('recorrencia');
+
     if (planoQuery && planoNomes[planoQuery]) {
       setNomeDoPlano(planoNomes[planoQuery]);
+    } else {
+      setNomeDoPlano(planoNomes.plano_gratis);
+    }
+
+    if (recorrenciaQuery) {
+      setRecorrenciaDoPlano(recorrenciaQuery === 'anual' ? 'anual' : 'mensal');
+    } else {
+      setRecorrenciaDoPlano('mensal');
     }
   }, [searchParams]);
 
@@ -108,8 +121,15 @@ function CadastroForm() {
         password: form.senha,
       });
 
-      if (signUpError || !signUpData?.user) {
-        setError('Erro ao criar usuário: ' + (signUpError?.message || 'Erro desconhecido.'));
+      if (signUpError) {
+        console.error("Erro no signUp do Supabase:", signUpError.message);
+        setError('Erro ao criar conta: ' + signUpError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!signUpData?.user) {
+        setError('Cadastro falhou: Usuário não retornado após signup.');
         setLoading(false);
         return;
       }
@@ -119,12 +139,13 @@ function CadastroForm() {
         nome: form.nome,
         email: form.email,
         telefone: form.telefone,
-        plano: nomeDoPlano || 'Gratuito',
+        plano: nomeDoPlano,
+        recorrencia: recorrenciaDoPlano,
       });
 
       if (insertError) {
         console.error("Erro ao inserir dados na tabela 'usuarios':", insertError);
-        setError('Erro ao salvar dados do usuário: ' + insertError.message);
+        setError('Erro ao salvar dados do usuário: ' + (insertError.message || 'Verifique se o e-mail já está cadastrado ou dados inválidos.'));
         setLoading(false);
         return;
       }
@@ -132,11 +153,11 @@ function CadastroForm() {
       await fetch('/api/email/boasvindas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: form.nome, email: form.email, plano: nomeDoPlano || 'Gratuito' }),
+        body: JSON.stringify({ nome: form.nome, email: form.email, plano: nomeDoPlano, recorrencia: recorrenciaDoPlano }),
       });
 
       setLoading(false);
-      setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano || 'Plano Grátis'}! Redirecionando...`);
+      setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano} (${recorrenciaDoPlano})! Redirecionando...`);
       router.push('/dashboard');
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -158,68 +179,85 @@ function CadastroForm() {
 
   return (
     <main className={`${poppins.className} ${styles.mainContainer}`}>
-      <form onSubmit={handleSubmit} noValidate>
-        <h1>Cadastro {nomeDoPlano}</h1>
+      <div className={styles.formWrapper}>
+        <h1 className={styles.title}>Crie sua conta</h1>
 
-        <label htmlFor="nome">Nome</label>
-        <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required minLength={2} />
+        {nomeDoPlano && (
+          <div className={styles.planoSelecionado}>
+            <p>Você escolheu o:</p>
+            <strong>
+              {nomeDoPlano} ({recorrenciaDoPlano === 'mensal' ? 'mensal' : 'anual'})
+            </strong>
+          </div>
+        )}
 
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required />
+        <p className={styles.subtitle}>Preencha seus dados para começar a vender online!</p>
 
-        <label htmlFor="telefone">Telefone</label>
-        <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} />
+        <form onSubmit={handleSubmit} noValidate className={styles.cadastroForm}> {/* <-- CORREÇÃO AQUI */}
+          <label htmlFor="nome" className={styles.label}>Nome</label>
+          <input id="nome" name="nome" type="text" value={form.nome} onChange={handleChange} required minLength={2} className={styles.inputField} />
 
-        <label htmlFor="senha">Senha</label>
-        <div style={{ position: 'relative' }}>
+          <label htmlFor="email" className={styles.label}>Email</label>
+          <input id="email" name="email" type="email" value={form.email} onChange={handleChange} required className={styles.inputField} />
+
+          <label htmlFor="telefone" className={styles.label}>Telefone (opcional)</label>
+          <input id="telefone" name="telefone" type="tel" value={form.telefone} onChange={handleChange} className={styles.inputField} />
+
+          <label htmlFor="senha" className={styles.label}>Senha</label>
+          <div className={styles.passwordWrapper}>
+            <input
+              id="senha"
+              name="senha"
+              type={showSenha ? 'text' : 'password'}
+              value={form.senha}
+              onChange={handleChange}
+              required
+              minLength={6}
+              className={styles.inputField}
+            />
+            <button
+              type="button"
+              onClick={() => setShowSenha(!showSenha)}
+              className={styles.togglePasswordButton}
+              aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}
+            >
+              {showSenha ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </div>
+
+          <label htmlFor="confirmSenha" className={styles.label}>Confirmar Senha</label>
           <input
-            id="senha"
-            name="senha"
+            id="confirmSenha"
+            name="confirmSenha"
             type={showSenha ? 'text' : 'password'}
-            value={form.senha}
+            value={form.confirmSenha}
             onChange={handleChange}
             required
             minLength={6}
+            className={styles.inputField}
           />
-          <button
-            type="button"
-            onClick={() => setShowSenha(!showSenha)}
-            style={{ position: 'absolute', right: 8, top: 8, background: 'none', border: 'none', cursor: 'pointer' }}
-            aria-label={showSenha ? 'Esconder senha' : 'Mostrar senha'}
-          >
-            {showSenha ? <EyeOffIcon /> : <EyeIcon />}
+
+          <label className={styles.termsLabel}>
+            <input
+              type="checkbox"
+              name="aceitaTermos"
+              checked={form.aceitaTermos}
+              onChange={handleChange}
+              required
+            />
+            Aceito os <a href="/termos-de-uso" target="_blank" rel="noopener noreferrer" className={styles.termsLink}>termos de uso</a>
+          </label>
+
+          {error && <p className={styles.errorText}>{error}</p>}
+          {successMessage && <p className={styles.successMessage}>{successMessage}</p>}
+
+          <button type="submit" disabled={loading || !valid} className={styles.submitButton}>
+            {loading ? 'Cadastrando...' : 'Cadastrar'}
           </button>
-        </div>
 
-        <label htmlFor="confirmSenha">Confirmar Senha</label>
-        <input
-          id="confirmSenha"
-          name="confirmSenha"
-          type={showSenha ? 'text' : 'password'}
-          value={form.confirmSenha}
-          onChange={handleChange}
-          required
-          minLength={6}
-        />
-
-        <label>
-          <input
-            type="checkbox"
-            name="aceitaTermos"
-            checked={form.aceitaTermos}
-            onChange={handleChange}
-            required
-          />
-          Aceito os termos de uso
-        </label>
-
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Cadastrando...' : 'Cadastrar'}
-        </button>
-      </form>
+          <p className={styles.loginPrompt}>Já tem uma conta? <a href="/login" className={styles.loginLink}>Faça login</a></p>
+        </form>
+      </div>
     </main>
   );
 }

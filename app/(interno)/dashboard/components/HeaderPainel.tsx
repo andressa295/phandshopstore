@@ -1,20 +1,27 @@
-// app\(interno)\dashboard\components\HeaderPainel.tsx (CORRIGIDO: CAMINHO DA LOGO)
+// app\(interno)\dashboard\components\HeaderPainel.tsx
+
 'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image'; // Para a logo
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
+import { UserProfile } from '../UserContext'; 
+
+
 import { 
     FaUserCircle, FaCreditCard, FaTags, FaHistory, FaFileInvoiceDollar, FaDollarSign, 
-    FaShieldAlt, FaUsers, FaBell, FaSignOutAlt, FaShareAlt, FaBuilding // Importar todos os ícones necessários
+    FaShieldAlt, FaUsers, FaBell, FaSignOutAlt, FaShareAlt, FaBuilding 
 } from 'react-icons/fa';
 import { MdSettings } from 'react-icons/md';
 
 
-// Definindo cores e tipografia (copiadas para autossuficiência do componente)
+// DEFININDO CORES E TYPOGRAPHY
 const colors = {
     primary: '#6b21a8',
-    secondary: '#6b21a8',
+    secondary: '#820AD1',
     accent: '#7C3AED',
     text: '#333333',
     lightText: '#666666',
@@ -36,10 +43,36 @@ const typography = {
 };
 
 
-const HeaderPainel: React.FC = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+interface HeaderPainelProps {
+  userProfile: UserProfile | null;
+}
 
-    // Itens do dropdown de perfil do usuário
+
+const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const supabase = createClientComponentClient();
+    const router = useRouter();
+
+    const userName = userProfile?.nome || 'Minha Loja';
+    const userEmail = userProfile?.email || 'N/A';
+    // --- CORREÇÃO: Explicitamente tipando 'char' como string ---
+    const userPlanDisplay = userProfile?.plano ? 
+        userProfile.plano.replace('plano_', 'Plano ').replace(/\b\w/g, (char: string) => char.toUpperCase()) :
+        'Plano Grátis';
+    const userRecorrenciaDisplay = userProfile?.recorrencia || '';
+
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (!error) {
+            router.push('/login');
+        } else {
+            console.error('Erro ao fazer logout:', error);
+            alert('Falha ao fazer logout. Tente novamente.');
+        }
+        setIsDropdownOpen(false);
+    };
+
     const dropdownItems = [
         { label: 'Minha conta', icon: <FaUserCircle />, href: '/dashboard/menu/minha-conta' },
         { label: 'Pagamentos e assinaturas', icon: <FaCreditCard />, href: '/dashboard/menu/pagamentos-assinaturas' },
@@ -52,40 +85,38 @@ const HeaderPainel: React.FC = () => {
         { label: 'Dados da minha conta', icon: <FaUserCircle />, href: '/dashboard/menu/dados-conta' },
         { label: 'Redes sociais', icon: <FaShareAlt />, href: '/dashboard/menu/redes-sociais' },
         { label: 'Dados do meu negócio', icon: <FaBuilding />, href: '/dashboard/menu/dados-negocio' },
-        { label: 'Sair', icon: <FaSignOutAlt />, href: '/logout' },
+        { label: 'Sair', icon: <FaSignOutAlt />, action: handleLogout, href: '/(site)/login' },
     ];
 
     return (
         <header style={{
             height: '60px',
-            backgroundColor: colors.white, // Fundo branco
-            borderBottom: `1px solid ${colors.border}`, // Borda sutil
+            backgroundColor: colors.white,
+            borderBottom: `1px solid ${colors.border}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '0 20px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.05)', // Sombra discreta
+            boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             flexShrink: 0,
             zIndex: 100,
             position: 'sticky',
             top: 0,
             width: '100%',
             boxSizing: 'border-box',
+            fontFamily: typography.fontFamily,
         }}>
-            {/* Logo da Phandshop no Painel */}
             <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                {/* CORREÇÃO: Usando caminho para imagem na pasta public */}
                 <Image src="/logoroxo.png" alt="Phandshop Logo" width={150} height={50} priority style={{ objectFit: 'contain' }} /> 
             </Link>
 
-            {/* Ícone de Usuário e Dropdown */}
             <div style={{ position: 'relative' }}>
                 <FaUserCircle 
                     size={28} 
-                    color={colors.text} // Cor do ícone
+                    color={colors.text}
                     style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    onMouseEnter={(e) => e.currentTarget.style.color = colors.primary} // Hover na cor primária
+                    onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
                     onMouseLeave={(e) => e.currentTarget.style.color = colors.text}
                     title="Minha Conta"
                 />
@@ -98,21 +129,28 @@ const HeaderPainel: React.FC = () => {
                         backgroundColor: colors.white,
                         borderRadius: '8px',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                        minWidth: '220px',
+                        minWidth: '180px',
                         zIndex: 101,
-                        overflow: 'hidden',
+                        overflow: 'auto',
+                        maxHeight: '500px', // CORRIGIDO: Adicionado um limite de altura fixo
+
                         display: 'flex',
                         flexDirection: 'column',
                         border: `1px solid ${colors.border}`,
                     }}>
                         <div style={{ padding: '10px 15px', borderBottom: `1px solid ${colors.border}`, backgroundColor: colors.background }}>
-                            <p style={{ margin: 0, fontSize: typography.smallSize, fontWeight: 'bold', color: colors.text }}>MK ALIANÇAS & JOIAS</p>
-                            <p style={{ margin: 0, fontSize: typography.smallSize, color: colors.lightText }}>mk_aliancas@email.com</p>
+                            <p style={{ margin: 0, fontSize: typography.bodySize, fontWeight: 'bold', color: colors.text }}>{userName}</p>
+                            <p style={{ margin: '0 0 5px 0', fontSize: typography.smallSize, color: colors.lightText }}>{userEmail}</p>
+                            <p style={{ margin: 0, fontSize: typography.smallSize, color: colors.primary, fontWeight: 'bold' }}>
+                                Plano: {userPlanDisplay} ({userRecorrenciaDisplay})
+                            </p>
                         </div>
+                        
                         {dropdownItems.map(item => (
                             <Link 
                                 key={item.label} 
                                 href={item.href} 
+                                onClick={item.action ? (e) => { e.preventDefault(); item.action(); setIsDropdownOpen(false); } : undefined}
                                 style={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
@@ -120,13 +158,12 @@ const HeaderPainel: React.FC = () => {
                                     padding: '10px 15px', 
                                     textDecoration: 'none', 
                                     color: colors.text, 
-                                    fontSize: typography.smallSize, 
+                                    fontSize: typography.bodySize, 
                                     transition: 'background-color 0.2s ease',
                                     fontWeight: 'normal',
                                 }}
                                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background}
                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.white}
-                                onClick={() => setIsDropdownOpen(false)}
                             >
                                 {item.icon} {item.label}
                             </Link>

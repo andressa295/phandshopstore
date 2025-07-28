@@ -111,12 +111,15 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       if (response.ok) {
         hasJustSaved.current = true;
+        alert('Configurações salvas com sucesso!');
         console.log(`[SAVE] Configurações salvas no backend.`);
       } else {
         const errorData = await response.json();
+        alert(`Erro ao salvar: ${errorData.message || response.statusText}`);
         console.error('[SAVE] Falha ao salvar:', errorData);
       }
     } catch (error) {
+      alert('Erro de rede ao salvar configurações.');
       console.error('[SAVE] Erro na chamada da API:', error);
     }
   };

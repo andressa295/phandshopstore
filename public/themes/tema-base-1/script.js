@@ -1017,4 +1017,4 @@ window.addEventListener('resize', () => {
             document.body.classList.remove('resizing');
         }, 100); 
     }, 250); 
-});
+}); 

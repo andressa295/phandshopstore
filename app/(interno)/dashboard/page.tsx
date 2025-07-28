@@ -1,112 +1,92 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar, Legend } from 'recharts';
 import Link from 'next/link';
-import { FaBoxes, FaClipboardList, FaChartLine, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPlus, FaTags, FaShippingFast, FaExternalLinkAlt } from 'react-icons/fa'; // Ícones adicionais para ações rápidas
+import { FaBoxes, FaClipboardList, FaChartLine, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPlus, FaTags, FaShippingFast, FaExternalLinkAlt } from 'react-icons/fa';
 
-// Definindo cores e tipografia (copiadas para autossuficiência do componente)
+// IMPORTE useUser DO UserContext AQUI
+import { useUser } from './UserContext';
+
+
 const colors = {
-    primary: '#6b21a8',
-    secondary: '#a21caf',
-    accent: '#7C3AED',
-    text: '#333333',
-    lightText: '#666666',
-    border: '#e0e0e0',
-    background: '#f8f9fa',
-    white: '#ffffff',
-    success: '#28a745',
-    danger: '#dc3545',
-    warning: '#ffc107',
-    info: '#17a2b8',
+    primary: '#6b21a8', secondary: '#a21caf', accent: '#7C3AED', text: '#333333', lightText: '#666666', border: '#e0e0e0', background: '#f8f9fa', white: '#ffffff', success: '#28a745', danger: '#dc3545', warning: '#ffc107', info: '#17a2b8',
 };
-
 const typography = {
-    fontFamily: 'Poppins, sans-serif',
-    headingSize: '1.8rem',
-    subHeadingSize: '1.2rem',
-    bodySize: '0.95rem',
-    smallSize: '0.8rem',
+    fontFamily: 'Poppins, sans-serif', headingSize: '1.8rem', subHeadingSize: '1.2rem', bodySize: '0.95rem', smallSize: '0.8rem',
 };
 
-// Estilo base para os cards de KPI
-const kpiCardStyle: React.CSSProperties = {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 24,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    flex: '1 1 200px', // Garante que 5 cards cabem em uma linha e são responsivos
-    minWidth: '200px',
-    boxSizing: 'border-box',
-    fontFamily: typography.fontFamily,
-};
+const kpiCardStyle: React.CSSProperties = { backgroundColor: colors.white, borderRadius: 12, padding: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', flex: '1 1 200px', minWidth: '200px', boxSizing: 'border-box', fontFamily: typography.fontFamily, };
+const alertCardStyle: React.CSSProperties = { backgroundColor: colors.white, borderRadius: 12, padding: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', flex: '1 1 300px', minWidth: '300px', boxSizing: 'border-box', fontFamily: typography.fontFamily, };
+const quickActionBtnStyle: React.CSSProperties = { backgroundColor: colors.primary, color: colors.white, border: 'none', padding: '12px 18px', borderRadius: 8, cursor: 'pointer', fontWeight: 500, fontSize: typography.bodySize, transition: 'background-color 0.2s ease, transform 0.1s ease', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', textDecoration: 'none', };
 
-const alertCardStyle: React.CSSProperties = {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 24,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-    flex: '1 1 300px', // Para ser um pouco maior que os KPIs
-    minWidth: '300px',
-    boxSizing: 'border-box',
-    fontFamily: typography.fontFamily,
-};
-
-const quickActionBtnStyle: React.CSSProperties = {
-    backgroundColor: colors.primary,
-    color: colors.white,
-    border: 'none',
-    padding: '12px 18px',
-    borderRadius: 8,
-    cursor: 'pointer',
-    fontWeight: 500,
-    fontSize: typography.bodySize,
-    transition: 'background-color 0.2s ease, transform 0.1s ease',
-    flexShrink: 0,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px', // Espaçamento entre ícone e texto
-    justifyContent: 'center',
-    textDecoration: 'none', // Para Link
-};
-
-
-// Dados Mockados para os KPIs e Gráfico de Vendas
-const dashboardData = {
-    vendasHoje: 1230.50,
-    visitantesHoje: 342,
-    produtosEmEstoque: 128,
-    pedidosPendentes: 7, // Exemplo de pedidos pendentes
-    faturamentoMes: 45000.75,
-    taxaConversao: 2.3, // Em porcentagem
-    ticketMedio: 150.25,
-    estoqueBaixoAlert: 5, // Número de produtos com estoque baixo
-    
-    // Dados para o gráfico de vendas semanal
-    vendasSemanaisGrafico: [
-        { name: 'Dom', vendas: 800 },
-        { name: 'Seg', vendas: 1500 },
-        { name: 'Ter', vendas: 2000 },
-        { name: 'Qua', vendas: 1800 },
-        { name: 'Qui', vendas: 2500 },
-        { name: 'Sex', vendas: 3000 },
-        { name: 'Sáb', vendas: 1200 },
-    ],
-};
+const dashboardData = { vendasHoje: 1230.50, visitantesHoje: 342, produtosEmEstoque: 128, pedidosPendentes: 7, faturamentoMes: 45000.75, taxaConversao: 2.3, ticketMedio: 150.25, estoqueBaixoAlert: 5, vendasSemanaisGrafico: [{ name: 'Dom', vendas: 800 }, { name: 'Seg', vendas: 1500 }, { name: 'Ter', vendas: 2000 }, { name: 'Qua', vendas: 1800 }, { name: 'Qui', vendas: 2500 }, { name: 'Sex', vendas: 3000 }, { name: 'Sáb', vendas: 1200 }, ], };
 
 
 export default function DashboardPage() {
+    // AGORA CONSUME OS DADOS DO CONTEXTO DE USUÁRIO
+    const { user, profile, loading } = useUser();
+
+    // Extrai o nome, plano e recorrência do perfil
+    const userFullName = profile?.nome || (user?.email ? user.email.split('@')[0] : 'Usuário');
+    const userPlan = profile?.plano;
+    const userRecorrencia = profile?.recorrencia;
+
+    // Estado de carregamento do usuário (vem do contexto)
+    if (loading) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center', fontFamily: typography.fontFamily, color: colors.text }}>
+                <h1 style={{ fontSize: typography.headingSize, fontWeight: 'bold', color: colors.primary }}>
+                    Carregando sua Dashboard...
+                </h1>
+                <p style={{ fontSize: typography.bodySize, color: colors.lightText, marginTop: '16px' }}>
+                    Por favor, aguarde enquanto carregamos seus dados.
+                </p>
+            </div>
+        );
+    }
+
+    // Se o usuário não for carregado (e o UserProvider já teria redirecionado para /login)
+    // Este caso é mais um fallback, pois o UserProvider já faria o redirecionamento.
+    if (!user) {
+        return (
+            <div style={{ padding: '20px', textAlign: 'center', fontFamily: typography.fontFamily, color: colors.danger }}>
+                <h1 style={{ fontSize: typography.headingSize, fontWeight: 'bold' }}>Acesso Negado!</h1>
+                <p style={{ fontSize: typography.bodySize, color: colors.lightText, marginTop: '16px' }}>
+                    Você precisa estar logado para acessar esta página.
+                </p>
+                <Link href="/login" style={{ marginTop: '20px', display: 'inline-block', color: colors.accent, textDecoration: 'underline' }}>
+                    Ir para o Login
+                </Link>
+            </div>
+        );
+    }
+
     return (
         <div style={{ padding: '20px', fontFamily: typography.fontFamily, color: colors.text }}>
             <h1 style={{ fontSize: typography.headingSize, fontWeight: 'bold', marginBottom: '8px', color: colors.primary }}>
-                 Bem-vindo de volta!
+                Bem-vindo de volta, {userFullName}!
             </h1>
             <p style={{ fontSize: typography.bodySize, color: colors.lightText, marginBottom: '32px' }}>
                 Aqui está um resumo do desempenho da sua loja.
             </p>
 
+            {userPlan && (
+                <div style={{
+                    marginTop: '20px', padding: '15px', borderRadius: '8px',
+                    backgroundColor: '#e0f7fa', border: '1px solid #00bcd4',
+                    color: '#00796b', marginBottom: '32px'
+                }}>
+                    <p style={{ margin: '0 0 5px 0', fontSize: '14px' }}>Seu plano atual:</p>
+                    <h2 style={{ margin: '0', fontSize: '24px', color: '#00838f' }}>
+                        {userPlan.replace('plano_', 'Plano ').replace(/\b\w/g, (char: string) => char.toUpperCase())}
+                        <span style={{ fontSize: '16px', color: '#333' }}> ({userRecorrencia})</span>
+                    </h2>
+                </div>
+            )}
+
             {/* Cards de Métricas (KPIs) */}
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginBottom: '40px', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
                 <div style={kpiCardStyle}>
                     <h2 style={{ fontSize: typography.subHeadingSize, marginBottom: '8px', color: colors.primary }}>Vendas Hoje</h2>
                     <p style={{ fontSize: typography.headingSize, fontWeight: 'bold', color: colors.text }}>R$ {dashboardData.vendasHoje.toFixed(2).replace('.', ',')}</p>
@@ -131,7 +111,6 @@ export default function DashboardPage() {
 
             {/* Seção de Alertas e Gráfico de Vendas */}
             <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
-                {/* Card de Alertas - AGORA COM LINKS CLICÁVEIS */}
                 <div style={{ ...alertCardStyle, borderColor: (dashboardData.pedidosPendentes > 0 || dashboardData.estoqueBaixoAlert > 0) ? colors.warning : colors.border }}>
                     <h2 style={{ fontSize: typography.subHeadingSize, marginBottom: '16px', color: colors.primary }}>🔔 Alertas Importantes</h2>
                     
@@ -140,7 +119,7 @@ export default function DashboardPage() {
                             <button
                                 style={{
                                     ...quickActionBtnStyle,
-                                    backgroundColor: colors.danger, // Vermelho para alerta crítico
+                                    backgroundColor: colors.danger,
                                     width: '100%',
                                 }}
                                 onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = '#c82333'}
@@ -160,7 +139,7 @@ export default function DashboardPage() {
                             <button
                                 style={{
                                     ...quickActionBtnStyle,
-                                    backgroundColor: colors.danger, // Vermelho para alerta crítico
+                                    backgroundColor: colors.danger,
                                     width: '100%',
                                 }}
                                 onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = '#c82333'}
@@ -209,7 +188,7 @@ export default function DashboardPage() {
                         </button>
                     </Link>
                     <Link href="/dashboard/descontos/cupons" style={{ textDecoration: 'none' }}>
-                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.secondary }} // Cor diferente
+                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.secondary }}
                             onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.primary}
                             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.secondary}
                         >
@@ -217,7 +196,7 @@ export default function DashboardPage() {
                         </button>
                     </Link>
                     <Link href="/dashboard/vendas/lista" style={{ textDecoration: 'none' }}>
-                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.info }} // Outra cor diferente
+                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.info }}
                             onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.primary}
                             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.info}
                         >
@@ -225,7 +204,7 @@ export default function DashboardPage() {
                         </button>
                     </Link>
                     <Link href="https://sua-loja-real.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.success }} // Cor de sucesso
+                        <button style={{ ...quickActionBtnStyle, backgroundColor: colors.success }}
                             onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.primary}
                             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => e.currentTarget.style.backgroundColor = colors.success}
                         >
@@ -234,6 +213,73 @@ export default function DashboardPage() {
                     </Link>
                 </div>
             </div>
+            {/* --- Lógica para Mostrar/Ocultar Funcionalidades por Plano --- */}
+            <h3 style={{ marginTop: '40px', fontSize: '20px', color: colors.primary }}>Funcionalidades Exclusivas do seu Plano:</h3>
+            <ul style={{ listStyleType: 'none', padding: '0', color: colors.lightText }}>
+                {userPlan === 'plano_basico' && (
+                    <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                        ✅ Domínio Próprio
+                    </li>
+                )}
+
+                {(userPlan === 'plano_essencial' || userPlan === 'plano_profissional' || userPlan === 'plano_premium') && (
+                    <>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ✅ Acesso a Todos os Temas
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ✅ Tarifa por Venda de 0%
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ✅ Produtos, Visitas e Usuários Ilimitados
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ✅ Sacolinha do Instagram
+                        </li>
+                    </>
+                )}
+
+                {(userPlan === 'plano_profissional' || userPlan === 'plano_premium') && (
+                    <>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ⭐ Temas Profissionais
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ⭐ Compre Junto
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ⭐ Brindes no Carrinho
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            ⭐ Relatórios Avançados
+                        </li>
+                    </>
+                )}
+
+                {userPlan === 'plano_premium' && (
+                    <>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            👑 Relatórios Complexos
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            👑 Atendimento Prioritário
+                        </li>
+                        <li style={{ marginBottom: '10px', fontSize: typography.bodySize, color: colors.text, fontWeight: 'bold' }}>
+                            👑 Acesso Antecipado a Novas Funcionalidades
+                        </li>
+                    </>
+                )}
+
+                {userPlan === 'plano_gratis' && (
+                    <li style={{ color: colors.danger, fontWeight: 'bold', marginTop: '20px', padding: '10px', backgroundColor: '#FFEBEE', borderRadius: '5px' }}>
+                        Você está no Plano Grátis (2.5% de tarifa por venda).
+                        <br />
+                        <Link href="/planos" style={{ color: colors.accent, textDecoration: 'underline', fontWeight: 'normal' }}>
+                            Faça upgrade para ter Tarifa Zero e mais recursos!
+                        </Link>
+                    </li>
+                )}
+            </ul>
         </div>
     );
 }

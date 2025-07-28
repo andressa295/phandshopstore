@@ -1,69 +1,79 @@
-/* Cadastro.module.css */
-
-/* Usando as variáveis globais que definimos antes em globals.css */
 .mainContainer {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: var(--background-light, #f7f7fa);
-  padding: 1rem;
+  padding: 1.5rem; /* Aumentei o padding para melhor espaçamento em telas menores */
+  box-sizing: border-box; /* Garante que o padding seja incluído na largura e altura total do elemento */
 }
 
 .formWrapper {
-  background: #fff;
+  background: var(--white);
   padding: 2.5rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1); /* Sombra um pouco mais pronunciada */
   width: 100%;
-  max-width: 450px;
+  max-width: 480px; /* Aumentei um pouco a largura máxima para mais espaço */
   box-sizing: border-box;
   text-align: center;
+  display: flex; /* Usar flexbox para o layout interno */
+  flex-direction: column; /* Empilhar os filhos verticalmente */
+  align-items: center; /* Centralizar os itens horizontalmente dentro do wrapper */
 }
 
 .title {
   color: var(--text-primary, #1a1a2e);
   margin-bottom: 1.5rem;
-  font-size: 2rem;
+  font-size: 2.2rem; /* Título um pouco maior */
   font-weight: 700;
 }
 
-/* --- NOVO: Estilo para o Plano Selecionado --- */
+/* --- Ajustado: Estilo para o Plano Selecionado --- */
 .planoSelecionado {
   background-color: var(--background-light, #f7f7fa);
   border: 1px solid var(--border-color, #e9e9f2);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 1.25rem; /* Aumentei o padding */
   margin-bottom: 2rem;
   text-align: center;
+  width: 100%; /* Garante que ocupe toda a largura dentro do formWrapper */
+  box-sizing: border-box;
 }
 .planoSelecionado p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem; /* Fonte um pouco maior */
   color: var(--text-secondary, #5a5a6a);
 }
 .planoSelecionado strong {
-  font-size: 1.1rem;
+  font-size: 1.25rem; /* Fonte maior para o nome do plano */
   color: var(--brand-purple, #7047eb);
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem; /* Mais espaço acima do nome do plano */
 }
 
 /* --- Estilos dos Campos do Formulário --- */
+/* CORREÇÃO: Mudei o seletor 'form' para '.cadastroForm' */
+.cadastroForm {
+  width: 100%; /* Garante que o formulário ocupe toda a largura */
+  text-align: left; /* Alinhar o conteúdo do formulário à esquerda */
+}
+
 .label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem; /* Margem ligeiramente reduzida */
   font-weight: 600;
   text-align: left;
   color: var(--text-primary, #1a1a2e);
+  font-size: 0.95rem; /* Tamanho de fonte consistente */
 }
 
 .inputField {
   width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ddd;
+  padding: 0.85rem 1rem; /* Mais padding */
+  margin-bottom: 1.25rem; /* Aumentei a margem inferior para melhor espaçamento */
+  border-radius: 0.6rem; /* Bordas um pouco mais arredondadas */
+  border: 1px solid var(--border-color, #ddd); /* Usar variável para a cor da borda */
   font-size: 1rem;
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -72,16 +82,16 @@
 .inputField:focus {
   outline: none;
   border-color: var(--brand-purple, #7047eb);
-  box-shadow: 0 0 0 3px rgba(112, 71, 235, 0.2);
+  box-shadow: 0 0 0 4px rgba(112, 71, 235, 0.25); /* Sombra de foco um pouco maior e mais visível */
 }
 
 .inputValid {
-  border-color: #20c997; /* Verde para validação */
+  border-color: var(--success, #20c997); /* Usar variável para a cor de sucesso */
 }
 
 .passwordWrapper {
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem; /* Aumentei a margem inferior */
 }
 
 .togglePasswordButton {
@@ -92,64 +102,126 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.3rem; /* Ícone um pouco maior */
+  color: var(--text-secondary, #5a5a6a); /* Cor consistente */
+  transition: color 0.2s ease;
+}
+.togglePasswordButton:hover {
+  color: var(--brand-purple, #7047eb); /* Cor de hover */
 }
 
 .termsLabel {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem; /* Aumentei a margem inferior */
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.95rem; /* Tamanho de fonte consistente */
   cursor: pointer;
   color: var(--text-secondary, #5a5a6a);
 }
-.termsLabel input {
-  margin-right: 0.5rem;
-  width: 1.1em;
-  height: 1.1em;
+.termsLabel input[type="checkbox"] { /* Direcionar o checkbox especificamente */
+  margin-right: 0.6rem; /* Mais margem */
+  width: 1.2em; /* Checkbox um pouco maior */
+  height: 1.2em; /* Checkbox um pouco maior */
+  accent-color: var(--brand-purple, #7047eb); /* Cor do checkbox quando marcado */
+  border: 1px solid var(--border-color, #ddd); /* Borda para o estado não marcado */
+  border-radius: 0.25rem; /* Checkbox ligeiramente arredondado */
 }
 .termsLabel a {
   color: var(--brand-purple, #7047eb);
-  text-decoration: underline;
+  text-decoration: none; /* Remover sublinhado padrão */
   font-weight: 600;
+  transition: text-decoration 0.2s ease;
+}
+.termsLabel a:hover {
+  text-decoration: underline; /* Adicionar sublinhado no hover */
 }
 
 .errorText {
-  color: #dc2626;
-  margin-bottom: 1rem;
+  color: var(--red-error, #dc2626); /* Usar variável para a cor de erro */
+  margin-bottom: 1.5rem; /* Aumentei a margem inferior */
   font-weight: 600;
+  font-size: 0.95rem; /* Tamanho de fonte consistente */
+  text-align: center; /* Garante que a mensagem de erro esteja centralizada */
 }
+
+.successMessage { /* Estilo adicionado para a mensagem de sucesso */
+  color: var(--success, #28a745);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 
 .submitButton {
   width: 100%;
   background-color: var(--brand-purple, #7047eb);
-  color: #fff;
-  padding: 0.85rem;
+  color: var(--white);
+  padding: 0.95rem; /* Aumentei o padding */
   border-radius: 9999px; /* Oval */
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.15rem; /* Fonte um pouco maior */
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s; /* Adicionado transição de box-shadow */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra inicial */
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #5a32d2; /* Roxo mais escuro */
-  transform: translateY(-2px);
+  background-color: #5a32d2; /* Roxo mais escuro no hover */
+  transform: translateY(-3px); /* Elevação mais notável */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra mais forte no hover */
 }
 
 .submitButton:disabled {
-  background-color: #c4b5fd; /* Roxo claro para desabilitado */
+  background-color: #c4b5fd;
   cursor: not-allowed;
+  opacity: 0.7; /* Um pouco mais opaco quando desabilitado */
+  box-shadow: none; /* Sem sombra quando desabilitado */
 }
 
+/* --- Estilos adicionados para o prompt de login --- */
+.loginPrompt {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #5a5a6a);
+  margin-top: 1.5rem; /* Espaço acima do prompt */
+}
+
+.loginLink {
+  color: var(--brand-purple, #7047eb);
+  text-decoration: none;
+  font-weight: 600;
+  transition: text-decoration 0.2s ease;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
+
 /* --- Responsividade --- */
-@media (max-width: 480px) {
+@media (max-width: 550px) { /* Ajustei o breakpoint ligeiramente */
   .formWrapper {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem; /* Padding mais equilibrado em telas menores */
+    margin: 1rem; /* Garantir alguma margem em telas muito pequenas */
   }
   .title {
     font-size: 1.8rem;
+  }
+  .planoSelecionado strong {
+    font-size: 1.1rem;
+  }
+  .planoSelecionado {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .inputField, .submitButton {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+  .submitButton {
+    padding: 0.8rem;
+    font-size: 1rem;
   }
 }

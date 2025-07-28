@@ -1,4 +1,3 @@
-// app/(painel)/personalizar/components/editor/modules/VideoModule.tsx
 'use client';
 
 import React from 'react';

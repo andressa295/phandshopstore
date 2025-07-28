@@ -1,0 +1,272 @@
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+.container {
+    padding: 30px;
+    font-family: 'Poppins', sans-serif; /* Usar a fonte Poppins */
+    color: var(--text-primary, #333333);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.loadingContainer, .accessDenied {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 1.2rem;
+    color: var(--text-light, #666);
+}
+
+.accessDenied {
+    color: var(--danger-color, #dc3545);
+    font-weight: bold;
+}
+
+.title {
+    font-size: 2.2rem;
+    color: var(--primary-color, #6b21a8);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.icon {
+    color: var(--accent-color, #7C3AED);
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-light, #666666);
+    margin-bottom: 30px;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-color, #ffffff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.searchIcon {
+    color: var(--text-light, #666);
+    margin-right: 10px;
+}
+
+.searchInput {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 5px 0;
+    color: var(--text-primary, #333);
+}
+
+.searchInput::placeholder {
+    color: var(--text-light, #666);
+}
+
+.categorySection {
+    margin-bottom: 40px;
+}
+
+.categoryTitle {
+    font-size: 1.6rem;
+    color: var(--primary-color, #6b21a8);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.appGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsivo, mínimo 280px */
+    gap: 25px; /* Espaçamento entre os cards */
+}
+
+.appCard {
+    background-color: var(--white-color, #ffffff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.appCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.appIcon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    border-radius: 8px; /* Pequeno arredondamento para ícones */
+}
+
+.appName {
+    font-size: 1.3rem;
+    color: var(--primary-color, #6b21a8);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.appDescription {
+    font-size: 0.9rem;
+    color: var(--text-light, #666666);
+    margin-bottom: 15px;
+    flex-grow: 1; /* Faz a descrição ocupar o espaço restante */
+}
+
+.appStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+}
+
+.statusBadge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Cores dos badges de status */
+.Instalado { /* Corrigido para corresponder ao replace(/\s/g, '') */
+    background-color: #e6ffee;
+    color: var(--success-color, #28a745);
+}
+
+.NaoInstalado { /* Corrigido para corresponder ao replace(/\s/g, '') */
+    background-color: #ffeaea;
+    color: var(--danger-color, #dc3545);
+}
+
+.appType {
+    background-color: var(--background-light, #f0f0f0);
+    color: var(--text-secondary, #5a5a6a);
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.installButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color, #6b21a8);
+    color: var(--white-color, #ffffff);
+    padding: 12px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.installButton:hover {
+    background-color: var(--secondary-color, #820AD1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* NOVO: Estilo para o botão 'Instalar' em destaque */
+.installButtonHighlight {
+    background-color: var(--success-color, #28a745); /* Cor de destaque para "Instalar" */
+}
+
+.installButtonHighlight:hover {
+    background-color: darken(var(--success-color, #28a745), 10%); /* Hover mais escuro */
+    /* Você pode precisar de uma função `darken` ou calcular a cor manualmente */
+    /* Ex: background-color: #218838; */
+}
+
+
+.upgradeNotice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #5a5a6a);
+    background-color: var(--background-light, #f0f0f0);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+}
+
+.upgradeLink {
+    color: var(--accent-color, #7C3AED);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.upgradeLink:hover {
+    text-decoration: underline;
+}
+
+.footerText {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-light, #666);
+    margin-top: 30px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    .title {
+        font-size: 1.8rem;
+    }
+    .appGrid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+    .appCard {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .appGrid {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+    }
+    .title {
+        font-size: 1.5rem;
+        text-align: center;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .subtitle {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    .searchBar {
+        padding: 8px 12px;
+    }
+    .searchInput {
+        font-size: 0.9rem;
+    }
+}

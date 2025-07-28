@@ -1,112 +1,190 @@
-/* ================================================= */
-/* SEU CÓDIGO CORRIGIDO E COM ESTILOS PROFISSIONAIS */
-/* ================================================= */
-
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 .planosSection {
   width: 100%;
-  padding: 40px 20px; 
-  background-color: #f9f9f9;
+  padding: 60px 20px;
+  background-color: var(--bg-light);
+  font-family: 'Poppins', sans-serif;
 }
 
 .planosContainer {
   display: flex;
-  flex-direction: column; 
-  align-items: center;    
-  gap: 32px;              
-  max-width: 1280px;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px; /* Reduzi o gap para otimizar espaço */
+  max-width: 1400px; /* Aumentei o max-width para acomodar mais planos lado a lado */
   margin: 0 auto;
 }
 
 .planoCard {
   width: 100%;
-  max-width: 400px; 
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 16px; /* Aumentei um pouco para um visual mais suave */
-  padding: 24px;
+  max-width: 320px; /* Reduzi um pouco o max-width para caber mais em linha */
+  background-color: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 28px 20px; /* Ajustei o padding interno */
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative; 
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
 }
 
 .planoCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Card em Destaque --- */
 .featured {
-  /* --- MUDANÇA 1: Usando a variável de cor da marca --- */
-  border: 2px solid var(--brand-purple); 
-  transform: scale(1.05); 
+  border: 2px solid var(--brand-purple);
+  transform: scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .featuredBadge {
   position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  /* --- MUDANÇA 2: Usando a variável de gradiente --- */
+  top: 0px;
+  right: 0px;
   background-image: var(--brand-gradient);
   color: #ffffff;
-  padding: 6px 16px;
-  /* --- MUDANÇA 3: Deixando o badge oval também --- */
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: bold;
+  padding: 8px 20px;
+  border-bottom-left-radius: 16px;
+  font-size: 12px; /* Reduzi um pouco */
+  font-weight: 700;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  
 }
+
 
 /* --- Conteúdo do Card --- */
-.cardHeader { text-align: center; margin-bottom: 16px; }
-.icon { font-size: 40px; }
-.planoName { font-size: 24px; font-weight: 600; color: var(--text-primary); margin-top: 8px; }
-.priceContainer { display: flex; justify-content: center; align-items: baseline; gap: 4px; margin-bottom: 4px; }
-.price { font-size: 36px; font-weight: 700; color: var(--text-primary); }
-.priceDetails { font-size: 16px; font-weight: 500; color: var(--text-secondary); }
-
-.annualPrice {
+.cardHeader {
   text-align: center;
-  font-size: 14px;
-  /* --- MUDANÇA 4: Usando a cor da marca para o preço anual --- */
-  color: var(--brand-purple);
-  margin: 0 0 16px 0;
-  font-weight: 600; /* Aumentei o peso da fonte */
+  margin-bottom: 20px; /* Reduzi um pouco o espaço */
 }
 
-.separator { border: 0; height: 1px; background-color: #e0e0e0; margin: 16px 0; }
-.featuresList { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-.featuresList li { font-size: 16px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
-.cardFooter { margin-top: 24px; }
-.callout { font-size: 13px; text-align: center; color: var(--text-secondary); background-color: #f0f0f0; padding: 8px; border-radius: 6px; margin-bottom: 16px; }
+.icon {
+  font-size: 40px; /* Reduzi o tamanho do ícone */
+  margin-bottom: 8px;
+  color: var(--brand-purple); /* Cor para os ícones */
+}
 
-/* --- MUDANÇA 5: BOTÃO OVAL E COM A COR DA MARCA --- */
+.planoName {
+  font-size: 24px; /* Reduzi o tamanho do título */
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 0;
+}
+
+.priceContainer {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px; /* Reduzi o gap */
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.price {
+  font-size: 38px; /* Reduzi o tamanho do valor principal */
+  font-weight: 800;
+  color: var(--brand-purple);
+}
+
+.priceDetails {
+  font-size: 16px; /* Reduzi um pouco os detalhes */
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.annualPriceDetail {
+  text-align: center;
+  font-size: 12px; /* Reduzi o tamanho */
+  color: var(--text-secondary);
+  margin-top: -2px; /* Ajuste fino */
+  margin-bottom: 14px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.separator {
+  border: 0;
+  height: 1px;
+  background-color: var(--border-light);
+  margin: 20px 0; /* Ajustei o espaço */
+}
+
+.featuresList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.featuresList li {
+  font-size: 15px; /* Reduzi um pouco o texto da feature */
+  color: var(--text-secondary);
+  margin-bottom: 10px; /* Reduzi o espaçamento entre itens */
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+}
+
+.featuresList li::before {
+  content: '✓';
+  color: var(--brand-purple);
+  margin-right: 8px; /* Reduzi o espaçamento */
+  font-weight: bold;
+}
+
+.cardFooter {
+  margin-top: 28px; /* Reduzi o espaço antes do rodapé */
+}
+
+.callout {
+  font-size: 13px; /* Reduzi o tamanho */
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: #f0f0f0;
+  padding: 8px; /* Reduzi o padding */
+  border-radius: 6px;
+  margin-bottom: 16px; /* Reduzi o espaço antes do botão */
+  line-height: 1.4;
+}
+
+/* --- Botão CTA --- */
 .ctaButton {
   display: block;
   width: 100%;
-  padding: 14px;
-  background-color: var(--brand-purple); /* Cor padrão do botão agora é roxa */
-  color: #ffffff;
+  padding: 14px; /* Reduzi o padding para um botão mais compacto */
+  background-color: var(--brand-purple);
+  color: var(--white);
   text-align: center;
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 50px; /* A MÁGICA PARA O FORMATO OVAL */
-  transition: all 0.3s ease; /* Transição mais suave */
-  border: 2px solid transparent; /* Prevenção de "pulo" no hover */
+  font-size: 17px; /* Reduzi o tamanho da fonte do botão */
+  font-weight: 700;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .ctaButton:hover {
-  transform: translateY(-3px); /* Efeito de elevação no hover */
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra um pouco menor */
+  background-color: #6A5ACD;
 }
 
 .featured .ctaButton {
-  background-image: var(--brand-gradient); /* Mantém o gradiente para o destaque */
+  background-image: var(--brand-gradient);
 }
 
-/* --- MUDANÇA 6: BOTÃO SECUNDÁRIO (PARA O PLANO GRÁTIS) --- */
+.featured .ctaButton:hover {
+    background-image: var(--brand-gradient);
+    filter: brightness(1.1);
+}
+
+/* --- Botão Secundário (para o plano Grátis) --- */
 .secondaryButton {
   background-color: transparent;
   color: var(--brand-purple);
@@ -115,20 +193,93 @@
 
 .secondaryButton:hover {
   background-color: var(--brand-purple);
-  color: #ffffff;
+  color: var(--white);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
-/* --- RESPONSIVIDADE (Seu código original, sem alterações) --- */
+/* ================================================= */
+/* ESTILOS PARA O TOGGLE MENSAL/ANUAL */
+/* ================================================= */
+.toggleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px; /* Reduzi um pouco o espaço */
+  background-color: var(--white);
+  border-radius: 50px;
+  padding: 5px; /* Padding ligeiramente menor */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06); /* Sombra mais suave */
+}
+
+.toggleButton {
+  background-color: transparent;
+  border: none;
+  padding: 10px 20px; /* Padding para o botão */
+  border-radius: 50px;
+  font-size: 15px; /* Reduzi a fonte */
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px; /* Ajustei a largura mínima */
+}
+
+.toggleButton.activeToggle {
+  background-color: var(--brand-purple);
+  color: var(--white);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+}
+
+.toggleButton:hover:not(.activeToggle) {
+  color: var(--brand-purple);
+}
+
+
+/* --- RESPONSIVIDADE PARA MELHOR DISTRIBUIÇÃO --- */
 @media (min-width: 768px) {
   .planosContainer {
-    flex-direction: row;    
-    flex-wrap: wrap;        
-    justify-content: center; 
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center; /* Centraliza os itens quando há poucas linhas */
+    align-items: stretch;
   }
-  .planoCard { width: calc(50% - 16px); }
-  .featured { transform: scale(1.02); }
+  .planoCard {
+    width: calc(50% - 24px); /* Duas colunas com gap */
+    margin: 12px; /* Margem para o espaçamento */
+  }
+  .featured {
+    transform: scale(1.05);
+  }
 }
 
-@media (min-width: 1200px) {
-  .planoCard { width: calc(25% - 24px); }
+/* Novo breakpoint para 3 colunas em telas maiores (e.g., tablets paisagem, laptops menores) */
+@media (min-width: 1024px) {
+  .planoCard {
+    width: calc(33.333% - 24px); /* Três colunas com gap */
+  }
+}
+
+/* Novo breakpoint para 4 colunas */
+@media (min-width: 1280px) {
+  .planosContainer {
+    gap: 20px; /* Reduz o gap entre os cards */
+  }
+  .planoCard {
+    width: calc(25% - 20px); /* Quatro colunas com um pouco mais de espaço */
+    max-width: none; /* Remove o max-width para distribuição uniforme */
+  }
+}
+
+/* Novo breakpoint para 5 colunas em telas muito grandes */
+@media (min-width: 1600px) {
+    .planosContainer {
+        gap: 20px;
+    }
+    .planoCard {
+        width: calc(20% - 16px); /* 5 colunas: ~20% cada, ajustando o gap */
+        margin: 8px; /* Margem menor para espremer mais cards */
+    }
+    .featured {
+        transform: scale(1.03); /* Menos scale para o featured quando há muitos cards */
+    }
 }
