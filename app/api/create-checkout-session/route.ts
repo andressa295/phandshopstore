@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers'; // Importa a função cookies diretamente
-
+import { cookies } from 'next/headers'; 
 // Inicialize o Stripe com sua Secret Key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  // @ts-ignore <--- Mantenha este ignore para o erro de tipagem do apiVersion
-  apiVersion: '2024-06-20', // Use a versão mais recente da API Stripe que é válida
+  // @ts-ignore 
+  apiVersion: '2024-06-20', 
 });
 
 export async function POST(req: Request) {
@@ -21,9 +20,7 @@ export async function POST(req: Request) {
 
     const { priceId, planName, isAnnual } = await req.json();
 
-    // --- Lógica para Plano Grátis (movida para o início, como você sugeriu) ---
     if (planName === 'Plano Grátis') {
-      // Verifica se o usuário já tem uma assinatura para evitar duplicidade no plano grátis
       const { data: existingSub, error: existingSubError } = await supabase
         .from('subscriptions')
         .select('id')
@@ -46,11 +43,9 @@ export async function POST(req: Request) {
           console.error("Erro ao atualizar perfil para plano grátis:", updateProfileError);
           return NextResponse.json({ error: 'Erro ao atualizar seu plano para gratuito.' }, { status: 500 });
         }
-        // Se já tem assinatura e quer mudar para grátis, não cria nova, apenas redireciona
         return NextResponse.json({ url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard?status=plan_updated` }, { status: 200 });
       }
 
-      // Se não tem assinatura, insere a nova para o plano grátis
       const { error: insertError } = await supabase.from('subscriptions').insert({
         user_id: user.id,
         stripe_customer_id: 'FREE_PLAN_CUSTOMER', // ID fictício para clientes grátis
@@ -58,7 +53,6 @@ export async function POST(req: Request) {
         status: 'active', // Plano grátis é ativo
         current_period_start: new Date().toISOString(),
         current_period_end: new Date(new Date().setFullYear(new Date().getFullYear() + 100)).toISOString(), // Longa duração para grátis
-        // Outros campos podem ser null se não se aplicarem ao grátis
       });
 
       if (insertError) {
@@ -81,7 +75,6 @@ export async function POST(req: Request) {
         url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard?status=success`,
       }, { status: 200 });
     }
-    // --- FIM Lógica para Plano Grátis ---
 
 
     // Validação para planos pagos (continua a partir daqui)
