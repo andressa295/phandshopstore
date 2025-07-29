@@ -1,15 +1,19 @@
-// app/api/email/boasvindas/route.ts
-
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Importe seu componente de e-mail se estiver usando React Email
-// import WelcomeEmail from '@/components/emails/WelcomeEmail'; // Exemplo, ajuste o caminho
-
+// A inicialização do Resend está correta AQUI, pois está fora do handler
+// e tenta acessar process.env.RESEND_API_KEY
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
+    // Adicionar uma verificação explícita da chave Resend aqui também pode ajudar
+    // a dar um erro mais claro em runtime se por algum motivo a variável não for carregada.
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY não configurada nas variáveis de ambiente. Falha ao enviar email.');
+      return NextResponse.json({ error: 'Erro de configuração do servidor ao enviar e-mail.' }, { status: 500 });
+    }
+
     const { nome, email, plano, recorrencia } = await req.json();
 
     if (!nome || !email || !plano || !recorrencia) {
@@ -17,7 +21,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Dados incompletos para enviar o e-mail de boas-vindas.' }, { status: 400 });
     }
 
-    
     const emailHtmlContent = `
       <!DOCTYPE html>
       <html lang="pt-BR">
@@ -118,10 +121,10 @@ export async function POST(req: Request) {
     `;
 
     const { data, error } = await resend.emails.send({
-      from: 'PhandShop <no-reply@phandshop.com>', 
+      from: 'PhandShop <no-reply@phandshop.com>',
       to: email,
       subject: `🎉 Bem-vindo(a) à PhandShop! Seu plano ${plano} está ativo.`,
-      html: emailHtmlContent, 
+      html: emailHtmlContent,
     });
 
     if (error) {
@@ -130,7 +133,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ message: 'Email de boas-vindas enviado com sucesso!', data }, { status: 200 });
-  } catch (err: any) { 
+  } catch (err: any) {
     console.error('Erro inesperado na API de email:', err);
     return NextResponse.json({ error: 'Erro interno do servidor ao enviar o e-mail.' }, { status: 500 });
   }

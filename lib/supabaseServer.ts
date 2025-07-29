@@ -1,11 +1,10 @@
 // lib/supabaseServer.ts
+// Este helper é para uso em Server Components (page.tsx, layout.tsx, etc.)
+// Para API Routes (route.ts), a criação do cliente Supabase é feita de forma ligeiramente diferente.
+
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-/**
- * Cria e retorna um cliente Supabase para uso em Server Components e API Routes.
- * Este utilitário ajuda a evitar avisos de linting do Next.js sobre o uso de 'cookies()'.
- */
 export const getSupabaseServerClient = () => {
   return createServerComponentClient({ cookies });
 };

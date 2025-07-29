@@ -5,7 +5,7 @@ import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Ajuste o cami
 // Inicialize o Stripe com sua Secret Key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   // @ts-ignore
-  apiVersion: '2024-06-20', // Use a versão mais recente da API Stripe que é válida e suporta estas funcionalidades
+  apiVersion: '2024-06-20', // Use a versão mais recente da API Stripe que é válida
 });
 
 export async function POST(req: Request) {
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     console.log('Dados recebidos do frontend:');
     console.log('  priceId:', priceId);
     console.log('  planName:', planName);
-    console.log('  isAnnual:', isAnnual); // Deve ser true para planos anuais
+    console.log('  isAnnual:', isAnnual);
     console.log('  supabaseUserId:', supabaseUserId);
     console.log('----------------------------------------------------');
     // --- FIM LOGS DE ENTRADA ---
@@ -147,7 +147,7 @@ export async function POST(req: Request) {
     const checkoutMode = isAnnual ? 'payment' : 'subscription';
 
     // --- LOG PARA VER O MODO DE CHECKOUT ---
-    console.log('Modo de Checkout (checkoutMode):', checkoutMode); // Deve ser 'payment' para anuais
+    console.log('Modo de Checkout (checkoutMode):', checkoutMode);
     // --- FIM LOG ---
 
     // Define paymentMethodOptions com parcelamento APENAS se o modo for 'payment'
@@ -158,19 +158,16 @@ export async function POST(req: Request) {
     if (checkoutMode === 'payment') {
         paymentMethodOptions.card = {
             installments: {
-                enabled: true, // Habilita parcelamento
-                // REMOVIDO: available_installments, pois não é uma propriedade válida aqui.
-                // O Stripe determinará as opções de parcelamento automaticamente.
+                enabled: true, // Habilita parcelamento apenas para modo 'payment'
             },
         };
-        console.log('Parcelamento habilitado (card) para o modo de pagamento.');
+        console.log('Parcelamento habilitado para o modo de pagamento.');
     } else {
-        // Se for modo 'subscription' (planos mensais), o parcelamento não é habilitado.
-        console.log('Parcelamento desabilitado (card) para o modo de assinatura.');
+        console.log('Parcelamento desabilitado para o modo de assinatura.');
     }
 
     // --- LOG PARA VER AS OPÇÕES DE MÉTODO DE PAGAMENTO ---
-    console.log('Opções de Método de Pagamento (paymentMethodOptions.card):', JSON.stringify(paymentMethodOptions.card));
+    console.log('Opções de Método de Pagamento (paymentMethodOptions.card):', paymentMethodOptions.card);
     // --- FIM LOG ---
 
     // Cria sessão de checkout no Stripe
@@ -188,10 +185,8 @@ export async function POST(req: Request) {
       },
       allow_promotion_codes: true,
       payment_method_options: paymentMethodOptions, // Usa as opções condicionais
-      // MÉTODOS DE PAGAMENTO ATIVOS NA SUA CONTA (Card e Boleto - APENAS SE ESTIVER ATIVADO NO DASHBOARD)
-      // Com base na sua imagem, apenas 'card' está ativo.
-      payment_method_types: ['card'], // Adicione 'boleto' aqui SOMENTE SE você ATIVAR ele no Stripe Dashboard.
-                                      // Ex: payment_method_types: ['card', 'boleto'],
+      // *** CORREÇÃO AQUI: Removido 'boleto' e 'pix', deixando apenas 'card' ***
+      payment_method_types: ['card'], 
     });
 
     console.log('Sessão de checkout criada com sucesso. URL:', session.url);
