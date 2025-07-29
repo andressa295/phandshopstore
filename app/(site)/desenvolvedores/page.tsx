@@ -1,4 +1,3 @@
-// app/desenvolvedores/page.tsx
 import React from 'react';
 import Link from 'next/link';
 import styles from './Desenvolvedores.module.css';
@@ -13,7 +12,6 @@ export default function DesenvolvedoresPage() {
 
   return (
     <main className={styles.pageWrapper}>
-      {/* Hero Section */}
       <section className={`${styles.section} ${styles.heroSection}`}>
         <div className={styles.contentContainer}>
           <span className={styles.preTitle}>Desenvolvedores</span>
@@ -26,7 +24,6 @@ export default function DesenvolvedoresPage() {
         </div>
       </section>
 
-      {/* O que construir */}
       <section className={styles.section}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
@@ -45,7 +42,6 @@ export default function DesenvolvedoresPage() {
         </div>
       </section>
 
-      {/* Documentação */}
       <section className={`${styles.section} ${styles.docSection}`}>
          <div className={styles.contentContainer}>
             <div className={styles.docBox}>

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import styles from './Temas.module.css';
 import { FaPaintBrush, FaCode, FaRocket, FaDollarSign } from 'react-icons/fa';
 
-// --- Dados para a página ---
 const comoFunciona = [
   { icon: <FaPaintBrush />, title: '1. Leia as Diretrizes', text: 'Entenda nossos padrões de qualidade e design para criar temas que vendem.' },
   { icon: <FaCode />, title: '2. Desenvolva seu Tema', text: 'Use suas habilidades para criar um tema lindo, rápido e responsivo.' },
@@ -13,11 +12,9 @@ const comoFunciona = [
   { icon: <FaDollarSign />, title: '4. Comece a Lucrar', text: 'Após a aprovação, seu tema entra na loja e você ganha a cada venda.' },
 ];
 
-// Definimos o componente da página aqui
 function ParceirosDeTemasPage() {
   return (
     <main className={styles.pageWrapper}>
-      {/* Hero Section */}
       <section className={`${styles.section} ${styles.heroSection}`}>
         <div className={styles.contentContainer}>
           <span className={styles.preTitle}>Parceiros de Temas</span>
@@ -27,7 +24,6 @@ function ParceirosDeTemasPage() {
         </div>
       </section>
 
-      {/* Como Funciona Section */}
       <section className={styles.section}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
@@ -46,7 +42,6 @@ function ParceirosDeTemasPage() {
         </div>
       </section>
       
-      {/* CTA Final */}
       <section className={`${styles.section} ${styles.finalCtaSection}`}>
          <div className={styles.contentContainer}>
             <h2>Pronto para começar?</h2>

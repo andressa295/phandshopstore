@@ -42,7 +42,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Login bem sucedido, manda pra dashboard
     router.push('/dashboard');
   };
 

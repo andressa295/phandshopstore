@@ -2,10 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import styles from './TrabalheConosco.module.css'; // Assumindo que o CSS tem o mesmo nome de antes
+import styles from './TrabalheConosco.module.css'; 
 import { FaPalette, FaCode, FaBuilding, FaUsers, FaCoins, FaHeadset } from 'react-icons/fa';
 
-// --- Dados para as seções (sem alterações) ---
 const beneficios = [
   { icon: <FaUsers />, title: 'Alcance Milhares de Lojistas', text: 'Nossa base de clientes é o seu público. Você cria, nós te ajudamos a alcançar.' },
   { icon: <FaCoins />, title: 'Modelo de Receita Justo', text: 'Ganhe com cada venda de tema ou assinatura de app. Oferecemos comissões claras.' },
@@ -17,11 +16,9 @@ const vagas = [
   { area: 'Suporte', titulo: 'Especialista em Sucesso do Cliente (E-commerce)', local: 'Remoto' },
 ];
 
-// Definimos o componente da página aqui
 function CarreirasPage() {
   return (
     <main className={styles.pageWrapper}>
-      {/* 1. HERO SECTION */}
       <section className={`${styles.section} ${styles.heroSection}`}>
         <div className={styles.contentContainer}>
           <h1>Faça parte do futuro do e-commerce</h1>
@@ -49,7 +46,6 @@ function CarreirasPage() {
         </div>
       </section>
 
-      {/* 2. BENEFÍCIOS */}
       <section className={styles.section}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
@@ -67,7 +63,6 @@ function CarreirasPage() {
         </div>
       </section>
 
-      {/* 3. SEÇÕES DETALHADAS */}
       <section id="designers" className={`${styles.section} ${styles.detailsSection}`}>
         <div className={styles.contentContainer}>
           <h2>O Caminho para Vender Temas</h2>
@@ -84,7 +79,6 @@ function CarreirasPage() {
         </div>
       </section>
 
-      {/* 4. VAGAS */}
       <section id="vagas" className={styles.section}>
         <div className={styles.contentContainer}>
           <div className={styles.sectionHeader}>
