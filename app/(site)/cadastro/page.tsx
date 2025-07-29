@@ -105,17 +105,13 @@ function CadastroForm() {
       form.senha === form.confirmSenha &&
       form.aceitaTermos;
     setValid(isValid);
-    // Limpar mensagens de erro/sucesso apenas se os campos forem modificados
-    // e o formulário se tornar válido ou inválido.
-    // Evita limpar mensagens enquanto o usuário está digitando.
-    // if (error && isValid) setError(''); // Deixei comentado, pois pode ser útil para ver o erro até o usuário corrigir
-    // if (successMessage && !isValid) setSuccessMessage('');
-  }, [form]); // Removi error e successMessage das dependências
+    
+  }, [form]); 
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(''); // Limpa erros anteriores antes de tentar novamente
-    setSuccessMessage(''); // Limpa mensagens de sucesso anteriores
+    setError(''); 
+    setSuccessMessage(''); 
     
     if (!valid) {
       setError('Preencha todos os campos corretamente e aceite os termos de uso.');
@@ -144,21 +140,17 @@ function CadastroForm() {
       }
       console.log("Usuário cadastrado com sucesso:", signUpData.user.id);
 
-      // Explicitamente definir a sessão no cliente Supabase após o signUp
       if (signUpData.session) {
         console.log("Sessão Supabase definida para o novo usuário.");
         await supabase.auth.setSession(signUpData.session);
       } else {
-        // Se não houver sessão, pode significar que é necessário confirmar e-mail.
         console.warn("Nenhuma sessão retornada após signUp. Usuário pode precisar confirmar e-mail.");
         setSuccessMessage("Verifique seu e-mail para confirmar sua conta e fazer login!");
         setLoading(false);
-        // Redireciona para uma página de sucesso ou instrução de verificação de e-mail
         router.push('/verificar-email'); 
-        return; // Sai da função, não tenta inserir dados no BD sem sessão ativa
+        return; 
       }
 
-      // Chamar getUser() novamente para garantir que a sessão está ativa e o usuário é retornado
       const { data: { user }, error: getUserError } = await supabase.auth.getUser();
 
       if (getUserError || !user) {
@@ -169,7 +161,6 @@ function CadastroForm() {
       }
       console.log("Usuário autenticado e obtido com sucesso:", user.id);
 
-      // Prepara os dados para inserção na tabela 'usuarios'
       const userDataToInsert: {
         id: string;
         nome: string;
@@ -178,7 +169,7 @@ function CadastroForm() {
         plano: string;
         recorrencia: string;
       } = {
-        id: user.id, // Usando o ID do usuário retornado pelo getUser()
+        id: user.id, 
         nome: form.nome,
         email: form.email,
         telefone: form.telefone,
@@ -195,8 +186,7 @@ function CadastroForm() {
         console.error("Erro ao inserir dados na tabela 'usuarios':", supabaseError.message); // Loga a mensagem de erro
         console.error("Detalhes do erro de inserção:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
         
-        // Verifica se é erro de chave duplicada (e-mail já existe, etc.)
-        if (supabaseError.code === '23505') { // Código comum para violação de unique constraint
+        if (supabaseError.code === '23505') { 
           setError('Este e-mail já está cadastrado ou já existe um usuário com este ID. Por favor, faça login ou use outro e-mail.');
         } else {
           setError('Erro ao salvar dados do usuário: ' + (supabaseError?.message || 'Erro desconhecido.'));
@@ -206,9 +196,6 @@ function CadastroForm() {
       }
       console.log("Dados do usuário inseridos com sucesso na tabela 'usuarios'.");
 
-
-      // --- Lógica para criar a loja do usuário na tabela 'lojas' ---
-      // Verifique se o subdomínio já existe (se houver uma restrição de unicidade)
       const proposedSubdomain = `${form.nome.toLowerCase().replace(/\s/g, '')}-loja-${Math.random().toString(36).substring(2, 7)}`;
       console.log("Tentando criar loja com subdomínio:", proposedSubdomain);
 
@@ -221,10 +208,9 @@ function CadastroForm() {
 
       if (insertStoreError) {
         const supabaseError = insertStoreError as PostgrestError;
-        console.error("Erro ao criar loja para o usuário:", supabaseError.message); // Loga a mensagem de erro
+        console.error("Erro ao criar loja para o usuário:", supabaseError.message); 
         console.error("Detalhes do erro de criação de loja:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
         
-        // Se o subdomínio já existe (violação de unique constraint)
         if (supabaseError.code === '23505' && supabaseError.message.includes('subdominio')) {
           setError('Cadastro realizado, mas o subdomínio da loja já existe. Tente novamente ou entre em contato.');
         } else {
@@ -234,9 +220,7 @@ function CadastroForm() {
         return;
       }
       console.log("Loja criada com sucesso para o usuário:", user.id);
-      // --- FIM NOVO ---
 
-      // Envia e-mail de boas-vindas APÓS o cadastro e criação da loja
       console.log("Enviando e-mail de boas-vindas...");
       await fetch('/api/email/boasvindas', {
         method: 'POST',
@@ -246,10 +230,7 @@ function CadastroForm() {
       console.log("E-mail de boas-vindas enviado (ou tentativa de envio).");
 
 
-      // *** IMPORTANTE: A lógica de checkout do Stripe deve ser iniciada AQUI se o plano NÃO for grátis ***
       if (nomeDoPlano !== 'Plano Grátis') {
-        // Obtenha o priceId do Stripe. Você precisa ter um mapeamento aqui.
-        // Este é um exemplo de MAPA, você precisa ter os IDs reais dos seus planos Stripe
         const stripePriceIds: Record<string, Record<string, string>> = {
           'Plano Básico': {
             'mensal': 'YOUR_BASIC_MONTHLY_PRICE_ID',
@@ -267,7 +248,6 @@ function CadastroForm() {
             'mensal': 'YOUR_PREMIUM_MONTHLY_PRICE_ID',
             'anual': 'YOUR_PREMIUM_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
           },
-          // ... adicione outros planos
         };
 
         const selectedPriceId = stripePriceIds[nomeDoPlano]?.[recorrenciaDoPlano];
@@ -295,8 +275,8 @@ function CadastroForm() {
 
         if (stripeData.url) {
           console.log("Redirecionando para o Stripe Checkout:", stripeData.url);
-          window.location.href = stripeData.url; // Redireciona para o checkout do Stripe
-          return; // Sair da função para evitar o redirecionamento para o dashboard
+          window.location.href = stripeData.url; 
+          return; 
         } else if (stripeData.error) {
           console.error("Erro retornado da API do Stripe:", stripeData.error);
           setError('Erro ao iniciar o processo de pagamento: ' + stripeData.error);
@@ -307,7 +287,7 @@ function CadastroForm() {
 
       setLoading(false);
       setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano} (${recorrenciaDoPlano})! Redirecionando...`);
-      router.push('/dashboard'); // Redireciona para o dashboard após um cadastro de sucesso (incluindo grátis)
+      router.push('/dashboard'); 
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error('Erro inesperado no handleSubmit:', err.message, err.stack);
