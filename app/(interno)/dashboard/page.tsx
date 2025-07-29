@@ -109,7 +109,6 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Seção de Alertas e Gráfico de Vendas */}
             <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '40px' }}>
                 <div style={{ ...alertCardStyle, borderColor: (dashboardData.pedidosPendentes > 0 || dashboardData.estoqueBaixoAlert > 0) ? colors.warning : colors.border }}>
                     <h2 style={{ fontSize: typography.subHeadingSize, marginBottom: '16px', color: colors.primary }}>🔔 Alertas Importantes</h2>
@@ -155,7 +154,6 @@ export default function DashboardPage() {
                     )}
                 </div>
 
-                {/* Gráfico de Vendas Semanais (ou outro período) */}
                 <div style={{ ...kpiCardStyle, flex: '2 1 500px', minWidth: '500px', height: '350px' }}>
                     <h2 style={{ fontSize: typography.subHeadingSize, marginBottom: '16px', color: colors.primary }}>📈 Vendas na Última Semana</h2>
                     <ResponsiveContainer width="100%" height="calc(100% - 30px)">
