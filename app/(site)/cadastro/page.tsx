@@ -128,7 +128,13 @@ function CadastroForm() {
 
       if (signUpError) {
         console.error("Erro no signUp do Supabase:", signUpError.message, signUpError.name, signUpError.status);
-        setError('Erro ao criar conta: ' + signUpError.message);
+        
+        if (signUpError.message === 'User already registered' || signUpError.status === 422) {
+          setError('Este e-mail já está cadastrado. Por favor, faça login.');
+          router.push('/login'); 
+        } else {
+          setError('Erro ao criar conta: ' + signUpError.message);
+        }
         setLoading(false);
         return;
       }
@@ -163,27 +169,24 @@ function CadastroForm() {
 
       const userDataToInsert: {
         id: string;
-        nome: string;
+        nome_completo: string; 
         email: string;
         telefone: string;
-        plano: string;
-        recorrencia: string;
+        
       } = {
         id: user.id, 
-        nome: form.nome,
+        nome_completo: form.nome, 
         email: form.email,
         telefone: form.telefone,
-        plano: nomeDoPlano,
-        recorrencia: recorrenciaDoPlano,
+        
       };
-
       console.log("Tentando inserir dados na tabela 'usuarios':", userDataToInsert);
 
       const { error: insertUserError } = await supabase.from('usuarios').insert(userDataToInsert);
 
       if (insertUserError) {
         const supabaseError = insertUserError as PostgrestError; 
-        console.error("Erro ao inserir dados na tabela 'usuarios':", supabaseError.message); // Loga a mensagem de erro
+        console.error("Erro ao inserir dados na tabela 'usuarios':", supabaseError.message); 
         console.error("Detalhes do erro de inserção:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
         
         if (supabaseError.code === '23505') { 
@@ -200,10 +203,9 @@ function CadastroForm() {
       console.log("Tentando criar loja com subdomínio:", proposedSubdomain);
 
       const { error: insertStoreError } = await supabase.from('lojas').insert({
-        user_id: user.id,
+        owner_id: user.id, 
         nome: `${form.nome}'s Loja`,
         subdominio: proposedSubdomain,
-        plano: nomeDoPlano,
       });
 
       if (insertStoreError) {
@@ -221,6 +223,25 @@ function CadastroForm() {
       }
       console.log("Loja criada com sucesso para o usuário:", user.id);
 
+
+            if (nomeDoPlano === 'Plano Grátis') {
+        const { error: insertSubscriptionError } = await supabase.from('subscriptions').upsert({
+          user_id: user.id,
+          plano: nomeDoPlano, 
+          status: 'active',
+          data_inicio: new Date().toISOString(),
+        }, { onConflict: 'user_id' }); 
+
+        if (insertSubscriptionError) {
+          console.error("Erro ao registrar plano grátis na tabela 'subscriptions':", insertSubscriptionError.message);
+          setError('Cadastro realizado, mas houve um erro ao registrar seu plano gratuito.');
+          setLoading(false);
+          return;
+        }
+        console.log("Plano grátis registrado em 'subscriptions'.");
+      }
+
+
       console.log("Enviando e-mail de boas-vindas...");
       await fetch('/api/email/boasvindas', {
         method: 'POST',
@@ -233,20 +254,20 @@ function CadastroForm() {
       if (nomeDoPlano !== 'Plano Grátis') {
         const stripePriceIds: Record<string, Record<string, string>> = {
           'Plano Básico': {
-            'mensal': 'YOUR_BASIC_MONTHLY_PRICE_ID',
-            'anual': 'YOUR_BASIC_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+            'mensal': 'price_1Rp0azK7GLhCiTF0MTeciHgh',
+            'anual': 'price_1RpigWK7GLhCiTF0nw2zjXMk',
           },
           'Plano Essencial': {
-            'mensal': 'YOUR_ESSENTIAL_MONTHLY_PRICE_ID',
-            'anual': 'YOUR_ESSENTIAL_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+            'mensal': 'price_1Rp0brK7GLhCiTF0OeTdh8vJ',
+            'anual': 'price_1RpifQK7GLhCiTF0nzZF0WiR',
           },
           'Plano Profissional': {
-            'mensal': 'YOUR_PROFESSIONAL_MONTHLY_PRICE_ID',
-            'anual': 'YOUR_PROFESSIONAL_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+            'mensal': 'price_1Rp0cfK7GLhCiTF0VSO36ysl',
+            'anual': 'price_1Rpie2K7GLhCiTF0BYgs0Gp5',
           },
           'Plano Premium': {
-            'mensal': 'YOUR_PREMIUM_MONTHLY_PRICE_ID',
-            'anual': 'YOUR_PREMIUM_ANNUAL_PRICE_ID', // Este deve ser One-time para parcelamento
+            'mensal': 'price_1Rp0dDK7GLhCiTF0cDcu7cay',
+            'anual': 'price_1Rpid4K7GLhCiTF08Tcs9F4g',
           },
         };
 

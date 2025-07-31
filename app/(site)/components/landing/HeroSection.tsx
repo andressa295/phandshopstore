@@ -20,7 +20,6 @@ export function HeroSection() {
             </div>
              {/* --- MUDANÇA APLICADA --- */}
             <p className={styles.heroTrustSignal}>
-              Não precisa de cartão de crédito. Junte-se a milhares de lojistas.
             </p>
           </div>
           <div className={styles.heroImageWrapper}>

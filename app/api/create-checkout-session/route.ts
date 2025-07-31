@@ -1,3 +1,4 @@
+// app/api/create-checkout-session/route.ts
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Ajuste o caminho se 'lib' não estiver na raiz ou se o alias não estiver configurado
@@ -9,20 +10,21 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function POST(req: Request) {
-  const supabase = getSupabaseServerClient();
+  // CORRIGIDO: AGORA AWAITAMOS getSupabaseServerClient()
+  const supabase = await getSupabaseServerClient(); 
 
   try {
-    const { data: { user } } = await supabase.auth.getUser(); // Usuário logado (pode ser null)
+    const { data: { user } } = await supabase.auth.getUser(); // 'supabase' já é o objeto correto
 
-    const { priceId, planName, isAnnual, supabaseUserId } = await req.json(); // supabaseUserId vem do frontend (pode ser null)
+    const { priceId, planName, isAnnual, supabaseUserId } = await req.json();
 
     // --- LOGS DE ENTRADA ---
     console.log('--- Início da Requisição create-checkout-session ---');
     console.log('Dados recebidos do frontend:');
-    console.log('  priceId:', priceId);
-    console.log('  planName:', planName);
-    console.log('  isAnnual:', isAnnual);
-    console.log('  supabaseUserId:', supabaseUserId);
+    console.log('   priceId:', priceId);
+    console.log('   planName:', planName);
+    console.log('   isAnnual:', isAnnual);
+    console.log('   supabaseUserId:', supabaseUserId);
     console.log('----------------------------------------------------');
     // --- FIM LOGS DE ENTRADA ---
 
@@ -33,7 +35,7 @@ export async function POST(req: Request) {
           return NextResponse.json({ error: 'Erro: Usuário não logado para plano grátis. Redirecione para cadastro.' }, { status: 400 });
       }
 
-      const { data: existingSub, error: existingSubError } = await supabase
+      const { data: existingSub, error: existingSubError } = await supabase // 'supabase' já é o objeto correto
         .from('subscriptions')
         .select('id')
         .eq('user_id', user.id)
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
 
       if (existingSub) {
         console.log(`Usuário ${user.id} já possui uma assinatura existente, atualizando para plano grátis.`);
-        const { error: updateProfileError } = await supabase
+        const { error: updateProfileError } = await supabase // 'supabase' já é o objeto correto
           .from('usuarios')
           .update({ plano: 'plano_gratis', recorrencia: 'mensal' }) // Atualiza o perfil do usuário
           .eq('id', user.id);
@@ -59,7 +61,7 @@ export async function POST(req: Request) {
       }
 
       console.log(`Registrando nova assinatura para plano grátis para o usuário ${user.id}.`);
-      const { error: insertError } = await supabase.from('subscriptions').insert({
+      const { error: insertError } = await supabase.from('subscriptions').insert({ // 'supabase' já é o objeto correto
         user_id: user.id,
         stripe_customer_id: 'FREE_PLAN_CUSTOMER', // ID fictício para clientes grátis
         stripe_price_id: 'FREE_PLAN_PRICE', // ID fictício para o preço grátis
@@ -73,7 +75,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Erro ao registrar plano gratuito.' }, { status: 500 });
       }
 
-      const { error: updateProfileError } = await supabase
+      const { error: updateProfileError } = await supabase // 'supabase' já é o objeto correto
         .from('usuarios')
         .update({ plano: 'plano_gratis', recorrencia: 'mensal' })
         .eq('id', user.id);
@@ -96,11 +98,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'ID do preço e nome do plano são obrigatórios para planos pagos.' }, { status: 400 });
     }
 
-    let stripeCustomerId: string | undefined = undefined; // Inicializa como undefined
+    let stripeCustomerId: string | undefined = undefined;
 
     if (supabaseUserId) {
-        // Busca perfil do usuário para pegar email e nome para o Stripe
-        const { data: userProfile, error: profileError } = await supabase
+        const { data: userProfile, error: profileError } = await supabase // 'supabase' já é o objeto correto
             .from('usuarios')
             .select('nome, email')
             .eq('id', supabaseUserId)
@@ -108,8 +109,8 @@ export async function POST(req: Request) {
 
         if (profileError && profileError.code !== 'PGRST116') {
             console.error("Erro ao buscar perfil do usuário logado para plano pago:", profileError.message);
-        } else if (userProfile) { // Se o perfil foi encontrado
-            const { data: existingSub } = await supabase
+        } else if (userProfile) {
+            const { data: existingSub } = await supabase // 'supabase' já é o objeto correto
                 .from('subscriptions')
                 .select('stripe_customer_id')
                 .eq('user_id', supabaseUserId)
@@ -128,7 +129,7 @@ export async function POST(req: Request) {
                 stripeCustomerId = customer.id;
                 console.log(`Cliente Stripe criado: ${stripeCustomerId}`);
 
-                const { error: insertError } = await supabase.from('subscriptions').upsert({
+                const { error: insertError } = await supabase.from('subscriptions').upsert({ // 'supabase' já é o objeto correto
                     user_id: supabaseUserId,
                     stripe_customer_id: stripeCustomerId,
                     status: 'customer_created',
@@ -146,31 +147,25 @@ export async function POST(req: Request) {
 
     const checkoutMode = isAnnual ? 'payment' : 'subscription';
 
-    // --- LOG PARA VER O MODO DE CHECKOUT ---
     console.log('Modo de Checkout (checkoutMode):', checkoutMode);
-    // --- FIM LOG ---
 
-    // Define paymentMethodOptions com parcelamento APENAS se o modo for 'payment'
     const paymentMethodOptions: Stripe.Checkout.SessionCreateParams.PaymentMethodOptions = {
-        card: {}, // Inicializa as opções do cartão
+      card: {},
     };
 
     if (checkoutMode === 'payment') {
-        paymentMethodOptions.card = {
-            installments: {
-                enabled: true, // Habilita parcelamento apenas para modo 'payment'
-            },
-        };
-        console.log('Parcelamento habilitado para o modo de pagamento.');
+      paymentMethodOptions.card = {
+          installments: {
+              enabled: true,
+          },
+      };
+      console.log('Parcelamento habilitado para o modo de pagamento.');
     } else {
-        console.log('Parcelamento desabilitado para o modo de assinatura.');
+      console.log('Parcelamento desabilitado para o modo de assinatura.');
     }
 
-    // --- LOG PARA VER AS OPÇÕES DE MÉTODO DE PAGAMENTO ---
     console.log('Opções de Método de Pagamento (paymentMethodOptions.card):', paymentMethodOptions.card);
-    // --- FIM LOG ---
 
-    // Cria sessão de checkout no Stripe
     console.log('Criando sessão de checkout do Stripe...');
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
@@ -179,14 +174,13 @@ export async function POST(req: Request) {
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/planos?status=cancel`,
       metadata: {
-        supabase_user_id: supabaseUserId, // Passa o ID do usuário (ou null) para o metadata do Stripe
+        supabase_user_id: supabaseUserId,
         plan_name: planName,
         is_annual: isAnnual ? 'true' : 'false',
       },
       allow_promotion_codes: true,
-      payment_method_options: paymentMethodOptions, // Usa as opções condicionais
-      // *** CORREÇÃO AQUI: Removido 'boleto' e 'pix', deixando apenas 'card' ***
-      payment_method_types: ['card'], 
+      payment_method_options: paymentMethodOptions,
+      payment_method_types: ['card'],
     });
 
     console.log('Sessão de checkout criada com sucesso. URL:', session.url);

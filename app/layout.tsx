@@ -1,10 +1,11 @@
+// app/layout.tsx
+
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
-// Removido: import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers'; // cookies ainda é necessário para o utilitário
-import SupabaseProvider from './(site)/components/SupabaseProvider'; // Ajuste o caminho se necessário
-import VisitTracker from './(site)/components/VisitTracker'; // Ajuste o caminho se necessário
-import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Ajuste o caminho se 'lib' não estiver na raiz ou se o alias não estiver configurado
+import { headers } from 'next/headers';
+import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Importa getSupabaseServerClient
+import SupabaseProvider from './(site)/components/SupabaseProvider';
+import VisitTracker from './(site)/components/VisitTracker';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -17,22 +18,28 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // CORREÇÃO: Usando o utilitário para criar o cliente Supabase
-  const supabase = getSupabaseServerClient();
-  
-  const { data: { user } } = await supabase.auth.getUser();
+  // CORRIGIDO: AGORA AWAITAMOS getSupabaseServerClient()
+  const supabase = await getSupabaseServerClient(); 
 
+  // Obtém o usuário autenticado
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(); // Já estava await aqui, agora 'supabase' é o objeto correto
+
+  // Determina o host atual para buscar a loja correspondente
+  const host = (await headers()).get('host');
   let lojaId: string | null = null;
-  const host = (await headers()).get('host'); // Obtém o hostname da requisição (ex: minhaloja.phandshop.com.br ou customdomain.com)
 
   if (host) {
-    const { data: lojaData, error: lojaError } = await supabase
+    const subdominio = host.split('.')[0];
+
+    const { data: lojaData, error: lojaError } = await supabase // 'supabase' já é o objeto correto
       .from('lojas')
       .select('id')
-      .or(`subdominio.eq.${host.split('.')[0]},dominio_personalizado.eq.${host}`) // Verifica se o host é um subdomínio ou domínio personalizado
+      .or(`subdominio.eq.${subdominio},dominio_personalizado.eq.${host}`)
       .single();
 
-    if (lojaError && lojaError.code !== 'PGRST116') { // PGRST116 é "no rows found"
+    if (lojaError && lojaError.code !== 'PGRST116') {
       console.error('Erro ao buscar loja pelo host:', lojaError.message);
     } else if (lojaData) {
       lojaId = lojaData.id;
@@ -42,8 +49,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="pt-BR" className={poppins.className}>
       <head>
-        {/* Script de rastreamento do Umami (para a plataforma Phandshop em si) */}
-        {/* Mantenha este script se ele for para rastrear o uso da sua plataforma (Phandshop.com.br) */}
         <script
           async
           defer
@@ -51,17 +56,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           src="https://umami.phandshop.com.br/script.js"
         />
       </head>
-      <body style={{ margin: 0, padding: 0, background: '#fff' }}>
-        <main style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          {/* Passa o objeto 'user' para o SupabaseProvider */}
-          {/* Você precisará ajustar o SupabaseProvider para aceitar 'initialUser' em vez de 'initialSession' */}
-          <SupabaseProvider initialUser={user}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#fff' }}>
+        <SupabaseProvider initialUser={user}>
+          <main
+            style={{
+              width: '100%',
+              minHeight: '100vh',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
             {children}
-          </SupabaseProvider>
-        </main>
+          </main>
+        </SupabaseProvider>
 
-        {/* Componente de rastreamento de visitas para CADA LOJA */}
-        {/* Ele só será renderizado e ativado se um lojaId for encontrado */}
+        {/* Componente de rastreamento de visitas */}
         {lojaId && <VisitTracker lojaId={lojaId} />}
       </body>
     </html>
