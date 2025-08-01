@@ -1,10 +1,8 @@
-// app/layout.tsx
-
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { headers } from 'next/headers';
 import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Importa getSupabaseServerClient
-import SupabaseProvider from './(site)/components/SupabaseProvider';
+import { SupabaseProvider } from './(site)/components/SupabaseProvider'; 
 import VisitTracker from './(site)/components/VisitTracker';
 
 const poppins = Poppins({
@@ -18,22 +16,19 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // CORRIGIDO: AGORA AWAITAMOS getSupabaseServerClient()
   const supabase = await getSupabaseServerClient(); 
 
-  // Obtém o usuário autenticado
   const {
     data: { user },
-  } = await supabase.auth.getUser(); // Já estava await aqui, agora 'supabase' é o objeto correto
+  } = await supabase.auth.getUser(); 
 
-  // Determina o host atual para buscar a loja correspondente
   const host = (await headers()).get('host');
   let lojaId: string | null = null;
 
   if (host) {
     const subdominio = host.split('.')[0];
 
-    const { data: lojaData, error: lojaError } = await supabase // 'supabase' já é o objeto correto
+    const { data: lojaData, error: lojaError } = await supabase 
       .from('lojas')
       .select('id')
       .or(`subdominio.eq.${subdominio},dominio_personalizado.eq.${host}`)
@@ -70,7 +65,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </main>
         </SupabaseProvider>
 
-        {/* Componente de rastreamento de visitas */}
         {lojaId && <VisitTracker lojaId={lojaId} />}
       </body>
     </html>

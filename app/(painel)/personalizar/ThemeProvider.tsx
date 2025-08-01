@@ -34,10 +34,8 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [selectedTheme, setSelectedTheme] = useState<string>('tema-base-1');
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
-  // Flag para evitar recarregar do banco logo após o POST
   const hasJustSaved = useRef(false);
 
-  // Carregar configuração do banco
   const loadThemeConfig = async (themeName: string) => {
     try {
       const response = await fetch(`/api/theme-settings/${themeName}`);
@@ -60,7 +58,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
-  // Carregar configuração quando selectedTheme mudar (com proteção)
   useEffect(() => {
     if (!hasJustSaved.current && selectedTheme) {
       loadThemeConfig(selectedTheme);
@@ -69,7 +66,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [selectedTheme]);
 
-  // Atualização de configuração (merge profundo)
   const updateConfig: ThemeUpdateFn = (newConfig) => {
     setConfig(prevConfig => {
       const merged = { ...prevConfig };
@@ -98,7 +94,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
   };
 
-  // Salvar configuração no banco
   const saveThemeConfig = async () => {
     console.log(`[SAVE] Tentando salvar config do tema "${selectedTheme}":`, config);
 
@@ -124,12 +119,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
-  // Injeção das variáveis no iframe
   useEffect(() => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       const iframeWindow = iframeRef.current.contentWindow;
 
-      // Envia config
       iframeWindow.postMessage(
         {
           type: 'UPDATE_THEME_CONFIG',
@@ -139,7 +132,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         '*'
       );
 
-      // Injeta CSS Vars
       const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
       let styleTag = iframeDoc.getElementById('injected-theme-vars') as HTMLStyleElement;
 

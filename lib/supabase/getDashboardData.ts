@@ -30,7 +30,7 @@ export async function getDashboardData(userId: string) {
     produtosEmEstoque: produtos.data?.length || 0,
     pedidosPendentes: pedidos.data?.filter(p => p.status === 'pendente').length || 0,
     faturamentoMes,
-    taxaConversao: 2.3, // Placeholder até termos visitantes reais
+    taxaConversao: 2.3,
     ticketMedio,
     estoqueBaixoAlert: produtos.data?.filter(p => p.estoque <= 5).length || 0,
     vendasSemanaisGrafico

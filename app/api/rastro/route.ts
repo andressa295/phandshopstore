@@ -1,10 +1,12 @@
 // app/api/rastro/route.ts
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+
 import { NextResponse } from 'next/server';
+// Importa o cliente Supabase do servidor usando o helper corrigido
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
+  // Inicializa o cliente Supabase usando o helper
+  const supabase = getSupabaseServerClient();
 
   try {
     const { lojaId, pagina, origem, dispositivo } = await request.json();
@@ -22,11 +24,11 @@ export async function POST(request: Request) {
     // Mapeamento simples de user-agent para dispositivo
     let deviceType = 'Desktop';
     if (userAgent) {
-        if (/Mobi|Android|iPhone|iPad|Pod|BlackBerry|Opera Mini|IEMobile|webOS|Windows Phone|tablet/i.test(userAgent)) {
-            deviceType = 'Mobile';
-        } else if (/Tablet/i.test(userAgent)) {
-            deviceType = 'Tablet';
-        }
+      if (/Mobi|Android|iPhone|iPad|Pod|BlackBerry|Opera Mini|IEMobile|webOS|Windows Phone|tablet/i.test(userAgent)) {
+        deviceType = 'Mobile';
+      } else if (/Tablet/i.test(userAgent)) {
+        deviceType = 'Tablet';
+      }
     }
 
     const { data, error } = await supabase

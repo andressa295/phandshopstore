@@ -28,37 +28,37 @@ const planosData = [
     icon: <FaLightbulb />,
     name: 'Plano Básico',
     monthlyPrice: 'R$ 69,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 699,00', annualMonthlyEquivalent: 'R$ 58,25/mês',
-    features: [ '✅ Tudo do plano Grátis, e mais:', 'Até 250 produtos cadastrados', 'Suporte via Chat e E-mail', 'Tarifa por venda de 0%', 'Certificado de Segurança SSL Avançado', 'Domínio próprio', ],
+    features: [ 'Tudo do plano Grátis, e mais:', 'Até 250 produtos cadastrados', 'Suporte via Chat e E-mail', 'Tarifa por venda de 0%', 'Certificado de Segurança SSL Avançado', 'Domínio próprio', ],
     callout: null, buttonText: 'Assinar Básico', isFeatured: false,
     stripePriceIdMonthly: 'price_1Rp0azK7GLhCiTF0MTeciHgh',
-    stripePriceIdAnnual: 'price_1RpigWK7GLhCiTF0nw2zjXMk', // NOVO ID ANUAL
+    stripePriceIdAnnual: 'price_1RpigWK7GLhCiTF0nw2zjXMk', 
   },
   {
     icon: <FaGem />,
     name: 'Plano Essencial',
     monthlyPrice: 'R$ 99,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 999,00', annualMonthlyEquivalent: 'R$ 83,25/mês',
-    features: [ '✅ Tudo do plano Básico, e mais:', 'Acesso a todos os Temas para personalizar sua loja', 'Tarifa por venda de 0%', 'Produtos, visitas e usuários ilimitados', 'Domínio próprio', 'Sacolinha do Instagram', 'Ferramentas de Personalização Avançada', ],
+    features: [ 'Tudo do plano Básico, e mais:', 'Acesso a todos os Temas para personalizar sua loja', 'Tarifa por venda de 0%', 'Produtos, visitas e usuários ilimitados', 'Domínio próprio', 'Sacolinha do Instagram', 'Ferramentas de Personalização Avançada', ],
     callout: null, buttonText: 'Assinar Essencial', isFeatured: false,
     stripePriceIdMonthly: 'price_1Rp0brK7GLhCiTF0OeTdh8vJ',
-    stripePriceIdAnnual: 'price_1RpifQK7GLhCiTF0nzZF0WiR', // NOVO ID ANUAL
+    stripePriceIdAnnual: 'price_1RpifQK7GLhCiTF0nzZF0WiR', 
   },
   {
     icon: <FaRocket />,
     name: 'Plano Profissional',
     monthlyPrice: 'R$ 149,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 1.499,00', annualMonthlyEquivalent: 'R$ 124,92/mês',
-    features: [ '✅ Tudo do plano Essencial, e mais:', 'Acesso a Temas Profissionais', 'Compre Junto', 'Brindes no Carrinho', 'Relatórios Avançados', ],
+    features: [ 'Tudo do plano Essencial, e mais:', 'Acesso a Temas Profissionais', 'Compre Junto', 'Brindes no Carrinho', 'Relatórios Avançados', ],
     callout: null, buttonText: 'Assinar Profissional', isFeatured: true,
     stripePriceIdMonthly: 'price_1Rp0cfK7GLhCiTF0VSO36ysl',
-    stripePriceIdAnnual: 'price_1Rpie2K7GLhCiTF0BYgs0Gp5', // NOVO ID ANUAL
+    stripePriceIdAnnual: 'price_1Rpie2K7GLhCiTF0BYgs0Gp5', 
   },
   {
     icon: <FaCrown />,
     name: 'Plano Premium',
     monthlyPrice: 'R$ 249,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 2.499,00', annualMonthlyEquivalent: 'R$ 208,25/mês',
-    features: [ '✅ Tudo do plano Profissional, e mais:', 'Relatórios Complexos', 'Atendimento Prioritário', 'Acesso Antecipado a novas funcionalidades', ],
+    features: [ 'Tudo do plano Profissional, e mais:', 'Relatórios Complexos', 'Atendimento Prioritário', 'Acesso Antecipado a novas funcionalidades', ],
     callout: null, buttonText: 'Assinar Premium', isFeatured: false,
     stripePriceIdMonthly: 'price_1Rp0dDK7GLhCiTF0cDcu7cay',
-    stripePriceIdAnnual: 'price_1Rpid4K7GLhCiTF08Tcs9F4g', // NOVO ID ANUAL
+    stripePriceIdAnnual: 'price_1Rpid4K7GLhCiTF08Tcs9F4g', 
   },
 ];
 
@@ -72,11 +72,9 @@ const Planos = () => {
     setLoadingCheckout(true);
     const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
 
-    // --- ADICIONADO PARA DEBUG ---
     console.log("Frontend (planos/page.tsx): priceId sendo enviado:", priceId);
     console.log("Frontend (planos/page.tsx): Plano selecionado:", plan.name);
     console.log("Frontend (planos/page.tsx): É anual?", isAnnual);
-    // --- FIM DEBUG ---
 
     if (!priceId) {
       router.push(`/cadastro?plano=${plan.name.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);

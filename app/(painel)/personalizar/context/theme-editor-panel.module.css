@@ -1,10 +1,3 @@
-/* app/(painel)/personalizar/context/theme-editor-panel.module.css (MESTRE DOS ESTILOS DO PAINEL) */
-
-/* As variáveis CSS globais (:root) estão APENAS em 'app/styles/global-variables.css' */
-/* E DEVEM SER IMPORTADAS UMA VEZ NA RAIZ DA SUA APLICAÇÃO (EX: app/layout.tsx) */
-
-
-/* --- Layout Principal do Editor --- */
 .editorContainer {
   display: flex;
   flex-direction: column;

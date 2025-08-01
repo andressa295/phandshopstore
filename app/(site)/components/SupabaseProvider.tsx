@@ -1,6 +1,4 @@
-// app\(site)\components\SupabaseProvider.tsx
-
-'use client';
+'use client'; 
 
 import {
   createContext,
@@ -17,7 +15,7 @@ import { useRouter } from 'next/navigation';
 
 interface UserContextType {
   user: User | null;
-  profile: any | null; // Considere criar uma interface 'Profile' para tipagem forte
+  profile: any | null; 
   loading: boolean;
 }
 
@@ -28,10 +26,10 @@ interface SupabaseProviderProps {
   children: ReactNode;
 }
 
-export const SupabaseProvider = ({
+export function SupabaseProvider({ 
   initialUser,
   children,
-}: SupabaseProviderProps) => {
+}: SupabaseProviderProps) {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(initialUser);
@@ -43,22 +41,20 @@ export const SupabaseProvider = ({
       setLoading(true);
 
       const { data, error } = await supabase
-        .from('usuarios') // Assegure-se que este é o nome correto da sua tabela de perfis
+        .from('usuarios') 
         .select('*')
         .eq('id', userId)
         .single();
 
       console.log('🔍 Supabase retorno do perfil:', { data, error });
 
-      // MELHORIA AQUI: Log mais detalhado do erro
-      if (error) { // Removido Object.keys(error).length > 0 para pegar qualquer erro
+      if (error) { 
         console.error('❌ Erro ao buscar perfil do usuário:', error.message || 'Erro desconhecido');
         console.error('Detalhes completos do erro (se disponíveis):', JSON.stringify(error, null, 2));
         setProfile(null);
       } else if (data) {
         setProfile(data);
       } else {
-        // Isso pode acontecer se .single() não encontrar nada e não retornar um erro explícito
         console.log('⚠️ Perfil do usuário não encontrado para o ID:', userId, 'sem erro explícito.');
         setProfile(null);
       }
@@ -70,7 +66,6 @@ export const SupabaseProvider = ({
       (event, session) => {
         if (session?.user) {
           setUser(session.user);
-          // Certifique-se de chamar fetchUserProfile apenas se tiver um ID de usuário
           if (session.user.id) {
             fetchUserProfile(session.user.id);
           } else {
@@ -82,14 +77,11 @@ export const SupabaseProvider = ({
           setUser(null);
           setProfile(null);
           setLoading(false);
-          // router.push('/login'); // habilita se quiser redirecionar
         }
       }
     );
 
-    // Lida com o initialUser vindo do servidor
     if (initialUser) {
-      // Garante que o ID do usuário inicial é válido antes de buscar o perfil
       if (initialUser.id) {
         fetchUserProfile(initialUser.id);
       } else {
@@ -104,14 +96,14 @@ export const SupabaseProvider = ({
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [initialUser, supabase, router]); // Dependências
+  }, [initialUser, supabase, router]);
 
   return (
     <UserContext.Provider value={{ user, profile, loading }}>
       {children}
     </UserContext.Provider>
   );
-};
+}
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -120,5 +112,3 @@ export const useUser = () => {
   }
   return context;
 };
-
-export default SupabaseProvider;

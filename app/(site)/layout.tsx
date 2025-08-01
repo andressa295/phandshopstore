@@ -1,17 +1,11 @@
-// app/(site)/layout.tsx
-
-// IMPORTS NECESSÁRIOS PARA O SUPABASE SERVER-SIDE
-import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Certifique-se que o caminho está correto
-import SupabaseProvider from './components/SupabaseProvider'; // Caminho para o SupabaseProvider DENTRO DA PASTA (site)
-
-// Imports que você já tinha
+import { getSupabaseServerClient } from '@/lib/supabaseServer'; 
+import { SupabaseProvider } from './components/SupabaseProvider'; 
 import '../globals.css';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import Header from './components/ui/HeaderGlobal';
 import { Footer } from './components/ui/FooterGlobal';
 import { FiShoppingBag } from 'react-icons/fi';
-// import { headers } from 'next/headers'; // Comentado, pois não é estritamente necessário neste layout, mas pode ser adicionado se precisar do host aqui.
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,20 +17,16 @@ export const metadata: Metadata = {
   description: 'Crie sua loja virtual com facilidade e a menor taxa do mercado.', 
 };
 
-// ESTE COMPONENTE É ASYNC
 export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // CORRIGIDO: AGORA AWAITAMOS getSupabaseServerClient()
   const supabase = await getSupabaseServerClient(); 
 
-  // Obtém o usuário logado
-  const { data: { user } } = await supabase.auth.getUser(); // 'supabase' já é o objeto correto
+  const { data: { user } } = await supabase.auth.getUser(); 
 
   return (
-    // Envolve TUDO com o SupabaseProvider
     <SupabaseProvider initialUser={user}>
       <div
         className={poppins.className} 
@@ -52,7 +42,6 @@ export default async function SiteLayout({
           {children}
         </main>
 
-        {/* Seu marquee aqui */}
         <div className="phand-marquee-container">
           <div className="phand-marquee">
             {Array.from({ length: 20 }).map((_, i) => (

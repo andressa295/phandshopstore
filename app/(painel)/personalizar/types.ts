@@ -1,5 +1,3 @@
-// app/(painel)/personalizar/types.ts
-
 // Tipos de Módulos da Homepage
 export interface BannerModuleData {
   desktopImageUrl?: string; // Tornando opcional, pode ter apenas um imageUrl
@@ -62,7 +60,7 @@ export interface NewsletterModuleData {
 
 export interface CategoriesModuleData {
   title?: string;
-  selectedCategories?: string[]; // Pode ser um array de strings ou objetos { id: string, name: string }
+  selectedCategories?: string[]; 
   layout?: 'grid' | 'carousel';
   isActive: boolean;
 }
@@ -83,7 +81,6 @@ export interface VideoModuleData {
   isActive: boolean;
 }
 
-// Configurações de Páginas Específicas
 export interface ProductDetailConfig {
   galleryLayout?: 'carousel' | 'grid';
   showPrice?: boolean;
@@ -114,7 +111,7 @@ export interface ProductListConfig {
   enableSorting?: boolean;
   productsPerPage?: number;
   showPagination?: boolean;
-  addToCartButtonColor?: string; // Cor do botão "Adicionar ao Carrinho"
+  addToCartButtonColor?: string; 
 }
 
 export interface CartConfig {
@@ -140,7 +137,7 @@ export interface FooterConfig {
   showNewsletterSignup?: boolean;
   newsletterTitle?: string;
   newsletterSubtitle?: string;
-  privacyPolicyLink?: string; // Link para política de privacidade no footer
+  privacyPolicyLink?: string;
 
   showContactInfo?: boolean;
   contactAddress?: string;
@@ -189,7 +186,6 @@ export interface AdvancedConfig {
   enableCodeMinification?: boolean;
 }
 
-// Configurações específicas do Cabeçalho
 export interface HeaderSettingsConfig {
   logoUrl?: string; 
   logoSize?: 'small' | 'medium' | 'large';

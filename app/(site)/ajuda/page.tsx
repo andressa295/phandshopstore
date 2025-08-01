@@ -93,7 +93,5 @@ function HelpCenterPage() {
   );
 }
 
-// A CORREÇÃO PRINCIPAL ESTÁ AQUI:
-// Exportamos a função como padrão no final do arquivo.
-// Isso garante que o Next.js entenda que HelpCenterPage é o componente principal desta rota.
+
 export default HelpCenterPage;

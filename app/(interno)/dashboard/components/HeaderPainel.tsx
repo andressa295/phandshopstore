@@ -1,4 +1,4 @@
-// app\(interno)\dashboard\components\HeaderPainel.tsx
+// app/(interno)/dashboard/components/HeaderPainel.tsx
 
 'use client';
 
@@ -44,7 +44,7 @@ const typography = {
 
 
 interface HeaderPainelProps {
-  userProfile: UserProfile | null;
+    userProfile: UserProfile | null;
 }
 
 
@@ -53,7 +53,8 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
     const supabase = createClientComponentClient();
     const router = useRouter();
 
-    const userName = userProfile?.nome || 'Minha Loja';
+    // CORREÇÃO: Alterado de 'nome' para 'nome_completo'
+    const userName = userProfile?.nome_completo || 'Minha Loja';
     const userEmail = userProfile?.email || 'N/A';
     // --- CORREÇÃO: Explicitamente tipando 'char' como string ---
     const userPlanDisplay = userProfile?.plano ? 

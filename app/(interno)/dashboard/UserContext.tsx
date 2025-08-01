@@ -5,7 +5,7 @@ import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs
 import { useRouter } from 'next/navigation';
 
 export interface UserProfile {
-  nome: string;
+  nome_completo: string; // CORREÇÃO 1: Nome da coluna ajustado
   plano: string;
   recorrencia: string;
   email: string;
@@ -52,12 +52,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       const { data: userProfileData, error: profileError } = await supabase
         .from('usuarios')
-        .select('nome, plano, recorrencia, email')
+        .select('nome_completo, plano, recorrencia, email') // CORREÇÃO 2: Consulta ajustada
         .eq('id', supabaseUser.id)
         .single();
 
       if (profileError) {
-        // --- CORREÇÃO: USANDO JSON.stringify PARA VER O CONTEÚDO COMPLETO DO ERRO ---
         console.error("Erro ao carregar perfil do usuário:", JSON.stringify(profileError, null, 2));
         setProfile(null);
       } else {

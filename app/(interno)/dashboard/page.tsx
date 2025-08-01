@@ -1,11 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar, Legend } from 'recharts';
 import Link from 'next/link';
 import { FaBoxes, FaClipboardList, FaChartLine, FaCheckCircle, FaTimesCircle, FaExclamationTriangle, FaPlus, FaTags, FaShippingFast, FaExternalLinkAlt } from 'react-icons/fa';
-
-// IMPORTE useUser DO UserContext AQUI
 import { useUser } from './UserContext';
 
 
@@ -27,8 +24,8 @@ export default function DashboardPage() {
     // AGORA CONSUME OS DADOS DO CONTEXTO DE USUÁRIO
     const { user, profile, loading } = useUser();
 
-    // Extrai o nome, plano e recorrência do perfil
-    const userFullName = profile?.nome || (user?.email ? user.email.split('@')[0] : 'Usuário');
+    // Extrai o nome, plano e recorrência do perfil - CORREÇÃO AQUI
+    const userFullName = profile?.nome_completo || (user?.email ? user.email.split('@')[0] : 'Usuário');
     const userPlan = profile?.plano;
     const userRecorrencia = profile?.recorrencia;
 

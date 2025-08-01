@@ -76,7 +76,6 @@ export default function CadastroParceiroPage() {
       return;
     }
 
-    // Se cadastro ok, tenta enviar o e-mail de boas-vindas (async, não bloqueia o front)
     enviarEmailBoasVindas(form.nome, form.email);
 
     setLoading(false);
