@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-// Verifica se a chave secreta do Stripe está definida. Se não, lança um erro.
-if (!process.env.STRIPE_SECRET_KEY) {
+// Usa o operador de coalescência nula (??) para fornecer um valor padrão
+// em ambientes onde a variável não está definida. Isso permite que a aplicação
+// inicie, mas ainda vai falhar em tempo de execução se a chave não estiver lá.
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
+if (!stripeSecretKey) {
   throw new Error('STRIPE_SECRET_KEY não está definida nas variáveis de ambiente.');
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(stripeSecretKey, {
   // CORREÇÃO: Usando a versão da API do Stripe que o seu ambiente espera.
   apiVersion: '2025-06-30.basil',
 });
