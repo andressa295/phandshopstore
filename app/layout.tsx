@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { headers } from 'next/headers';
-import { getSupabaseServerClient } from '@/lib/supabaseServer'; // Importa getSupabaseServerClient
-import { SupabaseProvider } from './(site)/components/SupabaseProvider'; 
+import { createServerComponentClient, User } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { SupabaseProvider } from './(site)/components/SupabaseProvider';
 import VisitTracker from './(site)/components/VisitTracker';
+import './globals.css';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -16,19 +18,18 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await getSupabaseServerClient(); 
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser(); 
-
+  const supabase = createServerComponentClient({ cookies });
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
+  
+  // CORREÇÃO: Adicionado 'await' para resolver a Promessa antes de usar
   const host = (await headers()).get('host');
   let lojaId: string | null = null;
 
   if (host) {
     const subdominio = host.split('.')[0];
 
-    const { data: lojaData, error: lojaError } = await supabase 
+    const { data: lojaData, error: lojaError } = await supabase
       .from('lojas')
       .select('id')
       .or(`subdominio.eq.${subdominio},dominio_personalizado.eq.${host}`)

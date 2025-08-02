@@ -1,8 +1,8 @@
 'use client';
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from './Planos.module.css';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import { FaGift, FaLightbulb, FaGem, FaRocket, FaCrown } from 'react-icons/fa';
@@ -63,43 +63,55 @@ const planosData = [
 ];
 
 const Planos = () => {
-  const [showAnnual, setShowAnnual] = React.useState(false);
-  const [loadingCheckout, setLoadingCheckout] = React.useState(false);
+  const [showAnnual, setShowAnnual] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
   const handleSubscribe = async (plan: typeof planosData[0], isAnnual: boolean) => {
     setLoadingCheckout(true);
-    const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
-
-    console.log("Frontend (planos/page.tsx): priceId sendo enviado:", priceId);
-    console.log("Frontend (planos/page.tsx): Plano selecionado:", plan.name);
-    console.log("Frontend (planos/page.tsx): É anual?", isAnnual);
-
-    if (!priceId) {
-      router.push(`/cadastro?plano=${plan.name.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);
-      setLoadingCheckout(false);
-      return;
-    }
 
     const { data: { user } } = await supabase.auth.getUser();
 
+    // Lógica corrigida:
+    // 1. Se o usuário NÃO estiver logado, redireciona para o cadastro.
     if (!user) {
+      console.log("Usuário não logado. Redirecionando para cadastro.");
       router.push(`/cadastro?plano=${plan.name.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);
       setLoadingCheckout(false);
       return;
     }
 
+    // 2. Se o usuário estiver logado e escolheu o plano GRÁTIS,
+    // apenas redireciona para o dashboard, pois não há pagamento.
+    if (plan.name === 'Plano Grátis') {
+      console.log("Usuário logado e escolheu o Plano Grátis. Redirecionando para dashboard.");
+      router.push('/dashboard');
+      setLoadingCheckout(false);
+      return;
+    }
+
+    // 3. Se o usuário estiver logado e escolheu um plano pago,
+    // continua para o processo de checkout do Stripe.
+    const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
+    if (!priceId) {
+      console.error("Erro: priceId do Stripe não encontrado para o plano selecionado:", plan.name, isAnnual);
+      alert('Erro ao iniciar o processo de pagamento. Entre em contato com o suporte.');
+      setLoadingCheckout(false);
+      return;
+    }
+
+    console.log("Iniciando checkout do Stripe para priceId:", priceId);
+    
     try {
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           priceId: priceId,
           planName: plan.name,
           isAnnual: isAnnual,
+          supabaseUserId: user.id
         }),
       });
 
@@ -181,7 +193,7 @@ const Planos = () => {
                 className={styles.ctaButton}
                 disabled={loadingCheckout}
               >
-                {loadingCheckout && (plano.stripePriceIdMonthly === (showAnnual ? plano.stripePriceIdAnnual : plano.stripePriceIdMonthly)) ? 'Redirecionando...' : plano.buttonText}
+                {loadingCheckout ? 'Redirecionando...' : plano.buttonText}
               </button>
             </div>
 

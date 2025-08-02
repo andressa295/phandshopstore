@@ -189,29 +189,27 @@ table td:nth-child(6) {
     white-space: nowrap; /* Impede a quebra de linha */
 }
 
-/* --- Estilo dos Badges de Status (Oval) --- */
-.status-badge {
-    padding: 5px 10px;
-    border-radius: 15px; /* Torna o badge mais oval */
+/* --- CORREÇÃO AQUI: Estilo dos badges para ter apenas a cor do texto --- */
+.status-text {
     font-size: 0.85em;
     font-weight: bold;
-    color: white;
     white-space: nowrap;
     display: inline-block;
-    font-family: 'Poppins', sans-serif; /* Aplicando Poppins */
+    font-family: 'Poppins', sans-serif;
 }
 
-/* Cores dos badges de status (incluindo os novos e o arquivado) */
-.status-badge.concluida { background-color: #28a745; }
-.status-badge.pendente { background-color: #ffc107; color: #333; }
-.status-badge.cancelada { background-color: #dc3545; }
-.status-badge.em_processamento { background-color: #007bff; }
-.status-badge.enviada { background-color: #17a2b8; }
-.status-badge.entregue { background-color: #6f42c1; }
-.status-badge.separando { background-color: #fd7e14; } /* Laranja para "Separando Pedido" */
-.status-badge.confeccao { background-color: #6610f2; } /* Roxo mais escuro para "Em Confecção" */
-.status-badge.fabricacao { background-color: #20c997; } /* Verde Água para "Em Fabricação" */
-.status-badge.arquivado { background-color: #7f8c8d; } /* Cinza para "Arquivados" */
+/* Cores dos status no texto */
+.status-text.concluida, .status-text.pago { color: #28a745; }
+.status-text.pendente { color: #ffc107; }
+.status-text.cancelado { color: #dc3545; }
+.status-text.em_processamento { color: #007bff; }
+.status-text.enviado { color: #17a2b8; }
+/* Manter as cores de status que você tinha para um possível uso futuro */
+.status-text.entregue { color: #6f42c1; }
+.status-text.separando { color: #fd7e14; }
+.status-text.confeccao { color: #6610f2; }
+.status-text.fabricacao { color: #20c997; }
+.status-text.arquivado { color: #7f8c8d; }
 
 
 /* --- Botão "Ver Detalhes" (Mais Fino e Fonte Menor) --- */
@@ -344,13 +342,12 @@ table td:nth-child(6) {
     /* Regras para os cabeçalhos virtuais em modo responsivo */
     /* Ajustado para as novas posições das colunas, incluindo o checkbox */
     table td:nth-child(1)::before { content: 'Sel.'; } /* Para o checkbox */
-    table td:nth-child(2)::before { content: 'ID da Venda'; }
+    table td:nth-child(2)::before { content: 'ID do Pedido'; }
     table td:nth-child(3)::before { content: 'Data'; }
     table td:nth-child(4)::before { content: 'Cliente'; }
     table td:nth-child(5)::before { content: 'Status'; }
     table td:nth-child(6)::before { content: 'Total'; }
-    table td:nth-child(7)::before { content: 'Pagamento'; }
-    table td:nth-child(8)::before { content: 'Ações'; }
+    table td:nth-child(7)::before { content: 'Ações'; }
 
     .sales-table-container td::before {
         position: absolute;

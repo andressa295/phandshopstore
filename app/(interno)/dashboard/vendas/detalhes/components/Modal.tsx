@@ -1,21 +1,18 @@
 'use client';
-
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface ModalProps {
-    isOpen: boolean; // Controla visibilidade via CSS
+    isOpen: boolean;
     onClose: () => void;
     title: string;
     children: React.ReactNode;
-    onSave?: () => void; // onSave não recebe data aqui, a lógica é no componente pai
+    onSave?: () => void;
     saveButtonText?: string;
-    className?: string; // Para adicionar classes de visibilidade (ex: 'modal-hidden')
+    className?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSave, saveButtonText = "Salvar", className }) => {
-    // A visibilidade é controlada por CSS usando a classe `modal-hidden`
     return (
-        // A classe 'modal-hidden' será adicionada quando !isOpen, controlando o display:none
         <div className={`modal-overlay ${!isOpen ? 'modal-hidden' : ''}`} onClick={onClose}>
             <div className={`modal-content ${className || ''}`} onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
@@ -34,4 +31,4 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onSave,
     );
 };
 
-export default Modal; // Exporta como default
+export default Modal;

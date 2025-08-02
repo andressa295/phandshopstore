@@ -1,10 +1,10 @@
-/* app/(interno)/dashboard/vendas/detalhes-venda/components/DetalhesDaVenda.css */
+/* app/(interno)/dashboard/vendas/detalhes/components/DetalhesDaVenda.css */
 
 /* --- Importação da Fonte Poppins --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 body {
-    font-family: 'Poppins', sans-serif; /* Garante que Poppins seja a fonte padrão aqui */
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     background-color: #f4f7f6;
     color: #333;
@@ -39,74 +39,53 @@ body {
     flex-wrap: wrap;
 }
 
-/* Estilos para Botões de Ação no Header */
+/* Estilos para Botões de Ação no Header (Agora mais minimalistas e com sublinhado) */
 .page-header button {
-    padding: 10px 20px;
-    border: 1px solid transparent;
-    border-radius: 25px;
+    padding: 10px 0px; /* Padding ajustado */
+    border: none;
+    background: none;
     cursor: pointer;
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
     white-space: nowrap;
+    position: relative;
+    text-decoration: underline; /* Sublinhado inicial para mostrar que é clicável */
+    text-decoration-color: transparent; /* A cor do sublinhado é invisível por padrão */
+    text-underline-offset: 4px; /* Afasta o sublinhado do texto */
 }
 
+/* Efeito de sublinhado visível no hover */
+.page-header button:hover {
+    text-decoration-color: currentColor; /* Usa a cor do texto para o sublinhado no hover */
+}
+
+/* Cor do texto para cada tipo de botão */
 .back-button {
-    background-color: #E0E0E0;
-    color: #757575;
-    border-color: #E0E0E0;
+    color: #555;
 }
-.back-button:hover {
-    background-color: #F5F5F5;
-    border-color: #F5F5F5;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
 .edit-button { /* Botão "Editar Venda Completa" */
-    background-color: #820AD1;
-    color: white;
-    border-color: #820AD1;
+    color: #820AD1;
 }
-.edit-button:hover {
-    background-color: #9C46D8;
-    border-color: #9C46D8;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
 .cancel-button {
-    background-color: #dc3545;
-    color: white;
-    border-color: #dc3545;
+    color: #dc3545;
 }
-.cancel-button:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
 .reabrir-button {
-    background-color: #28a745;
-    color: white;
-    border-color: #28a745;
-}
-.reabrir-button:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    color: #28a745;
 }
 
 
-/* --- NOVA BARRA: Controle de Status e Ações --- */
+/* --- BARRA DE STATUS --- */
 .status-action-bar {
     display: flex;
     align-items: center;
-    gap: 20px; /* Espaçamento entre os elementos da barra */
+    gap: 20px;
     background-color: white;
-    padding: 15px 30px; /* Padding um pouco maior para destaque */
+    padding: 15px 30px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 30px; /* Espaçamento com o grid de detalhes */
-    flex-wrap: wrap; /* Para responsividade */
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .current-status-display {
@@ -118,7 +97,24 @@ body {
     color: #333;
     font-weight: bold;
 }
-/* O status-badge já tem seu estilo definido abaixo */
+
+/* Estilo para os botões de ação na barra de status */
+.archive-button {
+    background-color: #7f8c8d;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+.archive-button:hover {
+    background-color: #616e78;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
 .status-change-control {
     display: flex;
@@ -134,61 +130,61 @@ body {
 .status-select-dropdown {
     padding: 8px 12px;
     border: 1px solid #ddd;
-    border-radius: 20px; /* Oval */
+    border-radius: 20px;
     background-color: white;
     cursor: pointer;
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
     min-width: 180px;
-    appearance: none; /* Remove seta padrão do select */
+    appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px;
 }
 
-.status-select-dropdown optgroup {
-    font-weight: bold;
+/* --- Estilo dos Textos de Status (Sem Fundo) --- */
+.status-text {
+    padding: 0;
+    border-radius: 0;
+    font-size: 1em;
+    font-weight: 600;
+    white-space: nowrap;
+    display: inline-block;
+    margin-left: 5px;
+    font-family: 'Poppins', sans-serif;
     color: #333;
 }
-
-/* Botões de Ação na barra de status (Arquivar) */
-.archive-button {
-    background-color: #7f8c8d; /* Cinza para arquivar */
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85em;
-    font-family: 'Poppins', sans-serif;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    white-space: nowrap;
-}
-.archive-button:hover {
-    background-color: #616e78;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+/* As cores são aplicadas diretamente no texto */
+.status-badge.concluida, .status-text.concluida { color: #28a745; }
+.status-badge.pendente, .status-text.pendente { color: #ffc107; }
+.status-badge.cancelada, .status-text.cancelada { color: #dc3545; }
+.status-badge.em_processamento, .status-text.em_processamento { color: #007bff; }
+.status-badge.enviada, .status-text.enviada { color: #17a2b8; }
+.status-badge.entregue, .status-text.entregue { color: #6f42c1; }
+.status-badge.separando, .status-text.separando { color: #fd7e14; }
+.status-badge.confeccao, .status-text.confeccao { color: #6610f2; }
+.status-badge.fabricacao, .status-text.fabricacao { color: #20c997; }
+.status-badge.arquivado, .status-text.arquivado { color: #7f8c8d; }
 
 
 /* --- Grid Principal de Detalhes da Venda (Duas Colunas) --- */
 .venda-details-grid {
     display: grid;
-    /* Ajuste as proporções das colunas para que a coluna da esquerda (itens) seja maior */
-    grid-template-columns: 2fr 1fr; /* Esquerda (Itens/Histórico) 2x maior que Direita (Info cards) */
-    gap: 25px; /* Espaçamento entre as colunas */
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
 }
 
 .left-column {
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Espaçamento entre os cards na coluna esquerda */
+    gap: 25px;
 }
 
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 25px; /* Espaçamento entre os cards na coluna direita */
+    gap: 25px;
 }
 
 .detail-card {
@@ -200,28 +196,26 @@ body {
 
 .detail-card h3 {
     font-size: 1.3em;
-    color: #2980b9;
+    color: #2980b9; /* Mantido o azul para o título do card */
     margin-top: 0;
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
     font-family: 'Poppins', sans-serif;
-    display: flex; /* Para alinhar título e ícone */
+    display: flex;
     align-items: center;
-    justify-content: space-between; /* Ícone no final */
+    justify-content: space-between;
 }
 
 /* Estilo para o ícone de edição (SVG) */
-.detail-card h3 .icon-edit { /* Usando classe para ícone de editar */
+.detail-card h3 svg {
     width: 16px;
     height: 16px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23820AD1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z'%3E%3C/path%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: contain;
+    stroke: #820AD1; /* Cor roxa para o ícone, como você gostou */
     cursor: pointer;
     transition: transform 0.2s ease;
 }
-.detail-card h3 .icon-edit:hover {
+.detail-card h3 svg:hover {
     transform: scale(1.1);
 }
 
@@ -237,19 +231,17 @@ body {
     font-weight: 500;
 }
 
-/* Estilo para a linha do WhatsApp, para que o número não seja negrito */
 .whatsapp-info-line {
-    font-weight: normal; /* Sobrescreve negrito do strong se aplicado */
-    display: flex; /* Para alinhar o conteúdo interno do p */
+    font-weight: normal;
+    display: flex;
     align-items: center;
-    gap: 5px; /* Espaçamento entre o ícone e o número */
+    gap: 5px;
 }
 
-/* --- Estilo para link WhatsApp --- */
 .whatsapp-link {
-    color: #28a745; /* Verde para WhatsApp */
+    color: #28a745;
     text-decoration: none;
-    font-weight: normal; /* Remove negrito padrão de link */
+    font-weight: normal;
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -259,17 +251,15 @@ body {
     color: #218838;
     text-decoration: underline;
 }
-/* Estilo para o ícone FaWhatsapp (se usar classes globais de react-icons, pode não ser necessário) */
+
 .whatsapp-link svg {
-    font-size: 1.1em; /* Ajuste o tamanho do ícone */
-    color: #25D366; /* Cor verde do WhatsApp */
-    flex-shrink: 0; /* Impede que o ícone encolha */
+    font-size: 1.1em;
+    color: #25D366;
+    flex-shrink: 0;
 }
 
-
-/* Link de rastreamento no painel de Informações de Envio */
 .tracking-link {
-    color: #007bff; /* Azul padrão de link */
+    color: #007bff;
     text-decoration: none;
     font-weight: normal;
     transition: text-decoration 0.2s ease;
@@ -279,32 +269,6 @@ body {
 }
 
 
-/* --- Estilo dos Badges de Status (Reutilizados da lista de vendas) --- */
-.status-badge {
-    padding: 5px 10px;
-    border-radius: 15px; /* Oval */
-    font-size: 0.85em;
-    font-weight: bold;
-    color: white;
-    white-space: nowrap;
-    display: inline-block;
-    margin-left: 5px; /* Espaçamento para o texto "Status Atual" */
-    font-family: 'Poppins', sans-serif;
-}
-/* Cores dos badges de status (incluindo os novos) */
-.status-badge.concluida { background-color: #28a745; }
-.status-badge.pendente { background-color: #ffc107; color: #333; }
-.status-badge.cancelada { background-color: #dc3545; }
-.status-badge.em_processamento { background-color: #007bff; }
-.status-badge.enviada { background-color: #17a2b8; }
-.status-badge.entregue { background-color: #6f42c1; }
-.status-badge.separando { background-color: #fd7e14; }
-.status-badge.confeccao { background-color: #6610f2; }
-.status-badge.fabricacao { background-color: #20c997; }
-.status-badge.arquivado { background-color: #7f8c8d; }
-
-
-/* --- Tabela de Itens da Venda (com Imagem) --- */
 .itens-venda-table {
     width: 100%;
     border-collapse: collapse;
@@ -322,20 +286,19 @@ body {
     color: #555;
     font-weight: bold;
 }
-/* Coluna da Imagem */
 .itens-venda-table td:first-child {
-    width: 60px; /* Tamanho fixo para a imagem */
+    width: 60px;
     padding-right: 5px;
-    text-align: center; /* Centraliza a imagem */
+    text-align: center;
 }
 .product-item-thumbnail {
     width: 50px;
     height: 50px;
-    object-fit: cover; /* Corta a imagem para preencher */
+    object-fit: cover;
     border-radius: 4px;
     vertical-align: middle;
 }
-.no-image-placeholder { /* Estilo para quando não há imagem */
+.no-image-placeholder {
     width: 50px;
     height: 50px;
     background-color: #f0f0f0;
@@ -347,19 +310,16 @@ body {
     color: #999;
     text-align: center;
     line-height: 1.2;
-    overflow: hidden; /* Garante que o texto "Sem Imagem" não vaze */
+    overflow: hidden;
 }
 
-/* Alinhamento para colunas de quantidade/preço/subtotal */
-.itens-venda-table td:nth-child(4), /* Qtd */
-.itens-venda-table td:nth-child(5), /* Preço Unit. */
-.itens-venda-table td:nth-child(6) { /* Subtotal */
+.itens-venda-table td:nth-child(4),
+.itens-venda-table td:nth-child(5),
+.itens-venda-table td:nth-child(6) {
     text-align: center;
-    white-space: nowrap; /* Evita quebra de linha em valores */
+    white-space: nowrap;
 }
 
-
-/* --- Histórico de Status --- */
 .status-history-list {
     list-style: none;
     padding: 0;
@@ -367,7 +327,7 @@ body {
 }
 .status-history-list li {
     background-color: #f9f9f9;
-    border-left: 4px solid #2980b9; /* Linha azul para destaque */
+    border-left: 4px solid #2980b9;
     padding: 10px 15px;
     margin-bottom: 8px;
     border-radius: 4px;
@@ -378,15 +338,14 @@ body {
     color: #333;
 }
 
-
 /* --- Campos de Edição Inline --- */
-.edit-input, .edit-textarea { /* Inclui textarea aqui */
-    width: calc(100% - 22px); /* Com padding e borda */
-    padding: 10px; /* Aumentado padding para melhor toque */
+.edit-input, .edit-textarea {
+    width: calc(100% - 22px);
+    padding: 10px;
     margin-top: 5px;
-    margin-bottom: 15px; /* Espaçamento entre campos */
+    margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 6px; /* Mais suave que 4px */
+    border-radius: 6px;
     font-family: 'Poppins', sans-serif;
     font-size: 1em;
 }
@@ -395,38 +354,38 @@ body {
     resize: vertical;
 }
 
-/* Estilos para os botões "Salvar" e "Cancelar" da edição inline */
 .edit-actions {
     display: flex;
     gap: 10px;
     margin-top: 10px;
-    justify-content: flex-end; /* Alinha os botões à direita */
+    justify-content: flex-end;
 }
-.edit-actions .save-button,
-.edit-actions .cancel-button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px; /* Oval */
-    cursor: pointer;
-    font-size: 0.85em;
-    font-family: 'Poppins', sans-serif;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-}
+/* Botão "Salvar" no modal de edição */
 .edit-actions .save-button {
-    background-color: #820AD1; /* Roxo Nubank */
+    background-color: #820AD1;
     color: white;
 }
 .edit-actions .save-button:hover {
     background-color: #9C46D8;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
+/* Botão "Cancelar Edição" - Agora sem fundo e com cor de texto */
 .edit-actions .cancel-button {
-    background-color: #E0E0E0; /* Cinza claro */
-    color: #757575;
+    color: #dc3545;
+    background: none;
+    border: none;
+    padding: 8px 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+    text-decoration: none; /* Remove o sublinhado padrão */
 }
 .edit-actions .cancel-button:hover {
-    background-color: #F5F5F5;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    color: #333;
+    text-decoration: underline;
+    background: none;
+    box-shadow: none;
 }
 
 
@@ -452,7 +411,6 @@ body {
     max-width: 100%;
     justify-content: center;
 }
-
 .send-email-text-link:hover {
     background-color: #F5F5F5;
     border-color: #ddd;
@@ -461,27 +419,34 @@ body {
 }
 
 
-.send-tracking-button { /* Botão para Abrir Edição/Configurar Envio */
-    background-color: #2980b9; /* Um azul para diferenciar */
-    color: white;
-    padding: 8px 15px; /* Estilo de botão */
+/* Botão "Configurar e Enviar Rastreamento" - Agora sem fundo */
+.send-tracking-button {
+    background: none; /* Remove o fundo */
     border: none;
-    border-radius: 20px; /* Oval */
+    padding: 8px 0; /* Ajusta o padding para ser como um link */
+    color: #2980b9; /* Usa a cor do título */
     cursor: pointer;
     font-size: 0.85em;
+    font-weight: 600; /* Negrito para destacar */
     font-family: 'Poppins', sans-serif;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    margin-top: 10px;
-    margin-right: 10px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    position: relative;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 4px;
 }
-.send-tracking-button:hover { background-color: #2471a3; }
+.send-tracking-button:hover {
+    text-decoration-color: currentColor;
+    background: none;
+    box-shadow: none;
+}
 
-.send-email-text-link svg, .send-tracking-button svg { /* Estilo para o ícone de foguete (SVG) */
+.send-email-text-link svg, .send-tracking-button svg {
     margin-left: 5px;
     vertical-align: middle;
 }
 
-/* --- Estilos do Modal (AGORA ESCONDIDO POR DISPLAY:NONE) --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -493,14 +458,10 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    /* transition: opacity 0.3s ease; */ /* Não usar opacity para display:none */
 }
-
-/* CLASSE PRINCIPAL PARA ESCONDER MODAIS QUANDO NÃO ESTÃO ABERTOS */
 .modal-overlay.modal-hidden {
-    display: none; /* ESSENCIAL: Esconde o modal completamente para que não cause problemas */
+    display: none;
 }
-
 .modal-content {
     background-color: white;
     padding: 30px;
@@ -521,8 +482,6 @@ body {
     font-size: 1.1em;
     margin-bottom: 25px;
 }
-
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -546,7 +505,6 @@ body {
 .modal-close-button:hover {
     color: #333;
 }
-
 .modal-body {
     margin-bottom: 20px;
 }
@@ -557,11 +515,7 @@ body {
     color: #555;
     font-size: 0.95em;
 }
-.modal-body input[type="text"],
-.modal-body input[type="email"],
-.modal-body input[type="tel"],
-.modal-body input[type="number"],
-.modal-body textarea {
+.modal-body input {
     width: calc(100% - 22px);
     padding: 10px;
     margin-top: 5px;
@@ -575,8 +529,6 @@ body {
     min-height: 80px;
     resize: vertical;
 }
-
-
 .modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -584,7 +536,7 @@ body {
     border-top: 1px solid #eee;
     padding-top: 15px;
 }
-.modal-save-button, .modal-cancel-button {
+.modal-save-button {
     padding: 10px 20px;
     border: none;
     border-radius: 25px;
@@ -592,8 +544,6 @@ body {
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
-}
-.modal-save-button {
     background-color: #820AD1;
     color: white;
 }
@@ -602,6 +552,13 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 .modal-cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
     background-color: #E0E0E0;
     color: #757575;
 }
@@ -610,16 +567,12 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Estilo para a mensagem de loading do CEP */
 .loading-message {
     font-size: 0.85em;
     color: #2980b9;
     margin-top: -10px;
-    margin-bottom: 15px;
     font-weight: bold;
 }
-
-/* Estilos para a lista de itens no modal de edição completa */
 .modal-itens-list {
     border: 1px solid #eee;
     border-radius: 8px;
@@ -706,24 +659,21 @@ body {
     font-size: 0.8em;
     color: #777;
     margin-top: -10px;
-    margin-bottom: 15px;
     display: block;
 }
 
-/* Animação para o Modal */
 @keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 
-/* --- TOAST NOTIFICATIONS --- */
 .toast-notification {
     position: fixed;
     bottom: 20px;
@@ -739,18 +689,18 @@ body {
     font-family: 'Poppins', sans-serif;
     font-size: 0.9em;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 1001; /* Acima dos modais */
+    z-index: 1001;
     animation: slideInFromRight 0.3s ease-out forwards;
 }
 
 .toast-notification.toast-success {
-    background-color: #28a745; /* Verde para sucesso */
+    background-color: #28a745;
 }
 .toast-notification.toast-error {
-    background-color: #dc3545; /* Vermelho para erro */
+    background-color: #dc3545;
 }
 .toast-notification.toast-info {
-    background-color: #007bff; /* Azul para informação */
+    background-color: #007bff;
 }
 
 .toast-close-button {
@@ -777,7 +727,6 @@ body {
 }
 
 
-/* --- Mensagens de Estado (Loading, Erro, Sem Dados) --- */
 .loading, .error, .no-data {
     text-align: center;
     padding: 50px 20px;
@@ -794,7 +743,6 @@ body {
 }
 
 
-/* --- Responsividade --- */
 @media (max-width: 992px) {
     .venda-details-grid {
         grid-template-columns: 1fr;
@@ -831,7 +779,6 @@ body {
     .detail-card h3 {
         font-size: 1.1em;
     }
-    /* Ajustes para a tabela de itens em mobile */
     .itens-venda-table {
         display: block;
         overflow-x: auto;
@@ -865,7 +812,7 @@ body {
     .itens-venda-table td:last-child {
         border-bottom: none;
     }
-    .itens-venda-table td:first-child { /* Imagem */
+    .itens-venda-table td:first-child {
         width: auto;
         justify-content: center;
         padding: 10px;
@@ -873,23 +820,14 @@ body {
     .itens-venda-table td:first-child img {
         margin: 0 auto;
     }
-    .itens-venda-table td::before { /* Adiciona "cabeçalhos virtuais" */
+    .itens-venda-table td::before {
         content: attr(data-label);
         font-weight: bold;
         color: #555;
         margin-right: 10px;
     }
-    /* Definir data-label no TSX para cada TD da tabela de itens vendidos */
-    /* Já está no TSX, apenas para referência aqui */
-    /*
-    .itens-venda-table td:nth-child(2)::before { content: 'Produto:'; }
-    .itens-venda-table td:nth-child(3)::before { content: 'SKU:'; }
-    .itens-venda-table td:nth-child(4)::before { content: 'Qtd:'; }
-    .itens-venda-table td:nth-child(5)::before { content: 'Preço Unit.:'; }
-    .itens-venda-table td:nth-child(6)::before { content: 'Subtotal:'; }
-    */
 
-    .itens-venda-table td span { /* Para os valores */
+    .itens-venda-table td span {
         text-align: right;
         flex-grow: 1;
     }

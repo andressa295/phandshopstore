@@ -1,21 +1,18 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface ConfirmModalProps {
-    isOpen: boolean; // Controla visibilidade via CSS
+    isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
     title: string;
     message: string;
     confirmText?: string;
     cancelText?: string;
-    className?: string; // Para adicionar classes de visibilidade
+    className?: string;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar", className }) => {
-    // A visibilidade é controlada por CSS usando a classe `modal-hidden`
-    // Este pode permanecer condicional simples se o erro persistir, ou usar a mesma abordagem do Modal.
-    // Para consistência, usaremos a mesma classe `modal-hidden`
     return (
         <div className={`modal-overlay ${!isOpen ? 'modal-hidden' : ''}`} onClick={onClose}>
             <div className={`modal-content confirm-modal-content ${className || ''}`} onClick={e => e.stopPropagation()}>
@@ -35,4 +32,4 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose, onConfirm,
     );
 };
 
-export default ConfirmModal; // Exporta como default
+export default ConfirmModal;
