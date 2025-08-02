@@ -1,4 +1,3 @@
-// app/(interno)/dashboard/vendas/detalhes/[vendaId]/page.tsx
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -51,7 +50,7 @@ interface SupabaseVenda {
         produto_id: string; 
         quantidade: number; 
         preco_unitario: number; 
-        nome_produto: { nome: string }[]; // AQUI: o Supabase retorna um array
+        nome_produto: { nome: string }[];
     }[];
 }
 
@@ -90,7 +89,6 @@ export default async function DetalheVendaPage({ params }: { params: { vendaId: 
         return notFound();
     }
 
-    // Mapeia o resultado do Supabase para a estrutura esperada pela interface do componente
     const formattedVenda: VendaDetalheProp = {
         id: venda.id,
         created_at: venda.created_at,
@@ -105,10 +103,9 @@ export default async function DetalheVendaPage({ params }: { params: { vendaId: 
         tracking_cod: venda.tracking_cod,
         transportador: venda.transportador,
         data_envio: venda.data_envio,
-        // AQUI: Mapeia cada item para a estrutura correta
         items_pedido: (venda.items_pedido as any[]).map(item => ({
             ...item,
-            nome_produto: item.nome_produto?.[0] || null, // Pega o primeiro item do array
+            nome_produto: item.nome_produto?.[0] || null,
         })),
     };
 
