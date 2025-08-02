@@ -1,0 +1,109 @@
+/* app/(interno)/dashboard/components/HeaderPainel.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #6b21a8;
+    --secondary-color: #820AD1;
+    --accent-color: #7C3AED;
+    --text-color: #333333;
+    --light-text-color: #666666;
+    --border-color: #e0e0e0;
+    --background-color: #f8f9fa;
+    --white-color: #ffffff;
+}
+
+.header-painel {
+    height: 60px;
+    background-color: var(--white-color);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo {
+    object-fit: contain;
+}
+
+.user-menu-container {
+    position: relative;
+}
+
+.user-icon {
+    cursor: pointer;
+    transition: color 0.2s ease;
+    color: var(--text-color);
+}
+.user-icon:hover {
+    color: var(--primary-color);
+}
+
+.user-dropdown-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: var(--white-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 180px;
+    z-index: 101;
+    overflow: auto;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--background-color);
+}
+.user-name-text {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+.user-email-text {
+    margin: 0 0 5px 0;
+    font-size: 0.8rem;
+    color: var(--light-text-color);
+}
+.plan-status-text {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease;
+    font-weight: normal;
+}
+.dropdown-item:hover {
+    background-color: var(--background-color);
+}

@@ -33,7 +33,13 @@ interface VendaDetalheProp {
   items_pedido: ItemPedido[];
 }
 
-export default async function DetalheVendaPage({ params }: { params: { vendaId: string } }) {
+interface PageProps {
+  params: {
+    vendaId: string;
+  };
+}
+
+export default async function DetalheVendaPage({ params }: PageProps) {
   const supabase = createServerComponentClient({ cookies });
   const { vendaId } = params;
 
@@ -78,7 +84,6 @@ export default async function DetalheVendaPage({ params }: { params: { vendaId: 
     );
   }
 
-  // Tipagem de fallback se o Supabase retornar null
   const vendaData = venda as VendaDetalheProp | null;
 
   return <DetalhesDaVenda venda={vendaData} />;
