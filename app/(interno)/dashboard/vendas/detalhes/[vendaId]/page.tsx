@@ -1,37 +1,5 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import DetalhesDaVenda from '../components/DetalhesDaVenda';
-
-interface ItemPedido {
-  id: string;
-  produto_id: string;
-  quantidade: number;
-  preco_unitario: number;
-  nome_produto: { nome: string } | null;
-}
-
-interface VendaDetalheProp {
-  id: string;
-  created_at: string;
-  cliente_id: string;
-  cliente: {
-    id: string;
-    nome: string;
-    email: string;
-    telefone: string | null;
-    cpfCnpj: string | null;
-  } | null;
-  status: string;
-  valor_total: number;
-  endereco_ent: string | null;
-  observacoes_c: string | null;
-  observacoes_i: string | null;
-  tracking_link: string | null;
-  tracking_cod: string | null;
-  transportador: string | null;
-  data_envio: string | null;
-  items_pedido: ItemPedido[];
-}
+import { getSupabaseServerClient } from '@/lib/supabaseServer';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: {
@@ -39,52 +7,31 @@ interface PageProps {
   };
 }
 
-export default async function DetalheVendaPage({ params }: PageProps) {
-  const supabase = createServerComponentClient({ cookies });
-  const { vendaId } = params;
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500">Acesso negado. Por favor, faça login.</p>
-      </div>
-    );
-  }
+export default async function Page({ params }: PageProps) {
+  const supabase = getSupabaseServerClient();
 
   const { data: venda, error } = await supabase
-    .from('pedidos')
-    .select(
-      `
-      id, created_at, status, valor_total, endereco_ent,
-      observacoes_c, observacoes_i, tracking_link,
-      tracking_cod, transportador, data_envio,
-      cliente_id,
-      cliente:clientes (
-        id, nome, email, telefone, cpfCnpj
-      ),
-      items_pedido:items_pedido (
-        id, produto_id, quantidade, preco_unitario,
-        nome_produto:produtos (nome)
-      )
-      `
-    )
-    .eq('id', vendaId)
+    .from('vendas')
+    .select('*')
+    .eq('id', params.vendaId)
     .single();
 
-  if (error && error.code !== 'PGRST116') {
-    console.error('Erro ao buscar a venda:', error);
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500">Erro ao carregar os detalhes da venda.</p>
-      </div>
-    );
+  if (error || !venda) {
+    console.error('Erro ao buscar venda:', error);
+    return notFound();
   }
 
-  const vendaData = venda as VendaDetalheProp | null;
-
-  return <DetalhesDaVenda venda={vendaData} />;
+  return (
+    <main style={{ padding: '2rem' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Detalhes da Venda</h1>
+      <div style={{ lineHeight: '1.6' }}>
+        <p><strong>ID:</strong> {venda.id}</p>
+        <p><strong>Data:</strong> {new Date(venda.created_at).toLocaleString()}</p>
+        <p><strong>Cliente:</strong> {venda.cliente_nome}</p>
+        <p><strong>Status:</strong> {venda.status}</p>
+        <p><strong>Total:</strong> R$ {venda.valor_total.toFixed(2)}</p>
+        {/* Adicione aqui mais campos conforme necessário */}
+      </div>
+    </main>
+  );
 }
