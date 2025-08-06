@@ -1,9 +1,17 @@
+// =======================================================
+// ARQUIVO: app/(interno)/dashboard/vendas/detalhes/[vendaId]/page.tsx
+// =======================================================
+// Esta é a página de detalhes de uma venda específica no backoffice.
+
 import React from 'react';
+import '@/app/globals.css'; // Certifique-se de que seus estilos globais estão importados
 import { notFound } from 'next/navigation';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 
+// Componente DetalhesDaVenda (assumindo que este componente existe em '../components/DetalhesDaVenda')
+// Este componente receberá os dados já formatados.
 import DetalhesDaVenda from '../components/DetalhesDaVenda';
 
 // Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
@@ -15,7 +23,7 @@ interface ItemPedidoSupabase {
     nome_produto: { nome: string } | null;
 }
 
-interface ClienteDetalheSupabase {
+export interface ClienteDetalheSupabase { // Exported
     id: string;
     nome: string;
     email: string;
@@ -23,7 +31,7 @@ interface ClienteDetalheSupabase {
     documento: string | null;
 }
 
-interface Endereco {
+export interface Endereco { // Exported
     rua: string;
     numero: string;
     bairro: string;
@@ -60,7 +68,7 @@ interface ItemVendido {
     nome_produto: string;
 }
 
-export interface DetalhesVendaProp { // Exportado para ser usado no DetalhesDaVenda.tsx
+export interface DetalhesVendaProp { // Exported for DetalhesDaVenda.tsx
     id: string;
     created_at: string;
     status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
