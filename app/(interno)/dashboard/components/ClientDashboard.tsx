@@ -20,16 +20,14 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
     const userFullName = userProfile?.nome_completo || (userEmail ? userEmail.split('@')[0] : 'Usuário');
 
     if (!dashboardData) {
-      return (
-        <div className="dashboard-container-full">
-            <div className="alert-error">
-                Erro ao carregar os dados do dashboard.
+        return (
+            <div className="dashboard-container-full">
+                <div className="alert-error">
+                    Erro ao carregar os dados do dashboard.
+                </div>
             </div>
-        </div>
-      );
+        );
     }
-
-    const faturamentoMes = dashboardData.faturamentoMes;
 
     return (
         <div className="dashboard-container-full">
@@ -52,7 +50,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaChartLine /> Faturamento Mês</h2>
-                    <p className="kpi-card-value">R$ {faturamentoMes.toFixed(2).replace('.', ',')}</p>
+                    <p className="kpi-card-value">R$ {dashboardData.faturamentoMes.toFixed(2).replace('.', ',')}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaChartBar /> Ticket Médio</h2>

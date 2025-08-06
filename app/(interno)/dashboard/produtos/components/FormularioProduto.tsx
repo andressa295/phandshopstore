@@ -1,12 +1,10 @@
-// app\(interno)\dashboard\produtos\components\FormularioProduto.tsx (FINALMENTE COM TUDO E SEM ERROS DE ESCOPO!)
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { Produto } from '../../../../../types/Produto';
-import { FaPlus, FaTimes, FaTrash, FaImage, FaLink, FaMagic, FaBrain } from 'react-icons/fa'; // FaBrain adicionado para IA
+import { FaPlus, FaTimes, FaTrash, FaImage, FaLink, FaMagic, FaBrain } from 'react-icons/fa';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-
-// Definindo as cores e fontes principais (NO TOPO DO ARQUIVO)
 const colors = {
     primary: '#6b21a8',
     secondary: '#a21caf',
@@ -34,6 +32,12 @@ const mockCategorias = [
     'Joias', 'Alianças', 'Roupas Personalizadas'
 ];
 
+const formasPagamentoDisponiveis = [
+    { id: 'todos', nome: 'Todas as formas de pagamento' },
+    { id: 'pix', nome: 'Somente PIX' },
+    { id: 'cartao', nome: 'Somente Cartão de Crédito' },
+    { id: 'boleto', nome: 'Somente Boleto' },
+];
 
 interface FormularioProdutoProps {
     produtoInicial?: Produto | null;
@@ -43,6 +47,7 @@ interface FormularioProdutoProps {
 }
 
 const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, onSave, onCancel, onDelete }) => {
+    const supabase = createClientComponentClient();
     const [formData, setFormData] = useState<Produto>(
         produtoInicial || {
             id: 0,
@@ -71,9 +76,12 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
             isPersonalizado: false,
             personalizacaoTextoCampos: [],
             personalizacaoNumericaCampos: [],
+            freteGratis: false,
+            formasPagamento: ['todos'],
         }
     );
 
+    const [categorias, setCategorias] = useState<string[]>([]);
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const [showUrlInputIndex, setShowUrlInputIndex] = useState<number | null>(null);
@@ -83,7 +91,18 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
         tamanhosCalcados: useRef<HTMLInputElement>(null),
         cores: useRef<HTMLInputElement>(null)
     };
-
+    
+    useEffect(() => {
+        async function fetchCategorias() {
+            const { data: categoriasData, error } = await supabase.from('categorias').select('nome');
+            if (error) {
+                console.error('Erro ao buscar categorias:', error);
+            } else {
+                setCategorias(categoriasData.map(c => c.nome));
+            }
+        }
+        fetchCategorias();
+    }, [supabase]);
 
     useEffect(() => {
         if (!produtoInicial?.urlAmigavel && formData.nome && !formData.urlAmigavel) {
@@ -96,7 +115,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
             setFormData(prev => ({ ...prev, urlAmigavel: slug }));
         }
     }, [formData.nome, formData.urlAmigavel, produtoInicial?.urlAmigavel]);
-
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -122,10 +140,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
         }
     };
 
-    // CORREÇÃO: Lógica `handleVariacaoChange` para separar por vírgulas funcionando como tags
     const handleVariacaoKeyDown = (type: 'tamanhosRoupas' | 'tamanhosCalcados' | 'cores', e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === ',' || e.key === 'Enter' || e.key === 'Tab') {
-            e.preventDefault(); // Impede o comportamento padrão da vírgula/enter/tab
+            e.preventDefault();
             const inputElement = variacaoInputRefs[type].current;
             if (inputElement) {
                 const value = inputElement.value.trim();
@@ -150,7 +167,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                         }
                         return prev;
                     });
-                    inputElement.value = ''; // Limpa o input após adicionar a tag
+                    inputElement.value = '';
                 }
             }
         }
@@ -179,16 +196,41 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
             }
         }, 0);
     };
-
-    const handleImageChange = (index: number, value: string) => {
+    
+    // CORREÇÃO: Lógica para upload de imagem para o Supabase
+    const handleImageChange = (index: number, url: string) => { // Refatorado para aceitar uma URL
         setFormData(prev => {
             const newImages = [...(prev.imagensAdicionais || [])];
-            newImages[index] = value;
+            newImages[index] = url;
             return { ...prev, imagensAdicionais: newImages };
         });
-        if (value.startsWith('http') || value.startsWith('data:image')) {
+        if (url.startsWith('http') || url.startsWith('data:image')) {
             setShowUrlInputIndex(null);
         }
+    };
+    
+    const handleFileUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const { data, error } = await supabase.storage
+            .from('imagens-produtos') // Substitua pelo nome do seu bucket
+            .upload(`${formData.id}-${file.name}`, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+
+        if (error) {
+            console.error('Erro ao fazer upload da imagem:', error);
+            alert('Erro ao fazer upload da imagem.');
+            return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+            .from('imagens-produtos')
+            .getPublicUrl(data.path);
+        
+        handleImageChange(index, publicUrlData.publicUrl);
     };
 
     const handleRemoveImage = (index: number) => {
@@ -203,11 +245,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
     const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                handleImageChange(index, reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            handleFileUpload(index, e);
         }
         e.target.value = '';
     };
@@ -425,7 +463,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
         flexShrink: 0,
     };
 
-
     return (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Seção de Imagens (movida para o topo e com upload de arquivo) */}
@@ -449,10 +486,9 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                         backgroundColor: colors.background,
                         cursor: 'pointer',
                     }}
-                    onClick={() => fileInputRefs.current[index]?.click()} // Abre o seletor de arquivo ao clicar no div
+                    onClick={() => fileInputRefs.current[index]?.click()}
                     title={index === 0 ? "Imagem Principal" : `Imagem Adicional ${index}`}
                     >
-                        {/* Pré-visualização da imagem (usando imgUrl diretamente) */}
                         {imgUrl ? (
                             <img src={imgUrl} alt={`Imagem ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -460,19 +496,17 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                         )}
                         {index === 0 && <span style={{ position: 'absolute', bottom: '0px', backgroundColor: 'rgba(0,0,0,0.5)', color: 'white', fontSize: '0.6rem', padding: '2px 5px', borderRadius: '3px', whiteSpace: 'nowrap' }}>Principal</span>}
                         
-                        {/* Input de arquivo oculto */}
                         <input
                             type="file"
                             accept="image/*"
-                            ref={el => { if (el) fileInputRefs.current[index] = el; }} // Atribuição do ref
+                            ref={el => { if (el) fileInputRefs.current[index] = el; }}
                             onChange={(e) => handleFileChange(index, e)}
-                            style={{ display: 'none' }} // Completamente oculto
+                            style={{ display: 'none' }}
                         />
                         
-                        {/* Botão para colar URL (separado e não sobreposto) */}
                         <button
                             type="button"
-                            onClick={(e) => toggleUrlInput(index, e)} // Passa o evento para evitar abrir o file input
+                            onClick={(e) => toggleUrlInput(index, e)}
                             style={{
                                 position: 'absolute',
                                 top: '5px',
@@ -546,7 +580,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
             </div>
             {errors.imagensAdicionais && <p style={errorStyle}>{errors.imagensAdicionais}</p>}
 
-            {/* Input de URL CONDICIONAL (aparece apenas quando o botão "Colar URL" é clicado) */}
             {showUrlInputIndex !== null && (
                 <div style={{ marginTop: '10px' }}>
                     <label htmlFor={`url-input-${showUrlInputIndex}`} style={labelStyle}>Colar URL da Imagem (Opção Manual):</label>
@@ -557,8 +590,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                         onChange={(e) => handleImageChange(showUrlInputIndex, e.target.value)}
                         placeholder="Cole a URL completa da imagem aqui (ex: https://site.com/imagem.jpg)"
                         style={inputStyle}
-                        onBlur={() => setShowUrlInputIndex(null)} // Esconde o campo ao perder o foco
-                        autoFocus // Foca automaticamente ao aparecer
+                        onBlur={() => setShowUrlInputIndex(null)}
+                        autoFocus
                     />
                 </div>
             )}
@@ -587,7 +620,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     style={{ ...inputStyle, borderColor: errors.categoria ? colors.danger : colors.border, appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center', backgroundSize: '16px' }}
                 >
                     <option value="">Selecione uma categoria</option>
-                    {mockCategorias.map(cat => (
+                    {categorias.map((cat: string) => (
                         <option key={cat} value={cat}>{cat}</option>
                     ))}
                 </select>
@@ -650,22 +683,8 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     />
                     <button
                         type="button"
-                        onClick={generateSku} // Botão para gerar SKU
-                        style={{
-                            padding: '8px 12px',
-                            backgroundColor: colors.secondary,
-                            color: colors.white,
-                            border: 'none',
-                            borderRadius: '9999px',
-                            cursor: 'pointer',
-                            fontWeight: 'bold',
-                            fontSize: typography.smallSize,
-                            transition: 'background-color 0.2s ease',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            flexShrink: 0,
-                        }}
+                        onClick={generateSku}
+                        style={{ ...aiButtonSmall, backgroundColor: colors.secondary }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.secondary}
                     >
@@ -687,7 +706,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     />
                     <button
                         type="button"
-                        onClick={() => generateTextWithAI('descricao')} // Botão IA
+                        onClick={() => generateTextWithAI('descricao')}
                         style={{ ...aiButtonSmall, alignSelf: 'flex-start' }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent}
@@ -722,12 +741,11 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                 <label htmlFor="hasVariacoes" style={{ ...labelStyle, marginBottom: 0 }}>Seu produto tem variações (tamanhos, cores, etc.)?</label>
             </div>
 
-            {formData.hasVariacoes && ( // Renderiza apenas se 'hasVariacoes' for true
+            {formData.hasVariacoes && (
                 <div style={{ border: `1px dashed ${colors.border}`, padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <p style={{ fontSize: typography.smallSize, color: colors.lightText, marginBottom: '10px', fontFamily: typography.fontFamily }}>
                         Digite os valores e pressione **vírgula (,) ou Enter** para adicionar cada variação. Clique no "X" para remover.
                     </p>
-                    {/* Tamanhos de Roupas */}
                     <div>
                         <label htmlFor="tamanhosRoupas" style={labelStyle}>Tamanhos de Roupas (Ex: P, M, G):</label>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', border: `1px solid ${colors.border}`, borderRadius: '6px', padding: '5px', backgroundColor: colors.white }}>
@@ -748,7 +766,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                             />
                         </div>
                     </div>
-                    {/* Tamanhos de Calçados */}
                     <div>
                         <label htmlFor="tamanhosCalcados" style={labelStyle}>Tamanhos de Calçados (Ex: 34, 35.5, 36):</label>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', border: `1px solid ${colors.border}`, borderRadius: '6px', padding: '5px', backgroundColor: colors.white }}>
@@ -769,7 +786,6 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                             />
                         </div>
                     </div>
-                    {/* Cores */}
                     <div>
                         <label htmlFor="cores" style={labelStyle}>Cores (Ex: Vermelho, #FF0000, Azul):</label>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', border: `1px solid ${colors.border}`, borderRadius: '6px', padding: '5px', backgroundColor: colors.white }}>
@@ -806,7 +822,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                 <label htmlFor="isPersonalizado" style={{ ...labelStyle, marginBottom: 0 }}>Seu produto permite personalização (ex: nome em camiseta, gravação em aliança)?</label>
             </div>
 
-            {formData.isPersonalizado && ( // Renderiza apenas se 'isPersonalizado' for true
+            {formData.isPersonalizado && (
                 <div style={{ border: `1px dashed ${colors.border}`, padding: '15px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <p style={{ fontSize: typography.smallSize, color: colors.lightText, marginBottom: '10px', fontFamily: typography.fontFamily }}>
                         Configure os campos de personalização que o cliente preencherá na página do produto.
@@ -915,6 +931,35 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     <input type="number" id="comprimento" name="comprimento" value={formData.comprimento ?? ''} onChange={handleChange} style={inputStyle} />
                 </div>
             </div>
+             {/* CORREÇÃO: Adicionando campos de Frete e Pagamento */}
+             <h2 style={sectionTitleStyle}>Opções de Frete e Pagamento</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <input
+                        type="checkbox"
+                        id="freteGratis"
+                        name="freteGratis"
+                        checked={formData.freteGratis || false}
+                        onChange={handleChange}
+                        style={{ transform: 'scale(1.2)' }}
+                    />
+                    <label htmlFor="freteGratis" style={{ ...labelStyle, marginBottom: 0 }}>Oferecer Frete Grátis para este produto?</label>
+                </div>
+                <div>
+                    <label htmlFor="formasPagamento" style={labelStyle}>Formas de Pagamento Aceitas:</label>
+                    <select
+                        id="formasPagamento"
+                        name="formasPagamento"
+                        value={formData.formasPagamento?.[0] || 'todos'}
+                        onChange={(e) => setFormData(prev => ({ ...prev, formasPagamento: [e.target.value] }))}
+                        style={inputStyle}
+                    >
+                        {formasPagamentoDisponiveis.map(op => (
+                            <option key={op.id} value={op.id}>{op.nome}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
             <h2 style={sectionTitleStyle}>SEO e Divulgação</h2>
             <div>
@@ -932,7 +977,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     />
                     <button
                         type="button"
-                        onClick={() => generateTextWithAI('metaTitulo')} // Botão IA
+                        onClick={() => generateTextWithAI('metaTitulo')}
                         style={aiButtonSmall}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent}
@@ -952,11 +997,11 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                         placeholder="Descrição para motores de busca (max 160 caracteres)"
                         maxLength={160}
                         rows={3}
-                        style={{ ...inputStyle, resize: 'vertical', fontFamily: typography.fontFamily, flexGrow: 1 }}
+                        style={{ ...inputStyle, resize: 'vertical', flexGrow: 1 }}
                     />
                     <button
                         type="button"
-                        onClick={() => generateTextWithAI('metaDescricao')} // Botão IA
+                        onClick={() => generateTextWithAI('metaDescricao')}
                         style={{ ...aiButtonSmall, alignSelf: 'flex-start' }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent}
@@ -979,7 +1024,7 @@ const FormularioProduto: React.FC<FormularioProdutoProps> = ({ produtoInicial, o
                     />
                     <button
                         type="button"
-                        onClick={() => generateTextWithAI('palavrasChave')} // Botão IA
+                        onClick={() => generateTextWithAI('palavrasChave')}
                         style={aiButtonSmall}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primary}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.accent}

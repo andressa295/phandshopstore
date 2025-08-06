@@ -13,13 +13,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={poppins.className}>
-      <body style={{ margin: 0, padding: 0, background: '#fff' }}>
+    <div lang="pt-BR" className={poppins.className}>
+      <div style={{ margin: 0, padding: 0, background: '#fff' }}>
         
         <main style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}> 
           {children}
         </main>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

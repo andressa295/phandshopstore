@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-// Importar Produto do seu arquivo de tipos
-import type { Produto } from '../../../../../types/Produto'; // <<< AJUSTE ESTE CAMINHO PARA SEU ARQUIVO Produto.ts
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import type { Produto } from '../../../../../types/Produto';
+import Modal from '../../vendas/detalhes/components/Modal';
+import ConfirmModal from '../../vendas/detalhes/components/ConfirmModal';
+import Toast from '../../vendas/detalhes/components/Toast';
 
-// Definindo as cores e fontes principais para um estilo consistente (DENTRO DO ARQUIVO)
 const colors = {
     primary: '#6b21a8',
     secondary: '#a21caf',
@@ -28,108 +30,78 @@ const typography = {
     smallSize: '0.8rem',
 };
 
-// Dados mockados (ou carregados do localStorage)
-const getProdutosInicial = (): Produto[] => {
-    if (typeof window !== 'undefined') {
-        const storedProdutos = localStorage.getItem('produtosMock');
-        return storedProdutos ? JSON.parse(storedProdutos) : [
-            {
-                id: 1,
-                nome: 'Camiseta Roxa Premium',
-                categoria: 'Vestuário',
-                estoque: 120,
-                preco: 59.90,
-                precoPromocional: 49.90,
-                ativo: true,
-                imagensAdicionais: ['https://via.placeholder.com/150x150.png?text=Camiseta+Roxa'], // Usar imagensAdicionais[0] para a foto
-                descricao: 'Camiseta de algodão premium, confortável e durável.',
-                sku: 'CAM-ROXA-001',
-            },
-            {
-                id: 2,
-                nome: 'Tênis Casual Urbano',
-                categoria: 'Calçados',
-                estoque: 45,
-                preco: 199.90,
-                precoPromocional: null,
-                ativo: true,
-                imagensAdicionais: ['https://via.placeholder.com/150x150.png?text=Tênis+Casual'],
-                descricao: 'Tênis moderno para o dia a dia, estilo e conforto.',
-                sku: 'TEN-URB-002',
-            },
-            {
-                id: 3,
-                nome: 'Caneca Mágica Personalizada',
-                categoria: 'Acessórios',
-                estoque: 0,
-                preco: 39.90,
-                precoPromocional: null,
-                ativo: false,
-                imagensAdicionais: ['https://via.placeholder.com/150x150.png?text=Caneca+Mágica'],
-                descricao: 'Caneca que muda de cor com líquidos quentes.',
-                sku: 'CAN-MAG-003',
-                isPersonalizado: true,
-                personalizacaoTextoCampos: [{ id: 'can_text1', label: 'Texto na Caneca', maxCaracteres: 20 }]
-            },
-            {
-                id: 4,
-                nome: 'Smartwatch Esportivo',
-                categoria: 'Eletrônicos',
-                estoque: 75,
-                preco: 499.99,
-                precoPromocional: 450.00,
-                ativo: true,
-                imagensAdicionais: ['https://via.placeholder.com/150x150.png?text=Smartwatch'],
-                descricao: 'Monitore sua saúde e atividades com estilo.',
-                sku: 'SMART-ESP-004',
-            },
-            {
-                id: 5,
-                nome: 'Aliança Prata Personalizada',
-                categoria: 'Joias',
-                estoque: 30,
-                preco: 350.00,
-                precoPromocional: null,
-                ativo: true,
-                imagensAdicionais: ['https://via.placeholder.com/150x150.png?text=Aliança'],
-                descricao: 'Aliança de prata 925 com gravação interna.',
-                sku: 'ALI-PRA-005',
-                isPersonalizado: true,
-                personalizacaoTextoCampos: [
-                    { id: 'ali_nome', label: 'Gravar Nome', maxCaracteres: 15 },
-                    { id: 'ali_data', label: 'Gravar Data', maxCaracteres: 10 }
-                ],
-                personalizacaoNumericaCampos: [
-                    { id: 'ali_aro', label: 'Tamanho do Aro', min: 8, max: 35 }
-                ]
-            },
-        ];
-    }
-    return [];
-};
-
 export default function ListaProdutos() {
+    const supabase = createClientComponentClient();
+    const router = useRouter();
+    const [lojaId, setLojaId] = useState<string | null>(null);
     const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [totalProdutos, setTotalProdutos] = useState(0);
+
     const [busca, setBusca] = useState('');
     const [confirmacaoExclusao, setConfirmacaoExclusao] = useState<Produto | null>(null);
-    const [editingPromoPriceId, setEditingPromoPriceId] = useState<number | null>(null);
-    const router = useRouter();
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [itensPorPagina, setItensPorPagina] = useState(10);
+    const [colunaOrdenacao, setColunaOrdenacao] = useState<keyof Produto>('nome');
+    const [direcaoOrdenacao, setDirecaoOrdenacao] = useState<'desc' | 'asc'>('asc');
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
 
-    useEffect(() => {
-        setProdutos(getProdutosInicial());
+    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
     }, []);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined' && produtos.length > 0) {
-            localStorage.setItem('produtosMock', JSON.stringify(produtos));
+    const fetchLojaAndProducts = useCallback(async () => {
+        setLoading(true);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            router.push('/login');
+            setLoading(false);
+            return;
         }
-    }, [produtos]);
 
-    const produtosFiltrados = produtos.filter((p: Produto) =>
-        p.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        p.categoria.toLowerCase().includes(busca.toLowerCase()) ||
-        p.sku?.toLowerCase().includes(busca.toLowerCase())
-    );
+        const { data: loja, error: lojaError } = await supabase
+            .from('lojas')
+            .select('id')
+            .eq('usuario_id', user.id)
+            .single();
+
+        if (lojaError || !loja) {
+            console.error('Erro ao buscar a loja do usuário:', lojaError);
+            showToast('Erro ao carregar os dados da loja. Verifique as permissões.', 'error');
+            setLoading(false);
+            return;
+        }
+        setLojaId(loja.id);
+        
+        let query = supabase.from('produtos')
+            .select('id, nome, categoria, preco, preco_promocional, estoque, ativo, imagens:imagensAdicionais', { count: 'exact' })
+            .eq('loja_id', loja.id)
+            .order(colunaOrdenacao, { ascending: direcaoOrdenacao === 'asc' });
+
+        if (busca) {
+            query = query.or(`nome.ilike.%${busca}%,sku.ilike.%${busca}%`);
+        }
+        
+        const from = (paginaAtual - 1) * itensPorPagina;
+        const to = from + itensPorPagina - 1;
+
+        const { data: produtosData, error: produtosError, count } = await query.range(from, to);
+
+        if (produtosError) {
+            console.error('Erro ao buscar produtos:', produtosError);
+            showToast('Ocorreu um erro ao buscar os produtos.', 'error');
+        } else {
+            setProdutos(produtosData || []);
+            setTotalProdutos(count || 0);
+        }
+        setLoading(false);
+    }, [supabase, router, busca, paginaAtual, itensPorPagina, colunaOrdenacao, direcaoOrdenacao, showToast]);
+
+    useEffect(() => {
+        fetchLojaAndProducts();
+    }, [fetchLojaAndProducts]);
 
     function navegarParaAdicionarProduto() {
         router.push('/dashboard/produtos/novo');
@@ -143,27 +115,37 @@ export default function ListaProdutos() {
         setConfirmacaoExclusao(produto);
     }
 
-    function confirmarExclusao() {
+    const confirmarExclusao = async () => {
         if (confirmacaoExclusao) {
-            setProdutos(produtos.filter(p => p.id !== confirmacaoExclusao.id));
-            alert(`Produto "${confirmacaoExclusao.nome}" excluído com sucesso!`);
+            setLoading(true);
+            const { error } = await supabase
+                .from('produtos')
+                .delete()
+                .eq('id', confirmacaoExclusao.id)
+                .eq('loja_id', lojaId);
+
+            if (error) {
+                console.error(`Erro ao excluir o produto "${confirmacaoExclusao.nome}":`, error);
+                showToast('Erro ao excluir o produto.', 'error');
+            } else {
+                showToast(`Produto "${confirmacaoExclusao.nome}" excluído com sucesso!`, 'success');
+                fetchLojaAndProducts();
+            }
             setConfirmacaoExclusao(null);
+            setIsConfirmModalOpen(false);
+            setLoading(false);
         }
-    }
+    };
 
     function cancelarExclusao() {
         setConfirmacaoExclusao(null);
+        setIsConfirmModalOpen(false);
     }
-
+    
     const handlePromoPriceChange = (id: number, value: string) => {
         setProdutos(prevProdutos => prevProdutos.map(p =>
             p.id === id ? { ...p, precoPromocional: value === '' ? null : parseFloat(value) || null } : p
         ));
-    };
-
-    const handleSavePromoPrice = (id: number) => {
-        setEditingPromoPriceId(null);
-        console.log(`Preço promocional do produto ${id} atualizado.`);
     };
 
     function gerarCatalogoMeta(produtos: Produto[]) {
@@ -174,7 +156,6 @@ export default function ListaProdutos() {
             availability: prod.estoque > 0 ? 'in stock' : 'out of stock',
             condition: 'new',
             price: `${prod.preco.toFixed(2)} BRL`,
-            // CORREÇÃO: Usar a primeira imagem de 'imagensAdicionais'
             image_link: prod.imagensAdicionais && prod.imagensAdicionais.length > 0 ? prod.imagensAdicionais[0] : 'https://via.placeholder.com/150x150.png?text=No+Image',
             brand: 'Phandshop',
             sale_price: (prod.precoPromocional !== null && prod.precoPromocional !== undefined)
@@ -192,6 +173,15 @@ export default function ListaProdutos() {
         dlAnchorElem.setAttribute('download', 'catalogo-meta.json');
         dlAnchorElem.click();
     }
+    
+    const totalPaginas = Math.ceil(totalProdutos / itensPorPagina);
+    const produtosNaPagina = produtos;
+    
+    const handleSort = (coluna: keyof Produto) => {
+        const novaDirecao = colunaOrdenacao === coluna && direcaoOrdenacao === 'asc' ? 'desc' : 'asc';
+        setColunaOrdenacao(coluna);
+        setDirecaoOrdenacao(novaDirecao);
+    };
 
     return (
         <div style={{
@@ -306,25 +296,31 @@ export default function ListaProdutos() {
                     <thead>
                         <tr style={{ backgroundColor: colors.primary, color: colors.white }}>
                             <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize }}>Foto</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize }}>ID</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize }}>Nome</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize }}>Categoria</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize }}>Estoque</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'right', fontSize: typography.smallSize }}>Preço (R$)</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'right', fontSize: typography.smallSize }}>Preço Promo (R$)</th>
-                            <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize }}>Ativo</th>
+                            <th onClick={() => handleSort('id')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize, cursor: 'pointer' }}>ID</th>
+                            <th onClick={() => handleSort('nome')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize, cursor: 'pointer' }}>Nome</th>
+                            <th onClick={() => handleSort('categoria')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'left', fontSize: typography.smallSize, cursor: 'pointer' }}>Categoria</th>
+                            <th onClick={() => handleSort('estoque')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize, cursor: 'pointer' }}>Estoque</th>
+                            <th onClick={() => handleSort('preco')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'right', fontSize: typography.smallSize, cursor: 'pointer' }}>Preço (R$)</th>
+                            <th onClick={() => handleSort('precoPromocional')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'right', fontSize: typography.smallSize, cursor: 'pointer' }}>Preço Promo (R$)</th>
+                            <th onClick={() => handleSort('ativo')} style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize, cursor: 'pointer' }}>Ativo</th>
                             <th style={{ padding: '12px 15px', border: `1px solid ${colors.primary}`, textAlign: 'center', fontSize: typography.smallSize }}>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {produtosFiltrados.length === 0 ? (
+                        {loading ? (
+                            <tr>
+                                <td colSpan={9} style={{ textAlign: 'center', padding: '30px', color: colors.lightText, fontSize: typography.bodySize }}>
+                                    Carregando produtos...
+                                </td>
+                            </tr>
+                        ) : produtos.length === 0 ? (
                             <tr>
                                 <td colSpan={9} style={{ textAlign: 'center', padding: '30px', color: colors.lightText, fontSize: typography.bodySize }}>
                                     Nenhum produto encontrado.
                                 </td>
                             </tr>
                         ) : (
-                            produtosFiltrados.map((prod: Produto) => (
+                            produtos.map((prod: Produto) => (
                                 <tr key={prod.id} style={{ borderBottom: `1px solid ${colors.border}`, transition: 'background-color 0.2s ease' }}
                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.background}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.white}>
@@ -336,7 +332,7 @@ export default function ListaProdutos() {
                                         }}
                                     >
                                         <img
-                                            src={prod.imagensAdicionais && prod.imagensAdicionais.length > 0 ? prod.imagensAdicionais[0] : 'https://via.placeholder.com/50x50.png?text=Sem+Imagem'} // Usar imagensAdicionais[0] para a foto
+                                            src={prod.imagensAdicionais && prod.imagensAdicionais.length > 0 ? prod.imagensAdicionais[0] : 'https://via.placeholder.com/50x50.png?text=Sem+Imagem'}
                                             alt={prod.nome}
                                             style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '4px', border: `1px solid ${colors.border}` }}
                                         />
@@ -346,39 +342,26 @@ export default function ListaProdutos() {
                                     <td style={{ padding: '10px 15px', border: `1px solid ${colors.border}`, fontSize: typography.smallSize, color: colors.lightText }}>{prod.categoria}</td>
                                     <td style={{ padding: '10px 15px', border: `1px solid ${colors.border}`, textAlign: 'center', fontSize: typography.bodySize, fontWeight: 'bold', color: prod.estoque === 0 ? colors.danger : colors.text }}>{prod.estoque}</td>
                                     <td style={{ padding: '10px 15px', border: `1px solid ${colors.border}`, textAlign: 'right', fontSize: typography.bodySize, fontWeight: 'bold' }}>
-                                        {prod.preco.toFixed(2).replace('.', ',')}
+                                        R$ {prod.preco.toFixed(2).replace('.', ',')}
                                     </td>
-                                    <td style={{ padding: '10px 15px', border: `1px solid ${colors.border}`, textAlign: 'right' }}>
-                                        {editingPromoPriceId === prod.id ? (
+                                    <td style={{ padding: '10px 15px', border: `1px solid ${colors.border}`, textAlign: 'right', fontSize: typography.bodySize, fontWeight: 'bold' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', backgroundColor: 'white', borderRadius: '4px', border: `1px solid ${colors.border}` }}>
+                                            <span style={{ paddingLeft: '5px', color: colors.lightText }}>R$</span>
                                             <input
                                                 type="number"
-                                                value={prod.precoPromocional ?? ''}
+                                                value={prod.precoPromocional?.toFixed(2) ?? ''}
                                                 onChange={(e) => handlePromoPriceChange(prod.id, e.target.value)}
-                                                onBlur={() => handleSavePromoPrice(prod.id)}
-                                                onKeyDown={(e) => { if (e.key === 'Enter') handleSavePromoPrice(prod.id); }}
+                                                onBlur={() => console.log(`Preço promocional do produto ${prod.id} atualizado.`)}
+                                                onKeyDown={(e) => { if (e.key === 'Enter') console.log(`Preço promocional do produto ${prod.id} atualizado.`); }}
                                                 style={{
-                                                    width: '80px',
+                                                    width: '100px',
                                                     padding: '5px',
-                                                    borderRadius: '4px',
-                                                    border: `1px solid ${colors.accent}`,
+                                                    border: 'none',
                                                     textAlign: 'right',
                                                     fontSize: typography.bodySize,
                                                 }}
-                                                autoFocus
                                             />
-                                        ) : (
-                                            <span
-                                                onClick={() => setEditingPromoPriceId(prod.id)}
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    color: prod.precoPromocional !== null && prod.precoPromocional !== undefined ? colors.accent : colors.lightText,
-                                                    fontWeight: 'bold',
-                                                    textDecoration: prod.precoPromocional !== null && prod.precoPromocional !== undefined ? 'none' : 'underline dotted',
-                                                }}
-                                            >
-                                                {prod.precoPromocional !== null && prod.precoPromocional !== undefined ? prod.precoPromocional.toFixed(2).replace('.', ',') : 'Add Promo'}
-                                            </span>
-                                        )}
+                                        </div>
                                     </td>
                                     <td
                                         style={{
@@ -419,95 +402,6 @@ export default function ListaProdutos() {
                     </tbody>
                 </table>
             </div>
-
-            {/* Modal de Confirmação de Exclusão (mantido) */}
-            {confirmacaoExclusao && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        width: '100vw',
-                        height: '100vh',
-                        backgroundColor: 'rgba(0,0,0,0.6)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 1001,
-                        boxSizing: 'border-box',
-                        backdropFilter: 'blur(5px)',
-                    }}
-                    onClick={cancelarExclusao}
-                >
-                    <div
-                        style={{
-                            backgroundColor: colors.white,
-                            padding: '30px',
-                            borderRadius: '10px',
-                            width: '90%',
-                            maxWidth: '400px',
-                            boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-                            boxSizing: 'border-box',
-                            textAlign: 'center',
-                        }}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <h2 style={{
-                            marginBottom: '15px',
-                            fontSize: typography.subHeadingSize,
-                            color: colors.danger,
-                            fontWeight: 'bold',
-                        }}>
-                            Confirmar Exclusão
-                        </h2>
-                        <p style={{
-                            marginBottom: '25px',
-                            fontSize: typography.bodySize,
-                            color: colors.text,
-                        }}>
-                            Tem certeza que deseja excluir o produto "<strong>{confirmacaoExclusao.nome}</strong>"? Esta ação não pode ser desfeita.
-                        </p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-                            <button
-                                onClick={confirmarExclusao}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: colors.danger,
-                                    color: colors.white,
-                                    border: 'none',
-                                    borderRadius: '9999px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    fontSize: typography.bodySize,
-                                    transition: 'background-color 0.2s ease',
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c82333'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.danger}
-                            >
-                                Excluir
-                            </button>
-                            <button
-                                onClick={cancelarExclusao}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: colors.lightText,
-                                    color: colors.white,
-                                    border: 'none',
-                                    borderRadius: '9999px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    fontSize: typography.bodySize,
-                                    transition: 'background-color 0.2s ease',
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#888'}
-                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = colors.lightText}
-                            >
-                                Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

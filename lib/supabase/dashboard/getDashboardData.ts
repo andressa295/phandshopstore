@@ -19,71 +19,67 @@ export interface DashboardData {
     vendasSemanaisGrafico: VendasSemanaisData[];
 }
 
-export async function getDashboardData(userId: string): Promise<DashboardData | null> {
+export async function getDashboardData(lojaId: string): Promise<DashboardData | null> {
     const supabase = createServerComponentClient({ cookies });
     const today = new Date();
-    const todayISO = today.toISOString().split('T')[0];
 
     try {
         const [
-            pedidosRes,
+            vendasRes,
             visitasRes,
-            estoqueRes,
+            produtosEmEstoqueRes,
             estoqueBaixoRes,
-            pedidosPendentesRes,
+            pedidosPendentesRes
         ] = await Promise.all([
-            // Busca todos os pedidos do mês para calcular todos os KPIs de vendas
+            // CORREÇÃO: Usando a tabela 'vendas'
             supabase
-                .from('pedidos')
+                .from('vendas')
                 .select('valor_total, created_at, status')
-                .eq('loja_id', userId)
+                .eq('loja_id', lojaId)
                 .gte('created_at', new Date(today.getFullYear(), today.getMonth(), 1).toISOString()),
             
-            // Busca visitas do mês para calcular conversão
+            // CORREÇÃO: Usando a tabela 'historico_acessos'
             supabase
-                .from('visitas_loja')
+                .from('historico_acessos')
                 .select('*', { count: 'exact' })
-                .eq('loja_id', userId)
+                .eq('loja_id', lojaId)
                 .gte('created_at', new Date(today.getFullYear(), today.getMonth(), 1).toISOString()),
 
-            // Total de produtos em estoque
             supabase
                 .from('produtos')
-                .select('*', { count: 'exact' })
-                .eq('loja_id', userId),
+                .select('id', { count: 'exact' })
+                .eq('loja_id', lojaId),
             
-            // Produtos com estoque baixo (exemplo: < 5)
             supabase
                 .from('produtos')
-                .select('*', { count: 'exact' })
-                .eq('loja_id', userId)
+                .select('id', { count: 'exact' })
+                .eq('loja_id', lojaId)
                 .lt('estoque', 5),
                 
-            // Pedidos pendentes
             supabase
-                .from('pedidos')
+                .from('vendas')
                 .select('status', { count: 'exact' })
-                .eq('loja_id', userId)
+                .eq('loja_id', lojaId)
                 .eq('status', 'pendente')
         ]);
         
-        const pedidos = pedidosRes.data || [];
+        const vendas = vendasRes.data || [];
         const visitasMes = visitasRes.count || 0;
 
-        const vendasHoje = pedidos
-            .filter(p => new Date(p.created_at).toDateString() === today.toDateString())
+        const vendasHoje = vendas
+            .filter(v => new Date(v.created_at).toDateString() === today.toDateString())
             .reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
 
-        const faturamentoMes = pedidos.reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
-        const numPedidosMes = pedidos.length;
-        const ticketMedio = numPedidosMes > 0 ? (faturamentoMes / numPedidosMes) : 0;
-        const taxaConversao = visitasMes > 0 ? (numPedidosMes / visitasMes) * 100 : 0;
-        const vendasSemanaisGrafico = gerarGraficoSemanal(pedidos);
+        const faturamentoMes = vendas.reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
+        const numVendasMes = vendas.length;
+        const ticketMedio = numVendasMes > 0 ? (faturamentoMes / numVendasMes) : 0;
+        const taxaConversao = visitasMes > 0 ? (numVendasMes / visitasMes) * 100 : 0;
+        const vendasSemanaisGrafico = gerarGraficoSemanal(vendas, today);
 
         return {
             vendasHoje,
-            visitantesHoje: visitasMes, // Reutiliza a contagem de visitas do mês como KPI "hoje"
-            produtosEmEstoque: estoqueRes.count || 0,
+            visitantesHoje: visitasMes,
+            produtosEmEstoque: produtosEmEstoqueRes.count || 0,
             pedidosPendentes: pedidosPendentesRes.count || 0,
             estoqueBaixoAlert: estoqueBaixoRes.count || 0,
             faturamentoMes,
@@ -98,10 +94,9 @@ export async function getDashboardData(userId: string): Promise<DashboardData | 
     }
 }
 
-function gerarGraficoSemanal(pedidos: any[]): VendasSemanaisData[] {
+function gerarGraficoSemanal(vendas: any[], hoje: Date): VendasSemanaisData[] {
     const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const hoje = new Date();
-    const umaSemanaAtras = new Date();
+    const umaSemanaAtras = new Date(hoje);
     umaSemanaAtras.setDate(hoje.getDate() - 6);
 
     const vendasPorDia = Array(7).fill(0).map((_, i) => {
@@ -109,7 +104,7 @@ function gerarGraficoSemanal(pedidos: any[]): VendasSemanaisData[] {
         dia.setDate(umaSemanaAtras.getDate() + i);
         const diaStr = dias[dia.getDay()];
         
-        const vendasDoDia = pedidos
+        const vendasDoDia = vendas
             .filter(p => new Date(p.created_at).toDateString() === dia.toDateString())
             .reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
 

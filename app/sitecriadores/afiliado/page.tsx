@@ -1,12 +1,19 @@
-'use client';
+'use client'
 
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient'; // Verifica se esse caminho tá correto
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
 import styles from './Cadastro.module.css';
 
+// Configuração do Supabase a partir das variáveis de ambiente
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 export default function CadastroParceiroPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     nome: '',
     email: '',
@@ -16,15 +23,29 @@ export default function CadastroParceiroPage() {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  // Função para criar um "slug" a partir do nome
+  const slugify = (text: string) => {
+    return text
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]+/g, '')
+      .replace(/--+/g, '-');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
       setErrors(prev => ({ ...prev, [e.target.name]: '' }));
     }
-  }
+  };
 
-  function validate() {
+  const validate = () => {
     const newErrors: { [key: string]: string } = {};
     if (!form.nome.trim()) newErrors.nome = 'Nome é obrigatório.';
     if (!form.email.match(/^\S+@\S+\.\S+$/)) newErrors.email = 'E-mail inválido.';
@@ -32,56 +53,63 @@ export default function CadastroParceiroPage() {
     if (form.senha !== form.confirmaSenha) newErrors.confirmaSenha = 'As senhas não conferem.';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }
+  };
 
-  async function enviarEmailBoasVindas(nome: string, email: string) {
-    try {
-      const res = await fetch('/api/enviar-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Erro desconhecido no envio de e-mail');
-      }
-      // Pode opcionalmente exibir um console.log ou toast aqui: email enviado
-    } catch (error: any) {
-      console.error('Falha ao enviar e-mail de boas-vindas:', error.message);
-      // Se quiser, pode mostrar um erro amigável no UI, mas não bloqueia o fluxo
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
+    setSuccessMessage('');
+    setErrors({});
+
+    // 1. Criar o usuário no Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.senha,
-      options: {
-        data: { nome: form.nome },
-      },
     });
 
-    if (error) {
+    if (authError) {
       setLoading(false);
-      if (error.message.includes('User already registered')) {
-        setErrors({ email: 'Este e-mail já está cadastrado.' });
-      } else {
-        setErrors({ form: 'Erro ao criar conta: ' + error.message });
-      }
+      const errorMessage = authError.message.includes('User already registered')
+        ? 'Este e-mail já está cadastrado.'
+        : `Erro ao criar conta: ${authError.message}`;
+      setErrors({ form: errorMessage });
       return;
     }
 
-    enviarEmailBoasVindas(form.nome, form.email);
+    // 2. Gerar o link de afiliado e inserir o registro na tabela 'afiliados'
+    if (authData.user) {
+      const linkRef = slugify(form.nome);
+      // O link_completo deve ser gerado com base no domínio da sua aplicação
+      const linkCompleto = `${window.location.origin}/r/${linkRef}`; 
+
+      const { error: dbError } = await supabase
+        .from('afiliados')
+        .insert({
+          user_id: authData.user.id,
+          nome: form.nome,
+          email: form.email,
+          link_ref: linkRef,
+          link_completo: linkCompleto, // <-- GARANTINDO QUE O LINK COMPLETO É SALVO
+        });
+
+      if (dbError) {
+        // Loga o objeto de erro completo para depuração
+        console.error('Erro ao inserir afiliado:', dbError); 
+        setErrors({ form: `Erro ao registrar como afiliado: ${dbError.message}. Tente novamente.` });
+        setLoading(false);
+        // Opcional: Se a inserção na tabela 'afiliados' falhar, você pode querer
+        // deletar o usuário recém-criado no Auth para evitar "lixo".
+        // await supabase.auth.admin.deleteUser(authData.user.id);
+        return;
+      }
+    }
 
     setLoading(false);
-    alert('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
+    setSuccessMessage('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
     setForm({ nome: '', email: '', senha: '', confirmaSenha: '' });
-  }
+  };
 
   return (
     <main className={styles.container}>
@@ -99,6 +127,7 @@ export default function CadastroParceiroPage() {
 
       <div className={styles.box}>
         <h2 className={styles.title}>Crie sua conta de Parceiro</h2>
+        {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
           <div className={styles.inputGroup}>

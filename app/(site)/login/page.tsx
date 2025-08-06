@@ -3,6 +3,49 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Poppins } from 'next/font/google';
+import { PostgrestError } from '@supabase/supabase-js';
+
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
+
+// Componente simples para exibir mensagens de feedback
+const MessageModal = ({ message, onClose }: { message: string; onClose: () => void }) => {
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+    }}>
+      <div style={{
+        backgroundColor: '#fff',
+        padding: '2rem',
+        borderRadius: '0.5rem',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        textAlign: 'center',
+        maxWidth: '90%',
+      }}>
+        <p>{message}</p>
+        <button onClick={onClose} style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          backgroundColor: '#6b21a8',
+          color: '#fff',
+          borderRadius: '9999px',
+          border: 'none',
+          cursor: 'pointer',
+        }}>Fechar</button>
+      </div>
+    </div>
+  );
+};
+
 
 export default function LoginPage() {
   const supabase = createClientComponentClient();
@@ -12,50 +55,103 @@ export default function LoginPage() {
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   const validarEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setMessage('');
 
     if (!validarEmail(email)) {
-      setError('Email inválido');
+      setError('Email inválido.');
       return;
     }
     if (senha.length < 6) {
-      setError('Senha muito curta');
+      setError('Senha muito curta.');
       return;
     }
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password: senha,
-    });
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: senha,
+      });
 
-    setLoading(false);
+      if (signInError) {
+        console.error("Falha no login:", signInError);
+        setError('Falha no login. Verifique seu e-mail e senha.');
+        setLoading(false);
+        return;
+      }
 
-    if (error) {
-      setError('Falha no login: ' + error.message);
-      return;
+      if (data.user) {
+        console.log("Login bem-sucedido. Verificando perfil do usuário...");
+        
+        // CORREÇÃO: Verificação robusta do perfil do usuário antes de registrar o histórico
+        const { data: profileData, error: profileError } = await supabase
+          .from('usuarios')
+          .select('id')
+          .eq('id', data.user.id)
+          .single();
+
+        // Se o perfil não for encontrado, a consulta falha com PGRST116.
+        if (profileError && (profileError as PostgrestError).code === 'PGRST116') {
+          console.warn("Perfil do usuário não encontrado. Criando um novo perfil básico.");
+          
+          const { error: insertProfileError } = await supabase.from('usuarios').insert({
+            id: data.user.id,
+            email: data.user.email,
+            nome_completo: data.user.email?.split('@')[0] || '',
+            telefone: null,
+            documento: null,
+          });
+
+          if (insertProfileError) {
+            console.error("Erro ao criar perfil de usuário:", insertProfileError);
+            // Se a criação do perfil falhar, logamos o erro, mas não bloqueamos o login.
+            // O usuário será redirecionado para o dashboard, mas precisará corrigir o perfil depois.
+          } else {
+            console.log("Perfil do usuário criado com sucesso.");
+          }
+        } else if (profileError) {
+          console.error("Erro inesperado ao buscar o perfil do usuário:", profileError);
+          // Logamos o erro inesperado, mas não bloqueamos o login
+        }
+
+        // CORREÇÃO: Registro do login na tabela historico_acessos
+        const { error: logError } = await supabase.from('historico_acessos').insert({
+          usuario_id: data.user.id,
+          dispositivo: navigator.userAgent,
+          ip: '', // O IP deve ser obtido no lado do servidor ou via um endpoint de API
+        });
+
+        if (logError) {
+          console.error("Erro ao registrar acesso:", logError.message);
+        }
+      }
+
+      setLoading(false);
+      router.push('/dashboard');
+    } catch (err) {
+      console.error("Erro inesperado durante o login:", err);
+      setError('Ocorreu um erro inesperado. Tente novamente.');
+      setLoading(false);
     }
-
-    router.push('/dashboard');
   };
 
   return (
-    <main
-      style={{
-        height: 'calc(100vh - 64px)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#f9f7fd',
-        padding: '1rem',
-      }}
-    >
+    <main className={`${poppins.className}`} style={{
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: '#f9f7fd',
+      padding: '1rem',
+    }}>
       <form
         onSubmit={handleSubmit}
         style={{
@@ -160,11 +256,9 @@ export default function LoginPage() {
             fontSize: '0.9rem',
             cursor: 'pointer',
           }}
-          onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
-          onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}
           onClick={e => {
             e.preventDefault();
-            alert('Funcionalidade de recuperação de senha ainda não implementada.');
+            setMessage('Funcionalidade de recuperação de senha ainda não implementada.');
           }}
         >
           Esqueci a senha
@@ -197,17 +291,13 @@ export default function LoginPage() {
             border: 'none',
             cursor: loading ? 'not-allowed' : 'pointer',
             transition: 'background-color 0.3s',
-          }}
-          onMouseEnter={e => {
-            if (!loading) e.currentTarget.style.backgroundColor = '#7c3aed';
-          }}
-          onMouseLeave={e => {
-            if (!loading) e.currentTarget.style.backgroundColor = '#6b21a8';
+            opacity: loading ? 0.7 : 1,
           }}
         >
           {loading ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
+      {message && <MessageModal message={message} onClose={() => setMessage('')} />}
     </main>
   );
 }

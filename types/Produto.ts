@@ -28,4 +28,8 @@ export type Produto = {
     isPersonalizado?: boolean;
     personalizacaoTextoCampos?: { id: string; label: string; maxCaracteres?: number; }[];
     personalizacaoNumericaCampos?: { id: string; label: string; min?: number; max?: number; }[];
+
+    // CORREÇÃO: Adicionando os novos campos
+    freteGratis?: boolean;
+    formasPagamento?: string[];
 };

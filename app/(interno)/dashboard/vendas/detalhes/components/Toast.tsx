@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 interface ToastProps {
     message: string;
-    type: 'success' | 'error' | 'info';
+    type: 'success' | 'error' | 'info' | 'warning'; // CORREÇÃO: Adicionando o tipo 'warning'
     onClose: () => void;
 }
 

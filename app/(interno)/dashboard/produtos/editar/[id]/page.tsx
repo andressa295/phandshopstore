@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import FormularioProduto from '../../components/FormularioProduto'; 
 import type { Produto } from '../../../../../../types/Produto'; 
+import ConfirmModal from '../../../vendas/detalhes/components/ConfirmModal';
+import Toast from '../../../vendas/detalhes/components/Toast';
 
 export default function EditarProdutoPage() {
     const router = useRouter();
@@ -13,6 +15,8 @@ export default function EditarProdutoPage() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [produtoAtual, setProdutoAtual] = useState<Produto | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
 
     useEffect(() => {
         const storedProdutos = localStorage.getItem('produtosMock');
@@ -23,22 +27,27 @@ export default function EditarProdutoPage() {
             if (foundProduct) {
                 setProdutoAtual(foundProduct);
             } else {
-                alert('Produto não encontrado!');
+                console.error('Produto não encontrado!');
                 router.push('/dashboard/produtos/lista');
             }
         } else {
-            alert('Nenhum produto encontrado. Carregue o mock de produtos.');
+            console.error('Nenhum produto encontrado. Carregue o mock de produtos.');
             router.push('/dashboard/produtos/lista');
         }
         setLoading(false);
     }, [productId, router]);
+
+    const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     const handleSave = (produtoEditado: Produto) => {
         const produtosAtualizados = produtos.map(p =>
             p.id === produtoEditado.id ? produtoEditado : p
         );
         localStorage.setItem('produtosMock', JSON.stringify(produtosAtualizados));
-        alert('Produto atualizado com sucesso!'); // Feedback provisório
+        showToast('Produto atualizado com sucesso!', 'success');
         router.push('/dashboard/produtos/lista');
     };
 
@@ -47,12 +56,21 @@ export default function EditarProdutoPage() {
     };
 
     const handleDelete = (prodToDelete: Produto) => {
-        if (window.confirm(`Tem certeza que deseja excluir o produto "${prodToDelete.nome}"?`)) {
-            const produtosAtualizados = produtos.filter(p => p.id !== prodToDelete.id);
+        setIsConfirmModalOpen(true);
+    };
+
+    const confirmarExclusao = () => {
+        if (produtoAtual) {
+            const produtosAtualizados = produtos.filter(p => p.id !== produtoAtual.id);
             localStorage.setItem('produtosMock', JSON.stringify(produtosAtualizados));
-            alert(`Produto "${prodToDelete.nome}" excluído com sucesso!`); // Feedback provisório
+            showToast(`Produto "${produtoAtual.nome}" excluído com sucesso!`, 'success');
+            setIsConfirmModalOpen(false);
             router.push('/dashboard/produtos/lista');
         }
+    };
+
+    const cancelarExclusao = () => {
+        setIsConfirmModalOpen(false);
     };
 
     const colors = { // Cores para o layout da página de formulário
@@ -132,9 +150,21 @@ export default function EditarProdutoPage() {
                     produtoInicial={produtoAtual}
                     onSave={handleSave}
                     onCancel={handleCancel}
-                    onDelete={handleDelete}
+                    onDelete={() => handleDelete(produtoAtual)}
                 />
             </div>
+            {isConfirmModalOpen && (
+                <ConfirmModal
+                    isOpen={isConfirmModalOpen}
+                    onClose={cancelarExclusao}
+                    onConfirm={confirmarExclusao}
+                    title="Confirmar Exclusão"
+                    message={`Tem certeza que deseja excluir o produto "${produtoAtual?.nome}"? Esta ação não pode ser desfeita.`}
+                    confirmText="Excluir"
+                    cancelText="Cancelar"
+                />
+            )}
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 }

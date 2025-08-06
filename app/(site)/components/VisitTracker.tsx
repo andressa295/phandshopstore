@@ -1,23 +1,34 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface VisitTrackerProps {
   lojaId: string; 
 }
 
 export default function VisitTracker({ lojaId }: VisitTrackerProps) {
-  useEffect(() => {
-    const registerVisit = async () => {
-      if (!lojaId) {
-        console.warn('VisitTracker: lojaId não fornecido. Visita não será registrada.');
-        return;
-      }
+  const supabase = createClientComponentClient();
+  const [isClient, setIsClient] = useState(false);
 
-      const data = {
-        lojaId: lojaId,
-        pagina: window.location.pathname + window.location.search,
-        origem: document.referrer, 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
+    const registerVisit = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const tipoVisitante = user ? 'autenticado' : 'anonimo';
+      const caminhoPagina = window.location.pathname + window.location.search;
+      const fonteReferencia = document.referrer;
+      
+      const visitData = {
+        loja_id: lojaId,
+        caminho_pagina: caminhoPagina,
+        tipo_visitante: tipoVisitante,
+        fonte_referencia: fonteReferencia,
       };
 
       try {
@@ -26,22 +37,25 @@ export default function VisitTracker({ lojaId }: VisitTrackerProps) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(visitData),
         });
 
         if (!response.ok) {
           const errorData = await response.json();
           console.error('Falha ao registrar visita:', response.status, errorData);
-        } else {
         }
       } catch (error) {
         console.error('Erro de rede ao registrar visita:', error);
       }
     };
 
-    registerVisit();
+    if (lojaId) {
+      registerVisit();
+    } else {
+      console.warn('VisitTracker: lojaId não fornecido. Visita não será registrada.');
+    }
 
-    }, [lojaId]); 
+  }, [lojaId, supabase, isClient]); 
 
   return null;
 }

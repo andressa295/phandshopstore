@@ -11,7 +11,7 @@
   align-items: center;
   padding: 1rem 2rem;
   /* Corrigido para usar a variável de cor principal, como pedimos antes */
-  background-color: var(--brand-purple, #020202); 
+  background-color: var(--brand-black, #000000); 
   color: #ffffff; /* Garante que o texto dentro seja branco */
   border-bottom: 1px solid #e0d8f0;
   
@@ -43,7 +43,7 @@
 .cardSubtitle { font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 1.5rem 0; }
 
 /* ... resto dos estilos dos cards, tabela, etc. ... */
-.kpiCard.primary { background: var(--brand-gradient, linear-gradient(45deg, #020202, #292929)); color: #fff; }
+.kpiCard.primary { background: var(--brand-black, #000000); color: #fff; }
 .kpiCard.primary .kpiIcon, .kpiCard.primary .kpiInfo p, .kpiCard.primary .kpiInfo span { color: #fff; }
 .kpiCard.primary .kpiIcon { background-color: rgba(255,255,255,0.2); }
 .kpiCard { display: flex; align-items: center; gap: 1rem; }
@@ -65,7 +65,7 @@
 
 
 .kpiCard { display: flex; align-items: center; gap: 1rem; }
-.kpiIcon { font-size: 1.5rem; color: var(--brand-purple); background-color: var(--brand-purple-light); padding: 0.75rem; border-radius: 50%; }
+.kpiIcon { font-size: 1.5rem; color: var(--brand-purple); background-color: var(--brand-purple-light); padding: 0.50rem; border-radius: 10%; }
 .kpiInfo p { margin: 0; font-weight: 500; color: var(--text-secondary); }
 .kpiInfo span { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
 
@@ -106,7 +106,7 @@
 .saveButton {
   width: 100%;
   padding: 0.85rem;
-  background: var(--brand-purple, #000000); /* Garante o fundo roxo */
+  background: var(--brand-black, #000000); /* Garante o fundo roxo */
   color: white;
   border: none;
   border-radius: 50px; /* Deixando oval */
@@ -123,7 +123,7 @@
 .footer {
   width: 100%;
   padding: 1.5rem 2rem;
-  background-color: var(--brand-purple-dark, #000000); /* Roxo mais escuro para o rodapé */
+  background-color: var(--brand-black-dark, #000000); /* Roxo mais escuro para o rodapé */
   text-align: center;
   color: var(--brand-purple-light, #f3e8ff); /* Texto clarinho para contraste */
   font-size: 0.9rem;

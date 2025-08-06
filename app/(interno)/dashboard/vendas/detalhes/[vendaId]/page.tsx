@@ -4,54 +4,78 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import DetalhesDaVenda from '../components/DetalhesDaVenda';
 
-// Tipagem unificada para o componente de detalhes, que agora está correta.
+// Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
 interface ItemPedido {
     id: string;
     produto_id: string;
     quantidade: number;
     preco_unitario: number;
+    // O retorno da query do Supabase para o join de produto é um objeto ou null
     nome_produto: { nome: string } | null;
+}
+
+interface ClienteDetalhe {
+    id: string;
+    nome: string;
+    email: string;
+    telefone: string | null;
+    documento: string | null;
+}
+
+interface Endereco {
+    rua: string;
+    numero: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+    cep: string;
+    complemento?: string;
 }
 
 interface VendaDetalheProp {
     id: string;
     created_at: string;
-    cliente_id: string;
-    cliente: { id: string; nome: string; email: string; telefone: string | null; cpfCnpj: string | null; } | null;
-    status: 'concluida' | 'pendente' | 'cancelada' | 'em_processamento' | 'enviada' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado' | string;
+    // CORREÇÃO: Ajustando a interface para o tipo de união correto
+    status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
     valor_total: number;
-    endereco_ent: string | null;
-    observacoes_c: string | null;
-    observacoes_i: string | null;
+    metodo_pagamento: string;
+    endereco_entrega: Endereco | null;
+    observacoes_cliente: string | null;
+    observacoes_internas: string | null;
     tracking_link: string | null;
-    tracking_cod: string | null;
-    transportador: string | null;
+    tracking_codigo: string | null;
+    transportadora: string | null;
     data_envio: string | null;
-    items_pedido: ItemPedido[];
+    cliente: ClienteDetalhe | null;
+    itens_venda: ItemPedido[];
 }
 
-// Interface que corresponde exatamente à estrutura retornada pelo Supabase
-interface SupabaseVenda {
+// A interface 'DetalhesVendaProp' esperada pelo componente deve ter nome_produto como uma string simples.
+// Vamos criar uma interface para o objeto final que será passado para o componente.
+interface ItemVendido {
+    id: string;
+    produto_id: string;
+    quantidade: number;
+    preco_unitario: number;
+    nome_produto: string; // O tipo final que o componente DetalhesDaVenda espera
+}
+
+interface DetalhesVendaProp {
     id: string;
     created_at: string;
-    cliente_id: string;
-    cliente: { id: string; nome: string; email: string; telefone: string | null; cpfCnpj: string | null; }[];
-    status: string;
+    // CORREÇÃO: Ajustando a interface para o tipo de união correto
+    status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
     valor_total: number;
-    endereco_ent: string | null;
-    observacoes_c: string | null;
-    observacoes_i: string | null;
+    metodo_pagamento: string;
+    endereco_entrega: Endereco | null;
+    observacoes_cliente: string | null;
+    observacoes_internas: string | null;
     tracking_link: string | null;
-    tracking_cod: string | null;
-    transportador: string | null;
+    tracking_codigo: string | null;
+    transportadora: string | null;
     data_envio: string | null;
-    items_pedido: { 
-        id: string; 
-        produto_id: string; 
-        quantidade: number; 
-        preco_unitario: number; 
-        nome_produto: { nome: string }[];
-    }[];
+    cliente: ClienteDetalhe | null;
+    itens_venda: ItemVendido[];
 }
 
 export const metadata: Metadata = {
@@ -67,45 +91,48 @@ export default async function DetalheVendaPage({ params }: { params: { vendaId: 
     if (!user) {
         return notFound();
     }
+    
+    // Buscando o ID da loja do usuário para a query de segurança
+    const { data: loja } = await supabase.from('lojas').select('id').eq('usuario_id', user.id).single();
+    const lojaId = loja?.id;
 
+    if (!lojaId) {
+        return notFound();
+    }
+
+    // Usando os nomes corretos de tabelas e colunas e ajustando a query de join
     const { data: venda, error } = await supabase
-        .from('pedidos')
+        .from('vendas')
         .select(`
-            id, created_at, status, valor_total, endereco_ent,
-            observacoes_c, observacoes_i, tracking_link,
-            tracking_cod, transportador, data_envio,
-            cliente_id,
-            cliente:clientes(id, nome, email, telefone, cpfCnpj),
-            items_pedido:items_pedido(
-                id, produto_id, quantidade, preco_unitario,
-                nome_produto:produtos(nome)
+            id, created_at, status, valor_total, metodo_pagamento,
+            endereco_entrega, observacoes_cliente, observacoes_internas,
+            tracking_link, tracking_codigo, transportadora, data_envio,
+            cliente:clientes(id, nome, email, telefone, documento),
+            itens_venda:itens_venda(
+                id, produto_id, quantidade, preco_unitario, nome_produto:produtos(nome)
             )
         `)
         .eq('id', vendaId)
+        .eq('loja_id', lojaId)
         .single();
 
     if (error || !venda) {
         console.error('Erro ao buscar a venda:', error);
         return notFound();
     }
-
-    const formattedVenda: VendaDetalheProp = {
-        id: venda.id,
-        created_at: venda.created_at,
-        cliente_id: venda.cliente_id,
-        cliente: venda.cliente?.[0] || null,
-        status: venda.status,
-        valor_total: venda.valor_total,
-        endereco_ent: venda.endereco_ent,
-        observacoes_c: venda.observacoes_c,
-        observacoes_i: venda.observacoes_i,
-        tracking_link: venda.tracking_link,
-        tracking_cod: venda.tracking_cod,
-        transportador: venda.transportador,
-        data_envio: venda.data_envio,
-        items_pedido: (venda.items_pedido as any[]).map(item => ({
+    
+    // Mapeamento corrigido para garantir que o tipo final seja compatível com DetalhesVendaProp
+    // A query do Supabase com 'select' e 'join' retorna arrays, mesmo que a query principal seja single().
+    const formattedVenda: DetalhesVendaProp = {
+        ...venda,
+        // O Supabase retorna 'cliente' como um array. Pegamos o primeiro item ou 'null'.
+        cliente: Array.isArray(venda.cliente) && venda.cliente.length > 0 ? venda.cliente[0] : null,
+        itens_venda: (venda.itens_venda as any[]).map(item => ({
             ...item,
-            nome_produto: item.nome_produto?.[0] || null,
+            // O Supabase retorna 'nome_produto' como um array de objetos. Pegamos o 'nome' do primeiro item.
+            nome_produto: Array.isArray(item.nome_produto) && item.nome_produto.length > 0
+                ? item.nome_produto[0].nome
+                : 'Produto Indisponível'
         })),
     };
 

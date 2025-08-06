@@ -22,23 +22,32 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
   
-  // CORREÇÃO: Adicionado 'await' para resolver a Promessa antes de usar
   const host = (await headers()).get('host');
   let lojaId: string | null = null;
-
+  
   if (host) {
-    const subdominio = host.split('.')[0];
+    const hostParts = host.split('.');
+    const subdominio = hostParts.length > 2 && hostParts[0] !== 'www' ? hostParts[0] : null;
 
-    const { data: lojaData, error: lojaError } = await supabase
-      .from('lojas')
-      .select('id')
-      .or(`subdominio.eq.${subdominio},dominio_personalizado.eq.${host}`)
-      .single();
-
-    if (lojaError && lojaError.code !== 'PGRST116') {
-      console.error('Erro ao buscar loja pelo host:', lojaError.message);
-    } else if (lojaData) {
-      lojaId = lojaData.id;
+    if (subdominio) {
+      console.log(`Tentando buscar loja com slug: ${subdominio}`);
+      // CORREÇÃO: Usando 'slug' em vez de 'subdominio' na query
+      const { data: lojaData, error: lojaError } = await supabase
+        .from('lojas')
+        .select('id')
+        .eq('slug', subdominio)
+        .single();
+    
+      if (lojaError && lojaError.code !== 'PGRST116') {
+        console.error('Erro ao buscar loja pelo slug:', lojaError.message);
+      } else if (lojaData) {
+        lojaId = lojaData.id;
+        console.log(`Loja encontrada com ID: ${lojaId}`);
+      } else {
+        console.warn(`Nenhuma loja encontrada para o slug: ${subdominio}`);
+      }
+    } else {
+      console.warn('Não é um subdomínio válido. Pulando a busca por loja.');
     }
   }
 

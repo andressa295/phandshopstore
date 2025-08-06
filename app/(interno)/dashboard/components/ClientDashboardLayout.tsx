@@ -1,4 +1,3 @@
-// app/(interno)/dashboard/components/ClientDashboardLayout.tsx
 'use client';
 
 import React, { ReactNode, useState, useEffect } from 'react';
@@ -143,14 +142,14 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                                                             }}
                                                             // CORREÇÃO: Usar um bloco para a lógica do mouse enter/leave
                                                             onMouseEnter={(e) => {
-                                                              if (!isActiveLink(child.href)) {
-                                                                e.currentTarget.style.backgroundColor = colors.background;
-                                                              }
+                                                                if (!isActiveLink(child.href)) {
+                                                                    e.currentTarget.style.backgroundColor = colors.background;
+                                                                }
                                                             }}
                                                             onMouseLeave={(e) => {
-                                                              if (!isActiveLink(child.href)) {
-                                                                e.currentTarget.style.backgroundColor = 'transparent';
-                                                              }
+                                                                if (!isActiveLink(child.href)) {
+                                                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                                                }
                                                             }}
                                                             >
                                                                 {child.icon} {child.label}
@@ -166,14 +165,14 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                                         }}
                                         // CORREÇÃO: Usar um bloco para a lógica do mouse enter/leave
                                         onMouseEnter={(e) => {
-                                          if (!isActiveLink(item.href || '#')) {
-                                            e.currentTarget.style.backgroundColor = colors.background;
-                                          }
+                                            if (!isActiveLink(item.href || '#')) {
+                                                e.currentTarget.style.backgroundColor = colors.background;
+                                            }
                                         }}
                                         onMouseLeave={(e) => {
-                                          if (!isActiveLink(item.href || '#')) {
-                                            e.currentTarget.style.backgroundColor = 'transparent';
-                                          }
+                                            if (!isActiveLink(item.href || '#')) {
+                                                e.currentTarget.style.backgroundColor = 'transparent';
+                                            }
                                         }}
                                         >
                                             {item.icon} <span>{item.label}</span>
