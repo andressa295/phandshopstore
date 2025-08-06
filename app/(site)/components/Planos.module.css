@@ -222,12 +222,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 140px; /* Ajustei a largura mínima */
+  font-family: 'Poppins', sans-serif;
 }
 
 .toggleButton.activeToggle {
   background-color: var(--brand-purple);
   color: var(--white);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.08); /* Sombra mais suave */
 }
 
 .toggleButton:hover:not(.activeToggle) {

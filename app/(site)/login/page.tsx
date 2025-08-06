@@ -27,7 +27,7 @@ const MessageModal = ({ message, onClose }: { message: string; onClose: () => vo
         backgroundColor: '#fff',
         padding: '2rem',
         borderRadius: '0.5rem',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        boxShadow: '0 4px 12px rgba(8,8,8,0.1)',
         textAlign: 'center',
         maxWidth: '90%',
       }}>
@@ -45,7 +45,6 @@ const MessageModal = ({ message, onClose }: { message: string; onClose: () => vo
     </div>
   );
 };
-
 
 export default function LoginPage() {
   const supabase = createClientComponentClient();
@@ -91,14 +90,12 @@ export default function LoginPage() {
       if (data.user) {
         console.log("Login bem-sucedido. Verificando perfil do usuário...");
         
-        // CORREÇÃO: Verificação robusta do perfil do usuário antes de registrar o histórico
         const { data: profileData, error: profileError } = await supabase
           .from('usuarios')
           .select('id')
           .eq('id', data.user.id)
           .single();
 
-        // Se o perfil não for encontrado, a consulta falha com PGRST116.
         if (profileError && (profileError as PostgrestError).code === 'PGRST116') {
           console.warn("Perfil do usuário não encontrado. Criando um novo perfil básico.");
           
@@ -112,21 +109,17 @@ export default function LoginPage() {
 
           if (insertProfileError) {
             console.error("Erro ao criar perfil de usuário:", insertProfileError);
-            // Se a criação do perfil falhar, logamos o erro, mas não bloqueamos o login.
-            // O usuário será redirecionado para o dashboard, mas precisará corrigir o perfil depois.
           } else {
             console.log("Perfil do usuário criado com sucesso.");
           }
         } else if (profileError) {
           console.error("Erro inesperado ao buscar o perfil do usuário:", profileError);
-          // Logamos o erro inesperado, mas não bloqueamos o login
         }
 
-        // CORREÇÃO: Registro do login na tabela historico_acessos
         const { error: logError } = await supabase.from('historico_acessos').insert({
           usuario_id: data.user.id,
           dispositivo: navigator.userAgent,
-          ip: '', // O IP deve ser obtido no lado do servidor ou via um endpoint de API
+          // O IP foi removido daqui pois deve ser obtido no lado do servidor
         });
 
         if (logError) {

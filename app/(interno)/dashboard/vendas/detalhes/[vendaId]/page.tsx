@@ -1,112 +1,60 @@
-import React from 'react';
-import '@/app/globals.css';
-import { notFound } from 'next/navigation';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import type { Metadata } from 'next';
 
-import DetalhesDaVenda from '../components/DetalhesDaVenda';
+import React from 'react'
+import '@/app/globals.css'
+import { notFound } from 'next/navigation'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import type { Metadata } from 'next'
 
+// Tipos compartilhados
+import type {
+  DetalhesVendaProp,
+  ItemPedidoSupabaseRaw,
+  ClienteVenda,
+  VendaRawFromSupabase,
+} from '../components/types'
+
+// Componente visual
+import DetalhesDaVenda from '../components/DetalhesDaVenda'
+
+// Metadata da página
 export const metadata: Metadata = {
   title: 'Detalhes da Venda | Phandshop',
-};
+}
 
-// Tipagem direta do App Router
-interface VendaDetalhesPageProps {
+// Tipagem correta para Next.js App Router
+type Props = {
   params: {
-    vendaId: string;
-  };
+    vendaId: string
+  }
 }
 
-interface ItemPedidoSupabase {
-  id: string;
-  produto_id: string;
-  quantidade: number;
-  preco_unitario: number;
-  nome_produto: { nome: string } | null;
-}
-
-export interface ClienteDetalheSupabase {
-  id: string;
-  nome: string;
-  email: string;
-  telefone: string | null;
-  documento: string | null;
-}
-
-export interface Endereco {
-  rua: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-  complemento?: string;
-}
-
-interface ItemVendido {
-  id: string;
-  produto_id: string;
-  quantidade: number;
-  preco_unitario: number;
-  nome_produto: string;
-}
-
-export interface DetalhesVendaProp {
-  id: string;
-  created_at: string;
-  status:
-    | 'pendente'
-    | 'pago'
-    | 'cancelado'
-    | 'enviado'
-    | 'entregue'
-    | 'separando'
-    | 'confeccao'
-    | 'fabricacao'
-    | 'arquivado';
-  valor_total: number;
-  metodo_pagamento: string;
-  endereco_entrega: Endereco | null;
-  observacoes_cliente: string | null;
-  observacoes_internas: string | null;
-  tracking_link: string | null;
-  tracking_codigo: string | null;
-  transportadora: string | null;
-  data_envio: string | null;
-  cliente: ClienteDetalheSupabase | null;
-  itens_venda: ItemVendido[];
-}
-
-export default async function VendaDetalhesPage({ params }: VendaDetalhesPageProps) {
-  const supabase = createServerComponentClient({ cookies });
-  const { vendaId } = params;
+export default async function VendaDetalhesPage({ params }: Props) {
+  const supabase = createServerComponentClient({ cookies })
+  const { vendaId } = params
 
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getUser()
 
-  if (!user) {
-    return notFound();
-  }
+  if (!user) return notFound()
 
   const { data: loja, error: lojaError } = await supabase
     .from('lojas')
     .select('id')
     .eq('usuario_id', user.id)
-    .single();
+    .single()
 
-  const lojaId = loja?.id;
-
-  if (lojaError || !lojaId) {
-    console.error('Erro ao buscar ID da loja ou loja não encontrada para o usuário:', lojaError);
-    return notFound();
+  if (lojaError || !loja) {
+    console.error('Erro ao buscar loja:', lojaError)
+    return notFound()
   }
 
-  const { data: venda, error: vendaError } = await supabase
+  const lojaId = loja.id
+
+  const { data: vendaRaw, error: vendaError } = await supabase
     .from('vendas')
-    .select(
-      `
+    .select(`
       id, created_at, status, valor_total, metodo_pagamento,
       endereco_entrega, observacoes_cliente, observacoes_internas,
       tracking_link, tracking_codigo, transportadora, data_envio,
@@ -114,27 +62,45 @@ export default async function VendaDetalhesPage({ params }: VendaDetalhesPagePro
       itens_venda:itens_venda(
         id, produto_id, quantidade, preco_unitario, nome_produto:produtos(nome)
       )
-    `
-    )
+    `)
     .eq('id', vendaId)
     .eq('loja_id', lojaId)
-    .single();
+    .single<VendaRawFromSupabase>()
 
-  if (vendaError || !venda) {
-    console.error('Erro ao buscar a venda:', vendaError);
-    return notFound();
+  if (vendaError || !vendaRaw) {
+    console.error('Erro ao buscar venda:', vendaError)
+    return notFound()
   }
 
+  // Formata os dados para o componente de detalhes da venda
   const formattedVenda: DetalhesVendaProp = {
-    ...venda,
-    cliente: Array.isArray(venda.cliente) && venda.cliente.length > 0 ? venda.cliente[0] : null,
-    itens_venda: (venda.itens_venda as any[]).map(item => ({
-      ...item,
-      nome_produto: Array.isArray(item.nome_produto) && item.nome_produto.length > 0
-        ? item.nome_produto[0].nome
-        : 'Produto Indisponível',
+    id: vendaRaw.id,
+    created_at: vendaRaw.created_at,
+    status: vendaRaw.status,
+    valor_total: vendaRaw.valor_total,
+    metodo_pagamento: vendaRaw.metodo_pagamento,
+    endereco_entrega: vendaRaw.endereco_entrega,
+    observacoes_cliente: vendaRaw.observacoes_cliente,
+    observacoes_internas: vendaRaw.observacoes_internas,
+    tracking_link: vendaRaw.tracking_link,
+    tracking_codigo: vendaRaw.tracking_codigo,
+    transportadora: vendaRaw.transportadora,
+    data_envio: vendaRaw.data_envio,
+    cliente:
+      Array.isArray(vendaRaw.cliente) && vendaRaw.cliente.length > 0
+        ? (vendaRaw.cliente[0] as ClienteVenda)
+        : (vendaRaw.cliente as ClienteVenda) || null,
+    itens_venda: (vendaRaw.itens_venda || []).map((itemRaw: ItemPedidoSupabaseRaw) => ({
+      id: itemRaw.id,
+      produto_id: itemRaw.produto_id,
+      quantidade: itemRaw.quantidade,
+      preco_unitario: itemRaw.preco_unitario,
+      nome_produto:
+        Array.isArray(itemRaw.nome_produto) && itemRaw.nome_produto[0]
+          ? itemRaw.nome_produto[0].nome
+          : 'Produto Indisponível',
     })),
-  };
+  }
 
-  return <DetalhesDaVenda venda={formattedVenda} />;
+  return <DetalhesDaVenda venda={formattedVenda} />
 }

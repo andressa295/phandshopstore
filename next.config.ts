@@ -1,10 +1,12 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // outras configs que quiser colocar aqui
+  experimental: {
+    typedRoutes: false, 
+  },
 };
 
 export default nextConfig;

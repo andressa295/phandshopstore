@@ -38,7 +38,7 @@ export default async function SiteLayout({
       >
         <Header />
 
-        <main style={{ paddingTop: '70px', flexGrow: 1 }}>
+        <main style={{ paddingTop: '0px', flexGrow: 1 }}>
           {children}
         </main>
 

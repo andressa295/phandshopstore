@@ -2,15 +2,25 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useParams } from 'next/navigation';
-import './DetalhesDaVenda.css';
-import Modal from './Modal';
-import ConfirmModal from './ConfirmModal';
-import Toast from './Toast';
+import './DetalhesDaVenda.css'; 
+import Modal from './Modal'; 
+import ConfirmModal from './ConfirmModal'; 
+import Toast from './Toast'; 
 import { FaWhatsapp } from "react-icons/fa";
 
+import type { 
+    DetalhesVendaProp, 
+    ClienteVenda, 
+    Endereco, 
+    ToastType, 
+    ModalProps, 
+    ConfirmModalProps, 
+    StatusVenda, 
+    ItemVendido 
+} from './types'; 
+
 const IconeEditar = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#820AD1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '8px', cursor: 'pointer', verticalAlign: 'middle' }}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#820AD1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 8, cursor: 'pointer', verticalAlign: 'middle' }}>
         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
     </svg>
 );
@@ -39,105 +49,81 @@ const IconeEnvio = () => (
     </svg>
 );
 
-// Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
-interface ItemVendido {
-    id: string;
-    nome_produto: string;
-    quantidade: number;
-    preco_unitario: number;
-}
-
-interface Endereco {
-    rua: string;
-    numero: string;
-    bairro: string;
-    cidade: string;
-    estado: string;
-    cep: string;
-    complemento?: string;
-}
-
-interface ClienteVenda {
-    id: string;
-    nome: string;
-    email: string;
-    telefone: string | null;
-    documento: string | null;
-}
-
-interface DetalhesVendaProp {
-    id: string;
-    created_at: string;
-    status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
-    valor_total: number;
-    metodo_pagamento: string;
-    cliente: ClienteVenda | null;
-    endereco_entrega: Endereco | null;
-    itens_venda: ItemVendido[];
-    observacoes_cliente?: string | null;
-    observacoes_internas?: string | null;
-    tracking_link?: string | null;
-    tracking_codigo?: string | null;
-    transportadora?: string | null;
-    data_envio?: string | null;
-}
-
-const getStatusDisplayName = (status: DetalhesVendaProp['status']): string => {
-    switch (status) {
-        case 'pendente': return 'Pendente';
-        case 'pago': return 'Pago';
-        case 'cancelado': return 'Cancelado';
-        case 'enviado': return 'Enviada';
-        case 'entregue': return 'Entregue';
-        case 'separando': return 'Separando Pedido';
-        case 'confeccao': return 'Em Confecção';
-        case 'fabricacao': return 'Em Fabricação';
-        case 'arquivado': return 'Arquivado';
-        default: return status;
-    }
-};
-
-// Funções utilitárias de validação
 const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const validatePhone = (phone: string) => /^\d{10,11}$/.test(phone.replace(/\D/g, ''));
 const validateDocument = (doc: string) => doc.replace(/\D/g, '').length >= 11;
 
+const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(value);
+};
+
+const formatPhoneForWhatsApp = (phone: string | undefined): string | null => {
+    if (!phone) return null;
+    const digitsOnly = phone.replace(/\D/g, '');
+    if (digitsOnly.length >= 10 && digitsOnly.length <= 13) {
+        if (digitsOnly.startsWith('55')) {
+            return `https://wa.me/${digitsOnly}`;
+        }
+        return `https://wa.me/55${digitsOnly}`;
+    }
+    return null;
+};
+
+const getStatusDisplayName = (status: DetalhesVendaProp['status']): string => {
+    const mapStatus: Record<DetalhesVendaProp['status'], string> = {
+        pendente: 'Pendente',
+        pago: 'Pago',
+        cancelado: 'Cancelado',
+        enviado: 'Enviada',
+        entregue: 'Entregue',
+        separando: 'Separando Pedido',
+        confeccao: 'Em Confecção',
+        fabricacao: 'Em Fabricação',
+        arquivado: 'Arquivado',
+    };
+    return mapStatus[status] || status;
+};
+
 const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda }) => {
     const supabase = createClientComponentClient();
+
+    // Estados principais
     const [detalhesVenda, setDetalhesVenda] = useState<DetalhesVendaProp | null>(venda);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     
     const [isCepLoading, setIsCepLoading] = useState(false);
     const [editingEnvio, setEditingEnvio] = useState(false);
-    const [currentTrackingLink, setCurrentTrackingLink] = useState(venda?.tracking_link || '');
-    const [currentTrackingCode, setCurrentTrackingCode] = useState(venda?.tracking_codigo || '');
-    const [currentTransportadora, setCurrentTransportadora] = useState(venda?.transportadora || '');
+
+    const [currentTrackingLink, setCurrentTrackingLink] = useState(venda?.tracking_link ?? '');
+    const [currentTrackingCode, setCurrentTrackingCode] = useState(venda?.tracking_codigo ?? '');
+    const [currentTransportadora, setCurrentTransportadora] = useState(venda?.transportadora ?? '');
     
+    // Estados para os modais de edição
     const [isClienteModalOpen, setIsClienteModalOpen] = useState(false);
     const [isEnderecoModalOpen, setIsEnderecoModalOpen] = useState(false);
     const [isObsInternasModalOpen, setIsObsInternasModalOpen] = useState(false);
-    const [isVendaCompletaModalOpen, setIsVendaCompletaModalOpen] = useState(false);
     
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
-    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [confirmModalData, setConfirmModalData] = useState<{ title: string; message: string; onConfirm: () => void; confirmText?: string; } | null>(null);
-    
-    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning') => {
-        setToast({ message, type });
-    }, []);
+    const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
-    const openConfirmModal = useCallback((title: string, message: string, onConfirm: () => void, confirmText?: string) => {
-        setConfirmModalData({ title, message, onConfirm, confirmText });
-        setIsConfirmModalOpen(true);
-    }, []);
-    
-    // Estados para os modais de edição
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [confirmModalData, setConfirmModalData] = useState<{
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        confirmText?: string;
+    } | null>(null);
+
+    // Edição Cliente
     const [editClienteNome, setEditClienteNome] = useState('');
     const [editClienteEmail, setEditClienteEmail] = useState('');
     const [editClienteTelefone, setEditClienteTelefone] = useState('');
     const [editClienteDocumento, setEditClienteDocumento] = useState('');
-    
+
+    // Edição Endereço
     const [editEnderecoRua, setEditEnderecoRua] = useState('');
     const [editEnderecoNumero, setEditEnderecoNumero] = useState('');
     const [editEnderecoComplemento, setEditEnderecoComplemento] = useState('');
@@ -145,34 +131,53 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
     const [editEnderecoCidade, setEditEnderecoCidade] = useState('');
     const [editEnderecoEstado, setEditEnderecoEstado] = useState('');
     const [editEnderecoCep, setEditEnderecoCep] = useState('');
-    
+
+    // Edição Observações Internas
     const [editObsInternas, setEditObsInternas] = useState('');
-    
+
+    // Atualiza dados iniciais sempre que props.venda mudar
     useEffect(() => {
         if (venda) {
             setDetalhesVenda(venda);
-            setCurrentTrackingLink(venda.tracking_link || '');
-            setCurrentTrackingCode(venda.tracking_codigo || '');
-            setCurrentTransportadora(venda.transportadora || '');
+            setCurrentTrackingLink(venda.tracking_link ?? '');
+            setCurrentTrackingCode(venda.tracking_codigo ?? '');
+            setCurrentTransportadora(venda.transportadora ?? '');
         } else {
             setError('Nenhum dado de venda fornecido.');
         }
     }, [venda]);
 
+    // Toast helper
+    const showToast = useCallback((message: string, type: ToastType) => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    }, []);
 
-    // Funções de edição
+    // Confirm modal helper
+    const openConfirmModal = useCallback((
+        title: string,
+        message: string,
+        onConfirm: () => void,
+        confirmText?: string
+    ) => {
+        setConfirmModalData({ title, message, onConfirm, confirmText });
+        setIsConfirmModalOpen(true);
+    }, []);
+
+    // Edita cliente: abre modal com dados atuais
     const handleEditCliente = () => {
-        if (detalhesVenda && detalhesVenda.cliente) {
-            setEditClienteNome(detalhesVenda.cliente.nome);
-            setEditClienteEmail(detalhesVenda.cliente.email);
-            setEditClienteTelefone(detalhesVenda.cliente.telefone || '');
-            setEditClienteDocumento(detalhesVenda.cliente.documento || '');
-        }
+        if (!detalhesVenda?.cliente) return;
+        const c = detalhesVenda.cliente;
+        setEditClienteNome(c.nome);
+        setEditClienteEmail(c.email);
+        setEditClienteTelefone(c.telefone ?? '');
+        setEditClienteDocumento(c.documento ?? '');
         setIsClienteModalOpen(true);
     };
 
+    // Salva dados do cliente no supabase e estado local
     const handleSaveCliente = async () => {
-        if (!editClienteNome || !editClienteEmail || !editClienteTelefone) {
+        if (!editClienteNome.trim() || !editClienteEmail.trim() || !editClienteTelefone.trim()) {
             showToast('Preencha nome, email e telefone do cliente.', 'error');
             return;
         }
@@ -184,86 +189,94 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
             showToast('Telefone inválido (apenas números, 10 ou 11 dígitos).', 'error');
             return;
         }
-        
-        if (detalhesVenda && detalhesVenda.cliente) {
-            const { error } = await supabase
-                .from('clientes')
-                .update({ 
+
+        if (!detalhesVenda?.cliente) return;
+
+        setLoading(true);
+        const { error } = await supabase
+            .from('clientes')
+            .update({
+                nome: editClienteNome,
+                email: editClienteEmail,
+                telefone: editClienteTelefone,
+                documento: editClienteDocumento,
+            })
+            .eq('id', detalhesVenda.cliente.id);
+        setLoading(false);
+
+        if (error) {
+            console.error('Erro ao salvar cliente:', error);
+            showToast('Erro ao salvar as informações do cliente.', 'error');
+        } else {
+            setDetalhesVenda((prev: DetalhesVendaProp | null) => prev ? { // Tipagem explícita para 'prev'
+                ...prev,
+                cliente: {
+                    ...prev.cliente!,
                     nome: editClienteNome,
                     email: editClienteEmail,
                     telefone: editClienteTelefone,
-                    documento: editClienteDocumento
-                })
-                .eq('id', detalhesVenda.cliente.id);
-            
-            if (error) {
-                console.error('Erro ao salvar cliente:', error);
-                showToast('Erro ao salvar as informações do cliente.', 'error');
-            } else {
-                setDetalhesVenda(prev => prev ? { 
-                    ...prev, 
-                    cliente: {
-                        ...prev.cliente,
-                        nome: editClienteNome,
-                        email: editClienteEmail,
-                        telefone: editClienteTelefone,
-                        documento: editClienteDocumento
-                    } as ClienteVenda
-                } : null);
-                showToast('Informações do cliente salvas!', 'success');
-                setIsClienteModalOpen(false);
-            }
+                    documento: editClienteDocumento,
+                } as ClienteVenda // Cast para ClienteVenda
+            } : null);
+            showToast('Informações do cliente salvas!', 'success');
+            setIsClienteModalOpen(false);
         }
     };
-    
+
+    // Edita endereço: abre modal com dados atuais
     const handleEditEndereco = () => {
-        if (detalhesVenda && detalhesVenda.endereco_entrega) {
-            setEditEnderecoRua(detalhesVenda.endereco_entrega.rua);
-            setEditEnderecoNumero(detalhesVenda.endereco_entrega.numero);
-            setEditEnderecoComplemento(detalhesVenda.endereco_entrega.complemento || '');
-            setEditEnderecoBairro(detalhesVenda.endereco_entrega.bairro);
-            setEditEnderecoCidade(detalhesVenda.endereco_entrega.cidade);
-            setEditEnderecoEstado(detalhesVenda.endereco_entrega.estado);
-            setEditEnderecoCep(detalhesVenda.endereco_entrega.cep);
-        }
+        if (!detalhesVenda?.endereco_entrega) return;
+        const e = detalhesVenda.endereco_entrega;
+        setEditEnderecoRua(e.rua);
+        setEditEnderecoNumero(e.numero);
+        setEditEnderecoComplemento(e.complemento ?? '');
+        setEditEnderecoBairro(e.bairro);
+        setEditEnderecoCidade(e.cidade);
+        setEditEnderecoEstado(e.estado);
+        setEditEnderecoCep(e.cep);
         setIsEnderecoModalOpen(true);
     };
 
+    // Salva endereço no supabase e estado local
     const handleSaveEndereco = async () => {
         if (!detalhesVenda) return;
-        const novoEndereco: Endereco = {
+        setLoading(true);
+        const novoEndereco: Endereco = { // Usando Endereco
             rua: editEnderecoRua,
             numero: editEnderecoNumero,
+            complemento: editEnderecoComplemento,
             bairro: editEnderecoBairro,
             cidade: editEnderecoCidade,
             estado: editEnderecoEstado,
             cep: editEnderecoCep,
-            complemento: editEnderecoComplemento
         };
-        
+
         const { error } = await supabase
             .from('vendas')
             .update({ endereco_entrega: novoEndereco })
             .eq('id', detalhesVenda.id);
-        
+        setLoading(false);
+
         if (error) {
             console.error('Erro ao salvar endereço:', error);
             showToast('Erro ao salvar o endereço de entrega.', 'error');
         } else {
-            setDetalhesVenda(prev => prev ? { ...prev, endereco_entrega: novoEndereco } : null);
+            setDetalhesVenda((prev: DetalhesVendaProp | null) => prev ? { ...prev, endereco_entrega: novoEndereco } : null); // Tipagem explícita para 'prev'
             showToast('Endereço salvo!', 'success');
             setIsEnderecoModalOpen(false);
         }
     };
 
+    // Busca CEP automático via ViaCEP
     const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const cep = e.target.value.replace(/\D/g, '');
         setEditEnderecoCep(cep);
+
         if (cep.length === 8) {
             setIsCepLoading(true);
             try {
-                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-                const data = await response.json();
+                const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await res.json();
                 if (!data.erro) {
                     setEditEnderecoRua(data.logradouro);
                     setEditEnderecoBairro(data.bairro);
@@ -275,36 +288,39 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                 }
             } catch (err) {
                 showToast('Erro ao buscar CEP.', 'error');
+            } finally {
+                setIsCepLoading(false);
             }
-            setIsCepLoading(false);
         }
     };
-    
+
+    // Editar observações internas
     const handleEditObservacoesInternas = () => {
-        if (detalhesVenda) {
-            setEditObsInternas(detalhesVenda.observacoes_internas || '');
-        }
+        setEditObsInternas(detalhesVenda?.observacoes_internas ?? '');
         setIsObsInternasModalOpen(true);
     };
 
+    // Salva observações internas
     const handleSaveObsInternas = async () => {
         if (!detalhesVenda) return;
+        setLoading(true);
         const { error } = await supabase
             .from('vendas')
             .update({ observacoes_internas: editObsInternas })
             .eq('id', detalhesVenda.id);
-        
+        setLoading(false);
+
         if (error) {
             console.error('Erro ao salvar observações:', error);
             showToast('Erro ao salvar as observações internas.', 'error');
         } else {
-            setDetalhesVenda(prev => prev ? { ...prev, observacoes_internas: editObsInternas } : null);
+            setDetalhesVenda((prev: DetalhesVendaProp | null) => prev ? { ...prev, observacoes_internas: editObsInternas } : null); // Tipagem explícita para 'prev'
             showToast('Observações internas salvas!', 'success');
             setIsObsInternasModalOpen(false);
         }
     };
 
-    const handleUpdateStatus = useCallback(async (newStatus: string) => {
+    const handleUpdateStatus = useCallback(async (newStatus: StatusVenda) => { // Tipagem explícita para newStatus
         if (!detalhesVenda) return;
         const { error } = await supabase
             .from('vendas')
@@ -315,8 +331,8 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
             console.error('Erro ao atualizar status:', error);
             showToast('Erro ao atualizar o status.', 'error');
         } else {
-            setDetalhesVenda(prev => prev ? { ...prev, status: newStatus as DetalhesVendaProp['status'] } : null);
-            showToast(`Status alterado para "${getStatusDisplayName(newStatus as DetalhesVendaProp['status'])}"!`, 'success');
+            setDetalhesVenda((prev: DetalhesVendaProp | null) => prev ? { ...prev, status: newStatus } : null); // Tipagem explícita para 'prev'
+            showToast(`Status alterado para "${getStatusDisplayName(newStatus)}"!`, 'success');
         }
     }, [detalhesVenda, showToast]);
 
@@ -333,8 +349,8 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
             async () => {
                 const { error } = await supabase
                     .from('vendas')
-                    .update({ 
-                        tracking_link: currentTrackingLink, 
+                    .update({
+                        tracking_link: currentTrackingLink,
                         tracking_codigo: currentTrackingCode,
                         transportadora: currentTransportadora,
                         data_envio: new Date().toISOString(),
@@ -346,7 +362,7 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                     console.error('Erro ao enviar rastreamento:', error);
                     showToast('Erro ao enviar rastreamento e atualizar status.', 'error');
                 } else {
-                    setDetalhesVenda(prev => prev ? {
+                    setDetalhesVenda((prev: DetalhesVendaProp | null) => prev ? { // Tipagem explícita para 'prev'
                         ...prev,
                         tracking_link: currentTrackingLink,
                         tracking_codigo: currentTrackingCode,
@@ -391,49 +407,30 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
         );
     }, [detalhesVenda, openConfirmModal, handleUpdateStatus]);
     
-    const [editItensVenda, setEditItensVenda] = useState<ItemVendido[]>([]);
-
+    // As funções abaixo foram mantidas como placeholders, pois a lógica de edição de itens
+    // e busca de produtos não foi implementada com o banco de dados.
     const handleEditVendaCompleta = () => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade de edição completa ainda não implementada com o banco.', 'info');
     };
 
     const handleRemoveItem = (indexToRemove: number) => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade ainda não implementada.', 'info');
     };
 
     const handleUpdateItemQuantity = (indexToUpdate: number, newQuantity: number) => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade ainda não implementada.', 'info');
     };
 
     const handleAddItem = () => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade ainda não implementada.', 'info');
     };
     
     const handleProductSearchForAddItem = (searchTerm: string, itemIndex: number) => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade ainda não implementada.', 'info');
     };
 
     const handleSaveVendaCompleta = () => {
-      // CORREÇÃO: Usar showToast no lugar de alert
       showToast('Funcionalidade ainda não implementada.', 'info');
-    };
-
-    const formatCurrency = (value: number) => `R$ ${value.toFixed(2).replace('.', ',')}`;
-    const formatPhoneForWhatsApp = (phone: string | undefined): string | null => {
-        if (!phone) return null;
-        const digitsOnly = phone.replace(/\D/g, '');
-        if (digitsOnly.length >= 10 && digitsOnly.length <= 13) {
-            if (digitsOnly.startsWith('55')) {
-                return `https://wa.me/${digitsOnly}`;
-            }
-            return `https://wa.me/55${digitsOnly}`;
-        }
-        return null;
     };
     
     if (!detalhesVenda) return <div className="no-data">Nenhum detalhe da venda encontrado.</div>;
@@ -461,10 +458,10 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                         id="select-status-action"
                         value={detalhesVenda.status}
                         onChange={(e) => {
-                            const newStatus = e.target.value;
+                            const newStatus = e.target.value as StatusVenda;
                             openConfirmModal(
                                 'Confirmar Alteração de Status',
-                                `Deseja realmente alterar o status da venda para "${getStatusDisplayName(newStatus as DetalhesVendaProp['status'])}"?`,
+                                `Deseja realmente alterar o status da venda para "${getStatusDisplayName(newStatus)}"?`,
                                 () => handleUpdateStatus(newStatus)
                             );
                         }}
@@ -474,8 +471,8 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                             <option value="pendente">Pendente</option>
                             <option value="pago">Pago</option>
                             <option value="separando">Separando Pedido</option>
-                            <option value="em_confeccao">Em Confecção</option>
-                            <option value="em_fabricacao">Em Fabricação</option>
+                            <option value="confeccao">Em Confecção</option>
+                            <option value="fabricacao">Em Fabricação</option>
                             <option value="enviado">Enviada</option>
                             <option value="entregue">Entregue</option>
                             <option value="cancelado">Cancelada</option>
@@ -509,8 +506,8 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                                 </tr>
                             </thead>
                             <tbody>
-                                {detalhesVenda.itens_venda.map((item, index) => (
-                                    <tr key={index}>
+                                {detalhesVenda.itens_venda.map((item: ItemVendido, index: number) => (
+                                    <tr key={item.id}>
                                         <td data-label="Produto:">{item.nome_produto}</td>
                                         <td data-label="Qtd:">{item.quantidade}</td>
                                         <td data-label="Preço Unit.:">{formatCurrency(item.preco_unitario)}</td>
@@ -625,7 +622,7 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
                 <input type="text" value={editEnderecoCidade} onChange={(e) => setEditEnderecoCidade(e.target.value)} />
                 <label>Estado (UF):</label>
                 <input type="text" value={editEnderecoEstado} onChange={(e) => setEditEnderecoEstado(e.target.value)} maxLength={2} />
-                {isCepLoading && editEnderecoCep.length === 8 && <p className="loading-message">Buscando CEP...</p>}
+                {isCepLoading && <p className="loading-message">Buscando CEP...</p>}
             </Modal>
             <Modal isOpen={isObsInternasModalOpen} onClose={() => setIsObsInternasModalOpen(false)} title="Editar Observações Internas" onSave={handleSaveObsInternas}>
                 <label>Observações:</label>
