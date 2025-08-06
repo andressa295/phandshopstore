@@ -1,10 +1,19 @@
 import React from 'react';
+import '@/app/globals.css';
 import { notFound } from 'next/navigation';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 
+// Componente DetalhesDaVenda
 import DetalhesDaVenda from '../components/DetalhesDaVenda';
+
+
+interface LocalPageProps<T extends Record<string, string | string[]> = Record<string, string | string[]>> {
+  params: T;
+  // Se você usar searchParams nesta página, adicione aqui:
+  // searchParams?: { [key: string]: string | string[] | undefined };
+}
 
 // Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
 interface ItemPedidoSupabase {
@@ -15,7 +24,7 @@ interface ItemPedidoSupabase {
     nome_produto: { nome: string } | null;
 }
 
-export interface ClienteDetalheSupabase { // Exported
+export interface ClienteDetalheSupabase {
     id: string;
     nome: string;
     email: string;
@@ -23,7 +32,7 @@ export interface ClienteDetalheSupabase { // Exported
     documento: string | null;
 }
 
-export interface Endereco { // Exported
+export interface Endereco {
     rua: string;
     numero: string;
     bairro: string;
@@ -33,7 +42,6 @@ export interface Endereco { // Exported
     complemento?: string;
 }
 
-// Interface para os dados retornados diretamente do Supabase
 interface VendaSupabaseData {
     id: string;
     created_at: string;
@@ -51,7 +59,6 @@ interface VendaSupabaseData {
     itens_venda: ItemPedidoSupabase[];
 }
 
-// A interface 'DetalhesVendaProp' esperada pelo componente DetalhesDaVenda
 interface ItemVendido {
     id: string;
     produto_id: string;
@@ -60,7 +67,7 @@ interface ItemVendido {
     nome_produto: string;
 }
 
-export interface DetalhesVendaProp { // Exported for DetalhesDaVenda.tsx
+export interface DetalhesVendaProp {
     id: string;
     created_at: string;
     status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
@@ -81,12 +88,10 @@ export const metadata: Metadata = {
     title: 'Detalhes da Venda | Phandshop',
 };
 
-// Define a interface para as props da página, especificando o tipo de 'params'.
-interface VendaDetalhesPageProps {
-  params: {
-    vendaId: string; // O ID da venda virá da URL dinâmica
-  };
-}
+// A interface da página agora estende a nossa LocalPageProps
+interface VendaDetalhesPageProps extends LocalPageProps<{ vendaId: string }> {}
+// === FIM DA CORREÇÃO DE TIPAGEM ===
+
 
 export default async function VendaDetalhesPage({ params }: VendaDetalhesPageProps) {
     const supabase = createServerComponentClient({ cookies });
