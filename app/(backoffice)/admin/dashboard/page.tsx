@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import '@/app/globals.css';
 
-// Dados simulados para a dashboard. Em um ambiente real,
-// estes dados seriam buscados do seu banco de dados (Supabase).
 const dashboardData = {
   totalLojistas: 124,
   ticketsAbertos: 8,

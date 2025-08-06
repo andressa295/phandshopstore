@@ -68,7 +68,6 @@ interface ClienteVenda {
 interface DetalhesVendaProp {
     id: string;
     created_at: string;
-    // CORREÇÃO: Ajustando a interface para o tipo de união correto
     status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
     valor_total: number;
     metodo_pagamento: string;
@@ -120,11 +119,11 @@ const DetalhesDaVenda: React.FC<{ venda: DetalhesVendaProp | null }> = ({ venda 
     const [isObsInternasModalOpen, setIsObsInternasModalOpen] = useState(false);
     const [isVendaCompletaModalOpen, setIsVendaCompletaModalOpen] = useState(false);
     
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | 'warning' } | null>(null);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [confirmModalData, setConfirmModalData] = useState<{ title: string; message: string; onConfirm: () => void; confirmText?: string; } | null>(null);
     
-    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info') => {
+    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning') => {
         setToast({ message, type });
     }, []);
 
