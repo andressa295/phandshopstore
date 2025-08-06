@@ -1,20 +1,30 @@
-import { Metadata } from 'next';
+// =======================================================
+// ARQUIVO: app/(interno)/dashboard/vendas/detalhes/[vendaId]/page.tsx
+// =======================================================
+// Esta é a página de detalhes de uma venda específica no backoffice.
+
+import React from 'react';
+import '@/app/globals.css'; // Certifique-se de que seus estilos globais estão importados
 import { notFound } from 'next/navigation';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import type { Metadata } from 'next'; // <-- Adicionado: Importação do tipo Metadata
+
+// Componente DetalhesDaVenda (assumindo que este componente existe em '../components/DetalhesDaVenda')
+// Este componente receberá os dados já formatados.
 import DetalhesDaVenda from '../components/DetalhesDaVenda';
 
 // Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
-interface ItemPedido {
+interface ItemPedidoSupabase {
     id: string;
     produto_id: string;
     quantidade: number;
     preco_unitario: number;
     // O retorno da query do Supabase para o join de produto é um objeto ou null
-    nome_produto: { nome: string } | null;
+    nome_produto: { nome: string } | null; // Nome real da coluna no Supabase
 }
 
-interface ClienteDetalhe {
+interface ClienteDetalheSupabase {
     id: string;
     nome: string;
     email: string;
@@ -32,10 +42,10 @@ interface Endereco {
     complemento?: string;
 }
 
-interface VendaDetalheProp {
+// Interface para os dados retornados diretamente do Supabase
+interface VendaSupabaseData {
     id: string;
     created_at: string;
-    // CORREÇÃO: Ajustando a interface para o tipo de união correto
     status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
     valor_total: number;
     metodo_pagamento: string;
@@ -46,12 +56,12 @@ interface VendaDetalheProp {
     tracking_codigo: string | null;
     transportadora: string | null;
     data_envio: string | null;
-    cliente: ClienteDetalhe | null;
-    itens_venda: ItemPedido[];
+    cliente: ClienteDetalheSupabase | null;
+    itens_venda: ItemPedidoSupabase[];
 }
 
-// A interface 'DetalhesVendaProp' esperada pelo componente deve ter nome_produto como uma string simples.
-// Vamos criar uma interface para o objeto final que será passado para o componente.
+// A interface 'DetalhesVendaProp' esperada pelo componente DetalhesDaVenda
+// Esta interface reflete o formato final dos dados após o mapeamento.
 interface ItemVendido {
     id: string;
     produto_id: string;
@@ -63,7 +73,6 @@ interface ItemVendido {
 interface DetalhesVendaProp {
     id: string;
     created_at: string;
-    // CORREÇÃO: Ajustando a interface para o tipo de união correto
     status: 'pendente' | 'pago' | 'cancelado' | 'enviado' | 'entregue' | 'separando' | 'confeccao' | 'fabricacao' | 'arquivado';
     valor_total: number;
     metodo_pagamento: string;
@@ -74,7 +83,7 @@ interface DetalhesVendaProp {
     tracking_codigo: string | null;
     transportadora: string | null;
     data_envio: string | null;
-    cliente: ClienteDetalhe | null;
+    cliente: ClienteDetalheSupabase | null;
     itens_venda: ItemVendido[];
 }
 
@@ -82,26 +91,37 @@ export const metadata: Metadata = {
     title: 'Detalhes da Venda | Phandshop',
 };
 
-export default async function DetalheVendaPage({ params }: { params: { vendaId: string } }) {
+// Define a interface para as props da página, especificando o tipo de 'params'.
+interface VendaDetalhesPageProps {
+  params: {
+    vendaId: string; // O ID da venda virá da URL dinâmica
+  };
+}
+
+export default async function VendaDetalhesPage({ params }: VendaDetalhesPageProps) {
     const supabase = createServerComponentClient({ cookies });
     const { vendaId } = params;
 
+    // Verifica se o usuário está autenticado
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
+        // Redireciona para a página de login ou exibe 404 se não autenticado
         return notFound();
     }
     
     // Buscando o ID da loja do usuário para a query de segurança
-    const { data: loja } = await supabase.from('lojas').select('id').eq('usuario_id', user.id).single();
+    // Isso garante que o usuário só possa ver vendas da sua própria loja.
+    const { data: loja, error: lojaError } = await supabase.from('lojas').select('id').eq('usuario_id', user.id).single();
     const lojaId = loja?.id;
 
-    if (!lojaId) {
-        return notFound();
+    if (lojaError || !lojaId) {
+        console.error('Erro ao buscar ID da loja ou loja não encontrada para o usuário:', lojaError);
+        return notFound(); // Se não encontrar a loja do usuário, não pode ver vendas
     }
 
     // Usando os nomes corretos de tabelas e colunas e ajustando a query de join
-    const { data: venda, error } = await supabase
+    const { data: venda, error: vendaError } = await supabase
         .from('vendas')
         .select(`
             id, created_at, status, valor_total, metodo_pagamento,
@@ -113,19 +133,21 @@ export default async function DetalheVendaPage({ params }: { params: { vendaId: 
             )
         `)
         .eq('id', vendaId)
-        .eq('loja_id', lojaId)
+        .eq('loja_id', lojaId) // Filtro de segurança para garantir que a venda pertence à loja do usuário
         .single();
 
-    if (error || !venda) {
-        console.error('Erro ao buscar a venda:', error);
-        return notFound();
+    if (vendaError || !venda) {
+        console.error('Erro ao buscar a venda:', vendaError);
+        return notFound(); // Venda não encontrada ou erro na busca
     }
     
     // Mapeamento corrigido para garantir que o tipo final seja compatível com DetalhesVendaProp
     // A query do Supabase com 'select' e 'join' retorna arrays, mesmo que a query principal seja single().
     const formattedVenda: DetalhesVendaProp = {
         ...venda,
-        // O Supabase retorna 'cliente' como um array. Pegamos o primeiro item ou 'null'.
+        // O Supabase retorna 'cliente' como um array de objetos em alguns joins,
+        // mesmo que a query .single() na venda garanta um único cliente.
+        // Acessamos o primeiro elemento do array ou null.
         cliente: Array.isArray(venda.cliente) && venda.cliente.length > 0 ? venda.cliente[0] : null,
         itens_venda: (venda.itens_venda as any[]).map(item => ({
             ...item,
