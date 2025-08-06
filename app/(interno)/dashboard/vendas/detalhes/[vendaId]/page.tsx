@@ -1,17 +1,9 @@
-// =======================================================
-// ARQUIVO: app/(interno)/dashboard/vendas/detalhes/[vendaId]/page.tsx
-// =======================================================
-// Esta é a página de detalhes de uma venda específica no backoffice.
-
 import React from 'react';
-import '@/app/globals.css'; // Certifique-se de que seus estilos globais estão importados
 import { notFound } from 'next/navigation';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 
-// Componente DetalhesDaVenda (assumindo que este componente existe em '../components/DetalhesDaVenda')
-// Este componente receberá os dados já formatados.
 import DetalhesDaVenda from '../components/DetalhesDaVenda';
 
 // Interfaces ajustadas para corresponderem ao nosso esquema de banco de dados
