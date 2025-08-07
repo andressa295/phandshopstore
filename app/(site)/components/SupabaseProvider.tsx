@@ -24,16 +24,27 @@ interface SupabaseContextType {
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);
 
-// CORREÇÃO: Rotas públicas completas
+// CORREÇÃO FINAL: Rotas públicas completas
 const publicRoutes = [
-  '/', 
-  '/login', 
+  '/',
+  '/login',
   '/cadastro',
-  '/plataforma', 
-  '/planos', 
-  '/profissionais', 
+  '/plataforma',
+  '/planos',
+  '/profissionais',
   '/recursos',
-  '/criadores'
+  '/criadores',
+  '/sobre',
+  '/trabalhe-conosco',
+  '/afiliados',
+  '/ajuda',
+  '/contato',
+  '/faq',
+  '/blog',
+  '/cases-de-sucesso',
+  '/ferramentas',
+  '/comunidade',
+  '/parceiros',
 ];
 
 export function SupabaseProvider({ children, initialUser }: { children: ReactNode; initialUser: User | null; }) {
