@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation'; // Adicionado usePathname
 
 // Definindo o tipo de dado para o perfil completo do usuário
 interface UserProfile {
@@ -30,12 +30,11 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname(); // Pega a rota atual
 
   useEffect(() => {
     const fetchUserProfile = async (userId: string) => {
       setLoading(true);
-      // CORREÇÃO: A query foi ajustada para buscar o plano e a recorrência
-      // fazendo um JOIN com as tabelas 'lojas' e 'assinaturas'.
       const { data: userData, error: userError } = await supabase
         .from('usuarios')
         .select(`
@@ -51,7 +50,6 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
         console.error('Erro ao buscar perfil do usuário:', userError);
         setProfile(null);
       } else {
-        // CORREÇÃO: Acessando os dados da loja e assinatura corretamente
         const lojaData = Array.isArray(userData.lojas) && userData.lojas.length > 0 ? userData.lojas[0] : null;
         const assinaturaData = lojaData?.assinaturas?.[0] || null;
         const planoData = assinaturaData?.planos?.[0] || null;
@@ -64,28 +62,30 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
           lojaNome: lojaData?.nome_loja || null,
           lojaSlug: lojaData?.slug || null,
           plano: planoData?.nome as UserProfile['plano'] || 'plano_gratis',
-          recorrencia: 'mensal', // Ajuste conforme a sua lógica real
+          recorrencia: 'mensal',
         };
         setProfile(userProfileData);
       }
       setLoading(false);
     };
 
-    // Adiciona o listener de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
-        // Se o usuário está logado, atualiza o estado e busca o perfil
         setUser(session.user);
         fetchUserProfile(session.user.id);
       } else {
-        // Se o usuário saiu, limpa a sessão e redireciona
         setUser(null);
         setProfile(null);
-        router.push('/login');
+        // CORREÇÃO: Pega o idioma da URL para construir a rota de login correta
+        const localeMatch = pathname.match(/^\/(en-US|pt-BR|es-ES)/);
+        const currentLocale = localeMatch ? localeMatch[0] : '/pt-BR'; // Assume pt-BR como padrão
+
+        if (pathname !== `${currentLocale}/login`) {
+          router.push(`${currentLocale}/login`);
+        }
       }
     });
 
-    // Se o usuário já está autenticado ao carregar a página, já busca o perfil
     if (initialUser) {
       fetchUserProfile(initialUser.id);
     } else {
@@ -95,7 +95,7 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
     return () => {
       subscription?.unsubscribe();
     };
-  }, [initialUser, supabase, router]);
+  }, [initialUser, supabase, router, pathname]); // Adicionado 'pathname' nas dependências
 
   return (
     <SupabaseContext.Provider value={{ user, profile, loading }}>
