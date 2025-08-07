@@ -24,12 +24,16 @@ interface SupabaseContextType {
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);
 
+// Rotas públicas que não precisam de autenticação
+const publicRoutes = ['/', '/login', '/cadastro'];
+
 export function SupabaseProvider({ children, initialUser }: { children: ReactNode; initialUser: User | null; }) {
   const [user, setUser] = useState<User | null>(initialUser);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchUserProfile = async (userId: string) => {
@@ -75,8 +79,10 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
       } else {
         setUser(null);
         setProfile(null);
-        // Lógica de redirecionamento para o login, sem o locale
-        router.push('/login');
+        // CORREÇÃO: Redireciona APENAS se a rota NÃO for pública
+        if (!publicRoutes.includes(pathname)) {
+          router.push('/login');
+        }
       }
     });
 
@@ -84,12 +90,16 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
       fetchUserProfile(initialUser.id);
     } else {
       setLoading(false);
+      // CORREÇÃO: Redireciona na primeira carga se o usuário não for autenticado e a página não for pública
+      if (!publicRoutes.includes(pathname)) {
+        router.push('/login');
+      }
     }
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, [initialUser, supabase, router]); // Removido 'pathname' das dependências
+  }, [initialUser, supabase, router, pathname]);
 
   return (
     <SupabaseContext.Provider value={{ user, profile, loading }}>
