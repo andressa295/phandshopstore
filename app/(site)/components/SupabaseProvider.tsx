@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
-import { useRouter, usePathname } from 'next/navigation'; // Adicionado usePathname
+import { useRouter, usePathname } from 'next/navigation';
 
 // Definindo o tipo de dado para o perfil completo do usuário
 interface UserProfile {
@@ -30,7 +30,6 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
   const [loading, setLoading] = useState<boolean>(true);
   const supabase = createClientComponentClient();
   const router = useRouter();
-  const pathname = usePathname(); // Pega a rota atual
 
   useEffect(() => {
     const fetchUserProfile = async (userId: string) => {
@@ -76,13 +75,8 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
       } else {
         setUser(null);
         setProfile(null);
-        // CORREÇÃO: Pega o idioma da URL para construir a rota de login correta
-        const localeMatch = pathname.match(/^\/(en-US|pt-BR|es-ES)/);
-        const currentLocale = localeMatch ? localeMatch[0] : '/pt-BR'; // Assume pt-BR como padrão
-
-        if (pathname !== `${currentLocale}/login`) {
-          router.push(`${currentLocale}/login`);
-        }
+        // Lógica de redirecionamento para o login, sem o locale
+        router.push('/login');
       }
     });
 
@@ -95,7 +89,7 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
     return () => {
       subscription?.unsubscribe();
     };
-  }, [initialUser, supabase, router, pathname]); // Adicionado 'pathname' nas dependências
+  }, [initialUser, supabase, router]); // Removido 'pathname' das dependências
 
   return (
     <SupabaseContext.Provider value={{ user, profile, loading }}>
