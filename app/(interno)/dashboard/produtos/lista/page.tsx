@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Produto } from '../../../../../types/Produto';
-import Modal from '../../vendas/detalhes/components/Modal';
-import ConfirmModal from '../../vendas/detalhes/components/ConfirmModal';
-import Toast from '../../vendas/detalhes/components/Toast';
+import Modal from '../components/Modal';
+import ConfirmModal from '../components/ConfirmModal';
+import Toast from '../components/Toast';
 
 const colors = {
     primary: '#6b21a8',

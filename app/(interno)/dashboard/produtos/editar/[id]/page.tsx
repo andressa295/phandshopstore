@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import FormularioProduto from '../../components/FormularioProduto'; 
 import type { Produto } from '../../../../../../types/Produto'; 
-import ConfirmModal from '../../../vendas/detalhes/components/ConfirmModal';
-import Toast from '../../../vendas/detalhes/components/Toast';
+import ConfirmModal from '../../components/ConfirmModal'; // Caminho ajustado
+import Toast from '../../components/Toast'; // Caminho ajustado
 
 export default function EditarProdutoPage() {
     const router = useRouter();
@@ -73,7 +73,7 @@ export default function EditarProdutoPage() {
         setIsConfirmModalOpen(false);
     };
 
-    const colors = { // Cores para o layout da página de formulário
+    const colors = {
         primary: '#6b21a8',
         background: '#f8f9fa',
         white: '#ffffff',
