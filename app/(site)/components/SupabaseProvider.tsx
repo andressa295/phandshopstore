@@ -24,8 +24,17 @@ interface SupabaseContextType {
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined);
 
-// Rotas públicas que não precisam de autenticação
-const publicRoutes = ['/', '/login', '/cadastro'];
+// CORREÇÃO: Rotas públicas completas
+const publicRoutes = [
+  '/', 
+  '/login', 
+  '/cadastro',
+  '/plataforma', 
+  '/planos', 
+  '/profissionais', 
+  '/recursos',
+  '/criadores'
+];
 
 export function SupabaseProvider({ children, initialUser }: { children: ReactNode; initialUser: User | null; }) {
   const [user, setUser] = useState<User | null>(initialUser);
@@ -79,8 +88,12 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
       } else {
         setUser(null);
         setProfile(null);
-        // CORREÇÃO: Redireciona APENAS se a rota NÃO for pública
-        if (!publicRoutes.includes(pathname)) {
+        
+        const pathWithoutLocale = pathname.startsWith('/pt-BR') || pathname.startsWith('/en-US') || pathname.startsWith('/es-ES')
+          ? pathname.substring(6)
+          : pathname;
+
+        if (!publicRoutes.includes(pathWithoutLocale)) {
           router.push('/login');
         }
       }
@@ -90,8 +103,11 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
       fetchUserProfile(initialUser.id);
     } else {
       setLoading(false);
-      // CORREÇÃO: Redireciona na primeira carga se o usuário não for autenticado e a página não for pública
-      if (!publicRoutes.includes(pathname)) {
+      const pathWithoutLocale = pathname.startsWith('/pt-BR') || pathname.startsWith('/en-US') || pathname.startsWith('/es-ES')
+          ? pathname.substring(6)
+          : pathname;
+
+      if (!publicRoutes.includes(pathWithoutLocale)) {
         router.push('/login');
       }
     }
