@@ -58,6 +58,7 @@ const publicRoutes = [
   '/docs-api',
   '/contratar',
   '/contratar/diretorio',
+  '/contratar/design',
   
 ];
 

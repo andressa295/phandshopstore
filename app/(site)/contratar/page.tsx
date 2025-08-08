@@ -11,7 +11,7 @@ const services = [
     title: 'Design e Criação',
     description: 'Deixe a sua loja com a cara da sua marca. Parceiros especialistas em design criam temas personalizados e identidades visuais exclusivas.',
     icon: <FaPaintBrush />,
-    link: '#'
+    link: '/contratar/design'
   },
   {
     title: 'Configuração da Loja',
