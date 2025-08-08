@@ -217,7 +217,7 @@ export default function Header() {
                   <Link href="#">Design e Criação</Link>
                   <Link href="#">Configuração da loja</Link>
                   <Link href="#">Migração para Phandshop</Link>
-                  <Link href="#" className={styles.verMaisLink}>
+                  <Link href="/contratar" className={styles.verMaisLink}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
                   </Link>
                 </div>

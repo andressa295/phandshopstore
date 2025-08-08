@@ -29,7 +29,7 @@ export default function SejaParceiroPage() {
       title: "Parceiro de Conteúdo",
       description: "Crie conteúdo e tutoriais, ajudando a nossa comunidade a crescer.",
       icon: <FaBook />,
-      path: "#",
+      path: "/seja-um-parceiro/conteudos",
     }
   ];
 

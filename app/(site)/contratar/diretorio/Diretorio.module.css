@@ -1,0 +1,145 @@
+/* app/(site)/parceiros/diretorio/Diretorio.module.css */
+.pageWrapper {
+  font-family: 'Poppins', sans-serif;
+  color: #2c0e3e;
+}
+
+.section {
+  padding: 4rem 2rem;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bannerSection {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  text-align: center;
+  background-color: #6b21a8;
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 10;
+  color: #ffffff;
+}
+
+.bannerTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.bannerSubtitle {
+  font-size: 1.25rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.partnersSection {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.partnersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.partnerCard {
+  background-color: #f9f7fd;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: #2c0e3e;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.partnerCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.partnerIcon {
+  color: #6b21a8;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.partnerName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.partnerSpecialty {
+  font-size: 1rem;
+  color: #a4508b;
+  font-weight: 500;
+}
+
+.partnerDescription {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 1rem;
+}
+
+.ctaSection {
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: #6b21a8;
+  color: #fff;
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.ctaSubtitle {
+  font-size: 1.2rem;
+  color: #f0e6ff;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+}
+
+.ctaButton {
+  background-color: #fff;
+  color: #6b21a8;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #f3e8ff;
+  transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .bannerTitle {
+    font-size: 2.5rem;
+  }
+}
