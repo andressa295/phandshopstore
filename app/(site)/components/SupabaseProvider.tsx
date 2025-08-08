@@ -46,7 +46,7 @@ const publicRoutes = [
   '/parceiros',
   '/auth',
   '/conversao',
-  '/sitecriadores/afiliados',
+  '/sitecriadores/afiliado',
   '/sitecriadores/login',
   '/seja-um-parceiro/parceiros/temas',
   '/seja-um-parceiro',
