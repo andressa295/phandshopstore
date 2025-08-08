@@ -26,9 +26,14 @@ export default function Header() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      const clickedElement = event.target as HTMLElement;
+      // Garante que o clique não foi em um dos botões do dropdown
+      const isDropdownButton = clickedElement.closest(`.${styles.dropdownToggle}`);
+
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(clickedElement) &&
+        !isDropdownButton
       ) {
         setOpenDropdown(null);
       }
@@ -160,10 +165,10 @@ export default function Header() {
             <div className={styles.megaMenuContent}>
               <div className={styles.column}>
                 <h4>Conversão</h4>
-                <Link href="#">Recuperação de carrinho</Link>
-                <Link href="#">Checkout simplificado</Link>
-                <Link href="#">Cupons e descontos</Link>
-                <Link href="#" className={styles.verMaisLink}>
+                <Link href="/conversao">Recuperação de carrinho</Link>
+                <Link href="/conversao">Checkout simplificado</Link>
+                <Link href="/conversao">Cupons e descontos</Link>
+                <Link href="/conversao" className={styles.verMaisLink}>
                   Ver mais <FaArrowRight className={styles.arrowIcon} />
                 </Link>
               </div>
@@ -194,7 +199,7 @@ export default function Header() {
                 <div className={styles.parceirosEco}>
                   <h4>Login do Parceiro</h4>
                   <p className={styles.smallText}>Acesse seu painel para gerenciar comissões e divulgações.</p>
-                  <Link href="#" className={styles.partnerLoginLink}>
+                  <Link href="/sitecriadores/login" className={styles.partnerLoginLink}>
                     Acessar Painel <FaRegPaperPlane />
                   </Link>
                 </div>
@@ -202,8 +207,8 @@ export default function Header() {
                   <h5>Seja um parceiro</h5>
                   <Link href="#">Parceiros Especialistas</Link>
                   <Link href="#">Parceiros Tecnológicos</Link>
-                  <Link href="#">Parceiros Afiliados</Link>
-                  <Link href="#" className={styles.verMaisLink}>
+                  <Link href="/seja-um-parceiro/criadores">Parceiros Afiliados</Link>
+                  <Link href="/seja-um-parceiro" className={styles.verMaisLink}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
                   </Link>
                 </div>

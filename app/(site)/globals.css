@@ -201,3 +201,28 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
+.siteContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.siteContainer::-webkit-scrollbar-track {
+  background: #000000; 
+}
+
+.siteContainer::-webkit-scrollbar-thumb {
+  background-color: #2e2e2e; 
+  border-radius: 5px;
+  border: 2px solid #575657;
+}
+
+/* Mudar a cor ao passar o mouse */
+.siteContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #6b21a8; /* Roxo um pouco mais claro no hover */
+}
+
+/* Para navegadores que suportam a propriedade "scrollbar-color" (Firefox) */
+.siteContainer {
+  scrollbar-width: thin;
+  scrollbar-color: #4c1d95 #f0e6ff;
+}

@@ -1,0 +1,158 @@
+/* app/(site)/conversao/Conversao.module.css */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.heroSection {
+  background-color: #f9f7fd;
+  text-align: center;
+  padding: 4rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2c0e3e;
+  margin-bottom: 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.2rem;
+  color: #6b21a8;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.featureSection {
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.featureSection .featureTitle,
+.featureSection .featureDescription {
+  color: #2c0e3e;
+}
+
+.featureSection.purpleBackground {
+  background-color: #6b21a8;
+}
+
+.featureSection.purpleBackground .featureTitle,
+.featureSection.purpleBackground .featureDescription {
+  color: #ffffff;
+}
+
+.featureContent {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.featureContent:nth-child(2n) .featureImageContainer {
+  order: -1;
+}
+
+.featureText {
+  flex: 1;
+}
+
+.featureIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #f0e6ff;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  color: #6b21a8;
+}
+
+.featureSection.purpleBackground .featureIcon {
+  background-color: #5a279c;
+  color: #fff;
+}
+
+.featureTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.featureDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.featureImageContainer {
+  flex: 1;
+  text-align: center;
+}
+
+.featureImage {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ctaSection {
+  text-align: center;
+  background-color: #f9f7fd;
+  padding: 5rem 2rem;
+  border-radius: 12px;
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c0e3e;
+  margin-bottom: 1rem;
+}
+
+.ctaSubtitle {
+  font-size: 1.2rem;
+  color: #6b21a8;
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  background-color: #6b21a8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #5a1d8f;
+  transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+  .featureContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  .featureContent:nth-child(2n) .featureImageContainer {
+    order: 0;
+  }
+  .featureImageContainer {
+    margin-top: 2rem;
+  }
+}

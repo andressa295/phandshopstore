@@ -1,0 +1,121 @@
+/* app/(site)/parceiros/cadastro/Cadastro.module.css */
+.pageWrapper {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9f7fd;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formSection {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 700px;
+  width: 100%;
+  
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c0e3e;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  font-size: 1rem;
+  color: #555;
+  
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2c0e3e;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+}
+
+.icon {
+  color: #6b21a8;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.1);
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.submitButton {
+  background-color: #6b21a8;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-top: 1rem;
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.submitButton:hover {
+  background-color: #5a1d8f;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .formSection {
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+
+  }
+  .header h1 {
+    font-size: 2rem;
+  }
+}

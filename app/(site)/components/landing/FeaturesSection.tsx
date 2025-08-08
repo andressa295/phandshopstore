@@ -1,8 +1,9 @@
+// app/(site)/components/landing/FeaturesSection.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import styles from '../../page.module.css'; 
+import styles from '../../page.module.css';
 import { FaCheckCircle } from 'react-icons/fa';
 
 export function FeaturesSection() {
@@ -20,6 +21,16 @@ export function FeaturesSection() {
     { src: "/logos/instagram.png", alt: "Instagram", width: 120, height: 40 },
     { src: "/logos/google.png", alt: "Google", width: 100, height: 35 },
   ];
+
+  const [currentLogoIndex, setCurrentLogoIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentLogoIndex((prevIndex) => (prevIndex + 1) % logosIntegracoes.length);
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [logosIntegracoes.length]);
 
   return (
     <section className={styles.featuresSection}>
@@ -42,8 +53,24 @@ export function FeaturesSection() {
         <div className={styles.integrationsWrapper}>
           <h4 className={styles.integrationsTitle}>Integre com as ferramentas que você já ama</h4>
           <div className={styles.logosContainer}>
-            {logosIntegracoes.map((logo) => (
-              <Image key={logo.alt} src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} className={styles.logoImage} style={{ objectFit: 'contain' }} />
+            {logosIntegracoes.map((logo, index) => (
+              <div
+                key={logo.alt}
+                className={`${styles.logoWrapper} ${index === currentLogoIndex ? styles.active : ''}`}
+                style={{
+                  opacity: index === currentLogoIndex ? 1 : 0,
+                  visibility: index === currentLogoIndex ? 'visible' : 'hidden',
+                }}
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={logo.width}
+                  height={logo.height}
+                  className={styles.logoImage}
+                  style={{ objectFit: 'contain' }}
+                />
+              </div>
             ))}
           </div>
         </div>

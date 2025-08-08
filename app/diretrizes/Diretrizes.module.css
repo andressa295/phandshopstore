@@ -1,0 +1,68 @@
+/* app/(site)/diretrizes/Diretrizes.module.css */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+  color: #2c0e3e;
+}
+
+.markdownContent {
+  line-height: 1.6;
+}
+
+.markdownContent h1,
+.markdownContent h2,
+.markdownContent h3 {
+  color: #6b21a8;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.markdownContent h1 {
+  font-size: 2.5rem;
+  border-bottom: 2px solid #f0e6ff;
+  padding-bottom: 0.5rem;
+}
+
+.markdownContent h2 {
+  font-size: 2rem;
+  border-bottom: 1px solid #f0e6ff;
+  padding-bottom: 0.5rem;
+}
+
+.markdownContent h3 {
+  font-size: 1.5rem;
+}
+
+.markdownContent p {
+  margin-bottom: 1rem;
+}
+
+.markdownContent ul,
+.markdownContent ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.markdownContent li {
+  margin-bottom: 0.5rem;
+}
+
+.markdownContent a {
+  color: #a4508b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.markdownContent a:hover {
+  text-decoration: underline;
+}
+
+.markdownContent code {
+  background-color: #f9f7fd;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}

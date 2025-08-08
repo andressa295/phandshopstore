@@ -126,6 +126,8 @@
 
 .diferencialCard:hover .iconWrapper {
   color: #6D28D9; /* Cor da sua marca */
+
+
 }
 /* --- 3. Funcionalidades (sem alterações) --- */
 .featuresSection { composes: section; background-color: #f9fafb; }
@@ -136,18 +138,46 @@
 .featureCard p { font-size: 0.95rem; color: #4a5568; line-height: 1.6; margin: 0; }
 .integrationsWrapper { margin-top: 4rem; }
 .integrationsTitle { font-size: 1rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3rem; text-align: center; }
-.logosContainer { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4rem; }
-.logoImage { filter: grayscale(100%); opacity: 0.6; transition: all 0.3s ease; height: 90px; width: auto; object-fit: contain; }
-.logoImage:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
-/* Adicionar ao seu page.module.css */
-.logoImage {
-  filter: grayscale(100%);
-  transition: filter 0.3s ease;
+
+/* Estilos para a animação de rotação */
+.logosContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* Para posicionar os logos absolutamente dentro */
+  min-height: 70px; /* Altura mínima para os logos */
 }
 
-.logoImage:hover {
-  filter: grayscale(0%);
+.logoWrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
+
+.logoImage {
+  filter: grayscale(0%); /* Remove o filtro para mostrar a cor original */
+  opacity: 1; /* Garante que o logo esteja visível por padrão */
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Remove os estilos de hover, já que a animação é automática */
+.logoImage:hover,
+.logoImage {
+  filter: none;
+}
+
+
+@media (max-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
 
 /* --- 4. Calculadora --- */
 .calculadoraSection {

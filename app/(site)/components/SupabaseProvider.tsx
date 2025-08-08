@@ -33,7 +33,6 @@ const publicRoutes = [
   '/planos',
   '/profissionais',
   '/recursos',
-  '/criadores',
   '/sobre',
   '/trabalhe-conosco',
   '/afiliados',
@@ -45,6 +44,16 @@ const publicRoutes = [
   '/ferramentas',
   '/comunidade',
   '/parceiros',
+  '/auth',
+  '/conversao',
+  '/sitecriadores/afiliados',
+  '/sitecriadores/login',
+  '/seja-um-parceiro/parceiros/temas',
+  '/seja-um-parceiro',
+  '/seja-um-parceiro/criadores',
+  '/diretrizes',
+  '/seja-um-parceiro/parceiros/cadastro',
+  
 ];
 
 export function SupabaseProvider({ children, initialUser }: { children: ReactNode; initialUser: User | null; }) {
