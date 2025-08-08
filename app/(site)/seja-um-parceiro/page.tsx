@@ -17,7 +17,7 @@ export default function SejaParceiroPage() {
       title: "Parceiro Tecnológico",
       description: "Desenvolva aplicativos e integrações para nossa plataforma, alcançando milhares de lojistas.",
       icon: <FaCode />,
-      path: "#",
+      path: "/seja-um-parceiro/tecnologicos",
     },
     {
       title: "Parceiro Afiliado",

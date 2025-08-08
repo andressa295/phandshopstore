@@ -206,7 +206,7 @@ export default function Header() {
                 <div className={`${styles.parceirosColumn} ${styles.columnSeparator}`}>
                   <h5>Seja um parceiro</h5>
                   <Link href="#">Parceiros Especialistas</Link>
-                  <Link href="#">Parceiros Tecnológicos</Link>
+                  <Link href="/seja-um-parceiro/tecnologicos">Parceiros Tecnológicos</Link>
                   <Link href="/seja-um-parceiro/criadores">Parceiros Afiliados</Link>
                   <Link href="/seja-um-parceiro" className={styles.verMaisLink}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />

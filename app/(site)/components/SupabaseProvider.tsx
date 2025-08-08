@@ -53,6 +53,8 @@ const publicRoutes = [
   '/seja-um-parceiro/criadores',
   '/diretrizes',
   '/seja-um-parceiro/parceiros/cadastro',
+  '/seja-um-parceiro/tecnologicos',
+  '/docs-api',
   
 ];
 

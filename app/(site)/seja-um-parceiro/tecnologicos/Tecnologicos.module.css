@@ -1,0 +1,152 @@
+/* app/(site)/parceiros/tecnologicos/Tecnologicos.module.css */
+.pageWrapper {
+  font-family: 'Poppins', sans-serif;
+  color: #2c0e3e;
+}
+
+.section {
+  padding: 4rem 2rem;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.preTitle {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #a4508b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.heroSection {
+  background-color: #f9f7fd;
+  text-align: center;
+}
+
+.heroSection h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #2c0e3e;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.ctaButton {
+  background-color: #6b21a8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #5a1d8f;
+  transform: translateY(-2px);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c0e3e;
+  margin-bottom: 1rem;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.stepCard {
+  background-color: #f9f7fd;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 250px;
+}
+
+.stepCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stepIcon {
+  font-size: 2.5rem;
+  color: #6b21a8;
+  margin-bottom: 1rem;
+}
+
+.stepCard h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.stepCard p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.finalCtaSection {
+  background-color: #6b21a8;
+  color: #fff;
+  text-align: center;
+}
+
+.finalCtaSection h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.finalCtaSection .subtitle {
+  color: #f0e6ff;
+  margin-bottom: 2rem;
+}
+
+.finalCtaSection .ctaButton {
+  background-color: #fff;
+  color: #6b21a8;
+}
+
+.finalCtaSection .ctaButton:hover {
+  background-color: #f3e8ff;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .heroSection h1 {
+    font-size: 2.5rem;
+  }
+  .sectionHeader h2 {
+    font-size: 2rem;
+  }
+}
