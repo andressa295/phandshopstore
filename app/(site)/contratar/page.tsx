@@ -17,7 +17,7 @@ const services = [
     title: 'Configuração da Loja',
     description: 'Precisa de ajuda para começar? Profissionais certificados configuram sua loja do zero, importam produtos e deixam tudo pronto para a sua primeira venda.',
     icon: <FaStore />,
-    link: '#'
+    link: '/contratar/configuracao'
   },
   {
     title: 'Migração de Plataforma',

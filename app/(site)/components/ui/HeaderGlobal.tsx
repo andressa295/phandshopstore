@@ -215,7 +215,7 @@ export default function Header() {
                 <div className={`${styles.parceirosColumn} ${styles.columnSeparator}`}>
                   <h5>Contrate um parceiro</h5>
                   <Link href="#">Design e Criação</Link>
-                  <Link href="#">Configuração da loja</Link>
+                  <Link href="/contratar/configuracao">Configuração da loja</Link>
                   <Link href="/contratar/design">Migração para Phandshop</Link>
                   <Link href="/contratar" className={styles.verMaisLink}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
