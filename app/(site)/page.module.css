@@ -234,7 +234,17 @@
     gap: 2rem;
   }
 }
+@media (max-width: 768px) {
+  /* Força o letreiro no mobile a ficar maior */
+  .logosContainer {
+    min-height: 160px !important;
+  }
 
+  .logosMarquee .logoImage {
+    height: 140px !important; /* força o tamanho maior */
+    width: auto !important;
+  }
+}
 
 /* --- TemasSection --- */
 .temasSection {
