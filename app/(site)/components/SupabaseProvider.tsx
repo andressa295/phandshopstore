@@ -60,6 +60,10 @@ const publicRoutes = [
   '/contratar/diretorio',
   '/contratar/design',
   '/contratar/configuracao',
+  '/contratar/migracao',
+  '/contratar/desenvolvimento',
+  '/contratar/marketing',
+  '/contratar/auditoria',
   
 ];
 

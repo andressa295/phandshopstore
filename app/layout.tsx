@@ -31,7 +31,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
     if (subdominio) {
       console.log(`Tentando buscar loja com slug: ${subdominio}`);
-      // CORREÇÃO: Usando 'slug' em vez de 'subdominio' na query
       const { data: lojaData, error: lojaError } = await supabase
         .from('lojas')
         .select('id')
@@ -54,6 +53,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="pt-BR" className={poppins.className}>
       <head>
+        {/* Importação da fonte Playfair Display */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400..900&display=swap" rel="stylesheet" />
+        
         <script
           async
           defer

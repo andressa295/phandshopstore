@@ -299,30 +299,350 @@
 
 
 /* --- 6. Planos Simplificado --- */
-.planosSection {
-  composes: section;
-  /* Fundo roxo bem clarinho, como você gostou */
-  background: #6b21a8 
+
+.pricingSection {
+  background: linear-gradient(180deg, #6b21a8 0%, #4c1d95 100%);
+  padding: 4rem 2rem;
+  text-align: center;
 }
-.planosTitle {
-  color:  white
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.planosSubtitle {
-  color:  white;
-  font-size: 1.2rem;
-  margin: 1rem auto 2.5rem auto;
-  max-width: 500px;
+
+/* Toggle de preços */
+.toggleWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: -1.5rem;
+  margin-bottom: 3rem;
 }
-.planosBotao {
-  composes: heroButton;
-  background-color: var(--brand-purple);
-  color: #ffffff;
+
+.pricingToggle {
+  display: flex;
+  background-color: #5a279c;
+  padding: 5px;
+  border-radius: 9999px;
+  gap: 5px;
+  width: fit-content;
+}
+
+.toggleButton {
+  padding: 8px 16px;
+  border: none;
+  background-color: transparent;
+  color: #f0e6ff;
+  font-weight: 600;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color #858585;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Adicionado: Borda sutil */
+
+}
+
+.toggleButton.activeToggle {
+  background-color: #fff;
+  color: #6b21a8;
+  border-color: transparent; /* A borda é removida quando ativo */
+  font-family: 'Poppins', sans-serif;
+
+}
+
+.badge {
+  background-color: #d1fae5;
+  color: #065f46;
   font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-family: 'Poppins', sans-serif;
+
 }
+
+/* Desktop: Grid de Cards */
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+  justify-content: center;
+}
+
+/* Mobile: Carrossel de Cards (escondido no desktop) */
+.plansCarouselWrapper {
+  display: none;
+}
+
+.planCard {
+  background-color: #5a279c;
+  padding: 1rem 1.2rem;
+  border-radius: 40px;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  text-align: left;
+  color: #fff;
+}
+
+.recommendedCard {
+  background-color: #360c6d;
+  border-color: #fff;
+  transform: scale(1.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #f0e6ff;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.recommendedCard .cardHeader {
+  border-color: #fff;
+}
+
+.cardIcon {
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+
+}
+
+.recommendedBadge {
+  background-color: #fff;
+  color: #5a279c;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  position: absolute;
+  top: -0.75rem;
+  right: -0.75rem;
+  z-index: 1;
+}
+
+.cardTagline {
+  font-size: 0.8rem;
+  color: #f0e6ff;
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 0.8rem;
+  color: #f0e6ff;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.cardPricing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.periodo {
+  font-size: 0.8rem;
+  color: #f0e6ff;
+}
+
+.yearlyInfo {
+  display: flex; /* Mudei para flex para alinhamento */
+  align-items: baseline;
+  margin-top: 0.5rem;
+  color: #d1fae5;
+  gap: 0.25rem;
+}
+
+.yearlyPrice {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.yearlyPeriodo {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #d1fae5;
+}
+
+.ctaButton {
+  background-color: #fff;
+  color: #6b21a8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  width: 100%;
+}
+
+.recommendedCard .ctaButton {
+  background-color: #fff;
+  color: #5a279c;
+}
+
+.ctaButton:hover {
+  background-color: #f3e8ff;
+  transform: translateY(-2px);
+}
+
+.recommendedCard .ctaButton:hover {
+  background-color: #f0e6ff;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .plansGrid {
+    display: none; /* Esconde o grid no mobile */
+  }
+
+  .plansCarouselWrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  
+  .plansCarousel {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding: 1rem; /* Adiciona padding para evitar corte */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    width: 100%; /* Garante que o carrossel ocupe a largura total */
+    box-sizing: border-box;
+  }
+  
+  .plansCarousel::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .planCard {
+    flex-shrink: 0;
+    min-width: 250px;
+    max-width: 85%;
+    scroll-snap-align: center;
+    text-align: center;
+    
+  }
+
+  .planCard:last-child {
+    margin-right: 0;
+  }
+
+  .carouselButton {
+    display: none;
+  }
+
+  /* Bolinhas de navegação */
+  .carouselPagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .paginationDot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #f0e6ff;
+    margin: 0 5px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+
+  .paginationDot.activeDot {
+    opacity: 1;
+    background-color: #fff;
+  }
+
+  /* Alinhamento de texto dentro do card para mobile */
+  .cardHeader, .cardPricing, .cardFeatures {
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+  }
+
+  .cardPricing {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .priceContainer {
+    justify-content: center;
+  }
+
+  .yearlyInfo {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+}
+/* No seu page.module.css */
+
+.planosSubtitle {
+  font-size: 1.25rem;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  color: #f0e6ff; /* Corrigido para a nova paleta de cores */
+}
+
+.planosBotao {
+  background-color: #fff;
+  color: #6b21a8;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease;
+}
+
 .planosBotao:hover {
-  background-color: white;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 20px rgba(254, 254, 255, 0.877);
+  background-color: #f3e8ff;
+  transform: translateY(-2px);
 }
 
 /* --- 7. FAQ --- */
@@ -420,35 +740,4 @@
 
 .diferencialCard:hover .iconWrapper {
   color: #6D28D9; /* Cor da sua marca */
-}
-/*
-  =============================================
-  ESTILIZAÇÃO DA BARRA DE ROLAGEM
-  =============================================
-*/
-
-/* Para navegadores baseados em WebKit (Chrome, Safari, Edge) */
-.siteContainer::-webkit-scrollbar {
-  width: 10px;
-}
-
-.siteContainer::-webkit-scrollbar-track {
-  background: #f0e6ff; /* Fundo roxo claro */
-}
-
-.siteContainer::-webkit-scrollbar-thumb {
-  background-color: #4c1d95; /* Cor do roxo escuro para o "puxador" */
-  border-radius: 5px;
-  border: 2px solid #f0e6ff; /* Adiciona uma borda para separar do fundo */
-}
-
-/* Mudar a cor ao passar o mouse */
-.siteContainer::-webkit-scrollbar-thumb:hover {
-  background-color: #6b21a8; /* Roxo um pouco mais claro no hover */
-}
-
-/* Para navegadores que suportam a propriedade "scrollbar-color" (Firefox) */
-.siteContainer {
-  scrollbar-width: thin;
-  scrollbar-color: #4c1d95 #f0e6ff;
 }

@@ -23,25 +23,25 @@ const services = [
     title: 'Migração de Plataforma',
     description: 'Traga sua loja para a Phandshop sem dores de cabeça. Nossos parceiros cuidam de toda a migração de produtos, clientes e dados com segurança.',
     icon: <FaTools />,
-    link: '#'
+    link: '/contratar/migracao'
   },
   {
     title: 'Desenvolvimento e Integrações',
     description: 'Para soluções mais complexas, contrate desenvolvedores para criar funcionalidades personalizadas e integrar a sua loja com outros sistemas.',
     icon: <FaLaptopCode />,
-    link: '#'
+    link: '/contratar/desenvolvimento'
   },
   {
     title: 'Marketing Digital',
     description: 'Conecte sua loja com o público certo. Contrate especialistas para criar e gerenciar campanhas de e-mail marketing e anúncios pagos.',
     icon: <FaBullhorn />,
-    link: '#'
+    link: '/contratar/marketing'
   },
   {
     title: 'Auditoria de Loja',
     description: 'Receba uma análise completa da sua loja. Os parceiros identificam pontos de melhoria no design, performance, usabilidade e conversão.',
     icon: <FaClipboardList />,
-    link: '#'
+    link: '/contratar/auditoria'
   },
 ];
 
