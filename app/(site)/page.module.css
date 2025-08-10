@@ -47,14 +47,15 @@
   background-color: #6b21a8;
   padding-top: 6rem;
   padding-bottom: 6rem;
-  
 }
+
 .heroGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 3rem;
 }
+
 .heroTitle {
   font-size: clamp(2.5rem, 5vw, 3.25rem);
   font-weight: 700;
@@ -62,6 +63,7 @@
   line-height: 1.25;
   margin-bottom: 1.5rem;
 }
+
 .heroSubtitle {
   font-size: clamp(1.1rem, 2vw, 1.2rem);
   color: white;
@@ -69,12 +71,14 @@
   line-height: 1.7;
   margin-bottom: 2.5rem;
 }
+
 .heroActions {
   margin-top: 2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
+
 .heroButton {
   display: inline-block;
   padding: 14px 28px;
@@ -86,30 +90,57 @@
   border: 2px solid transparent;
   cursor: pointer;
 }
+
 .heroButtonPrimary {
   composes: heroButton;
   background-color: var(--brand-purple);
   color: white;
 }
+
 .heroButtonPrimary:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 20px rgba(109, 40, 217, 0.4);
   background-color: var(--brand-purple-dark);
 }
+
 .heroButtonSecondary {
   composes: heroButton;
   background-color: transparent;
-  color:  white;
-  border-color:  white;
+  color: white;
+  border-color: white;
 }
+
 .heroButtonSecondary:hover {
   background-color: var(--brand-purple);
   color: white;
   transform: translateY(-3px);
 }
+
 .heroImageWrapper img {
   max-width: 100%;
   height: auto;
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .heroActions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .heroButton {
+    width: fit-content; /* Só o tamanho do texto */
+    white-space: nowrap; /* Impede quebra de linha */
+    padding: 8px 20px; /* Mais slim, menos “gordo” */
+    font-size: 0.9rem;
+    border-radius: 50px; /* Oval */
+    box-sizing: border-box;
+  }
 }
 
 /* --- 2. Diferenciais (sem alterações) --- */
