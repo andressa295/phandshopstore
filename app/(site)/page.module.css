@@ -129,9 +129,16 @@
 
 
 }
-/* --- 3. Funcionalidades (sem alterações) --- */
-.featuresSection { composes: section; background-color: #f9fafb; }
-.featuresGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 3rem; text-align: left; margin-bottom: 5rem; }
+/* --- 3. Funcionalidades (atualizada para carrossel) --- */
+
+.featuresSection { composes: section; background-color: #ffffff; }
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 3rem;
+  text-align: left;
+  margin-bottom: 5rem;
+}
 .featureCard { display: flex; align-items: flex-start; gap: 1rem; }
 .featureIcon { color: #6D28D9; flex-shrink: 0; margin-top: 5px; }
 .featureCard h3 { font-size: 1.125rem; font-weight: 600; margin: 0 0 0.5rem 0; }
@@ -139,37 +146,56 @@
 .integrationsWrapper { margin-top: 4rem; }
 .integrationsTitle { font-size: 1rem; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3rem; text-align: center; }
 
-/* Estilos para a animação de rotação */
+/* Estilos para a animação de letreiro */
 .logosContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* Para posicionar os logos absolutamente dentro */
-  min-height: 70px; /* Altura mínima para os logos */
+  position: relative;
+  min-height: 100px;
+  overflow: hidden; /* Esconde os logos que estão fora da área visível */
 }
 
-.logoWrapper {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+.logosMarquee {
+  display: flex;
+  width: 200%; /* Duplica a largura para permitir a rolagem infinita */
+  animation: marquee 30s linear infinite; /* Animação de 30 segundos, linear e infinita */
+  gap: 4rem;
 }
 
 .logoImage {
-  filter: grayscale(0%); /* Remove o filtro para mostrar a cor original */
-  opacity: 1; /* Garante que o logo esteja visível por padrão */
-  height: 120px;
+  height: 100px;
   width: auto;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
-/* Remove os estilos de hover, já que a animação é automática */
-.logoImage:hover,
-.logoImage {
-  filter: none;
+/* Efeito de fade nas bordas */
+.logosContainer::before,
+.logosContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  z-index: 1;
 }
 
+.logosContainer::before {
+  left: 0;
+  background: linear-gradient(to right, #f9fafb, rgba(249, 250, 251, 0));
+}
+
+.logosContainer::after {
+  right: 0;
+  background: linear-gradient(to left, #f9fafb, rgba(249, 250, 251, 0));
+}
+
+/* Definição da animação de letreiro */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* Rola 50% da largura do container para simular o loop */
+}
 
 @media (max-width: 768px) {
   .featuresGrid {
@@ -177,7 +203,6 @@
     gap: 2rem;
   }
 }
-
 
 
 /* --- TemasSection --- */
