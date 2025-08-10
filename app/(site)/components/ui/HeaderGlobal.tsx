@@ -233,25 +233,25 @@ export default function Header() {
                   <p className={styles.smallText}>
                     Acesse seu painel para gerenciar comissões e divulgações.
                   </p>
-                  <Link href="#" className={styles.partnerLoginLink} onClick={handleLinkClick}>
+                  <Link href="/sitecriadores/afiliado" className={styles.partnerLoginLink} onClick={handleLinkClick}>
                     Acessar Painel <FaRegPaperPlane />
                   </Link>
                 </div>
                 <div className={`${styles.parceirosColumn} ${styles.columnSeparator}`}>
                   <h5>Seja um parceiro</h5>
-                  <Link href="#" onClick={handleLinkClick}>Parceiros Especialistas</Link>
-                  <Link href="#" onClick={handleLinkClick}>Parceiros Tecnológicos</Link>
-                  <Link href="#" onClick={handleLinkClick}>Parceiros Afiliados</Link>
-                  <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                  <Link href="/seja-um-parceiro/parceiros/temas" onClick={handleLinkClick}>Parceiros Especialistas</Link>
+                  <Link href="/seja-um-parceiro/tecnologicos" onClick={handleLinkClick}>Parceiros Tecnológicos</Link>
+                  <Link href="/seja-um-parceiro/criadores" onClick={handleLinkClick}>Parceiros Afiliados</Link>
+                  <Link href="/seja-um-parceiro" className={styles.verMaisLink} onClick={handleLinkClick}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
                   </Link>
                 </div>
                 <div className={`${styles.parceirosColumn} ${styles.columnSeparator}`}>
                   <h5>Contrate um parceiro</h5>
-                  <Link href="#" onClick={handleLinkClick}>Configuração da loja</Link>
-                  <Link href="#" onClick={handleLinkClick}>Design e Criação</Link>
-                  <Link href="#" onClick={handleLinkClick}>Migração para Phandshop</Link>
-                  <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                  <Link href="/contratar/configuracao" onClick={handleLinkClick}>Configuração da loja</Link>
+                  <Link href="/contratar/design" onClick={handleLinkClick}>Design e Criação</Link>
+                  <Link href="/contratar/migracao" onClick={handleLinkClick}>Migração para Phandshop</Link>
+                  <Link href="/contratar" className={styles.verMaisLink} onClick={handleLinkClick}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
                   </Link>
                 </div>
