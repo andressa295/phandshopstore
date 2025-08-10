@@ -2,7 +2,7 @@ import React from 'react';
 import { HeroSection } from './components/landing/HeroSection';
 import { DiferenciaisSection } from './components/landing/DiferenciaisSection';
 import { FeaturesSection } from './components/landing/FeaturesSection';
-import { CalculadoraSection } from './components/landing/CalculadoraSection';
+import { TemasSection } from './components/landing/TemasSection';
 import { DepoimentosSection } from './components/landing/DepoimentosSection';
 import { PlanosSection } from './components/landing/PlanosSection';
 import { FaqSection } from './components/landing/FaqSection';
@@ -15,7 +15,7 @@ export default function Home() {
       <HeroSection />
       <DiferenciaisSection />
       <FeaturesSection />
-      <CalculadoraSection />
+      <TemasSection />
       <DepoimentosSection />
       <PlanosSection />
       <FaqSection />

@@ -179,112 +179,176 @@
 }
 
 
-/* --- 4. Calculadora --- */
-.calculadoraSection {
-  background-color: #fff;
-}
 
-.calculadoraBox {
-  max-width: 900px;
-  margin: 0 auto;
-  /* Fundo com gradiente sutil para mais vida */
-  background: linear-gradient(135deg, var(--brand-purple-light) 0%, #e0c8ff 100%);
-  border-radius: 1.5rem;
-  padding: 3rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: stretch;
-  /* Sombra mais pronunciada para destaque */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-}
-
-.calculadoraBox:hover {
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-  transform: translateY(-5px);
-}
-
-.calculadoraInputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  text-align: left;
-}
-
-.calculadoraInputGroup label {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: var(--text-primary); /* Mais escuro para melhor legibilidade */
-}
-
-.calculadoraInputGroup input,
-.calculadoraInputGroup select {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 8px;
-  border: 2px solid var(--brand-purple-light); /* Borda mais visível */
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-  box-sizing: border-box;
-  color: var(--text-primary);
-  background-color: white;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.calculadoraInputGroup input:focus,
-.calculadoraInputGroup select:focus {
-  border-color: var(--brand-purple); /* Borda roxa no foco */
-  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2); /* Sombra de foco */
-  outline: none;
-}
-
-.calculadoraResultado {
+/* --- TemasSection --- */
+.temasSection {
+  padding: 5rem 0;
+  background-color: #6b21a8;
   text-align: center;
-  background: var(--success-color); /* Cor verde para sucesso */
-  color: white;
-  padding: 2.5rem;
-  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.galleryTitle {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-family: var(--font-serif);
+
+  
+}
+
+.gallerySubtitle {
+  font-size: clamp(1.1rem, 2vw, 1.2rem);
+  color: #e7e7e7;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 450px;
+  margin: 0 auto 3rem;
+  perspective: 1000px;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out, z-index 0.01s ease 0.3s;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.themeImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.activeSlide {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  z-index: 2;
+}
+
+.nextSlide {
+  transform: translateX(calc(100% + 20px)) scale(0.85);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.prevSlide {
+  transform: translateX(calc(-100% - 20px)) scale(0.85);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.hiddenSlide {
+  transform: translateX(0) scale(0.7);
+  opacity: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(107, 33, 168, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); /* Sombra verde para o resultado */
+  cursor: pointer;
+  font-size: 1.5rem;
+  z-index: 3;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
 }
 
-.calculadoraResultado p {
-  margin: 0;
-  color: #d1fae5;
-  font-size: 1.1rem;
+.navButton:hover {
+  background-color: #6b21a8;
 }
 
-.economiaValor {
-  display: block;
-  font-size: clamp(2.8rem, 6vw, 3.8rem); /* Aumentado o tamanho da fonte */
-  font-weight: 800;
-  margin: 0.5rem 0;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra no texto do valor */
+.left {
+  left: -25px;
 }
 
-.economiaDetalhe {
-  font-size: 0.9rem;
-  color: #a7f3d0;
-  margin-top: 0.5rem;
+.right {
+  right: -25px;
 }
 
-/* ============ RESPONSIVIDADE ============ */
+.ctaButton {
+  background-color: #6b21a8;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.ctaButton:hover {
+  background-color: #5a1d8f;
+  transform: translateY(-2px);
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-  .calculadoraBox {
-    grid-template-columns: 1fr;
-    padding: 2rem 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
-    gap: 1.5rem;
+  .carouselWrapper {
+    height: 300px;
   }
-  .calculadoraInputGroup {
-    gap: 1.5rem;
+  .navButton {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
-  .calculadoraResultado {
-    margin-top: 1.5rem;
+  .left {
+    left: 5px;
+  }
+  .right {
+    right: 5px;
+  }
+  .slide {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  }
+  .nextSlide {
+    transform: translateX(calc(100% + 10px)) scale(0.9);
+    opacity: 0.8;
+  }
+  .prevSlide {
+    transform: translateX(calc(-100% - 10px)) scale(0.9);
+    opacity: 0.8;
   }
 }
 
