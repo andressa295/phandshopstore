@@ -125,14 +125,14 @@
 
 .heroButtonPrimary {
   composes: heroButton;
-  background-color: var(--brand-purple);
-  color: white;
+  background-color: #ffffff;
+  color: #6b21a8;
 }
 
 .heroButtonPrimary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 20px rgba(109, 40, 217, 0.4);
-  background-color: var(--brand-purple-dark);
+  box-shadow: 0 4px 20px #c0c0c0(109, 40, 217, 0.4);
+  background-color: var(--white-dark#a3a3a3);
 }
 
 .heroButtonSecondary {
@@ -143,7 +143,7 @@
 }
 
 .heroButtonSecondary:hover {
-  background-color: var(--brand-purple);
+  background-color: var(#6b21a8);
   color: white;
   transform: translateY(-3px);
 }
