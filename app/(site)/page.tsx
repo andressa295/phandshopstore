@@ -7,7 +7,7 @@ import { DepoimentosSection } from './components/landing/DepoimentosSection';
 import { PlanosSection } from './components/landing/PlanosSection';
 import { FaqSection } from './components/landing/FaqSection';
 import { SuporteSection } from './components/landing/SuporteSection';
-import { CtaSection } from './components/landing/CtaSection';
+import { FormularioEspecialista } from './components/landing/FormularioEspecialista';
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
       <PlanosSection />
       <FaqSection />
       <SuporteSection />
-      <CtaSection />
+      <FormularioEspecialista />
     </main>
   );
 }
