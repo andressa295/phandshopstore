@@ -81,7 +81,7 @@ export function FormularioEspecialista() {
           </div>
 
           <button type="submit" className={styles.button}>
-            Quero conferir o painel
+            Quero falar com especialista
           </button>
         </form>
       </div>
