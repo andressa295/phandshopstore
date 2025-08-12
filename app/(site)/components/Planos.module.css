@@ -80,7 +80,7 @@
 }
 
 .cardHeader {
-    margin-bottom: 24px;
+    margin-bottom: 10px;
 }
 
 .icon {
@@ -100,11 +100,11 @@
     justify-content: center;
     align-items: baseline;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .price {
-    font-size: 35px;
+    font-size: 30px;
     font-weight: 800;
     color: #6b21a8;
 }
