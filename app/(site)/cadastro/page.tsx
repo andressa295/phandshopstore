@@ -82,6 +82,26 @@ function CadastroForm() {
     return onlyNums.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').replace(/-$/, '');
   };
 
+  const formatDocumento = (value: string) => {
+    const onlyNums = value.replace(/\D/g, '');
+    if (onlyNums.length <= 11) {
+      // CPF
+      return onlyNums
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+    } else {
+      // CNPJ
+      return onlyNums
+        .replace(/^(\d{2})(\d)/, '$1.$2')
+        .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+        .replace(/\.(\d{3})(\d)/, '.$1/$2')
+        .replace(/(\d{4})(\d)/, '$1-$2')
+        .replace(/(-\d{2})\d+?$/, '$1');
+    }
+  };
+
   useEffect(() => {
     const planoQuery = searchParams.get('plano') as PlanosKeys | null;
     const recorrenciaQuery = searchParams.get('recorrencia');
@@ -103,9 +123,9 @@ function CadastroForm() {
     const isValid =
       form.nome.trim().length >= 2 &&
       validarEmail(form.email) &&
-      form.telefone.trim().length >= 10 &&
-      form.documento.trim().length > 0 &&
-      form.senha.length >= 6 &&
+      form.telefone.replace(/\D/g, '').length >= 10 &&
+      form.documento.replace(/\D/g, '').length >= 11 &&
+      form.senha.length >= 8 &&
       form.senha === form.confirmSenha &&
       form.storeName.trim().length > 0 &&
       form.aceitaTermos;
@@ -117,6 +137,11 @@ function CadastroForm() {
     setError(''); 
     setSuccessMessage(''); 
     
+    if (form.senha !== form.confirmSenha) {
+      setError('A senha e a confirmação de senha não são iguais.');
+      return;
+    }
+
     if (!valid) {
       setError('Preencha todos os campos corretamente e aceite os termos de uso.');
       return;
@@ -217,7 +242,7 @@ function CadastroForm() {
     const { name, value, type, checked } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : type === 'tel' ? formatPhone(value) : value,
+      [name]: type === 'checkbox' ? checked : name === 'documento' ? formatDocumento(value) : type === 'tel' ? formatPhone(value) : value,
     }));
   }
 
@@ -256,7 +281,7 @@ function CadastroForm() {
               value={form.senha}
               onChange={handleChange}
               required
-              minLength={6}
+              minLength={8}
               className={styles.inputField}
             />
             <button
@@ -277,7 +302,7 @@ function CadastroForm() {
             value={form.confirmSenha}
             onChange={handleChange}
             required
-            minLength={6}
+            minLength={8}
             className={styles.inputField}
           />
 
