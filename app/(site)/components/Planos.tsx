@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from './Planos.module.css';
-import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import { FaGift, FaLightbulb, FaGem, FaRocket, FaCrown } from 'react-icons/fa';
@@ -64,70 +64,54 @@ const planosData = [
 
 const Planos = () => {
   const [showAnnual, setShowAnnual] = useState(false);
-  const [loadingCheckout, setLoadingCheckout] = useState(false);
+  const [loadingButton, setLoadingButton] = useState<string | null>(null);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
   const handleSubscribe = async (plan: typeof planosData[0], isAnnual: boolean) => {
-    setLoadingCheckout(true);
+    const buttonId = `${plan.name}-${isAnnual ? 'anual' : 'mensal'}`;
+    setLoadingButton(buttonId);
 
     const { data: { user } } = await supabase.auth.getUser();
 
-    // Lógica corrigida:
-    // 1. Se o usuário NÃO estiver logado, redireciona para o cadastro.
     if (!user) {
-      console.log("Usuário não logado. Redirecionando para cadastro.");
       router.push(`/cadastro?plano=${plan.name.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);
-      setLoadingCheckout(false);
+      setLoadingButton(null);
       return;
     }
 
-    // 2. Se o usuário estiver logado e escolheu o plano GRÁTIS,
-    // apenas redireciona para o dashboard, pois não há pagamento.
     if (plan.name === 'Plano Grátis') {
-      console.log("Usuário logado e escolheu o Plano Grátis. Redirecionando para dashboard.");
       router.push('/dashboard');
-      setLoadingCheckout(false);
+      setLoadingButton(null);
       return;
     }
 
-    // 3. Se o usuário estiver logado e escolheu um plano pago,
-    // continua para o processo de checkout do Stripe.
     const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
     if (!priceId) {
-      console.error("Erro: priceId do Stripe não encontrado para o plano selecionado:", plan.name, isAnnual);
       alert('Erro ao iniciar o processo de pagamento. Entre em contato com o suporte.');
-      setLoadingCheckout(false);
+      setLoadingButton(null);
       return;
     }
 
-    console.log("Iniciando checkout do Stripe para priceId:", priceId);
-    
     try {
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          priceId: priceId,
+          priceId,
           planName: plan.name,
-          isAnnual: isAnnual,
+          isAnnual,
           supabaseUserId: user.id
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Falha ao iniciar checkout do Stripe.');
-      }
+      if (!response.ok) throw new Error('Falha ao iniciar checkout do Stripe.');
 
       const { url } = await response.json();
-      if (url) {
-        router.push(url);
-      }
-    } catch (error: any) {
-      console.error('Erro ao iniciar checkout:', error.message);
-      alert('Erro ao iniciar o processo de pagamento: ' + error.message);
-      setLoadingCheckout(false);
+      if (url) router.push(url);
+    } catch (error) {
+      alert('Erro ao iniciar o processo de pagamento.');
+      setLoadingButton(null);
     }
   };
 
@@ -137,14 +121,14 @@ const Planos = () => {
         <button
           className={`${styles.toggleButton} ${!showAnnual ? styles.activeToggle : ''}`}
           onClick={() => setShowAnnual(false)}
-          disabled={loadingCheckout}
+          disabled={loadingButton !== null}
         >
           Mensal
         </button>
         <button
           className={`${styles.toggleButton} ${showAnnual ? styles.activeToggle : ''}`}
           onClick={() => setShowAnnual(true)}
-          disabled={loadingCheckout}
+          disabled={loadingButton !== null}
         >
           Anual (16% OFF)
         </button>
@@ -153,7 +137,6 @@ const Planos = () => {
       <div className={styles.planosContainer}>
         {planosData.map((plano, index) => (
           <div key={index} className={`${styles.planoCard} ${plano.isFeatured ? styles.featured : ''}`}>
-
             {plano.isFeatured && <div className={styles.featuredBadge}>MAIS POPULAR</div>}
 
             <div className={styles.cardHeader}>
@@ -165,19 +148,16 @@ const Planos = () => {
               <span className={styles.price}>
                 {showAnnual ? plano.annualFullPrice : plano.monthlyPrice}
               </span>
-              {showAnnual ? (
-                plano.annualMonthlyEquivalent && <span className={styles.priceDetails}>{plano.annualMonthlyEquivalent}</span>
-              ) : (
-                plano.monthlyPriceDetails && <span className={styles.priceDetails}>{plano.monthlyPriceDetails}</span>
-              )}
+              {showAnnual
+                ? plano.annualMonthlyEquivalent && <span className={styles.priceDetails}>{plano.annualMonthlyEquivalent}</span>
+                : plano.monthlyPriceDetails && <span className={styles.priceDetails}>{plano.monthlyPriceDetails}</span>
+              }
             </div>
 
             {showAnnual && plano.name !== 'Plano Grátis' && (
-                <p className={styles.annualPriceDetail}>
-                    (pagamento único anual)
-                </p>
+              <p className={styles.annualPriceDetail}>(pagamento único anual)</p>
             )}
-            
+
             <hr className={styles.separator} />
 
             <ul className={styles.featuresList}>
@@ -191,12 +171,13 @@ const Planos = () => {
               <button
                 onClick={() => handleSubscribe(plano, showAnnual)}
                 className={styles.ctaButton}
-                disabled={loadingCheckout}
+                disabled={loadingButton !== null}
               >
-                {loadingCheckout ? 'Redirecionando...' : plano.buttonText}
+                {loadingButton === `${plano.name}-${showAnnual ? 'anual' : 'mensal'}` 
+                  ? 'Redirecionando...' 
+                  : plano.buttonText}
               </button>
             </div>
-
           </div>
         ))}
       </div>
