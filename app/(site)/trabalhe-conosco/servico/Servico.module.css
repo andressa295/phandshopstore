@@ -1,0 +1,104 @@
+/* app/(site)/servico/Servico.module.css */
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+}
+
+.section {
+  width: 100%;
+}
+
+.contentContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.heroSubtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.candidaturaForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Borda oval */
+  font-size: 1rem;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #2e6ff4; /* Sua cor azul */
+  box-shadow: 0 0 0 2px rgba(46, 111, 244, 0.25);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  border-radius: 20px; /* Borda oval */
+}
+
+.submitButton {
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #6b21a8; /* Sua cor azul */
+  border: none;
+  border-radius: 25px; /* Borda oval */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #6b21a8; /* Tom mais escuro */
+}
+
+.backLink {
+  display: block;
+  text-align: center;
+  margin-top: 2rem;
+  color: #6b21a8;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.backLink:hover {
+  color: #1a4fbf;
+  text-decoration: underline;
+}

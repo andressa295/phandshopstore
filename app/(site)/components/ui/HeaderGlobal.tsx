@@ -256,11 +256,11 @@ export default function Header() {
                   </Link>
                 </div>
                 <div className={`${styles.parceirosColumn} ${styles.columnSeparator}`}>
-                  <h5>Para Desenvolvedores</h5>
-                  <Link href="#" onClick={handleLinkClick}>Documentação API</Link>
-                  <Link href="#" onClick={handleLinkClick}>Integrações</Link>
-                  <Link href="#" onClick={handleLinkClick}>Comunidade</Link>
-                  <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                  <h5>Trabalhe Conosco</h5>
+                  <Link href="/trabalhe-conosco" onClick={handleLinkClick}>Vagas em Aberto</Link>
+                  <Link href="/trabalhe-conosco" onClick={handleLinkClick}>Nossa Cultura</Link>
+                  <Link href="/trabalhe-conosco" onClick={handleLinkClick}>Programas de Estágio</Link>
+                  <Link href="/trabalhe-conosco" className={styles.verMaisLink} onClick={handleLinkClick}>
                     Ver mais <FaArrowRight className={styles.arrowIcon} />
                   </Link>
                 </div>

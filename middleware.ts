@@ -62,6 +62,9 @@ export async function middleware(req: NextRequest) {
     '/contratar/desenvolvimento',
     '/contratar/marketing',
     '/contratar/auditoria',
+    '/trabalhe-conosco',
+    '/trabalhe-conosco/vagas',
+    '/trabalhe-conosco/servico',
   ];
 
   const protectedRoutePrefix = '/dashboard';

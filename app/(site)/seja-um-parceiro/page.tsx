@@ -120,7 +120,7 @@ export default function SejaParceiroPage() {
         <p className={styles.ctaSubtitle}>
           Cadastre-se hoje e comece a criar e monetizar com a Phandshop.
         </p>
-        <Link href="#" className={styles.ctaButton}>
+        <Link href="/seja-um-parceiro/parceiros/cadastro" className={styles.ctaButton}>
           Quero ser parceiro <FaArrowRight />
         </Link>
       </section>
