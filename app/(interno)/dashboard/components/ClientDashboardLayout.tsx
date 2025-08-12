@@ -4,23 +4,21 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { useSupabase } from '../UserContext';
+import { useUser } from '../UserContext';
 import HeaderPainel from './HeaderPainel';
 import FooterPainel from './FooterPainel';
-// PlanoUsuario não é mais importado aqui
 
 import { 
     FaHome, FaChartBar, FaBoxOpen, FaUsers, FaTags, FaBullhorn, FaShoppingCart,
-    FaStore, FaChevronDown, FaChevronUp, FaFacebook
+    FaStore, FaChevronDown, FaChevronUp, FaFacebook, FaGoogle, FaLink, FaListAlt, FaCogs, FaEnvelope, FaGlobe, FaCertificate, FaSearch, FaPhone, FaMapMarkerAlt, FaFileAlt, FaLock, FaCreditCard, FaTruck, FaMoneyBillWave, FaDollarSign, FaCode, FaRetweet, FaColumns, FaMap
 } from 'react-icons/fa';
-
 import { MdSettings } from 'react-icons/md';
 import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800'] });
 
 const colors = {
-    primary: '#6b21a8', secondary: '#820AD1', accent: '#7C3AED', text: '#333333', lightText: '#666666', border: '#e0e0e0', background: '#f8f9fa', white: '#ffffff', success: '#28a745', danger: '#dc3545',
+    primary: '#6b21a8', secondary: '#820AD1', accent: '#7C3AED', text: '#333333', lightText: '#666666', border: '#e0e0e0', background: '#f8f9fa', white: '#ffffff', success: '#28a745', danger: '#dc3545', warning: '#ffc107', info: '#17a2b8',
 };
 
 const typography = {
@@ -35,57 +33,21 @@ interface MenuChild { label: string; href: string; icon?: React.ReactNode; }
 const menuItems: MenuItem[] = [
     { icon: <FaHome />, label: 'Página inicial', href: '/dashboard' },
     { icon: <FaChartBar />, label: 'Estatísticas', href: '/dashboard/estatisticas' },
-    { icon: <FaShoppingCart />, label: 'Vendas', children: [
-        { label: 'Lista de vendas', href: '/dashboard/vendas/lista' },
-        { label: 'Carrinhos abandonados', href: '/dashboard/vendas/carrinhos' },
-        { label: 'Pedidos manuais', href: '/dashboard/vendas/pedidos' }
-    ] },
-    { icon: <FaBoxOpen />, label: 'Produtos', children: [
-        { label: 'Lista de produtos', href: '/dashboard/produtos/lista' },
-        { label: 'Categorias', href: '/dashboard/categorias' }
-    ] },
-    { icon: <FaUsers />, label: 'Clientes', children: [
-        { label: 'Lista de clientes', href: '/dashboard/clientes/lista' },
-        { label: 'Mensagens', href: '/dashboard/clientes/mensagens' }
-    ] },
-    { icon: <FaTags />, label: 'Descontos', children: [
-        { label: 'Cupons', href: '/dashboard/descontos/cupons' },
-        { label: 'Frete grátis', href: '/dashboard/descontos/frete-gratis' },
-        { label: 'Promoções', href: '/dashboard/promocoes' }
-    ] },
-    { icon: <FaBullhorn />, label: 'Marketing', children: [
-        { label: 'Aplicativos', href: '/dashboard/marketing/aplicativos' }
-    ] },
+    { icon: <FaShoppingCart />, label: 'Vendas', children: [{ label: 'Lista de vendas', href: '/dashboard/vendas/lista' }, { label: 'Carrinhos abandonados', href: '/dashboard/vendas/carrinhos' }, { label: 'Pedidos manuais', href: '/dashboard/vendas/pedidos' }] },
+    { icon: <FaBoxOpen />, label: 'Produtos', children: [{ label: 'Lista de produtos', href: '/dashboard/produtos/lista' }, { label: 'Categorias', href: '/dashboard/categorias' }] },
+    { icon: <FaUsers />, label: 'Clientes', children: [{ label: 'Lista de clientes', href: '/dashboard/clientes/lista' }, { label: 'Mensagens', href: '/dashboard/clientes/mensagens' }] },
+    { icon: <FaTags />, label: 'Descontos', children: [{ label: 'Cupons', href: '/dashboard/descontos/cupons' }, { label: 'Frete grátis', href: '/dashboard/descontos/frete-gratis' }, { label: 'Promoções', href: '/dashboard/promocoes' }] },
+    { icon: <FaBullhorn />, label: 'Marketing', children: [{ label: 'Aplicativos', href: '/dashboard/marketing/aplicativos' }] },
     { icon: <FaStore />, label: 'Canais de venda', href: '/dashboard/canais' },
-    { icon: <FaStore />, label: 'Loja online', children: [
-        { label: 'Loja Temas', href: '/dashboard/editarloja/temas' },
-        { label: 'Editar loja', href: '/personalizar' },
-        { label: 'Páginas', href: '/dashboard/paginas' },
-        { label: 'Menus', href: '/dashboard/loja/menus' },
-        { label: 'Página em construção', href: '/dashboard/construcao' },
-        { label: 'Informação de contato', href: '/dashboard/contato' }
-    ] },
-    { icon: <FaFacebook />, label: 'Redes sociais', children: [
-        { label: 'Facebook / Meta', href: '/dashboard/facebook-meta' },
-        { label: 'Instagram Shopping', href: '/dashboard/instagram' },
-        { label: 'Google Shopping', href: '/dashboard/google-shopping' }
-    ] },
-    { icon: <MdSettings />, label: 'Configurações', children: [
-        { label: 'Forma de entrega', href: '/dashboard/configuracoes/formas-entrega' },
-        { label: 'Meios de pagamentos', href: '/dashboard/configuracoes/meios-pagamentos' },
-        { label: 'E-mails', href: '/dashboard/configuracoes/emails' },
-        { label: 'WhatsApp', href: '/dashboard/configuracoes/whatsapp' },
-        { label: 'Moedas e Idiomas', href: '/dashboard/configuracoes/moedas-idiomas' },
-        { label: 'Opções de checkout', href: '/dashboard/configuracoes/opcoes-checkout' },
-        { label: 'Códigos externos', href: '/dashboard/configuracoes/codigos-externos' },
-        { label: 'Redirecionamentos 301', href: '/dashboard/configuracoes/redirecionamentos' },
-        { label: 'Domínios', href: '/dashboard/configuracoes/dominios' }
-    ] }
+    { icon: <FaStore />, label: 'Loja online', children: [{ label: 'Loja Temas', href: '/dashboard/editarloja/temas' }, { label: 'Editar loja', href: '/personalizar' }, { label: 'Páginas', href: '/dashboard/paginas' }, { label: 'Menus', href: '/dashboard/loja/menus' }, { label: 'Página em construção', href: '/dashboard/construcao' }, { label: 'Informação de contato', href: '/dashboard/contato' }] },
+    { icon: <FaFacebook />, label: 'Redes sociais', children: [{ label: 'Facebook / Meta', href: '/dashboard/facebook-meta' }, { label: 'Instagram Shopping', href: '/dashboard/instagram' }, { label: 'Google Shopping', href: '/dashboard/google-shopping' }] },
+    { icon: <MdSettings />, label: 'Configurações', children: [{ label: 'Forma de entrega', href: '/dashboard/configuracoes/formas-entrega' }, { label: 'Meios de pagamentos', href: '/dashboard/configuracoes/meios-pagamentos' }, { label: 'E-mails', href: '/dashboard/configuracoes/emails' }, { label: 'WhatsApp', href: '/dashboard/configuracoes/whatsapp' }, { label: 'Moedas e Idiomas', href: '/dashboard/configuracoes/moedas-idiomas' }, { label: 'Opções de checkout', href: '/dashboard/configuracoes/opcoes-checkout' }, { label: 'Códigos externos', href: '/dashboard/configuracoes/codigos-externos' }, { label: 'Redirecionamentos 301', href: '/dashboard/configuracoes/redirecionamentos' }, { label: 'Domínios', href: '/dashboard/configuracoes/dominios' }] }
 ];
+
 
 export default function ClientDashboardLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
-    const { user, profile, loading } = useSupabase();
+    const { user, profile, loading } = useUser();
 
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
         const initialOpenState: Record<string, boolean> = {};
@@ -101,12 +63,12 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
     const isActiveLink = (href: string) => { if (href === '/dashboard') { return pathname === '/dashboard'; } return pathname.startsWith(href); };
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; 
         document.body.style.height = '100vh';
         document.body.style.width = '100vw';
 
         return () => {
-            document.body.style.overflow = '';
+            document.body.style.overflow = ''; 
             document.body.style.height = '';
             document.body.style.width = '';
         };
@@ -136,7 +98,7 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
             backgroundColor: colors.background,
             color: colors.text,
         }}>
-            <HeaderPainel userProfile={profile} />
+            <HeaderPainel userProfile={profile} /> 
 
             <div style={{ display: 'flex', flexGrow: 1 }}>
                 <aside style={{
@@ -178,6 +140,7 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                                                             <Link href={child.href} style={{
                                                                 display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 20px 8px 32px', textDecoration: 'none', color: isActiveLink(child.href) ? colors.white : colors.lightText, backgroundColor: isActiveLink(child.href) ? colors.secondary : 'transparent', borderRadius: '0 20px 20px 0', fontWeight: isActiveLink(child.href) ? 'bold' : 'normal', fontSize: typography.smallSize, transition: 'all 0.2s ease',
                                                             }}
+                                                            // CORREÇÃO: Usar um bloco para a lógica do mouse enter/leave
                                                             onMouseEnter={(e) => {
                                                                 if (!isActiveLink(child.href)) {
                                                                     e.currentTarget.style.backgroundColor = colors.background;
@@ -200,6 +163,7 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                                         <Link href={item.href || '#'} style={{
                                             display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 20px', fontWeight: 'bold', fontSize: typography.smallSize, textDecoration: 'none', color: isActiveLink(item.href || '#') ? colors.white : colors.text, backgroundColor: isActiveLink(item.href || '#') ? colors.primary : 'transparent', borderRadius: '0 25px 25px 0', transition: 'all 0.2s ease',
                                         }}
+                                        // CORREÇÃO: Usar um bloco para a lógica do mouse enter/leave
                                         onMouseEnter={(e) => {
                                             if (!isActiveLink(item.href || '#')) {
                                                 e.currentTarget.style.backgroundColor = colors.background;
@@ -225,7 +189,6 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                 </aside>
 
                 <main style={{ flexGrow: 1, overflowY: 'auto', boxSizing: 'border-box', padding: '20px', height: `calc(100vh - ${DASHBOARD_HEADER_HEIGHT})` }}>
-                    
                     {children}
                 </main>
             </div>
