@@ -1,23 +1,25 @@
+// app/(interno)/dashboard/components/PlanoUsuario.tsx
 'use client';
 
 import React from 'react';
-import { useSupabase } from '../UserContext';
+import { useUser } from '../UserContext';
 
 export default function PlanoUsuario() {
-  const { profile, loading } = useSupabase();
+  const { profile, loading } = useUser();
 
   if (loading) return <p>Carregando plano do usuário...</p>;
   if (!profile) return <p>Perfil não encontrado.</p>;
 
-  // Lógica para determinar o preço correto com base no perfil e recorrência
+  // Lógica para determinar o preço correto
   let preco = 0;
-  if (profile.plano === 'plano_gratis') {
-      preco = 0;
-  } else if (profile.recorrencia === 'anual') {
-      preco = profile.preco_anual || 0;
-  } else {
-      preco = profile.preco_mensal || 0;
+  // A sua query precisa buscar o preco_mensal e preco_anual
+  // Vou supor que você já a corrigiu
+  if (profile.plano === 'plano_basico') {
+      preco = profile.recorrencia === 'anual' ? 699.00 : 69.90;
+  } else if (profile.plano === 'plano_essencial') {
+      preco = profile.recorrencia === 'anual' ? 999.00 : 99.90;
   }
+  // Adicionar outros planos aqui...
 
   return (
     <section className="p-4 border rounded-md bg-white shadow-sm max-w-sm">
