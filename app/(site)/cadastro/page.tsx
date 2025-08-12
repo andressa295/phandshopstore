@@ -27,7 +27,7 @@ const EyeIcon = () => (
 );
 
 const EyeOffIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3d.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
     <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
     <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
@@ -35,13 +35,14 @@ const EyeOffIcon = () => (
   </svg>
 );
 
-
 interface FormState {
   nome: string;
   email: string;
   telefone: string; 
+  documento: string;
   senha: string;
   confirmSenha: string;
+  storeName: string;
   aceitaTermos: boolean;
   plano?: string; 
   recorrencia?: string; 
@@ -51,18 +52,20 @@ function CadastroForm() {
   const supabase = createClientComponentClient();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [nomeDoPlano, setNomeDoPlano] = useState<string>('');
-  const [recorrenciaDoPlano, setRecorrenciaDoPlano] = useState<string>('');
 
   const [form, setForm] = useState<FormState>({
     nome: '',
     email: '',
     telefone: '', 
+    documento: '',
     senha: '',
     confirmSenha: '',
+    storeName: '',
     aceitaTermos: false,
   });
 
+  const [nomeDoPlano, setNomeDoPlano] = useState<string>('');
+  const [recorrenciaDoPlano, setRecorrenciaDoPlano] = useState<string>('');
   const [showSenha, setShowSenha] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -100,13 +103,14 @@ function CadastroForm() {
     const isValid =
       form.nome.trim().length >= 2 &&
       validarEmail(form.email) &&
-      form.telefone.trim().length >= 10 && 
+      form.telefone.trim().length >= 10 &&
+      form.documento.trim().length > 0 &&
       form.senha.length >= 6 &&
       form.senha === form.confirmSenha &&
+      form.storeName.trim().length > 0 &&
       form.aceitaTermos;
     setValid(isValid);
-    
-  }, [form]); 
+  }, [form]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -120,127 +124,89 @@ function CadastroForm() {
     setLoading(true);
 
     try {
-      console.log("Iniciando processo de cadastro para:", form.email);
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: form.email,
         password: form.senha,
       });
 
       if (signUpError) {
-        console.error("Erro no signUp do Supabase:", signUpError.message, signUpError.name, signUpError.status);
-        
-        if (signUpError.message === 'User already registered' || signUpError.status === 422) {
-          setError('Este e-mail já está cadastrado. Por favor, faça login.');
-          router.push('/login'); 
+        if (signUpError.message.includes('11 seconds')) {
+            setError('Por segurança, aguarde alguns segundos antes de tentar novamente.');
+            setTimeout(() => setLoading(false), 12000);
         } else {
-          setError('Erro ao criar conta: ' + signUpError.message);
+            setError('Erro ao criar conta: ' + signUpError.message);
+            setLoading(false);
         }
-        setLoading(false);
         return;
       }
 
       if (!signUpData?.user) {
-        setError('Cadastro falhou: Usuário não retornado após signup.');
+        setError('Cadastro falhou.');
         setLoading(false);
         return;
       }
-      console.log("Usuário cadastrado com sucesso:", signUpData.user.id);
-
+      
+      const user = signUpData.user;
+      
       if (signUpData.session) {
-        console.log("Sessão Supabase definida para o novo usuário.");
-        await supabase.auth.setSession(signUpData.session);
-      } else {
-        console.warn("Nenhuma sessão retornada após signUp. Usuário pode precisar confirmar e-mail.");
-        setSuccessMessage("Verifique seu e-mail para confirmar sua conta e fazer login!");
-        setLoading(false);
-        router.push('/verificar-email'); 
-        return; 
+          await supabase.auth.setSession(signUpData.session);
       }
-
-      const { data: { user }, error: getUserError } = await supabase.auth.getUser();
-
-      if (getUserError || !user) {
-          console.error("Erro ao obter usuário após signUp e setSession:", getUserError?.message || "Usuário não encontrado.");
-          setError('Erro de autenticação após cadastro. Tente novamente.');
-          setLoading(false);
-          return;
-      }
-      console.log("Usuário autenticado e obtido com sucesso:", user.id);
-
-      // CORREÇÃO: Removendo a coluna 'role' pois ela não existe no schema
-      const userDataToInsert: {
-        id: string;
-        nome_completo: string; 
-        email: string;
-        telefone: string;
-      } = {
+      
+      const { error: insertUserError } = await supabase.from('usuarios').insert({
         id: user.id, 
         nome_completo: form.nome, 
         email: form.email,
         telefone: form.telefone,
-      };
-      console.log("Tentando inserir dados na tabela 'usuarios':", userDataToInsert);
-
-      const { error: insertUserError } = await supabase.from('usuarios').insert(userDataToInsert);
+        documento: form.documento,
+      });
 
       if (insertUserError) {
-        const supabaseError = insertUserError as PostgrestError; 
-        console.error("Erro ao inserir dados na tabela 'usuarios':", supabaseError.message); 
-        console.error("Detalhes do erro de inserção:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
-        
-        // Se a inserção falhar, podemos mostrar uma mensagem de erro ou tratar de forma diferente
-        setError('Erro ao salvar dados do usuário: ' + (supabaseError?.message || 'Erro desconhecido.'));
+        setError('Erro ao salvar dados do usuário: ' + insertUserError.message);
         setLoading(false);
         return;
       }
-      console.log("Dados do usuário inseridos com sucesso na tabela 'usuarios'.");
-
-      // CORREÇÃO: Verificação mais robusta para a criação da loja
-      let storeData: { id: string } | null = null;
-      let insertStoreError: PostgrestError | null = null;
-
-      try {
-        const proposedSubdomain = `${form.nome.toLowerCase().replace(/\s/g, '')}-loja-${Math.random().toString(36).substring(2, 7)}`;
-        console.log("Tentando criar loja com slug:", proposedSubdomain);
-
-        const { data, error } = await supabase.from('lojas').insert({
-          usuario_id: user.id, 
-          nome_loja: `${form.nome}'s Loja`,
-          slug: proposedSubdomain,
-        }).select().single();
-        
-        storeData = data;
-        insertStoreError = error;
-
-      } catch (err) {
-        insertStoreError = err as PostgrestError;
-      }
-
-      if (insertStoreError || !storeData) {
-        const supabaseError = insertStoreError as PostgrestError;
-        console.error("Erro ao criar loja para o usuário:", supabaseError?.message); 
-        console.error("Detalhes do erro de criação de loja:", supabaseError?.details || 'Sem detalhes', supabaseError?.hint || 'Sem hint', supabaseError?.code || 'Sem código');
-        
-        setError('Cadastro realizado, mas houve um erro ao criar sua loja. Por favor, entre em contato.');
-        setLoading(false);
-        return;
-      }
-      console.log("Loja criada com sucesso para o usuário:", user.id);
       
-      const lojaId = storeData.id;
+      const slug = form.storeName.toLowerCase().replace(/\s/g, '-');
+      const { data: storeData, error: insertStoreError } = await supabase.from('lojas').insert({
+        usuario_id: user.id,
+        nome_loja: form.storeName,
+        slug: slug,
+      }).select().single();
 
-      // Lógica de registro de assinatura
-      // ... (sem alterações)
+      if (insertStoreError) {
+        setError('Erro ao criar a loja: ' + insertStoreError.message);
+        setLoading(false);
+        return;
+      }
+      
+      const lojaId = storeData?.id;
+      
+      if (nomeDoPlano && nomeDoPlano !== 'Plano Grátis' && lojaId) {
+        const { data: planosData, error: planosError } = await supabase
+            .from('planos')
+            .select('id')
+            .eq('nome', nomeDoPlano)
+            .single();
+        
+        if (planosError) {
+            console.error('Erro ao buscar ID do plano:', planosError.message);
+        } else if (planosData) {
+            await supabase.from('assinaturas').insert({
+                loja_id: lojaId,
+                plano_id: planosData.id,
+                status: 'ativa',
+                recorrencia: recorrenciaDoPlano,
+            });
+        }
+      }
 
       setLoading(false);
-      setSuccessMessage(`Cadastro realizado com sucesso no ${nomeDoPlano} (${recorrenciaDoPlano})! Redirecionando...`);
-      router.push('/dashboard'); 
+      setSuccessMessage('Cadastro completo e loja criada! Redirecionando...');
+      router.push('/dashboard');
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error('Erro inesperado no handleSubmit:', err.message, err.stack);
         setError('Erro inesperado: ' + err.message);
       } else {
-        console.error('Erro inesperado no handleSubmit (não-Error object):', err);
         setError('Erro inesperado: Tente novamente.');
       }
       setLoading(false);
@@ -314,6 +280,12 @@ function CadastroForm() {
             minLength={6}
             className={styles.inputField}
           />
+
+          <label htmlFor="documento" className={styles.label}>Documento (CPF/CNPJ)</label>
+          <input id="documento" name="documento" type="text" value={form.documento} onChange={handleChange} required className={styles.inputField} />
+          
+          <label htmlFor="storeName" className={styles.label}>Nome da Loja</label>
+          <input id="storeName" name="storeName" type="text" value={form.storeName} onChange={handleChange} required className={styles.inputField} />
 
           <label className={styles.termsLabel}>
             <input

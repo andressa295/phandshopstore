@@ -67,7 +67,7 @@
 .icon {
   font-size: 40px; /* Reduzi o tamanho do ícone */
   margin-bottom: 8px;
-  color: var(--brand-purple); /* Cor para os ícones */
+  color: #6b21a8; /* Cor para os ícones */
 }
 
 .planoName {
@@ -89,7 +89,7 @@
 .price {
   font-size: 38px; /* Reduzi o tamanho do valor principal */
   font-weight: 800;
-  color: var(--brand-purple);
+  color: #6b21a8;
 }
 
 .priceDetails {
@@ -133,7 +133,7 @@
 
 .featuresList li::before {
   content: '✓';
-  color: var(--brand-purple);
+  color:#6b21a8;
   margin-right: 8px; /* Reduzi o espaçamento */
   font-weight: bold;
 }
@@ -158,8 +158,8 @@
   display: block;
   width: 100%;
   padding: 14px; /* Reduzi o padding para um botão mais compacto */
-  background-color: var(--brand-purple);
-  color: var(--white);
+  background-color: #6b21a8;
+  color: #ffffff;
   text-align: center;
   text-decoration: none;
   font-size: 17px; /* Reduzi o tamanho da fonte do botão */
@@ -172,7 +172,7 @@
 .ctaButton:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra um pouco menor */
-  background-color: #6A5ACD;
+  background-color: #6b21a8;
 }
 
 .featured .ctaButton {
@@ -208,31 +208,35 @@
   background-color: var(--white);
   border-radius: 50px;
   padding: 5px; /* Padding ligeiramente menor */
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06); /* Sombra mais suave */
+  box-shadow: 0 3px 12px#6b21a8(0, 0, 0, 0.06); /* Sombra mais suave */
+
 }
 
 .toggleButton {
   background-color: transparent;
   border: none;
-  padding: 10px 20px; /* Padding para o botão */
+  padding: 10px 30px; /* Padding para o botão */
   border-radius: 50px;
   font-size: 15px; /* Reduzi a fonte */
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #6b21a8;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 140px; /* Ajustei a largura mínima */
+  transition: background-color #858585;
+  min-width: 150px; /* Ajustei a largura mínima */
   font-family: 'Poppins', sans-serif;
+  
 }
 
 .toggleButton.activeToggle {
-  background-color: var(--brand-purple);
-  color: var(--white);
+  background-color: #6b21a8;
+  color: #ffffff;
   box-shadow: 0 3px 8px rgba(255, 255, 255, 0.08); /* Sombra mais suave */
+  border-color: transparent;
+  
 }
 
 .toggleButton:hover:not(.activeToggle) {
-  color: var(--brand-purple);
+  color: #6b21a8;
 }
 
 

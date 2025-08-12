@@ -30,30 +30,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const subdominio = hostParts.length > 2 && hostParts[0] !== 'www' ? hostParts[0] : null;
 
     if (subdominio) {
-      console.log(`Tentando buscar loja com slug: ${subdominio}`);
       const { data: lojaData, error: lojaError } = await supabase
         .from('lojas')
         .select('id')
         .eq('slug', subdominio)
         .single();
     
-      if (lojaError && lojaError.code !== 'PGRST116') {
-        console.error('Erro ao buscar loja pelo slug:', lojaError.message);
-      } else if (lojaData) {
+      if (!lojaError && lojaData) {
         lojaId = lojaData.id;
-        console.log(`Loja encontrada com ID: ${lojaId}`);
-      } else {
-        console.warn(`Nenhuma loja encontrada para o slug: ${subdominio}`);
       }
-    } else {
-      console.warn('Não é um subdomínio válido. Pulando a busca por loja.');
     }
   }
 
   return (
     <html lang="pt-BR" className={poppins.className}>
       <head>
-        {/* Importação da fonte Playfair Display */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400..900&display=swap" rel="stylesheet" />

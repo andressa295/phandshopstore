@@ -2,17 +2,21 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { PostgrestError } from '@supabase/supabase-js';
 
+// **CORREÇÃO 1: Interface UserProfile atualizada**
 export interface UserProfile {
-  nome_completo: string | null;
-  email: string | null;
-  plano: 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium' | null;
-  recorrencia: 'mensal' | 'anual' | null;
+  id: string; // ID do usuário do Supabase
+  email: string;
+  nome_completo: string;
   lojaId: string | null;
   lojaNome: string | null;
   lojaSlug: string | null;
+  plano: 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium' | null;
+  recorrencia: 'mensal' | 'anual' | null;
+  preco_mensal?: number;
+  preco_anual?: number;
 }
 
 interface UserContextType {
@@ -35,91 +39,56 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       const { data: { user: supabaseUser }, error: userError } = await supabase.auth.getUser();
 
-      if (userError) {
-        console.error("Erro ao obter usuário:", userError);
+      if (userError || !supabaseUser) {
         setUser(null);
         setProfile(null);
         setLoading(false);
-        router.push('/login');
-        return;
-      }
-
-      if (!supabaseUser) {
-        setUser(null);
-        setProfile(null);
-        setLoading(false);
-        router.push('/login');
+        // Não redirecionamos aqui para evitar conflitos com o middleware
         return;
       }
 
       setUser(supabaseUser);
 
-      // CORREÇÃO: A query foi ajustada para buscar o plano e a recorrência
-      // fazendo um JOIN com as tabelas 'lojas' e 'assinaturas'.
+      // **CORREÇÃO 2: Query ajustada para buscar recorrência da tabela 'planos'**
       let { data: userProfileData, error: profileError } = await supabase
         .from('usuarios')
         .select(`
-          nome_completo,
+          id,
           email,
-          lojas(id, nome_loja, slug, assinaturas(planos(nome), status, data_inicio))
+          nome_completo,
+          lojas(
+            id, 
+            nome_loja, 
+            slug, 
+            assinaturas(
+              planos(nome, preco_mensal, preco_anual, recorrencia), 
+              status
+            )
+          )
         `)
         .eq('id', supabaseUser.id)
         .single();
 
-      if (profileError && (profileError as PostgrestError).code === 'PGRST116') {
-        console.warn("Perfil do usuário não encontrado na tabela 'usuarios'. Criando um novo perfil básico.");
-
-        const { data: newProfileData, error: newProfileError } = await supabase
-          .from('usuarios')
-          .insert({
-            id: supabaseUser.id,
-            email: supabaseUser.email,
-            nome_completo: supabaseUser.email?.split('@')[0],
-          })
-          .select('nome_completo, email')
-          .single();
-        
-        if (newProfileError) {
-          console.error("Erro ao criar novo perfil de usuário:", newProfileError);
-          setProfile(null);
-        } else {
-          // Se o perfil foi criado, buscamos as informações de plano e recorrência novamente
-          const { data: updatedProfile, error: updatedProfileError } = await supabase
-            .from('usuarios')
-            .select(`
-              nome_completo,
-              email,
-              lojas(id, nome_loja, slug, assinaturas(planos(nome), status, data_inicio))
-            `)
-            .eq('id', supabaseUser.id)
-            .single();
-
-          if (updatedProfileError) {
-            console.error("Erro ao carregar perfil após a criação:", updatedProfileError);
-            setProfile(null);
-          } else {
-            userProfileData = updatedProfile;
-          }
-        }
-      } else if (profileError) {
-        console.error("Erro inesperado ao carregar perfil do usuário:", JSON.stringify(profileError, null, 2));
+      if (profileError) {
+        console.error("Erro ao carregar perfil:", profileError);
         setProfile(null);
-      }
-      
-      if (userProfileData) {
-        // CORREÇÃO: Mapeamento de dados de forma mais segura para evitar erros de tipagem.
+      } else if (userProfileData) {
         const lojaData = Array.isArray(userProfileData.lojas) && userProfileData.lojas.length > 0 ? userProfileData.lojas[0] : null;
         const assinaturaData = lojaData?.assinaturas?.[0] || null;
-        const plano = assinaturaData?.planos?.[0]?.nome || 'plano_gratis';
+        const planoData = assinaturaData?.planos?.[0] || null;
 
+        // **CORREÇÃO 3: Mapeamento dos dados completo**
         const formattedProfile: UserProfile = {
-          nome_completo: userProfileData.nome_completo,
+          id: userProfileData.id,
           email: userProfileData.email,
+          nome_completo: userProfileData.nome_completo,
           lojaId: lojaData?.id || null,
           lojaNome: lojaData?.nome_loja || null,
           lojaSlug: lojaData?.slug || null,
-          plano: plano as UserProfile['plano'],
-          recorrencia: assinaturaData?.status === 'ativa' ? 'mensal' : null, // Ajuste a recorrência com base no seu esquema se existir
+          plano: planoData?.nome as UserProfile['plano'] || 'plano_gratis',
+          recorrencia: planoData?.recorrencia || null,
+          preco_mensal: planoData?.preco_mensal || 0,
+          preco_anual: planoData?.preco_anual || 0,
         };
         setProfile(formattedProfile);
       } else {
@@ -128,24 +97,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       setLoading(false);
     }
-
-    fetchUserData();
-
+    
+    // CORREÇÃO: Removemos a lógica de redirecionamento para evitar conflito com o middleware
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
           fetchUserData();
         }
-        if (event === 'SIGNED_OUT') {
-          router.push('/login');
-        }
       }
     );
+
+    fetchUserData();
 
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, [supabase, router]);
+  }, [supabase]);
 
   return (
     <UserContext.Provider value={{ user, profile, loading }}>

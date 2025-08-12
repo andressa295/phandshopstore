@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Poppins } from 'next/font/google';
-import { PostgrestError } from '@supabase/supabase-js';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
@@ -87,41 +86,13 @@ export default function LoginPage() {
         return;
       }
 
+      // CORREÇÃO: Removemos a lógica de criação de perfil. O login agora apenas
+      // autentica e redireciona. A DashboardPage vai lidar com a falta de perfil.
       if (data.user) {
-        console.log("Login bem-sucedido. Verificando perfil do usuário...");
-        
-        const { data: profileData, error: profileError } = await supabase
-          .from('usuarios')
-          .select('id')
-          .eq('id', data.user.id)
-          .single();
-
-        if (profileError && (profileError as PostgrestError).code === 'PGRST116') {
-          console.warn("Perfil do usuário não encontrado. Criando um novo perfil básico.");
-          
-          const { error: insertProfileError } = await supabase.from('usuarios').insert({
-            id: data.user.id,
-            email: data.user.email,
-            nome_completo: data.user.email?.split('@')[0] || '',
-            telefone: null,
-            documento: null,
-          });
-
-          if (insertProfileError) {
-            console.error("Erro ao criar perfil de usuário:", insertProfileError);
-          } else {
-            console.log("Perfil do usuário criado com sucesso.");
-          }
-        } else if (profileError) {
-          console.error("Erro inesperado ao buscar o perfil do usuário:", profileError);
-        }
-
         const { error: logError } = await supabase.from('historico_acessos').insert({
           usuario_id: data.user.id,
           dispositivo: navigator.userAgent,
-          // O IP foi removido daqui pois deve ser obtido no lado do servidor
         });
-
         if (logError) {
           console.error("Erro ao registrar acesso:", logError.message);
         }

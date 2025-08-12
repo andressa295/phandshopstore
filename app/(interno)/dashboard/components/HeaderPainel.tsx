@@ -1,4 +1,3 @@
-// app/(interno)/dashboard/components/HeaderPainel.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -7,7 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import './HeaderPainel.css';
-import { UserProfile } from '../UserContext'; 
+import { UserProfile } from '../UserContext';
 
 import { 
     FaUserCircle, FaCreditCard, FaTags, FaHistory, FaFileInvoiceDollar, FaDollarSign, 
@@ -30,6 +29,15 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
         userProfile.plano.replace('plano_', 'Plano ').replace(/\b\w/g, (char: string) => char.toUpperCase()) :
         'Plano Grátis';
     const userRecorrenciaDisplay = userProfile?.recorrencia || '';
+
+    // Adicionado: Lógica para exibir o preço
+    const getPlanPrice = () => {
+        if (userProfile?.plano === 'plano_gratis') return 'R$ 0,00';
+        if (userProfile?.recorrencia === 'anual') {
+            return userProfile?.preco_anual ? `R$ ${userProfile.preco_anual.toFixed(2).replace('.', ',')}` : 'N/A';
+        }
+        return userProfile?.preco_mensal ? `R$ ${userProfile.preco_mensal.toFixed(2).replace('.', ',')}` : 'N/A';
+    };
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
@@ -76,8 +84,12 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
                         <div className="dropdown-header">
                             <p className="user-name-text">{userName}</p>
                             <p className="user-email-text">{userEmail}</p>
+                            {/* CORRIGIDO: Agora exibe o preço do plano */}
                             <p className="plan-status-text">
                                 Plano: {userPlanDisplay} {userRecorrenciaDisplay && `(${userRecorrenciaDisplay})`}
+                            </p>
+                            <p className="plan-price-text">
+                                Preço: {getPlanPrice()}
                             </p>
                         </div>
                         

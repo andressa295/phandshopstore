@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   experimental: {
     typedRoutes: false, 
   },
+  images: {
+    domains: ['www.gravatar.com'],
+  },
 };
 
 export default nextConfig;
