@@ -146,7 +146,7 @@ const Planos = () => {
           onClick={() => setShowAnnual(true)}
           disabled={loadingCheckout}
         >
-          Anual (2 meses grátis!)
+          Anual (16% OFF)
         </button>
       </div>
 
