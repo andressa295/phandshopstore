@@ -197,28 +197,28 @@ export default function Header() {
             <div className={styles.megaMenuContent}>
               <div className={styles.column}>
                 <h4>Conversão</h4>
-                <Link href="#" onClick={handleLinkClick}>Recuperação de carrinho</Link>
-                <Link href="#" onClick={handleLinkClick}>Checkout simplificado</Link>
-                <Link href="#" onClick={handleLinkClick}>Cupons e descontos</Link>
-                <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                <Link href="/plataforma/conversao/carrinho" onClick={handleLinkClick}>Recuperação de carrinho</Link>
+                <Link href="/plataforma/conversao/checkout" onClick={handleLinkClick}>Checkout simplificado</Link>
+                <Link href="/plataforma/conversao/cupons" onClick={handleLinkClick}>Cupons e descontos</Link>
+                <Link href="/plataforma/conversao" className={styles.verMaisLink} onClick={handleLinkClick}>
                   Ver mais <FaArrowRight className={styles.arrowIcon} />
                 </Link>
               </div>
               <div className={`${styles.column} ${styles.columnSeparator}`}>
                 <h4>Automação</h4>
-                <Link href="#" onClick={handleLinkClick}>E-mails automáticos</Link>
-                <Link href="#" onClick={handleLinkClick}>Notificações inteligentes</Link>
-                <Link href="#" onClick={handleLinkClick}>Fluxos de venda</Link>
-                <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                <Link href="/plataforma/automacao/emails" onClick={handleLinkClick}>E-mails automáticos</Link>
+                <Link href="/plataforma/automacao/notificacao" onClick={handleLinkClick}>Notificações inteligentes</Link>
+                <Link href="/plataforma/automacao/fluxovendas" onClick={handleLinkClick}>Fluxos de venda</Link>
+                <Link href="/plataforma/automacao" className={styles.verMaisLink} onClick={handleLinkClick}>
                   Ver mais <FaArrowRight className={styles.arrowIcon} />
                 </Link>
               </div>
               <div className={`${styles.column} ${styles.columnSeparator}`}>
                 <h4>Análises</h4>
-                <Link href="#" onClick={handleLinkClick}>Dashboard moderna</Link>
-                <Link href="#" onClick={handleLinkClick}>Google Analytics integrado</Link>
-                <Link href="#" onClick={handleLinkClick}>Relatórios detalhados</Link>
-                <Link href="#" className={styles.verMaisLink} onClick={handleLinkClick}>
+                <Link href="/plataforma/analises" onClick={handleLinkClick}>Dashboard moderna</Link>
+                <Link href="/plataforma/analises" onClick={handleLinkClick}>Google Analytics integrado</Link>
+                <Link href="/plataforma/analises" onClick={handleLinkClick}>Relatórios detalhados</Link>
+                <Link href="/plataforma/analises" className={styles.verMaisLink} onClick={handleLinkClick}>
                   Ver mais <FaArrowRight className={styles.arrowIcon} />
                 </Link>
               </div>

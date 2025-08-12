@@ -1,0 +1,112 @@
+/* app/(site)/plataforma/conversao/Conversao.module.css */
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroSection {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.featureSection {
+  width: 100%;
+  padding: 2.5rem 0;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.featureBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .featureBlock {
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+  }
+}
+
+.iconContainer {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0e6fa; /* Fundo roxo suave */
+  border-radius: 50%; /* Icone circular */
+}
+
+.featureIcon {
+  color: #6b21a8; /* Sua cor roxa */
+}
+
+.textContainer {
+  flex-grow: 1;
+}
+
+.blockTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.blockDescription {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.verMaisLink {
+  font-weight: bold;
+  color: #6b21a8;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.verMaisLink:hover {
+  text-decoration: underline;
+}
+
+.arrowIcon {
+  transition: transform 0.3s ease;
+}
+
+.verMaisLink:hover .arrowIcon {
+  transform: translateX(5px);
+}

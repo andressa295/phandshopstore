@@ -20,7 +20,7 @@ export default function PlataformaPage() {
 
       <section className={styles.featuresSection}>
         <div className={styles.contentContainer}>
-          <h2 className={styles.sectionTitle}>Nossas Principais Soluções</h2>
+          <h2 className={styles.sectionTitle}></h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
               <FaSyncAlt size={50} className={styles.featureIcon} />
