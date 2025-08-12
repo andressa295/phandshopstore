@@ -112,7 +112,7 @@ export function PlanosSection() {
               onClick={() => setIsAnnual(true)}
               className={`${styles.toggleButton} ${isAnnual ? styles.activeToggle : ''}`}
             >
-              Anual <span className={styles.badge}>2 meses grátis</span>
+              Anual <span className={styles.badge}>16% OFF</span>
             </button>
           </div>
         </div>
