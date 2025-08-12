@@ -1,290 +1,198 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* app/(site)/components/Planos.module.css */
 .planosSection {
-  width: 100%;
-  padding: 60px 20px;
-  background-color: var(--bg-light);
-  font-family: 'Poppins', sans-serif;
+    width: 100%;
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    color: #333333;
 }
 
-.planosContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px; /* Reduzi o gap para otimizar espaço */
-  max-width: 1400px; /* Aumentei o max-width para acomodar mais planos lado a lado */
-  margin: 0 auto;
-}
-
-.planoCard {
-  width: 100%;
-  max-width: 320px; /* Reduzi um pouco o max-width para caber mais em linha */
-  background-color: var(--white);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 28px 20px; /* Ajustei o padding interno */
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Poppins', sans-serif;
-}
-
-.planoCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-}
-
-/* --- Card em Destaque --- */
-.featured {
-  border: 2px solid var(--brand-purple);
-  transform: scale(1.02);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-}
-
-.featuredBadge {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  background-image: var(--brand-gradient);
-  color: #ffffff;
-  padding: 8px 20px;
-  border-bottom-left-radius: 16px;
-  font-size: 12px; /* Reduzi um pouco */
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  text-transform: uppercase;
-  
-}
-
-
-/* --- Conteúdo do Card --- */
-.cardHeader {
-  text-align: center;
-  margin-bottom: 20px; /* Reduzi um pouco o espaço */
-}
-
-.icon {
-  font-size: 40px; /* Reduzi o tamanho do ícone */
-  margin-bottom: 8px;
-  color: #6b21a8; /* Cor para os ícones */
-}
-
-.planoName {
-  font-size: 24px; /* Reduzi o tamanho do título */
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-top: 0;
-}
-
-.priceContainer {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 6px; /* Reduzi o gap */
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-.price {
-  font-size: 38px; /* Reduzi o tamanho do valor principal */
-  font-weight: 800;
-  color: #6b21a8;
-}
-
-.priceDetails {
-  font-size: 16px; /* Reduzi um pouco os detalhes */
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.annualPriceDetail {
-  text-align: center;
-  font-size: 12px; /* Reduzi o tamanho */
-  color: var(--text-secondary);
-  margin-top: -2px; /* Ajuste fino */
-  margin-bottom: 14px;
-  font-family: 'Poppins', sans-serif;
-}
-
-.separator {
-  border: 0;
-  height: 1px;
-  background-color: var(--border-light);
-  margin: 20px 0; /* Ajustei o espaço */
-}
-
-.featuresList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex-grow: 1;
-  text-align: left;
-}
-
-.featuresList li {
-  font-size: 15px; /* Reduzi um pouco o texto da feature */
-  color: var(--text-secondary);
-  margin-bottom: 10px; /* Reduzi o espaçamento entre itens */
-  line-height: 1.5;
-  display: flex;
-  align-items: flex-start;
-}
-
-.featuresList li::before {
-  content: '✓';
-  color:#6b21a8;
-  margin-right: 8px; /* Reduzi o espaçamento */
-  font-weight: bold;
-}
-
-.cardFooter {
-  margin-top: 28px; /* Reduzi o espaço antes do rodapé */
-}
-
-.callout {
-  font-size: 13px; /* Reduzi o tamanho */
-  text-align: center;
-  color: var(--text-secondary);
-  background-color: #f0f0f0;
-  padding: 8px; /* Reduzi o padding */
-  border-radius: 6px;
-  margin-bottom: 16px; /* Reduzi o espaço antes do botão */
-  line-height: 1.4;
-}
-
-/* --- Botão CTA --- */
-.ctaButton {
-  display: block;
-  width: 100%;
-  padding: 14px; /* Reduzi o padding para um botão mais compacto */
-  background-color: #6b21a8;
-  color: #ffffff;
-  text-align: center;
-  text-decoration: none;
-  font-size: 17px; /* Reduzi o tamanho da fonte do botão */
-  font-weight: 700;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.ctaButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra um pouco menor */
-  background-color: #6b21a8;
-}
-
-.featured .ctaButton {
-  background-image: var(--brand-gradient);
-}
-
-.featured .ctaButton:hover {
-    background-image: var(--brand-gradient);
-    filter: brightness(1.1);
-}
-
-/* --- Botão Secundário (para o plano Grátis) --- */
-.secondaryButton {
-  background-color: transparent;
-  color: var(--brand-purple);
-  border: 2px solid var(--brand-purple);
-}
-
-.secondaryButton:hover {
-  background-color: var(--brand-purple);
-  color: var(--white);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-}
-
-/* ================================================= */
-/* ESTILOS PARA O TOGGLE MENSAL/ANUAL */
-/* ================================================= */
 .toggleContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px; /* Reduzi um pouco o espaço */
-  background-color: var(--white);
-  border-radius: 50px;
-  padding: 5px; /* Padding ligeiramente menor */
-  box-shadow: 0 3px 12px#6b21a8(0, 0, 0, 0.06); /* Sombra mais suave */
-
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 40px;
 }
 
 .toggleButton {
-  background-color: transparent;
-  border: none;
-  padding: 10px 30px; /* Padding para o botão */
-  border-radius: 50px;
-  font-size: 15px; /* Reduzi a fonte */
-  font-weight: 600;
-  color: #6b21a8;
-  cursor: pointer;
-  transition: background-color #858585;
-  min-width: 150px; /* Ajustei a largura mínima */
-  font-family: 'Poppins', sans-serif;
-  
+    background-color: transparent;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    padding: 10px 30px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #6b21a8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+
 }
 
 .toggleButton.activeToggle {
-  background-color: #6b21a8;
-  color: #ffffff;
-  box-shadow: 0 3px 8px rgba(255, 255, 255, 0.08); /* Sombra mais suave */
-  border-color: transparent;
-  
+    background-color: #6b21a8;
+    color: #ffffff;
+    border-color: #6b21a8;
 }
 
 .toggleButton:hover:not(.activeToggle) {
-  color: #6b21a8;
+    background-color: #e0e0e0;
 }
 
-
-/* --- RESPONSIVIDADE PARA MELHOR DISTRIBUIÇÃO --- */
-@media (min-width: 768px) {
-  .planosContainer {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center; /* Centraliza os itens quando há poucas linhas */
-    align-items: stretch;
-  }
-  .planoCard {
-    width: calc(50% - 24px); /* Duas colunas com gap */
-    margin: 12px; /* Margem para o espaçamento */
-  }
-  .featured {
-    transform: scale(1.05);
-  }
+.planosContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* Novo breakpoint para 3 colunas em telas maiores (e.g., tablets paisagem, laptops menores) */
-@media (min-width: 1024px) {
-  .planoCard {
-    width: calc(33.333% - 24px); /* Três colunas com gap */
-  }
+.planoCard {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Novo breakpoint para 4 colunas */
-@media (min-width: 1280px) {
-  .planosContainer {
-    gap: 20px; /* Reduz o gap entre os cards */
-  }
-  .planoCard {
-    width: calc(25% - 20px); /* Quatro colunas com um pouco mais de espaço */
-    max-width: none; /* Remove o max-width para distribuição uniforme */
-  }
+.planoCard.featured {
+    border-color: #6b21a8;
+    box-shadow: 0 6px 20px rgba(112, 71, 235, 0.15);
 }
 
-/* Novo breakpoint para 5 colunas em telas muito grandes */
-@media (min-width: 1600px) {
-    .planosContainer {
-        gap: 20px;
-    }
-    .planoCard {
-        width: calc(20% - 16px); /* 5 colunas: ~20% cada, ajustando o gap */
-        margin: 8px; /* Margem menor para espremer mais cards */
-    }
-    .featured {
-        transform: scale(1.03); /* Menos scale para o featured quando há muitos cards */
-    }
+.featuredBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #6b21a8;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.cardHeader {
+    margin-bottom: 24px;
+}
+
+.icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #6b21a8;
+}
+
+.planoName {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.priceContainer {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.price {
+    font-size: 40px;
+    font-weight: 800;
+    color: #6b21a8;
+}
+
+.priceDetails {
+    font-size: 12px;
+    font-weight: 500;
+    color: #666666;
+}
+
+.annualPriceDetail {
+    font-size: 12px;
+    color: #666666;
+    margin-top: -8px;
+    margin-bottom: 16px;
+}
+
+.separator {
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 24px 0;
+}
+
+.featuresList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.featuresList li {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+}
+
+.featuresList li::before {
+    content: '✓';
+    color: #28a745;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.cardFooter {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.callout {
+    font-size: 13px;
+    text-align: center;
+    color: #666666;
+    background-color: #f0f0f0;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.ctaButton {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background-color: #6b21a8;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.ctaButton:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    background-color: #5a32d2;
+}
+
+.ctaButton:disabled {
+    cursor: not-allowed;
+    background-color: #c4b5fd;
+    transform: none;
+    box-shadow: none;
 }
