@@ -290,18 +290,18 @@ export default function Header() {
         {!openMobileSubMenu && (
           <div className={styles.mobileMenuContent}>
             <nav className={styles.mobileMenuLinks}>
-              <button onClick={() => setOpenMobileSubMenu('plataforma')} className={styles.mobileNavLink}>
+              <Link href="/plataforma" className={styles.mobileNavLink} onClick={handleLinkClick}>
                 Plataforma <FaChevronDown className={styles.mobileChevron} />
-              </button>
-              <Link href="/planos" className={styles.mobileNavLink} onClick={handleLinkClick}>
-                Planos
               </Link>
-              <button onClick={() => setOpenMobileSubMenu('profissionais')} className={styles.mobileNavLink}>
-                Profissionais <FaChevronDown className={styles.mobileChevron} />
-              </button>
-              <button onClick={() => setOpenMobileSubMenu('recursos')} className={styles.mobileNavLink}>
+              <Link href="/planos" className={styles.mobileNavLink} onClick={handleLinkClick}>
+                Planos <FaChevronDown className={styles.mobileChevron} />
+              </Link>
+              <Link href="/seja-um-parceiro" className={styles.mobileNavLink} onClick={handleLinkClick}>
+                Seja um parceiro <FaChevronDown className={styles.mobileChevron} />
+              </Link>
+              <Link href="/planos" className={styles.mobileNavLink} onClick={handleLinkClick}>
                 Recursos <FaChevronDown className={styles.mobileChevron} />
-              </button>
+              </Link>
             </nav>
             <div className={styles.mobileFooterButtons}>
               <Link href="/planos" className={styles.mobileButtonPrimary} onClick={handleLinkClick}>

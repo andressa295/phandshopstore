@@ -1,0 +1,116 @@
+/* app/(site)/plataforma/Plataforma.module.css */
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.heroSection {
+  padding: 2rem 0; /* Espaçamento reduzido */
+  
+}
+
+.heroTitle {
+  font-size: 2rem; /* Título menor */
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem; /* Espaçamento reduzido */
+}
+
+.heroSubtitle {
+  font-size: 1.1rem; /* Subtítulo um pouco menor */
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 2rem auto;
+}
+
+.featuresSection {
+  padding: 0rem 0; /* Espaçamento reduzido */
+  width: 100%;
+}
+
+.sectionTitle {
+  font-size: 1.8rem; /* Título de seção menor */
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: #333;
+}
+
+.featureCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  color: #6b21a8; /* Sua cor roxa */
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.cardDescription {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1rem; /* Adicionado espaço para o botão "Ver mais" */
+}
+
+.verMaisLink {
+  margin-top: auto; /* Alinha o link ao final do card */
+  font-weight: bold;
+  color: #6b21a8;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verMaisLink:hover {
+  text-decoration: underline;
+}
+
+.arrowIcon {
+  transition: transform 0.3s ease;
+}
+
+.verMaisLink:hover .arrowIcon {
+  transform: translateX(5px);
+}

@@ -65,6 +65,10 @@ export async function middleware(req: NextRequest) {
     '/trabalhe-conosco',
     '/trabalhe-conosco/vagas',
     '/trabalhe-conosco/servico',
+    '/plataforma',
+    '/plataforma/conversao',
+    '/plataforma/automacao',
+    '/plataforma/analises',
   ];
 
   const protectedRoutePrefix = '/dashboard';
