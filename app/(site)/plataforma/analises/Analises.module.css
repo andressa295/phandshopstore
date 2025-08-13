@@ -1,4 +1,4 @@
-/* app/(site)/plataforma/conversao/Conversao.module.css */
+/* app/(site)/plataforma/analises/Analises.module.css */
 .pageWrapper {
   min-height: 100vh;
   display: flex;
@@ -52,7 +52,7 @@
   .featureBlock {
     flex-direction: row;
     text-align: left;
-    align-items: center; /* ALINHAMENTO VERTICAL CORRIGIDO */
+    align-items: flex-start;
   }
 }
 
@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: center;
   background-color: #f0e6fa; /* Fundo roxo suave */
-  border-radius: 50%; /* Icone circular */
+  border-radius: 50%;
 }
 
 .featureIcon {

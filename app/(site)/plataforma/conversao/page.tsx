@@ -61,17 +61,19 @@ export default function ConversaoPage() {
       {/* Bloco: Cupons e Descontos */}
       <section className={styles.featureSection}>
         <div className={styles.contentContainer}>
-          <div className={styles.iconContainer}>
-            <FaTags size={40} className={styles.featureIcon} />
-          </div>
-          <div className={styles.textContainer}>
-            <h2 className={styles.blockTitle}>Cupons e Descontos</h2>
-            <p className={styles.blockDescription}>
-              Crie promoções personalizadas para atrair novos clientes e fidelizar os antigos. Nossa plataforma te dá o controle para criar cupons exclusivos, campanhas de frete grátis e descontos progressivos.
-            </p>
-            <Link href="#" className={styles.verMaisLink}>
-              Ver detalhes <FaArrowRight className={styles.arrowIcon} />
-            </Link>
+          <div className={styles.featureBlock}> {/* <--- Linha corrigida */}
+            <div className={styles.iconContainer}>
+              <FaTags size={40} className={styles.featureIcon} />
+            </div>
+            <div className={styles.textContainer}>
+              <h2 className={styles.blockTitle}>Cupons e Descontos</h2>
+              <p className={styles.blockDescription}>
+                Crie promoções personalizadas para atrair novos clientes e fidelizar os antigos. Nossa plataforma te dá o controle para criar cupons exclusivos, campanhas de frete grátis e descontos progressivos.
+              </p>
+              <Link href="#" className={styles.verMaisLink}>
+                Ver detalhes <FaArrowRight className={styles.arrowIcon} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -79,17 +81,19 @@ export default function ConversaoPage() {
       {/* Bloco: Prova Social e Avaliações */}
       <section className={styles.featureSection}>
         <div className={styles.contentContainer}>
-          <div className={styles.iconContainer}>
-            <FaStar size={40} className={styles.featureIcon} />
-          </div>
-          <div className={styles.textContainer}>
-            <h2 className={styles.blockTitle}>Prova Social e Avaliações</h2>
-            <p className={styles.blockDescription}>
-              Gere confiança e incentive a compra mostrando o que outros clientes pensam dos seus produtos. Permita que seus clientes deixem avaliações e depoimentos que comprovam a qualidade da sua marca.
-            </p>
-            <Link href="#" className={styles.verMaisLink}>
-              Ver detalhes <FaArrowRight className={styles.arrowIcon} />
-            </Link>
+          <div className={styles.featureBlock}> {/* <--- Linha corrigida */}
+            <div className={styles.iconContainer}>
+              <FaStar size={40} className={styles.featureIcon} />
+            </div>
+            <div className={styles.textContainer}>
+              <h2 className={styles.blockTitle}>Prova Social e Avaliações</h2>
+              <p className={styles.blockDescription}>
+                Gere confiança e incentive a compra mostrando o que outros clientes pensam dos seus produtos. Permita que seus clientes deixem avaliações e depoimentos que comprovam a qualidade da sua marca.
+              </p>
+              <Link href="#" className={styles.verMaisLink}>
+                Ver detalhes <FaArrowRight className={styles.arrowIcon} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -97,17 +101,19 @@ export default function ConversaoPage() {
       {/* Bloco: Personalização e Recomendações */}
       <section className={styles.featureSection}>
         <div className={styles.contentContainer}>
-          <div className={styles.iconContainer}>
-            <FaMousePointer size={40} className={styles.featureIcon} />
-          </div>
-          <div className={styles.textContainer}>
-            <h2 className={styles.blockTitle}>Personalização e Recomendações</h2>
-            <p className={styles.blockDescription}>
-              Ofereça uma experiência de compra única com sugestões de produtos feitas sob medida para cada cliente. Com base no histórico de navegação, mostre os produtos certos, na hora certa.
-            </p>
-            <Link href="#" className={styles.verMaisLink}>
-              Ver detalhes <FaArrowRight className={styles.arrowIcon} />
-            </Link>
+          <div className={styles.featureBlock}> {/* <--- Linha corrigida */}
+            <div className={styles.iconContainer}>
+              <FaMousePointer size={40} className={styles.featureIcon} />
+            </div>
+            <div className={styles.textContainer}>
+              <h2 className={styles.blockTitle}>Personalização e Recomendações</h2>
+              <p className={styles.blockDescription}>
+                Ofereça uma experiência de compra única com sugestões de produtos feitas sob medida para cada cliente. Com base no histórico de navegação, mostre os produtos certos, na hora certa.
+              </p>
+              <Link href="#" className={styles.verMaisLink}>
+                Ver detalhes <FaArrowRight className={styles.arrowIcon} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
