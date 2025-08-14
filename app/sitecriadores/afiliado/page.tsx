@@ -5,12 +5,26 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
+import { Poppins } from 'next/font/google';
 import styles from './Cadastro.module.css';
+
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
 // Configuração do Supabase a partir das variáveis de ambiente
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+const MessageModal = ({ message, onClose }: { message: string; onClose: () => void }) => {
+  return (
+    <div className={styles.messageModalOverlay}>
+      <div className={styles.messageModalContent}>
+        <p>{message}</p>
+        <button onClick={onClose} className={styles.messageModalButton}>Fechar</button>
+      </div>
+    </div>
+  );
+};
 
 export default function CadastroParceiroPage() {
   const router = useRouter();
@@ -23,9 +37,9 @@ export default function CadastroParceiroPage() {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Função para criar um "slug" a partir do nome
   const slugify = (text: string) => {
     return text
       .toString()
@@ -60,10 +74,9 @@ export default function CadastroParceiroPage() {
     if (!validate()) return;
 
     setLoading(true);
-    setSuccessMessage('');
+    setMessage('');
     setErrors({});
 
-    // 1. Criar o usuário no Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: form.email,
       password: form.senha,
@@ -78,10 +91,8 @@ export default function CadastroParceiroPage() {
       return;
     }
 
-    // 2. Gerar o link de afiliado e inserir o registro na tabela 'afiliados'
     if (authData.user) {
       const linkRef = slugify(form.nome);
-      // O link_completo deve ser gerado com base no domínio da sua aplicação
       const linkCompleto = `${window.location.origin}/r/${linkRef}`; 
 
       const { error: dbError } = await supabase
@@ -91,103 +102,121 @@ export default function CadastroParceiroPage() {
           nome: form.nome,
           email: form.email,
           link_ref: linkRef,
-          link_completo: linkCompleto, // <-- GARANTINDO QUE O LINK COMPLETO É SALVO
+          link_completo: linkCompleto,
         });
 
       if (dbError) {
-        // Loga o objeto de erro completo para depuração
         console.error('Erro ao inserir afiliado:', dbError); 
         setErrors({ form: `Erro ao registrar como afiliado: ${dbError.message}. Tente novamente.` });
         setLoading(false);
-        // Opcional: Se a inserção na tabela 'afiliados' falhar, você pode querer
-        // deletar o usuário recém-criado no Auth para evitar "lixo".
-        // await supabase.auth.admin.deleteUser(authData.user.id);
         return;
       }
     }
 
     setLoading(false);
-    setSuccessMessage('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
+    setMessage('Cadastro realizado com sucesso! 🎉 Verifique seu e-mail para confirmar a conta.');
     setForm({ nome: '', email: '', senha: '', confirmaSenha: '' });
   };
 
   return (
-    <main className={styles.container}>
-      <header className={styles.header}>
-        <Link href="/">
+    <main className={`${styles.mainContainer} ${poppins.className}`}>
+      <div className={styles.contentGrid}>
+        <div className={styles.imageWrapper}>
           <Image
-            src="/logo.png"
-            alt="Phandshop - Voltar para a página inicial"
-            width={180}
-            height={45}
-            style={{ cursor: 'pointer' }}
+            src="/testelogin.png"
+            alt="Pessoas felizes usando a plataforma"
+            layout="fill"
+            objectFit="cover"
+            priority
+            className={styles.image}
           />
-        </Link>
-      </header>
+        </div>
 
-      <div className={styles.box}>
-        <h2 className={styles.title}>Crie sua conta de Parceiro</h2>
-        {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
+        <div className={styles.formWrapper}>
+          <div className={styles.formContainer}>
+            <div className={styles.logoWrapper}>
+              <Image
+                src="/logoroxo.png"
+                alt="Logotipo"
+                width={170}
+                height={30}
+                className={styles.logo}
+              />
+            </div>
+            
+            <div className={styles.header}>
+              <h1 className={styles.title}>Crie sua conta de Parceiro</h1>
+              <p className={styles.subtitle}>Registre-se para começar a criar links e ganhar comissões.</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className={styles.form} noValidate>
+              <div className={styles.inputGroup}>
+                <label htmlFor="nome" className={styles.label}>Nome completo</label>
+                <input
+                  id="nome" name="nome" type="text" value={form.nome}
+                  onChange={handleChange} placeholder="Seu nome completo"
+                  className={`${styles.input} ${errors.nome ? styles.inputError : ''}`} required
+                />
+                {errors.nome && <p className={styles.errorText}>{errors.nome}</p>}
+              </div>
 
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
-          <div className={styles.inputGroup}>
-            <label htmlFor="nome" className={styles.label}>Nome completo</label>
-            <input
-              id="nome" name="nome" type="text" value={form.nome}
-              onChange={handleChange} placeholder="Seu nome completo"
-              className={`${styles.input} ${errors.nome ? styles.inputError : ''}`} required
-            />
-            {errors.nome && <p className={styles.errorText}>{errors.nome}</p>}
+              <div className={styles.inputGroup}>
+                <label htmlFor="email" className={styles.label}>E-mail</label>
+                <input
+                  id="email" name="email" type="email" value={form.email}
+                  onChange={handleChange} placeholder="seu@email.com"
+                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`} required
+                />
+                {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="senha" className={styles.label}>Senha</label>
+                <div className={styles.passwordContainer}>
+                  <input
+                    id="senha" name="senha" 
+                    type={showPassword ? 'text' : 'password'} 
+                    value={form.senha}
+                    onChange={handleChange} placeholder="No mínimo 6 caracteres"
+                    className={`${styles.input} ${errors.senha ? styles.inputError : ''}`} required
+                  />
+                  <span 
+                    className={styles.passwordToggleIcon} 
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? 'Ocultar' : 'Mostrar'}
+                  </span>
+                </div>
+                {errors.senha && <p className={styles.errorText}>{errors.senha}</p>}
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="confirmaSenha" className={styles.label}>Confirme a senha</label>
+                <input
+                  id="confirmaSenha" name="confirmaSenha" type={showPassword ? 'text' : 'password'}
+                  onChange={handleChange} placeholder="Repita sua senha"
+                  className={`${styles.input} ${errors.confirmaSenha ? styles.inputError : ''}`} required
+                />
+                {errors.confirmaSenha && <p className={styles.errorText}>{errors.confirmaSenha}</p>}
+              </div>
+
+              {errors.form && <p className={styles.errorText}>{errors.form}</p>}
+
+              <button type="submit" disabled={loading} className={styles.submitButton}>
+                {loading ? 'Criando conta...' : 'Criar conta'}
+              </button>
+            </form>
+
+            <p className={styles.linkWrapper}>
+              Já tem conta?{' '}
+              <Link href="/sitecriadores/login" className={styles.link}>
+                Faça login
+              </Link>
+            </p>
           </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="email" className={styles.label}>E-mail</label>
-            <input
-              id="email" name="email" type="email" value={form.email}
-              onChange={handleChange} placeholder="seu@email.com"
-              className={`${styles.input} ${errors.email ? styles.inputError : ''}`} required
-            />
-            {errors.email && <p className={styles.errorText}>{errors.email}</p>}
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="senha" className={styles.label}>Senha</label>
-            <input
-              id="senha" name="senha" type="password" value={form.senha}
-              onChange={handleChange} placeholder="No mínimo 6 caracteres"
-              className={`${styles.input} ${errors.senha ? styles.inputError : ''}`} required
-            />
-            {errors.senha && <p className={styles.errorText}>{errors.senha}</p>}
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label htmlFor="confirmaSenha" className={styles.label}>Confirme a senha</label>
-            <input
-              id="confirmaSenha" name="confirmaSenha" type="password" value={form.confirmaSenha}
-              onChange={handleChange} placeholder="Repita sua senha"
-              className={`${styles.input} ${errors.confirmaSenha ? styles.inputError : ''}`} required
-            />
-            {errors.confirmaSenha && <p className={styles.errorText}>{errors.confirmaSenha}</p>}
-          </div>
-
-          {errors.form && <p className={styles.errorText}>{errors.form}</p>}
-
-          <button type="submit" disabled={loading} className={styles.button}>
-            {loading ? 'Criando conta...' : 'Criar conta'}
-          </button>
-        </form>
-
-        <p className={styles.linkWrapper}>
-          Já tem conta?{' '}
-          <Link href="/sitecriadores/login" className={styles.link}>
-            Faça login
-          </Link>
-        </p>
+        </div>
       </div>
-
-      <footer className={styles.footer}>
-        <p>© {new Date().getFullYear()} Phandshop. Todos os direitos reservados.</p>
-      </footer>
+      {message && <MessageModal message={message} onClose={() => setMessage('')} />}
     </main>
   );
 }
