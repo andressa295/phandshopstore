@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import styles from './Backoffice.module.css';
+import styles from '../admin/Backoffice.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
