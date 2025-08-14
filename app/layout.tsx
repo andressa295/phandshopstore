@@ -18,7 +18,26 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // VERIFICAÇÃO ADICIONADA: se as chaves não existirem, retorna um erro controlado
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return (
+      <html lang="pt-BR" className={poppins.className}>
+        <body>
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
+            <h1>Erro de Configuração</h1>
+            <p>As chaves do Supabase n&atilde;o est&atilde;o definidas.</p>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
+  // CORRIGIDO: A inicialização do cliente Supabase é feita aqui, dentro do componente
   const supabase = createServerComponentClient({ cookies });
+
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
   
@@ -58,14 +77,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body style={{ margin: 0, padding: 0, backgroundColor: '#fff' }}>
         <SupabaseProvider initialUser={user}>
-          <main
-            style={{
-              width: '100%',
-              minHeight: '100vh',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
+          <main className="main-layout">
             {children}
           </main>
         </SupabaseProvider>
