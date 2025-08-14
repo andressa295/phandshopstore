@@ -99,7 +99,7 @@ export default function Header() {
   return (
     <>
       <header className={styles.header}>
-        <Link href="/page" className={styles.logoLink} onClick={handleLinkClick}>
+        <Link href="/" className={styles.logoLink} onClick={handleLinkClick}>
           <Image
             src="/logo.png"
             alt="Phandshop Logo"
