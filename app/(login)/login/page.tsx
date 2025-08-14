@@ -64,17 +64,46 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        const { error: logError } = await supabase.from('historico_acessos').insert({
-          usuario_id: data.user.id,
-          dispositivo: navigator.userAgent,
-        });
-        if (logError) {
-          console.error("Erro ao registrar acesso:", logError.message);
+        // Agora, vamos buscar o loja_id e o slug a partir do user_id
+        const { data: lojaData, error: lojaError } = await supabase
+          .from('lojas')
+          .select(`
+            id,
+            slug,
+            assinaturas(
+              status,
+              planos(
+                nome_plano,
+                preco_mensal
+              )
+            )
+          `)
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (lojaError) {
+          console.error("Erro ao buscar dados da loja:", lojaError.message);
+          setError('Não foi possível encontrar a loja. Tente novamente.');
+          setLoading(false);
+          return;
+        }
+
+        if (lojaData) {
+          const assinatura = lojaData.assinaturas[0];
+          
+          console.log("Login bem-sucedido. Loja ID:", lojaData.id);
+          console.log("Status da Assinatura:", assinatura?.status);
+          console.log("Plano:", assinatura?.planos?.[0]?.nome_plano); // CORRIGIDO: Acessando o primeiro item do array
+          
+          router.push(`/dashboard?lojaId=${lojaData.id}`);
+        } else {
+          setError('Nenhuma loja encontrada para este usuário.');
+          setLoading(false);
+          return;
         }
       }
 
       setLoading(false);
-      router.push('/dashboard');
     } catch (err) {
       console.error("Erro inesperado durante o login:", err);
       setError('Ocorreu um erro inesperado. Tente novamente.');

@@ -5,15 +5,15 @@ import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs
 
 export interface UserProfile {
   id: string;
-  email: string;
-  nome_completo: string;
+  email: string | null; // CORRIGIDO: Agora permite null
+  nome_completo: string | null;
   lojaId: string | null;
   lojaNome: string | null;
   lojaSlug: string | null;
-  plano: 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium' | null;
-  recorrencia: 'mensal' | 'anual' | null;
-  preco_mensal?: number;
-  preco_anual?: number;
+  plano: string | null;
+  recorrencia: string | null;
+  preco_mensal?: number | null;
+  preco_anual?: number | null;
 }
 
 interface SupabaseContextType {
@@ -33,49 +33,48 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
   useEffect(() => {
     const fetchUserProfile = async (userId: string) => {
       setLoading(true);
-      const { data: userData, error: userError } = await supabase
-        .from('usuarios')
+      const { data: lojaData, error: lojaError } = await supabase
+        .from('lojas')
         .select(`
           id,
-          email,
-          nome_completo,
-          lojas(
-            id,
-            nome_loja,
-            slug,
-            assinaturas(
-              planos(
-                nome,
-                preco_mensal,
-                preco_anual,
-                recorrencia
-              ),
-              status
-            )
+          nome_loja,
+          slug,
+          user_id,
+          assinaturas(
+            planos(
+              nome_plano,
+              preco_mensal,
+              preco_anual
+            ),
+            status,
+            periodo_atual_fim
           )
         `)
-        .eq('id', userId)
+        .eq('user_id', userId)
         .single();
 
-      if (userError || !userData) {
-        console.error('Erro ao buscar perfil do usuário:', userError);
-        setProfile(null);
+      if (lojaError) {
+        if (lojaError.code === 'PGRST116') {
+          setProfile(null);
+        } else {
+          console.error('Erro ao buscar o perfil do usuário:', lojaError);
+          setProfile(null);
+        }
       } else {
-        const lojaData = Array.isArray(userData.lojas) && userData.lojas.length > 0 ? userData.lojas[0] : null;
         const assinaturaData = lojaData?.assinaturas?.[0] || null;
         const planoData = assinaturaData?.planos?.[0] || null;
 
         const userProfileData: UserProfile = {
-          id: userData.id,
-          email: userData.email,
-          nome_completo: userData.nome_completo,
-          lojaId: lojaData?.id || null,
-          lojaNome: lojaData?.nome_loja || null,
-          lojaSlug: lojaData?.slug || null,
-          plano: planoData?.nome as UserProfile['plano'] || 'plano_gratis',
-          recorrencia: planoData?.recorrencia || null,
-          preco_mensal: planoData?.preco_mensal || 0,
-          preco_anual: planoData?.preco_anual || 0,
+          id: lojaData.user_id,
+          email: user?.email ?? null, // CORRIGIDO: Atribuindo user.email, que pode ser null
+          nome_completo: null,
+          lojaId: lojaData.id,
+          lojaNome: lojaData.nome_loja,
+          lojaSlug: lojaData.slug,
+          plano: planoData?.nome_plano || null,
+          recorrencia: assinaturaData?.periodo_atual_fim ? (planoData?.preco_anual ? 'anual' : 'mensal') : null,
+          preco_mensal: planoData?.preco_mensal || null,
+          preco_anual: planoData?.preco_anual || null,
         };
         setProfile(userProfileData);
       }
@@ -101,7 +100,7 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
     return () => {
       subscription?.unsubscribe();
     };
-  }, [initialUser, supabase]);
+  }, [initialUser, supabase, user?.email]);
 
   return (
     <SupabaseContext.Provider value={{ user, profile, loading }}>

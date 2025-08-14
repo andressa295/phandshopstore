@@ -9,7 +9,6 @@ export default async function DashboardPage() {
     const supabase = createServerComponentClient({ cookies });
     const { data: { user } } = await supabase.auth.getUser();
 
-    // O middleware já cuida do redirecionamento, mas é bom ter uma verificação aqui
     if (!user) {
         return (
             <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'Poppins, sans-serif', color: '#dc3545' }}>
@@ -22,22 +21,21 @@ export default async function DashboardPage() {
     }
 
     const { data: userData, error: profileError } = await supabase
-        .from('usuarios')
+        .from('lojas')
         .select(`
-            nome_completo,
-            email,
-            lojas(
-                id,
-                nome_loja,
-                slug,
-                assinaturas(
-                    planos(nome),
-                    status,
-                    recorrencia
+            id,
+            nome_loja,
+            slug,
+            user_id,
+            assinaturas(
+                status,
+                planos(
+                    nome_plano,
+                    preco_anual
                 )
             )
         `)
-        .eq('id', user.id)
+        .eq('user_id', user.id)
         .single();
 
     if (profileError || !userData) {
@@ -52,22 +50,24 @@ export default async function DashboardPage() {
         );
     }
 
-    const lojaData = userData.lojas && Array.isArray(userData.lojas) && userData.lojas.length > 0 ? userData.lojas[0] : null;
-
-    const lojaId = lojaData?.id || null;
-    
+    const lojaData = userData;
     const assinaturaData = lojaData?.assinaturas && Array.isArray(lojaData.assinaturas) && lojaData.assinaturas.length > 0 ? lojaData.assinaturas[0] : null;
-    const dashboardData = await getDashboardData(lojaId);
 
+    const planoNome = assinaturaData?.planos?.[0]?.nome_plano || 'plano_gratis';
+    const recorrencia = assinaturaData?.planos?.[0]?.preco_anual > 0 ? 'anual' : 'mensal';
+
+    const dashboardData = await getDashboardData(lojaData.id);
+
+    // CORREÇÃO: UserProfile deve ter 'email: string | null | undefined'
     const userProfile: UserProfile = {
-        id: user.id, // CORREÇÃO: Adicionando o ID do usuário
-        nome_completo: userData.nome_completo,
-        email: userData.email,
-        lojaId: lojaId,
+        id: user.id,
+        nome_completo: 'Nome de Exemplo',
+        email: user.email ?? null, // Ajustado para ser string ou null
+        lojaId: lojaData.id,
         lojaNome: lojaData?.nome_loja,
         lojaSlug: lojaData?.slug,
-        plano: assinaturaData?.planos?.[0]?.nome || 'plano_gratis',
-        recorrencia: assinaturaData?.recorrencia || null,
+        plano: planoNome,
+        recorrencia: recorrencia,
     };
 
     return (

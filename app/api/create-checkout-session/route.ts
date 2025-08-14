@@ -4,11 +4,11 @@ import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
 if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY n\u00e3o est\u00e1 definida nas vari\u00e1veis de ambiente.');
+  throw new Error('STRIPE_SECRET_KEY não está definida nas variáveis de ambiente.');
 }
 
 const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-06-30.basil',
+  apiVersion: '2025-06-30.basil', // Use a versão mais recente da API Stripe
 });
 
 export async function POST(req: Request) {
@@ -18,54 +18,62 @@ export async function POST(req: Request) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Acesso n\u00e3o autorizado.' }, { status: 401 });
+      return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 });
     }
 
     const { priceId, planName, isAnnual } = await req.json();
 
     if (!priceId || !planName || isAnnual === undefined) {
-      return NextResponse.json({ error: 'Dados da requisi\u00e7\u00e3o incompletos.' }, { status: 400 });
+      return NextResponse.json({ error: 'Dados da requisição incompletos.' }, { status: 400 });
     }
 
     let stripeCustomerId: string;
-    let email = user.email;
+    let lojaId: string; // Variável para armazenar o ID da loja
 
-    if (!email) {
-        console.error('E-mail do usu\u00e1rio n\u00e3o encontrado.');
-        return NextResponse.json({ error: 'E-mail do usu\u00e1rio n\u00e3o encontrado.' }, { status: 400 });
-    }
-
-    // 1. Busca o ID do cliente Stripe na tabela 'usuarios'
-    const { data: userData, error: userError } = await supabase
-      .from('usuarios')
-      .select('stripe_customer_id')
-      .eq('id', user.id)
+    // 1. Busca o ID da loja e o ID do cliente Stripe na tabela 'lojas'
+    const { data: lojaData, error: lojaError } = await supabase
+      .from('lojas')
+      .select('id, stripe_customer_id') // Seleciona o ID da loja e o stripe_customer_id
+      .eq('user_id', user.id) // Busca pela loja associada ao usuário logado
       .single();
 
-    if (userError && userError.code !== 'PGRST116') {
-      console.error('Erro ao buscar o ID do cliente Stripe:', userError.message);
+    if (lojaError) {
+      // Se o erro for 'PGRST116' (nenhuma linha encontrada), significa que o cliente Stripe ainda não existe para esta loja
+      if (lojaError.code === 'PGRST116' || lojaError.details === 'The result contains 0 rows') {
+        console.warn('Nenhuma loja encontrada para o usuário ou stripe_customer_id ausente. Tentando criar novo cliente Stripe.');
+        // Se não encontrou a loja, pode ser um erro, ou o usuário ainda não tem uma loja criada corretamente.
+        // Neste ponto, é crucial que a loja já exista, pois o cadastro já deveria ter criado.
+        // Se chegou aqui e não tem loja, algo deu errado no cadastro.
+        return NextResponse.json({ error: 'Loja não encontrada para o usuário autenticado.' }, { status: 404 });
+      }
+      console.error('Erro ao buscar dados da loja:', lojaError.message);
       return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
     }
 
-    if (userData?.stripe_customer_id) {
-      stripeCustomerId = userData.stripe_customer_id;
+    lojaId = lojaData.id; // Armazena o ID da loja
+
+    if (lojaData.stripe_customer_id) {
+      stripeCustomerId = lojaData.stripe_customer_id;
     } else {
-      // 2. Se o cliente n\u00e3o tem ID do Stripe, cria um novo
+      // 2. Se a loja não tem ID do Stripe, cria um novo cliente no Stripe
       const customer = await stripe.customers.create({
-        email,
-        metadata: { supabase_user_id: user.id },
+        email: user.email, // Usa o email do usuário autenticado
+        metadata: { 
+          supabase_user_id: user.id,
+          loja_id: lojaId // Adiciona o ID da loja no metadata do cliente Stripe
+        },
       });
 
       stripeCustomerId = customer.id;
 
-      // 3. Salva o ID do novo cliente do Stripe na tabela 'usuarios'
+      // 3. Salva o ID do novo cliente do Stripe na tabela 'lojas'
       const { error: updateError } = await supabase
-        .from('usuarios')
+        .from('lojas')
         .update({ stripe_customer_id: stripeCustomerId })
-        .eq('id', user.id);
+        .eq('id', lojaId); // Atualiza a loja correta pelo seu ID
 
       if (updateError) {
-        console.error('Erro ao salvar stripe_customer_id no Supabase:', updateError.message);
+        console.error('Erro ao salvar stripe_customer_id na tabela lojas:', updateError.message);
         return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
       }
     }
@@ -81,13 +89,14 @@ export async function POST(req: Request) {
       payment_method_types: ['card'],
       mode: 'subscription',
       line_items: lineItems,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`, // Adiciona session_id para webhook
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
       customer: stripeCustomerId,
       metadata: {
         plan_name: planName,
         is_annual: isAnnual ? 'true' : 'false',
-        supabase_user_id: user.id, // Usando o ID do usuário autenticado no servidor, que é mais seguro
+        supabase_user_id: user.id,
+        loja_id: lojaId, // Passa o ID da loja para o webhook
       },
     });
 

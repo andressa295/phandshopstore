@@ -167,6 +167,7 @@
     font-size: 0.9rem;
     color: #374151;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 .input:focus {
@@ -209,9 +210,10 @@
     border: none;
     border-radius: 9999px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 .submitButton:hover:not(:disabled) {

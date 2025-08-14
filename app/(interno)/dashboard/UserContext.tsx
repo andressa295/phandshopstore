@@ -3,20 +3,18 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
 import { useRouter, usePathname } from 'next/navigation';
-import { PostgrestError } from '@supabase/supabase-js';
 
-// **CORREÇÃO 1: Interface UserProfile atualizada**
 export interface UserProfile {
   id: string; // ID do usuário do Supabase
-  email: string;
-  nome_completo: string;
+  email: string | null;
+  nome_completo: string | null;
   lojaId: string | null;
   lojaNome: string | null;
   lojaSlug: string | null;
-  plano: 'plano_gratis' | 'plano_basico' | 'plano_essencial' | 'plano_profissional' | 'plano_premium' | null;
+  plano: string | null;
   recorrencia: 'mensal' | 'anual' | null;
-  preco_mensal?: number;
-  preco_anual?: number;
+  preco_mensal?: number | null;
+  preco_anual?: number | null;
 }
 
 interface UserContextType {
@@ -30,6 +28,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: ReactNode }) {
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,50 +42,45 @@ export function UserProvider({ children }: { children: ReactNode }) {
         setUser(null);
         setProfile(null);
         setLoading(false);
-        // Não redirecionamos aqui para evitar conflitos com o middleware
         return;
       }
 
       setUser(supabaseUser);
 
-      // **CORREÇÃO 2: Query ajustada para buscar recorrência da tabela 'planos'**
-      let { data: userProfileData, error: profileError } = await supabase
-        .from('usuarios')
+      const { data: lojaData, error: profileError } = await supabase
+        .from('lojas')
         .select(`
-          id,
-          email,
-          nome_completo,
-          lojas(
-            id, 
-            nome_loja, 
-            slug, 
-            assinaturas(
-              planos(nome, preco_mensal, preco_anual, recorrencia), 
-              status
+          id, 
+          nome_loja, 
+          slug, 
+          assinaturas(
+            status,
+            planos(
+              nome_plano, 
+              preco_mensal, 
+              preco_anual
             )
           )
         `)
-        .eq('id', supabaseUser.id)
+        .eq('user_id', supabaseUser.id)
         .single();
-
+      
       if (profileError) {
         console.error("Erro ao carregar perfil:", profileError);
         setProfile(null);
-      } else if (userProfileData) {
-        const lojaData = Array.isArray(userProfileData.lojas) && userProfileData.lojas.length > 0 ? userProfileData.lojas[0] : null;
-        const assinaturaData = lojaData?.assinaturas?.[0] || null;
+      } else if (lojaData) {
+        const assinaturaData = lojaData.assinaturas?.[0] || null;
         const planoData = assinaturaData?.planos?.[0] || null;
 
-        // **CORREÇÃO 3: Mapeamento dos dados completo**
         const formattedProfile: UserProfile = {
-          id: userProfileData.id,
-          email: userProfileData.email,
-          nome_completo: userProfileData.nome_completo,
+          id: supabaseUser.id,
+          email: supabaseUser.email ?? null,
+          nome_completo: supabaseUser.user_metadata.full_name as string || null,
           lojaId: lojaData?.id || null,
           lojaNome: lojaData?.nome_loja || null,
           lojaSlug: lojaData?.slug || null,
-          plano: planoData?.nome as UserProfile['plano'] || 'plano_gratis',
-          recorrencia: planoData?.recorrencia || null,
+          plano: planoData?.nome_plano || 'Plano Grátis',
+          recorrencia: (planoData?.preco_anual || 0) > 0 ? 'anual' : 'mensal',
           preco_mensal: planoData?.preco_mensal || 0,
           preco_anual: planoData?.preco_anual || 0,
         };
@@ -98,7 +92,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
     
-    // CORREÇÃO: Removemos a lógica de redirecionamento para evitar conflito com o middleware
+    fetchUserData();
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
@@ -106,8 +101,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
         }
       }
     );
-
-    fetchUserData();
 
     return () => {
       authListener?.subscription.unsubscribe();

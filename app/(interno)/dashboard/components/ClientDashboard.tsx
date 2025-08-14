@@ -1,4 +1,3 @@
-// app/(interno)/dashboard/components/ClientDashboard.tsx
 'use client';
 
 import React from 'react';
@@ -18,8 +17,9 @@ interface ClientDashboardProps {
 
 const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userProfile, userEmail }) => {
     const userFullName = userProfile?.nome_completo || (userEmail ? userEmail.split('@')[0] : 'Usuário');
+    const lojaUrl = userProfile?.lojaSlug ? `https://${userProfile.lojaSlug}.seusite.com.br` : '#';
 
-    if (!dashboardData) {
+    if (!dashboardData || !userProfile) {
         return (
             <div className="dashboard-container-full">
                 <div className="alert-error">
@@ -113,13 +113,14 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
                     <Link href="/dashboard/vendas/lista" className="quick-action-btn info">
                         <FaClipboardList size={14} /> Ver Pedidos
                     </Link>
-                    <Link href="/" target="_blank" rel="noopener noreferrer" className="quick-action-btn success">
+                    {/* CORRIGIDO: Link dinâmico usando o slug da loja */}
+                    <Link href={lojaUrl} target="_blank" rel="noopener noreferrer" className="quick-action-btn success">
                         <FaExternalLinkAlt size={14} /> Abrir Loja Online
                     </Link>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default ClientDashboard;

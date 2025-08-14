@@ -55,50 +55,48 @@ export default async function SiteLayout({
         <Footer />
 
         {/* Botão flutuante do WhatsApp */}
-       {/* Botão flutuante do WhatsApp apenas com ícone */}
-<div
-  style={{
-    position: 'fixed',
-    bottom: '20px',
-    right: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    zIndex: 9999,
-  }}
->
-  {/* Mensagem */}
-  <div
-    style={{
-      backgroundColor: 'rgba(240, 240, 240, 0.9)', // cinza clarinho
-      padding: '8px 12px',
-      borderRadius: '8px',
-      fontSize: '14px',
-      color: '#333',
-      boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-    }}
-  >
-    Falar com um especialista
-  </div>
-
-  {/* Ícone puro */}
-  <a
-    href="https://wa.me/5511949184370?text=Ol%C3%A1%2C+quero+saber+mais+sobre+a+Phandshop"
-    target="_blank"
-    rel="noopener noreferrer"
-    style={{
-      color: '#25D366',
-      fontSize: '32px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textDecoration: 'none',
-    }}
-  >
-    <FaWhatsapp />
-  </a>
-</div>
-          
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'rgba(240, 240, 240, 0.9)', // cinza clarinho e translúcido
+              padding: '8px 12px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              color: '#333',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+            }}
+          >
+            Falar com um especialista
+          </div>
+          <a
+            href="https://wa.me/5511949184370?text=Ol%C3%A1%2C+quero+saber+mais+sobre+a+Phandshop"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              backgroundColor: '#25D366',
+              color: '#fff',
+              borderRadius: '50%',
+              width: '56px',
+              height: '56px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            }}
+          >
+            <FaWhatsapp size={28} />
+          </a>
+        </div>
       </div>
     </SupabaseProvider>
   );
