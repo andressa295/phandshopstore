@@ -2,8 +2,7 @@
 'use client';
 import React, { ReactNode } from 'react';
 import styles from './Backoffice.module.css'; // Importa o arquivo de estilo
-import Sidebar from '../components/Sidebar'; // O caminho pode variar dependendo da sua estrutura
-
+import Sidebar from '../components/Sidebar';
 // Define os tipos para as props do componente BackofficeLayout.
 interface BackofficeLayoutProps {
   children: ReactNode;

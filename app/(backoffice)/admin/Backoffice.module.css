@@ -1,0 +1,22 @@
+/* Backoffice.module.css */
+.backofficeLayout {
+  display: flex;
+}
+
+.backofficeContent {
+  flex-grow: 1;
+  margin-left: 240px; /* Corresponde à largura da sidebar */
+  padding: 2rem;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .backofficeLayout {
+    flex-direction: column;
+  }
+
+  .backofficeContent {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}

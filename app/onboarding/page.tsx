@@ -79,7 +79,7 @@ export default function OnboardingPage() {
             const { error: assinaturaError } = await supabase
                 .from('assinaturas')
                 .insert({
-                    loja_id: lojaInserida.id, // CORRIGIDO: Usando o ID da loja recém-criada
+                    loja_id: lojaInserida.id,
                     plano_id: planoGratis.id,
                     status: 'ativa',
                     periodo_atual_inicio: new Date().toISOString(),

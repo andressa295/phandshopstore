@@ -1,4 +1,5 @@
-// LoginPage.tsx
+'use client';
+
 import React, { useState, FormEvent } from 'react';
 import styles from './Backoffice.module.css';
 

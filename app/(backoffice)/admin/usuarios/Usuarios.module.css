@@ -1,0 +1,110 @@
+/* Usuarios.module.css */
+.container {
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.pageTitle {
+  color: var(--purple-main);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pageSubtitle {
+  color: var(--gray-dark-text);
+  margin-bottom: 2rem;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background-color: white;
+}
+
+.lojistasTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.lojistasTable thead {
+  background-color: var(--gray-light);
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.lojistasTable th,
+.lojistasTable td {
+  padding: 1rem;
+  text-align: left;
+}
+
+.lojistasTable th {
+  font-weight: 600;
+  color: var(--gray-dark-text);
+}
+
+.lojistasTable td {
+  font-size: 0.95rem;
+  color: var(--gray-dark-text);
+}
+
+.lojistasTable tbody tr {
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+.lojistasTable tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Estilos para os badges de status */
+.statusBadge {
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.statusAtivo {
+  background-color: var(--green-success, #10b981);
+}
+
+.statusInativo {
+  background-color: var(--danger-color, #dc3545);
+}
+
+.statusPendente {
+  background-color: var(--warning-color, #ffc107);
+}
+
+/* Estilos para o botão */
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, transform 0.2s;
+  font-weight: 600;
+  color: white;
+}
+
+.buttonPrimary {
+  background-color: var(--purple-main, #6b21a8);
+}
+
+.buttonPrimary:hover {
+  background-color: var(--purple-dark, #4b0082);
+  transform: translateY(-2px);
+}
+
+.buttonSecondary {
+  background-color: var(--gray-dark-text, #374151);
+}
+
+.buttonSecondary:hover {
+  background-color: #1f2937;
+  transform: translateY(-2px);
+}

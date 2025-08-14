@@ -26,19 +26,6 @@ function CadastroForm() {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Função para criar um "slug" a partir do nome da loja
-  const slugify = (text: string) => {
-    return text
-      .toString()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w-]+/g, '')
-      .replace(/--+/g, '-');
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     setForm(prev => ({
@@ -60,10 +47,12 @@ function CadastroForm() {
     setLoading(true);
     
     try {
-      // 1. Criar o usuário no Supabase Auth
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email: form.email,
         password: form.senha,
+        options: {
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/onboarding`
+        }
       });
 
       if (signUpError) {
@@ -72,28 +61,8 @@ function CadastroForm() {
         return;
       }
       
-      // 2. Inserir a loja na tabela 'lojas' após a criação do usuário
-      if (authData.user) {
-        const lojaSlug = slugify(form.nomeLoja);
+      localStorage.setItem('nomeLoja', form.nomeLoja);
 
-        const { error: dbError } = await supabase
-          .from('lojas')
-          .insert({
-            nome_loja: form.nomeLoja,
-            slug: lojaSlug,
-            user_id: authData.user.id
-          });
-
-        if (dbError) {
-          console.error("Erro ao inserir loja:", dbError);
-          // Caso a inserção da loja falhe, você pode querer deletar o usuário recém-criado
-          await supabase.auth.admin.deleteUser(authData.user.id);
-          setError('Erro ao registrar a loja. Tente novamente.');
-          setLoading(false);
-          return;
-        }
-      }
-      
       setSuccessMessage('Verifique seu e-mail para confirmar sua conta!');
       router.push('/verificar-email');
 
