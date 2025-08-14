@@ -11,7 +11,7 @@ export function HeroSection() {
       <div className={styles.contentContainer}>
         <div className={styles.heroGrid}>
           <div>
-            <h1 className={styles.heroTitle}>Sua loja online, simples e <div className="fontPlayfair">sem limites.</div></h1>
+            <h1 className={styles.heroTitle}>Sua loja online, completa e <div className="fontPlayfair">sem limites.</div></h1>
             <p className={styles.heroSubtitle}>Crie sua loja com temas personalizáveis e ferramentas de marketing. Taxa de comissão por venda: <strong>0%</strong>. Sempre.</p>
             <div className={styles.heroActions}>
               <Link href="/cadastro" className={styles.heroButtonPrimary}>Criar minha loja grátis</Link>

@@ -304,7 +304,7 @@ export default function Header() {
               </Link>
             </nav>
             <div className={styles.mobileFooterButtons}>
-              <Link href="/planos" className={styles.mobileButtonPrimary} onClick={handleLinkClick}>
+              <Link href="/cadastro" className={styles.mobileButtonPrimary} onClick={handleLinkClick}>
                 Criar loja grátis
               </Link>
               <Link href="/login" className={styles.mobileButtonSecondary} onClick={handleLinkClick}>

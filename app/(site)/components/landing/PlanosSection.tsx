@@ -7,7 +7,7 @@ import { FaFreeCodeCamp, FaDollarSign, FaStar, FaRocket, FaCrown } from 'react-i
 
 const planosData = [
   {
-    nome: "Plano Grátis",
+    nome: "Grátis",
     icone: <FaFreeCodeCamp />,
     preco: "R$ 0,00",
     descricao: "Para quem quer começar a testar sua ideia sem custo.",
@@ -19,7 +19,7 @@ const planosData = [
     precosPorMesAnual: "R$ 0,00",
   },
   {
-    nome: "Plano Básico",
+    nome: "Básico",
     icone: <FaDollarSign />,
     preco: "R$ 69,90",
     descricao: "O essencial para quem quer crescer e vender mais.",
@@ -31,7 +31,7 @@ const planosData = [
     precosPorMesAnual: "R$ 58,25",
   },
   {
-    nome: "Plano Essencial",
+    nome: "Essencial",
     icone: <FaStar />,
     preco: "R$ 99,90",
     descricao: "Para quem já tem um negócio e precisa de mais ferramentas.",
@@ -43,10 +43,10 @@ const planosData = [
     precosPorMesAnual: "R$ 83,25",
   },
   {
-    nome: "Plano Profissional",
+    nome: "Profissional",
     icone: <FaRocket />,
     preco: "R$ 149,90",
-    descricao: "Recursos avançados para quem busca alta performance.",
+    descricao: "Para quem busca alta performance.",
     tagline: "Para quem já é grande",
     cta: "Assinar",
     planoKey: 'plano_profissional',
@@ -55,10 +55,10 @@ const planosData = [
     precosPorMesAnual: "R$ 124,92",
   },
   {
-    nome: "Plano Premium",
+    nome: "Premium",
     icone: <FaCrown />,
     preco: "R$ 249,90",
-    descricao: "O poder total da plataforma para grandes volumes de venda.",
+    descricao: "Para grandes volumes de venda.",
     tagline: "O máximo do e-commerce",
     cta: "Assinar",
     planoKey: 'plano_premium',
@@ -96,7 +96,7 @@ export function PlanosSection() {
     <section className={styles.pricingSection}>
       <div className={styles.contentContainer}>
         <div className={styles.sectionHeader}>
-          <h2 className="fontPlayfair" style={{ color: 'white' }}>Um plano completo e sem surpresas</h2>
+          <h2 className={styles.sectionHeader}style={{ color: 'white' }}>Um plano completo e sem surpresas</h2>
           
         </div>
         

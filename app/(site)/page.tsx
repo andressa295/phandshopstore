@@ -12,8 +12,9 @@ export default function Home() {
     <main>
       <HeroSection />
       <DiferenciaisSection />
-      <FeaturesSection />
       <TemasSection />
+      <FeaturesSection />
+      
       <PlanosSection />
       <FaqSection />
       <FormularioEspecialista />

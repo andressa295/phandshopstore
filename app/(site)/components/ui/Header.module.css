@@ -2,12 +2,13 @@
 .header {
   width: 100%;
   background-color: #6b21a8; /* Roxo */
-  padding: 0rem 1.5rem;
+  /* Ajuste no padding para alinhar o conteúdo mais para dentro */
+  padding: 0rem 6rem; 
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: 80px;
   position: relative;
   top: 0;
   left: 0;
@@ -19,11 +20,13 @@
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 0.9rem 0; /* Removi o padding lateral excessivo */
 }
 
 .logoImage {
   height: 40px;
   width: auto;
+  
 }
 
 /* === NAV DESKTOP === */
@@ -36,8 +39,8 @@
 .navLink, .dropdownToggle, .languageButton {
   color: #f0e6ff;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 300;
+  font-size: 0.95rem;
   position: relative;
   padding-bottom: 4px;
   transition: color 0.2s ease;
@@ -71,15 +74,22 @@
   width: 100%;
 }
 
+/* === CONTAINER DOS BOTÕES DE LOGIN === */
+.authButtonsContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 /* === BOTÃO OVAL === */
 .navButton {
-  padding: 0.6rem 1.8rem;
+  padding: 0.5rem 1.6rem;
   background-color: #ffffff;
   color: #6b21a8;
   border: none;
   border-radius: 9999px;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 450;
+  font-size: 0.85rem;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -87,7 +97,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 .navButton:hover {
@@ -101,12 +111,12 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
+  padding: 0.3rem 1rem;
   color: #f0e6ff;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   border-radius: 9999px;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 0.85rem;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -141,8 +151,8 @@
   background: transparent;
   border: none;
   color: #f0e6ff;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 0.9rem;
   padding-bottom: 4px;
   transition: color 0.2s ease;
   font-family: inherit;
@@ -165,7 +175,7 @@
   background-color: #6b21a8;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   z-index: 998;
-  padding: 2.5rem 0;
+  padding: 2rem 0;
   animation: slideInDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   color: #fff;
   display: flex;
@@ -201,7 +211,8 @@
 }
 
 .column h4 {
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: #e0e7ff;
   margin-bottom: 0.5rem;
 }
@@ -209,7 +220,7 @@
 .megaMenuContent a {
   color: #e0e7ff;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   padding: 0.25rem 0;
   transition: color 0.2s ease;
 }
@@ -261,14 +272,14 @@
 }
 
 .parceirosEco h4 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   margin-bottom: 0;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .parceirosEco p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.5;
   color: #e0e7ff;
 }
@@ -281,7 +292,7 @@
 }
 
 .parceirosColumn h5 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
   color: #e0e7ff;
@@ -295,7 +306,7 @@
 }
 
 .loginParceiroColumn h4 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 0.25rem;
   color: white;
 }
@@ -353,7 +364,7 @@
   left: 50%;
   transform: translateX(-50%);
   margin-top: 0.5rem;
-  background-color: #fff; /* Fundo branco */
+  background-color: #fff;
   border-radius: 0.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   padding: 0.5rem 0;
@@ -369,7 +380,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: #4c1d95; /* Cor do texto */
+  color: #4c1d95;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
@@ -377,7 +388,7 @@
 }
 
 .languageItem:hover {
-  background-color: #f3e8ff; /* Roxo clarinho no hover */
+  background-color: #f3e8ff;
 }
 
 .languageItemActive {
@@ -388,7 +399,6 @@
 .languageItemActive svg {
   color: #6b21a8;
 }
-
 
 /* === MENU MOBILE === */
 .navMobile {
