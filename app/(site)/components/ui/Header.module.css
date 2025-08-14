@@ -403,11 +403,19 @@
 /* === MENU MOBILE === */
 .navMobile {
   display: none;
+  
+  
 }
 
 @media (max-width: 768px) {
+.header {
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
   .navDesktop {
-    display: none;
+    display: none !important;
   }
   
   .megaMenu {
