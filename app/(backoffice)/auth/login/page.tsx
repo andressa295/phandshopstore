@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, FormEvent } from 'react';
-import styles from './Backoffice.module.css';
+import styles from '../../admin/Backoffice.module.css';
 
 interface User {
   email: string;
