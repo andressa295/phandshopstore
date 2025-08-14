@@ -51,7 +51,8 @@ function CadastroForm() {
         email: form.email,
         password: form.senha,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/onboarding`
+          // CORRIGIDO: Usando a variável de ambiente para o redirecionamento
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
         }
       });
 

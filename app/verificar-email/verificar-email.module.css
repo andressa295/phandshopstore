@@ -1,0 +1,35 @@
+/* verificar-email.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.card {
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.title {
+  font-size: 1.75rem; /* Reduzi o tamanho da fonte */
+  color: #6d28d9;
+  margin-bottom: 1rem;
+  font-weight: 550;
+}
+
+.message {
+  font-size: 1rem;
+  color: #374151;
+  line-height: 1.6;
+}

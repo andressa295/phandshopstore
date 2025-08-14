@@ -1,80 +1,110 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styles from './Planos.module.css';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import { FaGift, FaLightbulb, FaGem, FaRocket, FaCrown } from 'react-icons/fa';
 
-const iconsMap: Record<string, React.ReactElement> = {
-  'Plano Grátis': <FaGift />,
-  'Plano Básico': <FaLightbulb />,
-  'Plano Essencial': <FaGem />,
-  'Plano Profissional': <FaRocket />,
-  'Plano Premium': <FaCrown />,
-};
-
-interface Plano {
-  id: string;
-  nome_plano: string;
-  preco_mensal: number;
-  preco_anual: number;
-  recursos: string[];
-  stripe_price_id_mensal: string;
-  stripe_price_id_anual: string;
-  tarifa_venda_percentual: number;
-  is_ativo: boolean;
-}
+const planosData = [
+  {
+    icon: <FaGift />,
+    name: 'Plano Grátis',
+    monthlyPrice: 'R$ 0,00',
+    monthlyPriceDetails: '',
+    annualFullPrice: 'R$ 0,00',
+    annualMonthlyEquivalent: null,
+    features: [ 'Até 30 produtos cadastrados', 'Tema padrão com design responsivo e profissional', 'Integração com meios de pagamento', 'Integração com transportadoras (Envios)', 'Atendimento via WhatsApp para seus clientes', 'Certificado de segurança padrão', 'Aviso-me quando chegar', 'Guias de Tamanho', 'Dashboard simples de pedidos e vendas','Acesso ao App do lojista' ],
+    callout: 'Neste plano, é aplicada uma tarifa de 2.5% por venda aprovada.',
+    buttonText: 'Começar agora',
+    isFeatured: false,
+    stripePriceIdMonthly: null,
+    stripePriceIdAnnual: null,
+  },
+  {
+    icon: <FaLightbulb />,
+    name: 'Plano Básico',
+    monthlyPrice: 'R$ 69,90',
+    monthlyPriceDetails: '/mês',
+    annualFullPrice: 'R$ 699,00',
+    annualMonthlyEquivalent: 'R$ 58,25/mês',
+    features: [ 'Tudo do plano Grátis, e mais:', 'Produtos ilimitados', 'Suporte via Chat e E-mail', 'Tarifa por venda de 0%', 'Certificado de Segurança SSL Avançado', 'Domínio próprio personalizado' , 'Acesso a temas gratuitos', 'Sacolinha do Instagram', 'Painel administrativo com estatísticas básicas' ],
+    callout: null,
+    buttonText: 'Assinar Básico',
+    isFeatured: false,
+    stripePriceIdMonthly: 'price_1Rp0azK7GLhCiTF0MTeciHgh',
+    stripePriceIdAnnual: 'price_1RpigWK7GLhCiTF0nw2zjXMk', 
+  },
+  {
+    icon: <FaGem />,
+    name: 'Plano Essencial',
+    monthlyPrice: 'R$ 99,90',
+    monthlyPriceDetails: '/mês',
+    annualFullPrice: 'R$ 999,00',
+    annualMonthlyEquivalent: 'R$ 83,25/mês',
+    features: [ 'Tudo do plano Básico, e mais:', 'Temas premium', 'Tarifa por venda de 0%', 'Dashboard completo com métricas de vendas, produtos mais vendidos, abandono de carrinho', 'Domínio próprio + redirecionamento inteligente', 'Funcionalidade de cupons de desconto', 'Acesso a automação de e-mails básicos', ],
+    callout: null,
+    buttonText: 'Assinar Essencial',
+    isFeatured: false,
+    stripePriceIdMonthly: 'price_1Rp0brK7GLhCiTF0OeTdh8vJ',
+    stripePriceIdAnnual: 'price_1RpifQK7GLhCiTF0nzZF0WiR', 
+  },
+  {
+    icon: <FaRocket />,
+    name: 'Plano Profissional',
+    monthlyPrice: 'R$ 149,90',
+    monthlyPriceDetails: '/mês',
+    annualFullPrice: 'R$ 1.499,00',
+    annualMonthlyEquivalent: 'R$ 124,92/mês',
+    features: [ 'Tudo do plano Essencial, e mais:', 'Compre Junto', 'Brindes no Carrinho', 'Upsell e Cross-sell automáticos', 'Recuperação de carrinho abandonado automática', 'Relatórios de vendas, clientes e produtos detalhados', 'Multi-admin (criação de subusuários com permissões)' ],
+    callout: null,
+    buttonText: 'Assinar Profissional',
+    isFeatured: true,
+    stripePriceIdMonthly: 'price_1Rp0cfK7GLhCiTF0VSO36ysl',
+    stripePriceIdAnnual: 'price_1Rpie2K7GLhCiTF0BYgs0Gp5', 
+  },
+  {
+    icon: <FaCrown />,
+    name: 'Plano Premium',
+    monthlyPrice: 'R$ 249,90',
+    monthlyPriceDetails: '/mês',
+    annualFullPrice: 'R$ 2.499,00',
+    annualMonthlyEquivalent: 'R$ 208,25/mês',
+    features: [ 'Tudo do plano Profissional, e mais:', 'Relatórios complexos e customizados', 'Atendimento prioritário (WhatsApp direto com especialista)', 'Acesso Antecipado a novas funcionalidades', 'Domínio grátis no plano anual (1º ano de domínio incluso)', 'Acesso ao programa de parceiros e marketplace', 'Consultoria estratégica 1x ao mês ','Loja feita pra você, em até 15 dias (Ao assinar o plano anual, nossa equipe configura sua loja do zero)' ],
+    callout: null,
+    buttonText: 'Assinar Premium',
+    isFeatured: false,
+    stripePriceIdMonthly: 'price_1Rp0dDK7GLhCiTF0cDcu7cay',
+    stripePriceIdAnnual: 'price_1Rpid4K7GLhCiTF08Tcs9F4g', 
+  },
+];
 
 const Planos = () => {
-  const [planos, setPlanos] = useState<Plano[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [showAnnual, setShowAnnual] = useState(false);
   const [loadingButton, setLoadingButton] = useState<string | null>(null);
   const supabase = createClientComponentClient();
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchPlanos = async () => {
-      const { data, error: dbError } = await supabase
-        .from('planos')
-        .select('*')
-        .eq('is_ativo', true)
-        .order('preco_mensal', { ascending: true });
-
-      if (dbError) {
-        setError('Erro ao carregar planos. Tente novamente.');
-        console.error(dbError);
-      } else {
-        setPlanos(data as Plano[]);
-      }
-      setLoading(false);
-    };
-
-    fetchPlanos();
-  }, [supabase]);
-
-  const handleSubscribe = async (plano: Plano, isAnnual: boolean) => {
-    const buttonId = `${plano.nome_plano}-${isAnnual ? 'anual' : 'mensal'}`;
+  const handleSubscribe = async (plan: typeof planosData[0], isAnnual: boolean) => {
+    const buttonId = `${plan.name}-${isAnnual ? 'anual' : 'mensal'}`;
     setLoadingButton(buttonId);
 
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      router.push(`/cadastro?plano=${plano.nome_plano.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);
+      router.push(`/cadastro?plano=${plan.name.toLowerCase().replace(/ /g, '_')}&recorrencia=${isAnnual ? 'anual' : 'mensal'}`);
       setLoadingButton(null);
       return;
     }
 
-    if (plano.nome_plano === 'Plano Grátis') {
+    if (plan.name === 'Plano Grátis') {
       router.push('/dashboard');
       setLoadingButton(null);
       return;
     }
 
-    const priceId = isAnnual ? plano.stripe_price_id_anual : plano.stripe_price_id_mensal;
+    const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
     if (!priceId) {
       alert('Erro ao iniciar o processo de pagamento. Entre em contato com o suporte.');
       setLoadingButton(null);
@@ -87,7 +117,7 @@ const Planos = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           priceId,
-          planName: plano.nome_plano,
+          planName: plan.name,
           isAnnual,
           supabaseUserId: user.id
         }),
@@ -110,14 +140,6 @@ const Planos = () => {
     }
   };
 
-  if (loading) {
-    return <section className={styles.planosSection}><p>Carregando planos...</p></section>;
-  }
-
-  if (error) {
-    return <section className={styles.planosSection}><p>{error}</p></section>;
-  }
-
   return (
     <section className={styles.planosSection}>
       <div className={styles.toggleContainer}>
@@ -138,43 +160,47 @@ const Planos = () => {
       </div>
 
       <div className={styles.planosContainer}>
-        {planos.map((plano, index) => (
-          <div key={index} className={`${styles.planoCard} ${plano.nome_plano === 'Plano Profissional' ? styles.featured : ''}`}>
-            {plano.nome_plano === 'Plano Profissional' && <div className={styles.featuredBadge}>MAIS POPULAR</div>}
+        {planosData.map((plano, index) => (
+          <div key={index} className={`${styles.planoCard} ${plano.isFeatured ? styles.featured : ''}`}>
+            {plano.isFeatured && <div className={styles.featuredBadge}>MAIS POPULAR</div>}
 
             <div className={styles.cardHeader}>
-              <div className={styles.icon}>{iconsMap[plano.nome_plano] || <FaGem />}</div>
-              <h3 className={styles.planoName}>{plano.nome_plano}</h3>
+              <div className={styles.icon}>{plano.icon}</div>
+              <h3 className={styles.planoName}>{plano.name}</h3>
             </div>
 
             <div className={styles.priceContainer}>
               <span className={styles.price}>
-                {showAnnual ? `R$ ${plano.preco_anual.toFixed(2).replace('.', ',')}` : `R$ ${plano.preco_mensal.toFixed(2).replace('.', ',')}`}
+                {showAnnual ? plano.annualFullPrice : plano.monthlyPrice}
               </span>
-              <span className={styles.priceDetails}>{showAnnual ? `(por ano)` : `/mês`}</span>
+              {showAnnual
+                ? plano.annualMonthlyEquivalent && <span className={styles.priceDetails}>{plano.annualMonthlyEquivalent}</span>
+                : plano.monthlyPriceDetails && <span className={styles.priceDetails}>{plano.monthlyPriceDetails}</span>
+              }
             </div>
-            {showAnnual && (
+
+            {showAnnual && plano.name !== 'Plano Grátis' && (
               <p className={styles.annualPriceDetail}>(pagamento único anual)</p>
             )}
 
             <hr className={styles.separator} />
 
             <ul className={styles.featuresList}>
-              {plano.recursos.map((feature, featureIndex) => (
+              {plano.features.map((feature, featureIndex) => (
                 <li key={featureIndex} dangerouslySetInnerHTML={{ __html: feature }}></li>
               ))}
             </ul>
 
             <div className={styles.cardFooter}>
-              {plano.nome_plano === 'Plano Grátis' && <p className={styles.callout}>Neste plano, é aplicada uma tarifa de {plano.tarifa_venda_percentual}% por venda aprovada.</p>}
+              {plano.callout && <p className={styles.callout}>{plano.callout}</p>}
               <button
                 onClick={() => handleSubscribe(plano, showAnnual)}
                 className={styles.ctaButton}
                 disabled={loadingButton !== null}
               >
-                {loadingButton === `${plano.nome_plano}-${showAnnual ? 'anual' : 'mensal'}` 
+                {loadingButton === `${plano.name}-${showAnnual ? 'anual' : 'mensal'}` 
                   ? 'Redirecionando...' 
-                  : plano.nome_plano === 'Plano Grátis' ? 'Começar agora' : `Assinar ${plano.nome_plano}`}
+                  : plano.name === 'Plano Grátis' ? 'Começar agora' : `Assinar ${plano.name}`}
               </button>
             </div>
           </div>

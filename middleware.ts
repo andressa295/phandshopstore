@@ -70,6 +70,7 @@ export async function middleware(req: NextRequest) {
     '/plataforma/conversao',
     '/plataforma/automacao',
     '/plataforma/analises',
+    '/verificar-email',
   ];
 
   const protectedRoutePrefix = '/dashboard';
