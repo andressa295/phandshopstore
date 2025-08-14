@@ -8,7 +8,7 @@ const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 export async function POST(req: Request) {
   const supabase = getSupabaseServerClient();
 
-  // Movido o construtor do Stripe para dentro da função POST
+  // Movido o construtor do Stripe e a verificação para dentro da função POST
   if (!stripeSecretKey) {
     return NextResponse.json({ error: 'STRIPE_SECRET_KEY não está definida.' }, { status: 500 });
   }

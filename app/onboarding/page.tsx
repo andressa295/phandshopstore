@@ -1,4 +1,3 @@
-// onboarding.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -13,7 +12,6 @@ export default function OnboardingPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Pega o nome da loja salvo no localStorage
         const savedNomeLoja = localStorage.getItem('nomeLoja');
         if (savedNomeLoja) {
             setLojaNome(savedNomeLoja);
@@ -48,13 +46,15 @@ export default function OnboardingPage() {
         try {
             const lojaSlug = slugify(lojaNome);
             
-            const { error: dbError } = await supabase
+            const { data: lojaInserida, error: dbError } = await supabase
                 .from('lojas')
                 .insert({
                     nome_loja: lojaNome,
                     slug: lojaSlug,
                     user_id: user.id
-                });
+                })
+                .select('id')
+                .single();
             
             if (dbError) {
                 console.error("Erro ao inserir loja:", dbError);
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
             const { error: assinaturaError } = await supabase
                 .from('assinaturas')
                 .insert({
-                    loja_id: (await supabase.from('lojas').select('id').eq('user_id', user.id).single()).data?.id,
+                    loja_id: lojaInserida.id, // CORRIGIDO: Usando o ID da loja recém-criada
                     plano_id: planoGratis.id,
                     status: 'ativa',
                     periodo_atual_inicio: new Date().toISOString(),

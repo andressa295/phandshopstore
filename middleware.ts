@@ -11,7 +11,6 @@ export async function middleware(req: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession();
   const pathname = req.nextUrl.pathname;
 
-  // Função para remover o prefixo de idioma da rota
   const getPathWithoutLocale = (path: string) => {
     const parts = path.split('/');
     if (parts.length > 2 && (parts[1] === 'pt-BR' || parts[1] === 'en-US' || parts[1] === 'es-ES')) {
@@ -22,11 +21,13 @@ export async function middleware(req: NextRequest) {
 
   const pathWithoutLocale = getPathWithoutLocale(pathname);
 
-  // Lista COMPLETA de rotas públicas
+  // Lista COMPLETA de rotas públicas. Corrigido para incluir 'onboarding' e 'verificar-email'.
   const publicRoutes = [
     '/',
     '/login',
     '/cadastro',
+    '/onboarding', // Adicionado
+    '/verificar-email', // Adicionado
     '/plataforma',
     '/planos',
     '/profissionais',
@@ -74,15 +75,21 @@ export async function middleware(req: NextRequest) {
   const protectedRoutePrefix = '/dashboard';
 
   // 1. Se o usuário NÃO tem sessão e tenta acessar a dashboard, redirecione para o login.
+  // Esta lógica está correta.
   if (!session && pathWithoutLocale.startsWith(protectedRoutePrefix)) {
     const redirectUrl = new URL('/login', req.url);
     return NextResponse.redirect(redirectUrl);
   }
 
   // 2. Se o usuário TEM sessão e tenta acessar uma rota pública, redirecione para a dashboard.
+  // CORRIGIDO: A lógica foi refinada para não redirecionar páginas essenciais do fluxo de autenticação.
   if (session && publicRoutes.includes(pathWithoutLocale)) {
+    const isAuthRoute = pathWithoutLocale.startsWith('/login') || pathWithoutLocale.startsWith('/cadastro') || pathWithoutLocale.startsWith('/verificar-email');
+
+    if (isAuthRoute) {
       const redirectUrl = new URL(protectedRoutePrefix, req.url);
       return NextResponse.redirect(redirectUrl);
+    }
   }
   
   return res;
