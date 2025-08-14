@@ -89,9 +89,9 @@
 .heroSubtitle {
     font-size: clamp(1rem, 2vw, 1.0rem); /* Mais fino e menor */
     color: white;
-    max-width: 550px;
+    max-width: 500px;
     line-height: 1.7;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.0rem;
 }
 .heroActions {
     margin-top: 2rem;
@@ -764,4 +764,11 @@
 
 @media (max-width: 768px) {
     .diferenciaisGrid { grid-template-columns: 1fr; gap: 3rem; }
+    .section {
+        padding: 2rem 0; /* Ajusta o espaçamento geral de todas as seções */
+    }
+    .sectionHeader {
+        margin-bottom: 1.5rem; /* Ajusta o espaçamento abaixo dos títulos de seção */
+    }
 }
+

@@ -173,7 +173,7 @@ export default function Header() {
             <FaUserCircle />
             Fazer Login
           </Link>
-          <Link href="/planos" className={styles.navButton} onClick={handleLinkClick}>
+          <Link href="/cadastro" className={styles.navButton} onClick={handleLinkClick}>
             <FaStore />
             Criar loja grátis
           </Link>

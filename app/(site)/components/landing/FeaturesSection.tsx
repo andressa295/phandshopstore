@@ -31,7 +31,7 @@ export function FeaturesSection() {
       <div className={styles.contentContainer}>
         <div className={styles.sectionHeader}>
           <span className={styles.preTitle}>FERRAMENTAS</span>
-          <h2>Uma plataforma, <div className="fontPlayfair">inúmeras possibilidades</div></h2>
+          <h2>Uma plataforma <div className="fontPlayfair">inúmeras possibilidades</div></h2>
         </div>
         <div className={styles.featuresGrid}>
           {funcionalidades.map((item) => (
