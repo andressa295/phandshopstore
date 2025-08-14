@@ -154,6 +154,19 @@
     width: 1.25rem;
     height: 1.25rem;
 }
+.passwordToggleIcon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b21a8;
+    font-size: 0.8rem; 
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
 
 .input {
     width: 100%;

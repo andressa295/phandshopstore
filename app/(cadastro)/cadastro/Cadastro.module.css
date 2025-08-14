@@ -131,6 +131,31 @@
     font-weight: 500;
 }
 
+.passwordContainer {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+}
+
+/* Ajustado para o botão de mostrar/ocultar senha */
+.passwordToggleIcon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6d28d9;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.passwordToggleIcon:hover {
+    color: #5b21b6;
+}
 .input {
     width: 100%;
     padding: 0.75rem 1rem;

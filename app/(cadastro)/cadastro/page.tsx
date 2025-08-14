@@ -24,6 +24,7 @@ function CadastroForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
@@ -122,16 +123,24 @@ function CadastroForm() {
               
               <div className={styles.inputGroup}>
                 <label htmlFor="senha" className={styles.label}>Senha</label>
-                <input
-                  type="password"
-                  id="senha"
-                  name="senha"
-                  className={styles.input}
-                  value={form.senha}
-                  onChange={handleChange}
-                  placeholder="Defina sua senha"
-                  required
-                />
+                <div className={styles.passwordContainer}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="senha"
+                    name="senha"
+                    className={styles.input}
+                    value={form.senha}
+                    onChange={handleChange}
+                    placeholder="Defina sua senha"
+                    required
+                  />
+                  <span 
+                    className={styles.passwordToggleIcon} 
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? 'Ocultar' : 'Mostrar'}
+                  </span>
+                </div>
               </div>
 
               <div className={styles.inputGroup}>

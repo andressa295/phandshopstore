@@ -133,16 +133,7 @@ export default function LoginPage() {
                     className={styles.passwordToggleIcon} 
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                        <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M10.79 12.912l-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-1.613-1.614A9.977 9.977 0 0 0 0 8c0 1.549.31 3.015.834 4.385l-1.025 1.025a.5.5 0 0 0 .708.708l1.025-1.025c1.37.524 2.836.834 4.385.834h.001c.708 0 1.354-.085 1.954-.236a.5.5 0 0 0-.217-.962zm3.808-3.007a.5.5 0 0 0-.708.708l-1.025-1.025A9.977 9.977 0 0 0 16 8c0-1.549-.31-3.015-.834-4.385l1.025-1.025a.5.5 0 0 0-.708-.708l-1.025 1.025C12.836 4.985 11.37 5.295 9.82 5.295h-.001a4.5 4.5 0 0 1 2.378 1.492.5.5 0 0 0 .708.707l1.025 1.025zM8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/>
-                      </svg>
-                    )}
+                    {showPassword ? 'Ocultar' : 'Mostrar'}
                   </span>
                 </div>
               </div>
