@@ -2,19 +2,22 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
-const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
-
-if (!stripeSecretKey || !stripeWebhookSecret) {
-  throw new Error('As variáveis de ambiente do Stripe não estão definidas.');
-}
-
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-06-30.basil',
-});
-
 export async function POST(req: Request) {
   const supabase = getSupabaseServerClient();
+  
+  // As variáveis de ambiente são acessadas e verificadas DENTRO da função POST
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
+  const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
+
+  if (!stripeSecretKey || !stripeWebhookSecret) {
+    console.error('Erro de configuração: Chaves do Stripe não definidas.');
+    return NextResponse.json({ error: 'Erro interno: Chaves de API do Stripe não configuradas.' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2025-06-30.basil',
+  });
+
   const rawBody = await req.text();
   const signature = req.headers.get('stripe-signature');
 
@@ -32,7 +35,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Lidando com o evento de pagamento concluído
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       
@@ -47,7 +49,6 @@ export async function POST(req: Request) {
         throw new Error('Metadados essenciais ausentes na sessão de checkout.');
       }
 
-      // 1. Busca o ID do plano na sua tabela 'planos'
       const { data: planoData, error: planoError } = await supabase
         .from('planos')
         .select('id')
@@ -59,13 +60,12 @@ export async function POST(req: Request) {
       }
 
       const planoId = planoData.id;
-      const status = 'ativa'; // Define o status como ativo
+      const status = 'ativa';
       const now = new Date();
       const periodEnd = is_annual === 'true'
         ? new Date(now.setFullYear(now.getFullYear() + 1))
         : new Date(now.setMonth(now.getMonth() + 1));
       
-      // 2. Insere ou atualiza a assinatura na sua tabela 'assinaturas'
       const { error: dbError } = await supabase
         .from('assinaturas')
         .insert({
@@ -83,10 +83,6 @@ export async function POST(req: Request) {
 
       return NextResponse.json({ received: true }, { status: 200 });
     }
-
-    // Lidando com outros eventos de Stripe (opcional)
-    // Ex: invoice.payment_succeeded, customer.subscription.updated, etc.
-    // ...
 
     return NextResponse.json({ received: true }, { status: 200 });
 

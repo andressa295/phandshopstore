@@ -2,16 +2,21 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
+const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
+
+// Removida a verificação que causava o erro de build
+// if (!stripeSecretKey || !stripeWebhookSecret) {
+//   throw new Error('As variáveis de ambiente do Stripe não estão definidas.');
+// }
+
 export async function POST(req: Request) {
   const supabase = getSupabaseServerClient();
-  
-  // As variáveis de ambiente são acessadas e verificadas DENTRO da função
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
-  const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 
+  // A verificação agora é feita aqui, de forma segura
   if (!stripeSecretKey || !stripeWebhookSecret) {
-    console.error('Erro de configuração: Chaves do Stripe não definidas.');
-    return NextResponse.json({ error: 'Erro interno: Chaves de API do Stripe não configuradas.' }, { status: 500 });
+    console.error('STRIPE_SECRET_KEY ou STRIPE_WEBHOOK_SECRET não estão definidas.');
+    return NextResponse.json({ error: 'Erro interno do servidor: chaves do Stripe ausentes.' }, { status: 500 });
   }
 
   const stripe = new Stripe(stripeSecretKey, {
