@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { MdAttachMoney, MdTrendingUp, MdTrendingDown, MdOutlinePaid, MdOutlineBarChart, MdOutlineInsights, MdPeopleAlt, MdOutlineCancel, MdOutlineChecklist } from 'react-icons/md';
-import styles from './Dashboard.module.css'; // Updated import to CSS module
-import { getDashboardData, DashboardData } from '@/lib/supabase/dashboard/getDashboardData'; // Import the function to fetch data
+import styles from './Dashboard.module.css';
+import { AdminDashboardData } from '@/lib/supabase/dashboard/getAdminDashboardData';
 
 // Funções utilitárias
 const formatCurrency = (value: number) => {
@@ -18,47 +18,29 @@ const getStatusColorClass = (status: string) => {
   return status === 'Operacional' ? styles.statusOperational : styles.statusError;
 };
 
-const DashboardPage: React.FC = () => {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DashboardPageProps {
+    dashboardData: AdminDashboardData | null;
+}
+
+const DashboardPage: React.FC<DashboardPageProps> = ({ dashboardData }) => {
   const [showNotifications, setShowNotifications] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const data = await getDashboardData(); // Call the server-side function
-      if (data) {
-        setDashboardData(data);
-      } else {
-        setError('Não foi possível carregar os dados do dashboard.');
-      }
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []); // Empty dependency array means it runs once on mount
-
-  if (loading) {
-    return <div className={styles.pageContainer}><p>Carregando dados do dashboard...</p></div>;
-  }
-
-  if (error || !dashboardData) {
+  if (!dashboardData) {
     return (
       <div className={styles.pageContainer}>
         <div className={styles.alertError}>
-          {error || 'Erro ao carregar os dados do dashboard.'}
+          Erro ao carregar os dados do dashboard.
         </div>
       </div>
     );
   }
 
-  // Derived values (calculations)
-  const repasse = dashboardData.faturamentoComRepasse * 0.15; // Assuming repasse logic is here
-  const lucroLiquido = dashboardData.faturamentoMes - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis; // Assuming these fields exist in DashboardData
-  const diferencaPercentual = (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1); // Assuming these fields exist
-  const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal; // Assuming these fields exist
-  const previsaoProximoMes = dashboardData.mesAtual * 1.05; // Assuming mesAtual exists
+  // Cálculos baseados nos dados recebidos como prop
+  const repasse = dashboardData.faturamentoBruto * 0.15;
+  const lucroLiquido = dashboardData.faturamentoBruto - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis;
+  const diferencaPercentual = (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1);
+  const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal;
+  const previsaoProximoMes = dashboardData.mesAtual * 1.05;
 
   return (
     <div className={styles.pageContainer}>
@@ -112,8 +94,8 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className={`${styles.tableRow} ${styles.borderBottomNone}`}>
             <span className={styles.tableTitle}>Status do Sistema</span>
-            <span className={`${styles.tableValue} ${getStatusColor(dashboardData.sistemaStatus)}`}>
-              <span className={`${styles.statusIndicator} ${getStatusColor(dashboardData.sistemaStatus)}`}></span>
+            <span className={`${styles.tableValue} ${getStatusColorClass(dashboardData.sistemaStatus)}`}>
+              <span className={`${styles.statusIndicator} ${getStatusColorClass(dashboardData.sistemaStatus)}`}></span>
               {dashboardData.sistemaStatus}
             </span>
           </div>

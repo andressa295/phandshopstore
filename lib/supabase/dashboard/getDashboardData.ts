@@ -3,68 +3,114 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { PostgrestError } from '@supabase/supabase-js';
 
-export interface DashboardData {
-  mesAtual: number;
-  mesAnterior: number;
-  faturamentoBruto: number;
-  faturamentoPendente: number;
-  totalLojistas: number;
-  novosCadastrosSemana: number;
-  ticketsAbertos: number;
-  taxaDeChurn: string;
-  sistemaStatus: string;
-  notificacoesPendentes: number;
-  vendasHoje: number;
-  visitantesHoje: number;
-  ticketMedio: number;
-  taxaConversao: string;
-  custosFixos: number;
-  custosVariaveis: number;
-  detalhes: { mes: string; valor: number }[];
-  vendasSemanaisGrafico: { name: string; vendas: number }[];
-  metaMensal: number;
+export interface VendasSemanaisData {
+    name: string;
+    vendas: number;
 }
 
-export async function getDashboardData(): Promise<DashboardData | null> {
-  const supabase = createServerComponentClient({ cookies });
+export interface DashboardData {
+    vendasHoje: number;
+    visitantesHoje: number;
+    produtosEmEstoque: number;
+    pedidosPendentes: number;
+    estoqueBaixoAlert: number;
+    faturamentoMes: number;
+    ticketMedio: number;
+    taxaConversao: number;
+    vendasSemanaisGrafico: VendasSemanaisData[];
+}
 
-  try {
-    const simulatedData = {
-      mesAtual: 120000,
-      mesAnterior: 110000,
-      faturamentoBruto: 350000,
-      faturamentoPendente: 15000,
-      totalLojistas: 124,
-      novosCadastrosSemana: 12,
-      ticketsAbertos: 8,
-      taxaDeChurn: '2.5%',
-      sistemaStatus: 'Operacional',
-      notificacoesPendentes: 3,
-      vendasHoje: 1200,
-      visitantesHoje: 500,
-      ticketMedio: 150.75,
-      taxaConversao: '3.5%',
-      custosFixos: 30000,
-      custosVariaveis: 15000,
-      detalhes: [
-        { mes: 'Jan', valor: 110000 }, { mes: 'Fev', valor: 115000 }, { mes: 'Mar', valor: 120000 },
-        { mes: 'Abr', valor: 125000 }, { mes: 'Mai', valor: 130000 }, { mes: 'Jun', valor: 135000 },
-        { mes: 'Jul', valor: 120000 },
-      ],
-      vendasSemanaisGrafico: [
-        { name: 'Seg', vendas: 5000 }, { name: 'Ter', vendas: 7000 }, { name: 'Qua', vendas: 6500 },
-        { name: 'Qui', vendas: 9000 }, { name: 'Sex', vendas: 12000 }, { name: 'Sáb', vendas: 11000 },
-        { name: 'Dom', vendas: 13000 },
-      ],
-      metaMensal: 150000,
-    };
-    
-    return {
-      ...simulatedData,
-    };
+export async function getDashboardData(lojaId: string): Promise<DashboardData | null> {
+    const supabase = createServerComponentClient({ cookies });
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
 
-  } catch (error) {
-    console.error('Erro inesperado em getDashboardData:', error);
-    return null;
-  }
+    try {
+        const [
+            vendasMesRes,
+            visitasMesRes,
+            produtosEmEstoqueRes,
+            estoqueBaixoRes,
+            pedidosPendentesRes
+        ] = await Promise.all([
+            supabase
+                .from('vendas')
+                .select('valor_total, created_at, status')
+                .eq('loja_id', lojaId)
+                .gte('created_at', startOfMonth),
+            
+            supabase
+                .from('historico_acessos')
+                .select('id', { count: 'exact' })
+                .eq('loja_id', lojaId)
+                .gte('created_at', startOfMonth),
+
+            supabase
+                .from('produtos')
+                .select('id', { count: 'exact' })
+                .eq('loja_id', lojaId),
+            
+            supabase
+                .from('produtos')
+                .select('id', { count: 'exact' })
+                .eq('loja_id', lojaId)
+                .lt('estoque', 5),
+                
+            supabase
+                .from('vendas')
+                .select('status', { count: 'exact' })
+                .eq('loja_id', lojaId)
+                .eq('status', 'pendente')
+        ]);
+        
+        const vendasMes = vendasMesRes.data || [];
+        const visitasMes = visitasMesRes.count || 0;
+
+        const vendasHoje = vendasMes
+            .filter(v => new Date(v.created_at).toISOString().startsWith(startOfDay.substring(0, 10)))
+            .reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
+        
+        const faturamentoMes = vendasMes.reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
+        const numVendasMes = vendasMes.length;
+        const ticketMedio = numVendasMes > 0 ? (faturamentoMes / numVendasMes) : 0;
+        const taxaConversao = visitasMes > 0 ? (numVendasMes / visitasMes) * 100 : 0;
+        const vendasSemanaisGrafico = gerarGraficoSemanal(vendasMes, today);
+
+        return {
+            vendasHoje,
+            visitantesHoje: visitasMes, // Este valor está incorreto, pois busca visitas do mês inteiro. O VisitTracker deve ser ajustado para registrar visitas diárias.
+            produtosEmEstoque: produtosEmEstoqueRes.count || 0,
+            pedidosPendentes: pedidosPendentesRes.count || 0,
+            estoqueBaixoAlert: estoqueBaixoRes.count || 0,
+            faturamentoMes,
+            ticketMedio,
+            taxaConversao,
+            vendasSemanaisGrafico,
+        };
+
+    } catch (error) {
+        console.error('Erro no serviço getDashboardData:', error);
+        return null;
+    }
+}
+
+function gerarGraficoSemanal(vendas: any[], hoje: Date): VendasSemanaisData[] {
+    const dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const umaSemanaAtras = new Date(hoje);
+    umaSemanaAtras.setDate(hoje.getDate() - 6);
+
+    const vendasPorDia = Array(7).fill(0).map((_, i) => {
+        const dia = new Date(umaSemanaAtras);
+        dia.setDate(umaSemanaAtras.getDate() + i);
+        const diaStr = dias[dia.getDay()];
+        
+        const vendasDoDia = vendas
+            .filter(p => new Date(p.created_at).toDateString() === dia.toDateString())
+            .reduce((acc, curr) => acc + (curr.valor_total || 0), 0);
+
+        return { name: diaStr, vendas: vendasDoDia };
+    });
+
+    return vendasPorDia;
 }
