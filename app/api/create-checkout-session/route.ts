@@ -5,100 +5,94 @@ import { getSupabaseServerClient } from '@/lib/supabaseServer';
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 
+// Removida a verificação que causava o erro de build
+// if (!stripeSecretKey || !stripeWebhookSecret) {
+//   throw new Error('As variáveis de ambiente do Stripe não estão definidas.');
+// }
+
 export async function POST(req: Request) {
   const supabase = getSupabaseServerClient();
 
-  // Movido o construtor do Stripe e a verificação para dentro da função POST
-  if (!stripeSecretKey) {
-    return NextResponse.json({ error: 'STRIPE_SECRET_KEY não está definida.' }, { status: 500 });
+  // A verificação agora é feita aqui, de forma segura
+  if (!stripeSecretKey || !stripeWebhookSecret) {
+    console.error('STRIPE_SECRET_KEY ou STRIPE_WEBHOOK_SECRET não estão definidas.');
+    return NextResponse.json({ error: 'Erro interno do servidor: chaves do Stripe ausentes.' }, { status: 500 });
   }
 
   const stripe = new Stripe(stripeSecretKey, {
     apiVersion: '2025-06-30.basil',
   });
 
+  const rawBody = await req.text();
+  const signature = req.headers.get('stripe-signature');
+
+  if (!signature) {
+    return NextResponse.json({ error: 'Assinatura do webhook ausente.' }, { status: 400 });
+  }
+
+  let event: Stripe.Event;
+
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    event = stripe.webhooks.constructEvent(rawBody, signature, stripeWebhookSecret);
+  } catch (err: any) {
+    console.error(`Erro na assinatura do webhook: ${err.message}`);
+    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+  }
 
-    if (!user) {
-      return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 });
-    }
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      
+      const {
+        supabase_user_id,
+        loja_id,
+        plan_name,
+        is_annual
+      } = session.metadata || {};
 
-    const { priceId, planName, isAnnual } = await req.json();
-
-    if (!priceId || !planName || isAnnual === undefined) {
-      return NextResponse.json({ error: 'Dados da requisição incompletos.' }, { status: 400 });
-    }
-
-    let stripeCustomerId: string;
-    let lojaId: string;
-
-    const { data: lojaData, error: lojaError } = await supabase
-      .from('lojas')
-      .select('id, stripe_customer_id')
-      .eq('user_id', user.id)
-      .single();
-
-    if (lojaError) {
-      if (lojaError.code === 'PGRST116' || lojaError.details === 'The result contains 0 rows') {
-        return NextResponse.json({ error: 'Loja não encontrada para o usuário autenticado.' }, { status: 404 });
+      if (!loja_id || !plan_name || !supabase_user_id) {
+        throw new Error('Metadados essenciais ausentes na sessão de checkout.');
       }
-      console.error('Erro ao buscar dados da loja:', lojaError.message);
-      return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
-    }
 
-    lojaId = lojaData.id;
+      const { data: planoData, error: planoError } = await supabase
+        .from('planos')
+        .select('id')
+        .eq('nome_plano', plan_name)
+        .single();
 
-    if (lojaData.stripe_customer_id) {
-      stripeCustomerId = lojaData.stripe_customer_id;
-    } else {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        metadata: { 
-          supabase_user_id: user.id,
-          loja_id: lojaId
-        },
-      });
-
-      stripeCustomerId = customer.id;
-
-      const { error: updateError } = await supabase
-        .from('lojas')
-        .update({ stripe_customer_id: stripeCustomerId })
-        .eq('id', lojaId);
-
-      if (updateError) {
-        console.error('Erro ao salvar stripe_customer_id na tabela lojas:', updateError.message);
-        return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
+      if (planoError || !planoData) {
+        throw new Error(`Plano '${plan_name}' não encontrado.`);
       }
+
+      const planoId = planoData.id;
+      const status = 'ativa';
+      const now = new Date();
+      const periodEnd = is_annual === 'true'
+        ? new Date(now.setFullYear(now.getFullYear() + 1))
+        : new Date(now.setMonth(now.getMonth() + 1));
+      
+      const { error: dbError } = await supabase
+        .from('assinaturas')
+        .insert({
+          loja_id: loja_id,
+          plano_id: planoId,
+          status: status,
+          periodo_atual_inicio: new Date().toISOString(),
+          periodo_atual_fim: periodEnd.toISOString(),
+          stripe_subscription_id: session.subscription,
+        });
+
+      if (dbError) {
+        throw new Error(`Erro ao salvar a assinatura no banco de dados: ${dbError.message}`);
+      }
+
+      return NextResponse.json({ received: true }, { status: 200 });
     }
 
-    const lineItems = [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ];
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'subscription',
-      line_items: lineItems,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
-      customer: stripeCustomerId,
-      metadata: {
-        plan_name: planName,
-        is_annual: isAnnual ? 'true' : 'false',
-        supabase_user_id: user.id,
-        loja_id: lojaId,
-      },
-    });
-
-    return NextResponse.json({ url: session.url }, { status: 200 });
+    return NextResponse.json({ received: true }, { status: 200 });
 
   } catch (error: any) {
-    console.error('Erro no handler da API de checkout:', error);
+    console.error('Erro no handler do webhook:', error);
     return NextResponse.json({ error: 'Erro interno do servidor.', details: error.message }, { status: 500 });
   }
 }
