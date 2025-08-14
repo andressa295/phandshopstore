@@ -1,20 +1,18 @@
-// app/(backoffice)/admin/layout.tsx
 'use client';
 import React, { ReactNode } from 'react';
-import styles from './Backoffice.module.css'; // Importa o arquivo de estilo
+import styles from './Backoffice.module.css';
 import Sidebar from '../components/Sidebar';
-// Define os tipos para as props do componente BackofficeLayout.
+import { useRouter } from 'next/navigation';
+
 interface BackofficeLayoutProps {
   children: ReactNode;
+  onLogout: () => void; // A prop onLogout agora é necessária
 }
 
-const BackofficeLayout: React.FC<BackofficeLayoutProps> = ({ children }) => {
-  // handleLogout agora é gerenciado internamente pelo Sidebar, não precisa ser passado aqui
-  // const handleLogout = () => { ... };
-
+const BackofficeLayout: React.FC<BackofficeLayoutProps> = ({ children, onLogout }) => {
   return (
     <div className={styles.backofficeLayout}>
-      <Sidebar /> {/* CORRIGIDO: onLogout não é mais passado como prop */}
+      <Sidebar onLogout={onLogout} />
       <main className={styles.backofficeContent}>
         {children}
       </main>
