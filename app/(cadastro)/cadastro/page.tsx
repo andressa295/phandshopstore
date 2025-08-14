@@ -26,18 +26,6 @@ function CadastroForm() {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const slugify = (text: string) => {
-    return text
-      .toString()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w-]+/g, '')
-      .replace(/--+/g, '-');
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     setForm(prev => ({
@@ -70,7 +58,6 @@ function CadastroForm() {
         return;
       }
       
-      // Corrigido: Agora salva o nome da loja no localStorage para usar na próxima página
       localStorage.setItem('nomeLoja', form.nomeLoja);
 
       setSuccessMessage('Verifique seu e-mail para confirmar sua conta!');
@@ -112,7 +99,7 @@ function CadastroForm() {
             <div className={styles.header}>
               <h1 className={styles.title}>Crie sua loja grátis</h1>
               
-              <Link href="/sitecriadores/afiliados" className={styles.serviceLink}>
+              <Link href="#" className={styles.serviceLink}>
                 Sou criador de loja
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className={styles.linkIcon} viewBox="0 0 16 16">
                   <path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>

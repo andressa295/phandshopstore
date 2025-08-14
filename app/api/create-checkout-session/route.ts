@@ -5,100 +5,100 @@ import { getSupabaseServerClient } from '@/lib/supabaseServer';
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2025-06-30.basil',
-});
-
 export async function POST(req: Request) {
-  const supabase = getSupabaseServerClient();
+  const supabase = getSupabaseServerClient();
 
-  try {
-    if (!stripeSecretKey) {
-      return NextResponse.json({ error: 'STRIPE_SECRET_KEY não está definida no servidor.' }, { status: 500 });
+  // Movido o construtor do Stripe para dentro da função POST
+  if (!stripeSecretKey) {
+    return NextResponse.json({ error: 'STRIPE_SECRET_KEY não está definida.' }, { status: 500 });
+  }
+
+  const stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2025-06-30.basil',
+  });
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 });
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const { priceId, planName, isAnnual } = await req.json();
 
-    if (!user) {
-      return NextResponse.json({ error: 'Acesso não autorizado.' }, { status: 401 });
-    }
+    if (!priceId || !planName || isAnnual === undefined) {
+      return NextResponse.json({ error: 'Dados da requisição incompletos.' }, { status: 400 });
+    }
 
-    const { priceId, planName, isAnnual } = await req.json();
+    let stripeCustomerId: string;
+    let lojaId: string;
 
-    if (!priceId || !planName || isAnnual === undefined) {
-      return NextResponse.json({ error: 'Dados da requisição incompletos.' }, { status: 400 });
-    }
+    const { data: lojaData, error: lojaError } = await supabase
+      .from('lojas')
+      .select('id, stripe_customer_id')
+      .eq('user_id', user.id)
+      .single();
 
-    let stripeCustomerId: string;
-    let lojaId: string;
+    if (lojaError) {
+      if (lojaError.code === 'PGRST116' || lojaError.details === 'The result contains 0 rows') {
+        return NextResponse.json({ error: 'Loja não encontrada para o usuário autenticado.' }, { status: 404 });
+      }
+      console.error('Erro ao buscar dados da loja:', lojaError.message);
+      return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
+    }
 
-    const { data: lojaData, error: lojaError } = await supabase
-      .from('lojas')
-      .select('id, stripe_customer_id')
-      .eq('user_id', user.id)
-      .single();
+    lojaId = lojaData.id;
 
-    if (lojaError) {
-      if (lojaError.code === 'PGRST116' || lojaError.details === 'The result contains 0 rows') {
-        console.warn('Nenhuma loja encontrada para o usuário ou stripe_customer_id ausente. Tentando criar novo cliente Stripe.');
-        return NextResponse.json({ error: 'Loja não encontrada para o usuário autenticado.' }, { status: 404 });
-      }
-      console.error('Erro ao buscar dados da loja:', lojaError.message);
-      return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
-    }
+    if (lojaData.stripe_customer_id) {
+      stripeCustomerId = lojaData.stripe_customer_id;
+    } else {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: { 
+          supabase_user_id: user.id,
+          loja_id: lojaId
+        },
+      });
 
-    lojaId = lojaData.id;
+      stripeCustomerId = customer.id;
 
-    if (lojaData.stripe_customer_id) {
-      stripeCustomerId = lojaData.stripe_customer_id;
-    } else {
-      const customer = await stripe.customers.create({
-        email: user.email,
-        metadata: { 
-          supabase_user_id: user.id,
-          loja_id: lojaId
-        },
-      });
+      const { error: updateError } = await supabase
+        .from('lojas')
+        .update({ stripe_customer_id: stripeCustomerId })
+        .eq('id', lojaId);
 
-      stripeCustomerId = customer.id;
+      if (updateError) {
+        console.error('Erro ao salvar stripe_customer_id na tabela lojas:', updateError.message);
+        return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
+      }
+    }
 
-      const { error: updateError } = await supabase
-        .from('lojas')
-        .update({ stripe_customer_id: stripeCustomerId })
-        .eq('id', lojaId);
+    const lineItems = [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ];
 
-      if (updateError) {
-        console.error('Erro ao salvar stripe_customer_id na tabela lojas:', updateError.message);
-        return NextResponse.json({ error: 'Erro ao processar o pagamento.' }, { status: 500 });
-      }
-    }
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'subscription',
+      line_items: lineItems,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+      customer: stripeCustomerId,
+      metadata: {
+        plan_name: planName,
+        is_annual: isAnnual ? 'true' : 'false',
+        supabase_user_id: user.id,
+        loja_id: lojaId,
+      },
+    });
 
-    const lineItems = [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ];
+    return NextResponse.json({ url: session.url }, { status: 200 });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'subscription',
-      line_items: lineItems,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
-      customer: stripeCustomerId,
-      metadata: {
-        plan_name: planName,
-        is_annual: isAnnual ? 'true' : 'false',
-        supabase_user_id: user.id,
-        loja_id: lojaId,
-      },
-    });
-
-    return NextResponse.json({ url: session.url }, { status: 200 });
-
-  } catch (error: any) {
-    console.error('Erro no handler da API de checkout:', error);
-    return NextResponse.json({ error: 'Erro interno do servidor.', details: error.message }, { status: 500 });
-  }
+  } catch (error: any) {
+    console.error('Erro no handler da API de checkout:', error);
+    return NextResponse.json({ error: 'Erro interno do servidor.', details: error.message }, { status: 500 });
+  }
 }
