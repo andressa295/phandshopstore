@@ -53,10 +53,12 @@
 .formWrapper::-webkit-scrollbar {
     width: 6px;
 }
+
 .formWrapper::-webkit-scrollbar-thumb {
     background-color: #d1d5db;
     border-radius: 10px;
 }
+
 .formWrapper::-webkit-scrollbar-track {
     background-color: #f3f4f6;
 }
@@ -64,13 +66,12 @@
 .formContainer {
     max-width: 450px;
     width: 100%;
-     margin-left: 2rem; 
+    margin-right: 2rem;
 }
 
 .logoWrapper {
     text-align: left;
-    margin-bottom: 0rem;
-    padding-right:5rem;
+    margin-bottom: 0.5rem;
 }
 
 .logo {
@@ -84,18 +85,16 @@
 }
 
 .title {
-    font-size: 1.9rem; 
+    font-size: 1.7rem; 
     font-weight: 500; 
     color: #1f2937;
-    /* Ajustado: Espaçamento menor abaixo do título para o subtítulo */
     margin-bottom: 0.5rem;
 }
 
-/* Novo estilo para o subtítulo */
 .subtitle {
     font-size: 0.9rem;
     color: #6b21a8;
-    margin-bottom: 1.5rem; /* Margem para separar do formulário */
+    margin-bottom: 1.5rem;
 }
 
 .forgotPasswordLink {
@@ -137,7 +136,7 @@
 .passwordContainer {
     position: relative;
     width: 100%;
-    margin-bottom: -1rem;
+    margin-bottom: 0.2rem;
 }
 
 .passwordToggleIcon {
@@ -243,6 +242,12 @@
 
 /* ============ RESPONSIVIDADE ============ */
 @media (max-width: 768px) {
+    /* Adicionado: Fundo fosco com a imagem em mobile */
+    .mainContainer {
+        background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('/testelogin.png') no-repeat center center fixed;
+        background-size: cover;
+    }
+    
     .contentGrid {
         grid-template-columns: 1fr;
         width: 90%;
@@ -259,7 +264,7 @@
 
     .formWrapper {
         margin-right: 0;
-        border-radius: 0;
+        border-radius: 1.5rem;
         max-height: none;
         overflow-y: visible;
         padding: 1.5rem;
