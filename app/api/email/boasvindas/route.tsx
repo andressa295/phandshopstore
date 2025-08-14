@@ -1,17 +1,23 @@
-// app/api/send-welcome-email/route.ts
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resendApiKey = process.env.RESEND_API_KEY;
-
-if (!resendApiKey) {
-  // Garante que o erro exploda logo no boot (ideal em produção)
-  throw new Error('RESEND_API_KEY não está configurada nas variáveis de ambiente.');
-}
-
-const resend = new Resend(resendApiKey);
+// Removida a inicialização e verificação fora da função POST
+// const resendApiKey = process.env.RESEND_API_KEY;
+// if (!resendApiKey) {
+//   throw new Error('RESEND_API_KEY não está configurada nas variáveis de ambiente.');
+// }
+// const resend = new Resend(resendApiKey);
 
 export async function POST(req: Request) {
+  const resendApiKey = process.env.RESEND_API_KEY; // Acessa a variável aqui
+
+  // A verificação e inicialização do Resend agora está dentro da função POST
+  if (!resendApiKey) {
+    console.error('RESEND_API_KEY não está configurada no servidor.');
+    return NextResponse.json({ error: 'Erro interno do servidor: chave de API de e-mail ausente.' }, { status: 500 });
+  }
+  const resend = new Resend(resendApiKey);
+
   try {
     const { nome, email, plano, recorrencia } = await req.json();
 
