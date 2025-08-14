@@ -99,7 +99,7 @@ export default function Header() {
   return (
     <>
       <header className={styles.header}>
-        <Link href="/" className={styles.logoLink} onClick={handleLinkClick}>
+        <Link href="/page" className={styles.logoLink} onClick={handleLinkClick}>
           <Image
             src="/logo.png"
             alt="Phandshop Logo"
@@ -111,6 +111,7 @@ export default function Header() {
         </Link>
 
         {/* MENU DESKTOP */}
+        
         <nav className={styles.navDesktop}>
           <div className={styles.dropdown}>
             <button
@@ -169,6 +170,9 @@ export default function Header() {
               </div>
             )}
           </div>
+          <Link href="/planos" className={styles.planosButton} onClick={handleLinkClick}>
+            Planos
+          </Link>
           <Link href="/login" className={styles.loginButton} onClick={handleLinkClick}>
             <FaUserCircle />
             Fazer Login

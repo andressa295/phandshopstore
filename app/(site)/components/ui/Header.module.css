@@ -26,6 +26,8 @@
 .logoImage {
   height: 40px;
   width: auto;
+  margin-left: -1rem
+
   
 }
 
@@ -98,6 +100,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.2rem;
+  margin-left: -1rem
 }
 
 .navButton:hover {
@@ -120,11 +123,33 @@
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
+  margin-left: -2rem
+  }
 .loginButton:hover {
   border-color: #f0e6ff;
   color: #fff;
+
+}
+.planosButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 1rem;
+  color: #f0e6ff;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  font-weight: 400;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+}
+.planosButton:hover {
+  border-color: #f0e6ff;
+  color: #fff;
+  transform: translateY(-2px);
+
 }
 
 /* === HAMBÚRGUER === */

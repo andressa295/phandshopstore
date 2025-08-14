@@ -77,6 +77,8 @@
 .logo {
     display: inline-block;
     height: auto;
+    margin-left: -1rem
+
 }
 
 .header {
