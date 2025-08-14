@@ -1,84 +1,63 @@
-"use client";
+'use client';
 import React from 'react';
+import styles from './Sidebar.module.css';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useSupabase } from '@/app/(site)/components/SupabaseProvider';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
-  onLogout: () => void;
+  // onLogout agora não é mais uma prop, pois o logout é gerenciado internamente
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
+const Sidebar: React.FC = () => {
+  const { user } = useSupabase();
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
   const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard' },
     { name: 'Receita', path: '/admin/receita' },
     { name: 'Lojistas', path: '/admin/usuarios' },
     { name: 'Suporte', path: '/admin/suporte' },
     { name: 'Planos', path: '/admin/planos' },
-    { name: 'Sair', path: 'logout', action: onLogout }
   ];
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      router.push('/login');
+    }
+  };
+
   return (
-    <aside style={{
-      width: '240px',
-      background: 'var(--purple-dark)',
-      color: 'white',
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '2rem 1rem',
-      gap: '1rem',
-      height: '100vh',
-      position: 'fixed',
-      left: 0,
-      top: 0
-    }}>
-      <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-        
-        <img
+    <aside className={styles.sidebar}>
+      <div className={styles.logoWrapper}>
+        <Image
           src="/logo.png"
           alt="Phandshop Logo"
-          style={{ width: '170px', height: 'auto' }}
+          width={170}
+          height={40}
+          className={styles.logo}
         />
       </div>
       <nav>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className={styles.sidebarNav}>
           {navItems.map((item) => (
-            <li key={item.path} style={{ marginBottom: '0.75rem' }}>
-              {item.action ? (
-                <button
-                  onClick={item.action}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'white',
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s',
-                    fontSize: '1rem'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'none'}
-                >
-                  {item.name}
-                </button>
-              ) : (
-                <a
-                  href={item.path}
-                  style={{
-                    color: 'white',
-                    padding: '0.75rem 1rem',
-                    display: 'block',
-                    borderRadius: '8px',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'none'}
-                >
+            <li key={item.path} className={styles.sidebarNavItem}>
+              <Link href={item.path} passHref>
+                <a className={styles.sidebarLink}>
                   {item.name}
                 </a>
-              )}
+              </Link>
             </li>
           ))}
+          <li className={styles.sidebarNavItem}>
+            <button onClick={handleLogout} className={styles.sidebarButton}>
+              Sair
+            </button>
+          </li>
         </ul>
       </nav>
     </aside>
@@ -86,4 +65,3 @@ const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
 };
 
 export default Sidebar;
-

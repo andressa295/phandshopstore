@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MdAttachMoney,
   MdTrendingUp,
@@ -12,133 +12,167 @@ import {
   MdOutlineCancel,
   MdOutlineChecklist,
 } from 'react-icons/md';
-import '@/app/globals.css';
+import styles from './Receita.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { PostgrestError } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
-const dadosReceita = {
-  mesAtual: 120000,
-  mesAnterior: 110000,
-  totalAnual: 1450000,
-  metaMensal: 150000,
-  faturamentoComRepasse: 80000,
-  usuariosPagantes: 320,
-  cancelamentos: 20,
-  planos: {
-    gratuito: 5000, // Simulação de faturamento com plano gratuito (2.5% de comissão)
-    basico: 40000,
-    master: 60000,
-    plus: 20000,
-  },
-  custosFixos: 30000,
-  custosVariaveis: 15000,
-  ticketMedio: 150.75, // Nova métrica
-  taxaConversao: '3.5%', // Nova métrica
-  detalhes: [
-    { mes: 'Jan', valor: 110000 },
-    { mes: 'Fev', valor: 115000 },
-    { mes: 'Mar', valor: 120000 },
-    { mes: 'Abr', valor: 125000 },
-    { mes: 'Mai', valor: 130000 },
-    { mes: 'Jun', valor: 135000 },
-    { mes: 'Jul', valor: 120000 },
-  ]
-};
+// Interfaces para os dados
+interface DashboardData {
+  mesAtual: number;
+  mesAnterior: number;
+  totalAnual: number;
+  metaMensal: number;
+  faturamentoComRepasse: number;
+  usuariosPagantes: number;
+  cancelamentos: number;
+  planos: { [key: string]: number };
+  custosFixos: number;
+  custosVariaveis: number;
+  ticketMedio: number;
+  taxaConversao: string;
+  detalhes: { mes: string; valor: number }[];
+  sistemaStatus: string;
+  notificacoesPendentes: number;
+}
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('pt-BR', {
+// Funções utilitárias
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
   }).format(value);
+};
+
+const getStatusColor = (status: string) => {
+  return status === 'Operacional' ? styles.statusOperational : styles.statusError;
+};
 
 const ReceitaPage: React.FC = () => {
+  const supabase = createClientComponentClient();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [periodo, setPeriodo] = useState<'mes' | 'ano'>('mes');
 
-  const repasse = dadosReceita.faturamentoComRepasse * 0.15;
-  const lucroLiquido = dadosReceita.mesAtual - repasse - dadosReceita.custosFixos - dadosReceita.custosVariaveis;
-  const diferencaPercentual = (((dadosReceita.mesAtual - dadosReceita.mesAnterior) / dadosReceita.mesAnterior) * 100).toFixed(1);
-  const metaAtingida = dadosReceita.mesAtual >= dadosReceita.metaMensal;
-  const previsaoProximoMes = dadosReceita.mesAtual * 1.05;
+  useEffect(() => {
+    const fetchReceita = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from('receita_historico').select('*');
 
-  const cardStyle = {
-    background: 'white',
-    padding: '1.5rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-  };
+      if (error) {
+        console.error("Erro ao buscar dados de receita:", error);
+        setError('Erro ao carregar dados de receita.');
+      } else {
+        // Lógica de simulação de dados do dashboard
+        const faturamentoMes = data.reduce((sum, item) => sum + item.valor_venda, 0);
+        const faturamentoAnterior = data.slice(0, -1).reduce((sum, item) => sum + item.valor_venda, 0);
 
-  const grid = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '1.5rem',
-    marginBottom: '2rem',
-  };
+        setDashboardData({
+            mesAtual: faturamentoMes,
+            mesAnterior: faturamentoAnterior,
+            totalAnual: 1450000,
+            metaMensal: 150000,
+            faturamentoComRepasse: faturamentoMes * 0.85,
+            usuariosPagantes: 320,
+            cancelamentos: 20,
+            planos: {
+              gratuito: 5000,
+              basico: 40000,
+              master: 60000,
+              plus: 20000,
+            },
+            custosFixos: 30000,
+            custosVariaveis: 15000,
+            ticketMedio: faturamentoMes > 0 ? faturamentoMes / data.length : 0,
+            taxaConversao: '3.5%',
+            detalhes: [
+              { mes: 'Jan', valor: 110000 },
+              { mes: 'Fev', valor: 115000 },
+              { mes: 'Mar', valor: 120000 },
+              { mes: 'Abr', valor: 125000 },
+              { mes: 'Mai', valor: 130000 },
+              { mes: 'Jun', valor: 135000 },
+              { mes: 'Jul', valor: 120000 },
+            ],
+            sistemaStatus: 'Operacional',
+            notificacoesPendentes: 3,
+        });
+      }
+      setLoading(false);
+    };
 
-  const iconStyle = {
-    marginRight: '0.5rem',
-    verticalAlign: 'middle',
-    color: 'var(--purple-main)',
-  };
+    fetchReceita();
+  }, [supabase]);
 
-  const insightsListStyle = {
-    listStyle: 'none',
-    padding: 0,
-    marginTop: '1rem',
-  };
-
-  const insightItemStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '0.75rem',
-  };
+  if (loading) return <div>Carregando...</div>;
+  if (error || !dashboardData) return <div>Erro ao carregar dados.</div>;
+  
+  const repasse = dashboardData.faturamentoComRepasse * 0.15;
+  const lucroLiquido = dashboardData.mesAtual - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis;
+  const diferencaPercentual = (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1);
+  const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal;
+  const previsaoProximoMes = dashboardData.mesAtual * 1.05;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2 style={{ fontSize: '2rem', color: 'var(--purple-main)' }}>Painel de Receita</h2>
-      <p style={{ color: 'var(--gray-dark-text)', marginBottom: '2rem' }}>
-        Visão estratégica da receita da plataforma.
-      </p>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Painel de Receita</h2>
+        <div className={styles.notificationBellContainer} onClick={() => setShowNotifications(!showNotifications)}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.bellIcon}>
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+          </svg>
+          {dashboardData.notificacoesPendentes > 0 && (
+            <span className={styles.notificationCounter}>{dashboardData.notificacoesPendentes}</span>
+          )}
+        </div>
+      </div>
+      <p className={styles.subtitle}>Visão estratégica da receita da plataforma.</p>
 
       {/* METRICS */}
-      <div style={grid}>
-        <div style={cardStyle}>
-          <p><MdAttachMoney style={iconStyle} /> Receita Mês Atual</p>
-          <strong>{formatCurrency(dadosReceita.mesAtual)}</strong>
-          <p style={{ fontSize: '0.9rem', color: '#888' }}>
-            {parseFloat(diferencaPercentual) >= 0 ? <MdTrendingUp style={iconStyle} /> : <MdTrendingDown style={iconStyle} />}
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <p><MdAttachMoney className={styles.icon} /> Receita Mês Atual</p>
+          <strong>{formatCurrency(dashboardData.mesAtual)}</strong>
+          <p className={styles.cardInfo}>
+            {parseFloat(diferencaPercentual) >= 0 ? <MdTrendingUp className={styles.icon} /> : <MdTrendingDown className={styles.icon} />}
             {diferencaPercentual}% vs mês anterior
           </p>
         </div>
-        <div style={cardStyle}>
-          <p><MdOutlinePaid style={iconStyle} /> Lucro Líquido</p>
+        <div className={styles.card}>
+          <p><MdOutlinePaid className={styles.icon} /> Lucro Líquido</p>
           <strong>{formatCurrency(lucroLiquido)}</strong>
         </div>
-        <div style={cardStyle}>
-          <p><MdOutlineChecklist style={iconStyle} /> Meta Mensal</p>
-          <strong style={{ color: metaAtingida ? 'green' : 'orange' }}>
+        <div className={styles.card}>
+          <p><MdOutlineChecklist className={styles.icon} /> Meta Mensal</p>
+          <strong className={metaAtingida ? styles.statusSuccess : styles.statusWarning}>
             {metaAtingida ? 'Atingida' : 'Não atingida'}
           </strong>
-          <p style={{ fontSize: '0.9rem', color: '#888' }}>
-            {formatCurrency(dadosReceita.metaMensal)}
+          <p className={styles.cardInfo}>
+            {formatCurrency(dashboardData.metaMensal)}
           </p>
         </div>
-        <div style={cardStyle}>
+        <div className={styles.card}>
           <p>Ticket Médio</p>
-          <strong>{formatCurrency(dadosReceita.ticketMedio)}</strong>
+          <strong>{formatCurrency(dashboardData.ticketMedio)}</strong>
         </div>
-        <div style={cardStyle}>
+        <div className={styles.card}>
           <p>Taxa de Conversão</p>
-          <strong>{dadosReceita.taxaConversao}</strong>
+          <strong>{dashboardData.taxaConversao}</strong>
         </div>
-        <div style={cardStyle}>
+        <div className={styles.card}>
           <p>Previsão Próximo Mês</p>
           <strong>{formatCurrency(previsaoProximoMes)}</strong>
         </div>
       </div>
 
       {/* RECEITA POR PLANO */}
-      <div style={{ ...cardStyle, marginBottom: '2rem' }}>
-        <h3><MdOutlineBarChart style={iconStyle} /> Receita por Plano</h3>
-        {Object.entries(dadosReceita.planos).map(([nome, valor]) => (
-          <div key={nome} style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className={styles.card}>
+        <h3><MdOutlineBarChart className={styles.icon} /> Receita por Plano</h3>
+        {Object.entries(dashboardData.planos).map(([nome, valor]) => (
+          <div key={nome} className={styles.planoItem}>
             <span style={{ textTransform: 'capitalize' }}>{nome}</span>
             <strong>{formatCurrency(valor)}</strong>
           </div>
@@ -146,31 +180,27 @@ const ReceitaPage: React.FC = () => {
       </div>
 
       {/* MINI DRE */}
-      <div style={{ ...cardStyle, marginBottom: '2rem' }}>
-        <h3><MdAttachMoney style={iconStyle} /> Resumo Financeiro</h3>
-        <div style={{ lineHeight: '2rem' }}>
-          <p>Receita bruta: {formatCurrency(dadosReceita.mesAtual)}</p>
+      <div className={styles.card}>
+        <h3><MdAttachMoney className={styles.icon} /> Resumo Financeiro</h3>
+        <div className={styles.resumoFinanceiro}>
+          <p>Receita bruta: {formatCurrency(dashboardData.mesAtual)}</p>
           <p>Repasse (15%): -{formatCurrency(repasse)}</p>
-          <p>Custos fixos: -{formatCurrency(dadosReceita.custosFixos)}</p>
-          <p>Custos variáveis: -{formatCurrency(dadosReceita.custosVariaveis)}</p>
+          <p>Custos fixos: -{formatCurrency(dashboardData.custosFixos)}</p>
+          <p>Custos variáveis: -{formatCurrency(dashboardData.custosVariaveis)}</p>
           <p><strong>Lucro líquido: {formatCurrency(lucroLiquido)}</strong></p>
         </div>
       </div>
 
       {/* GRÁFICO */}
-      <div style={{ ...cardStyle, marginBottom: '2rem' }}>
-        <h3><MdOutlineBarChart style={iconStyle} /> Histórico Mensal</h3>
-        <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '0.5rem' }}>
-          {dadosReceita.detalhes.map((item, idx) => {
-            const altura = (item.valor / dadosReceita.mesAtual) * 100;
+      <div className={styles.card}>
+        <h3><MdOutlineBarChart className={styles.icon} /> Histórico Mensal</h3>
+        <div className={styles.graficoContainer}>
+          {dashboardData.detalhes.map((item, idx) => {
+            const altura = (item.valor / dashboardData.mesAtual) * 100;
             return (
-              <div key={idx} style={{ textAlign: 'center', width: '40px' }}>
-                <div style={{
-                  height: `${altura}%`,
-                  background: 'var(--purple-main)',
-                  borderRadius: '8px 8px 0 0',
-                }} />
-                <span style={{ fontSize: '0.75rem', color: '#555' }}>{item.mes}</span>
+              <div key={idx} className={styles.graficoBarra}>
+                <div style={{ height: `${altura}%` }} className={styles.graficoValor} />
+                <span className={styles.graficoMes}>{item.mes}</span>
               </div>
             );
           })}
@@ -178,39 +208,48 @@ const ReceitaPage: React.FC = () => {
       </div>
 
       {/* USUÁRIOS PAGANTES E CHURN */}
-      <div style={grid}>
-        <div style={cardStyle}>
-          <p><MdPeopleAlt style={iconStyle} /> Usuários Pagantes</p>
-          <strong>{dadosReceita.usuariosPagantes}</strong>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <p><MdPeopleAlt className={styles.icon} /> Usuários Pagantes</p>
+          <strong>{dashboardData.usuariosPagantes}</strong>
         </div>
-        <div style={cardStyle}>
-          <p><MdOutlineCancel style={iconStyle} /> Cancelamentos</p>
-          <strong style={{ color: 'red' }}>{dadosReceita.cancelamentos}</strong>
+        <div className={styles.card}>
+          <p><MdOutlineCancel className={styles.icon} /> Cancelamentos</p>
+          <strong className={styles.statusError}>{dashboardData.cancelamentos}</strong>
         </div>
       </div>
 
       {/* INSIGHTS */}
-      <div style={{ ...cardStyle, marginTop: '2rem' }}>
-        <h3><MdOutlineInsights style={iconStyle} /> Insights Automáticos</h3>
-        <ul style={insightsListStyle}>
-          <li style={insightItemStyle}>
-            <MdAttachMoney style={{ ...iconStyle, color: 'var(--green-success)' }} />
+      <div className={styles.card}>
+        <h3><MdOutlineInsights className={styles.icon} /> Insights Automáticos</h3>
+        <ul className={styles.insightsList}>
+          <li className={styles.insightsItem}>
+            <MdAttachMoney className={`${styles.icon} ${styles.statusSuccess}`} />
             Plano Master teve o maior faturamento do mês.
           </li>
-          <li style={insightItemStyle}>
-            <MdOutlineCancel style={{ ...iconStyle, color: 'red' }} />
+          <li className={styles.insightsItem}>
+            <MdOutlineCancel className={`${styles.icon} ${styles.statusError}`} />
             Cancelamentos aumentaram 25% vs mês anterior.
           </li>
-          <li style={insightItemStyle}>
-            <MdTrendingUp style={{ ...iconStyle, color: 'var(--green-success)' }} />
+          <li className={styles.insightsItem}>
+            <MdTrendingUp className={`${styles.icon} ${styles.statusSuccess}`} />
             Crescimento médio mensal: 4,5%.
           </li>
-          <li style={insightItemStyle}>
-            <MdAttachMoney style={iconStyle} />
+          <li className={styles.insightsItem}>
+            <MdAttachMoney className={styles.icon} />
             Projeção: {formatCurrency(previsaoProximoMes)} no próximo mês.
           </li>
         </ul>
       </div>
+
+      {/* Painel de Notificações Lateral */}
+      {showNotifications && (
+        <div className={styles.notificationPanel}>
+          <h3 className={styles.notificationTitle}>Notificações</h3>
+          <p>O conteúdo das notificações será exibido aqui.</p>
+          <button className={styles.notificationButton} onClick={() => setShowNotifications(false)}>Fechar</button>
+        </div>
+      )}
     </div>
   );
 };

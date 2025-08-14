@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import '@/app/globals.css';
+import React, { useState, useEffect } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import styles from './Suporte.module.css';
 
 // Tipagem para a estrutura de dados de um ticket.
 interface Ticket {
@@ -12,83 +13,90 @@ interface Ticket {
   data: string;
 }
 
-const ticketsSimulacao: Ticket[] = [
-  { id: 101, assunto: 'Problema com o checkout', lojista: 'Loja A', status: 'aberto', data: '2023-07-28' },
-  { id: 102, assunto: 'Dúvida sobre o plano Master', lojista: 'Loja B', status: 'em progresso', data: '2023-07-27' },
-  { id: 103, assunto: 'Erro no upload de produtos', lojista: 'Loja C', status: 'fechado', data: '2023-07-25' },
-  { id: 104, assunto: 'Erro 404 no subdomínio', lojista: 'Loja D', status: 'aberto', data: '2023-07-28' },
-];
-
-const getStatusColor = (status: Ticket['status']) => {
+const getStatusColorClass = (status: Ticket['status']) => {
   switch (status) {
     case 'aberto':
-      return 'red';
+      return styles.statusAberto;
     case 'em progresso':
-      return 'orange';
+      return styles.statusEmProgresso;
     case 'fechado':
-      return 'var(--green-success)';
+      return styles.statusFechado;
     default:
-      return 'gray';
+      return styles.statusDefault;
   }
 };
 
 const SuportePage: React.FC = () => {
-  const buttonBaseStyle = {
-    color: 'white',
-    padding: '0.5rem 1rem',
-    borderRadius: '8px',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '0.875rem',
-    transition: 'background-color 0.2s',
-  };
+  const supabase = createClientComponentClient();
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('tickets_suporte')
+        .select('*');
+        // Você pode adicionar um .order('created_at', { ascending: false }) para ordenar por mais recentes
+
+      if (error) {
+        console.error('Erro ao buscar tickets:', error);
+        setError('Não foi possível carregar os tickets.');
+      } else {
+        // Mapeamos os dados do banco para o formato do nosso componente
+        setTickets(data.map(t => ({
+          id: t.id,
+          assunto: t.assunto,
+          lojista: 'Nome do lojista aqui', // Placeholder: você precisará buscar essa informação
+          status: t.status,
+          data: new Date(t.created_at).toLocaleDateString(),
+        })) as Ticket[]);
+      }
+      setLoading(false);
+    };
+
+    fetchTickets();
+  }, []);
+
+  if (loading) return <div className={styles.container}><p>Carregando tickets...</p></div>;
+  if (error) return <div className={styles.container}><p>Erro: {error}</p></div>;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2 style={{ color: 'var(--purple-main)', fontSize: '2rem', marginBottom: '1rem' }}>Central de Suporte</h2>
-      <p style={{ color: 'var(--gray-dark-text)', marginBottom: '2rem' }}>
+    <div className={styles.container}>
+      <h2 className={styles.pageTitle}>Central de Suporte</h2>
+      <p className={styles.pageSubtitle}>
         Visualize e responda aos tickets de suporte e mensagens dos lojistas aqui.
       </p>
 
       {/* Tabela de Tickets de Suporte */}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className={styles.tableContainer}>
+        <table className={styles.ticketsTable}>
           <thead>
-            <tr style={{ background: 'var(--gray-light)', textAlign: 'left' }}>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>ID</th>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>Assunto</th>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>Lojista</th>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>Status</th>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>Data</th>
-              <th style={{ padding: '1rem', fontWeight: '600' }}>Ações</th>
+            <tr>
+              <th>ID</th>
+              <th>Assunto</th>
+              <th>Lojista</th>
+              <th>Status</th>
+              <th>Data</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {ticketsSimulacao.map((ticket) => (
-              <tr key={ticket.id} style={{ borderBottom: '1px solid var(--gray-medium)' }}>
-                <td style={{ padding: '1rem' }}>{ticket.id}</td>
-                <td style={{ padding: '1rem' }}>{ticket.assunto}</td>
-                <td style={{ padding: '1rem' }}>{ticket.lojista}</td>
-                <td style={{ padding: '1rem' }}>
-                  <span style={{
-                    color: 'white',
-                    background: getStatusColor(ticket.status),
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '9999px',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    textTransform: 'capitalize',
-                  }}>
+            {tickets.map((ticket) => (
+              <tr key={ticket.id}>
+                <td>{ticket.id}</td>
+                <td>{ticket.assunto}</td>
+                <td>{ticket.lojista}</td>
+                <td>
+                  <span className={`${styles.statusBadge} ${getStatusColorClass(ticket.status)}`}>
                     {ticket.status}
                   </span>
                 </td>
-                <td style={{ padding: '1rem' }}>{ticket.data}</td>
-                <td style={{ padding: '1rem' }}>
+                <td>{ticket.data}</td>
+                <td>
                   <button
-                    style={{
-                      ...buttonBaseStyle,
-                      background: 'var(--purple-main)'
-                    }}
+                    className={`${styles.button} ${styles.buttonPrimary}`}
                     onClick={() => alert(`Visualizando detalhes do Ticket #${ticket.id}`)}
                   >
                     Ver
@@ -104,4 +112,3 @@ const SuportePage: React.FC = () => {
 };
 
 export default SuportePage;
-

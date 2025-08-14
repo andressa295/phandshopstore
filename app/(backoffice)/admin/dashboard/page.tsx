@@ -1,18 +1,10 @@
 'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import '@/app/globals.css';
 
-const dashboardData = {
-  totalLojistas: 124,
-  ticketsAbertos: 8,
-  faturamentoBruto: 350000,
-  faturamentoPendente: 15000,
-  sistemaStatus: 'Operacional',
-  notificacoesPendentes: 3,
-  novosCadastrosSemana: 12,
-  taxaDeChurn: '2.5%',
-};
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { MdAttachMoney, MdTrendingUp, MdTrendingDown, MdOutlinePaid, MdOutlineBarChart, MdOutlineInsights, MdPeopleAlt, MdOutlineCancel, MdOutlineChecklist } from 'react-icons/md';
+import styles from './Dashboard.module.css'; // Updated import to CSS module
+import { getDashboardData, DashboardData } from '@/lib/supabase/dashboard/getDashboardData'; // Import the function to fetch data
 
 // Funções utilitárias
 const formatCurrency = (value: number) => {
@@ -22,134 +14,106 @@ const formatCurrency = (value: number) => {
   }).format(value);
 };
 
-const getStatusColor = (status: string) => {
-  return status === 'Operacional' ? 'var(--green-success)' : 'red';
+const getStatusColorClass = (status: string) => {
+  return status === 'Operacional' ? styles.statusOperational : styles.statusError;
 };
 
 const DashboardPage: React.FC = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // Estilo para o ícone de sino e o contador
-  const notificationBellContainerStyle = {
-    position: 'relative' as 'relative',
-    cursor: 'pointer',
-    color: 'var(--gray-dark-text)',
-    fontSize: '2rem',
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const data = await getDashboardData(); // Call the server-side function
+      if (data) {
+        setDashboardData(data);
+      } else {
+        setError('Não foi possível carregar os dados do dashboard.');
+      }
+      setLoading(false);
+    };
 
-  const notificationCounterStyle = {
-    position: 'absolute' as 'absolute',
-    top: '0',
-    right: '0',
-    background: 'red',
-    color: 'white',
-    borderRadius: '50%',
-    width: '20px',
-    height: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '0.75rem',
-    fontWeight: 'bold',
-    transform: 'translate(50%, -50%)',
-  };
+    fetchData();
+  }, []); // Empty dependency array means it runs once on mount
 
-  const cardContainerStyle = {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '2rem',
-    marginBottom: '2rem',
-  };
+  if (loading) {
+    return <div className={styles.pageContainer}><p>Carregando dados do dashboard...</p></div>;
+  }
 
-  const cardStyle = {
-    background: 'white',
-    padding: '2rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  };
+  if (error || !dashboardData) {
+    return (
+      <div className={styles.pageContainer}>
+        <div className={styles.alertError}>
+          {error || 'Erro ao carregar os dados do dashboard.'}
+        </div>
+      </div>
+    );
+  }
 
-  const tableRowStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '0.75rem 0',
-    borderBottom: '1px solid var(--gray-medium)',
-    alignItems: 'center',
-  };
-
-  const tableTitleStyle = {
-    color: 'var(--gray-text)',
-    fontSize: '1rem',
-  };
-
-  const tableValueStyle = {
-    color: 'var(--gray-dark-text)',
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-  };
-  
-  const statusIndicatorStyle = {
-    display: 'inline-block',
-    width: '10px',
-    height: '10px',
-    borderRadius: '50%',
-    marginRight: '0.5rem',
-  };
+  // Derived values (calculations)
+  const repasse = dashboardData.faturamentoComRepasse * 0.15; // Assuming repasse logic is here
+  const lucroLiquido = dashboardData.faturamentoMes - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis; // Assuming these fields exist in DashboardData
+  const diferencaPercentual = (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1); // Assuming these fields exist
+  const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal; // Assuming these fields exist
+  const previsaoProximoMes = dashboardData.mesAtual * 1.05; // Assuming mesAtual exists
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ color: 'var(--purple-main)', fontSize: '2rem' }}>Dashboard de Administração</h2>
-        {/* Ícone de sino de notificação em SVG */}
-        <div style={notificationBellContainerStyle} onClick={() => setShowNotifications(!showNotifications)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell">
+    <div className={styles.pageContainer}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Dashboard de Administração</h2>
+        <div className={styles.notificationBellContainer} onClick={() => setShowNotifications(!showNotifications)}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.bellIcon}>
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
           </svg>
           {dashboardData.notificacoesPendentes > 0 && (
-            <span style={notificationCounterStyle}>{dashboardData.notificacoesPendentes}</span>
+            <span className={styles.notificationCounter}>{dashboardData.notificacoesPendentes}</span>
           )}
         </div>
       </div>
 
-      <p style={{ color: 'var(--gray-dark-text)', marginBottom: '2rem' }}>
+      <p className={styles.subtitleText}>
         Bem-vindo ao painel interno da Phandshop. Aqui você pode gerenciar os lojistas, suporte, planos e estatísticas do sistema.
       </p>
 
       {/* Seção de Métricas Principais em formato de tabela */}
-      <div style={cardContainerStyle}>
-        <div style={cardStyle}>
-          <div style={{ ...tableRowStyle, borderTop: 'none' }}>
-            <span style={tableTitleStyle}>Faturamento Bruto</span>
-            <span style={{ ...tableValueStyle, color: 'var(--green-success)' }}>
+      <div className={styles.kpiGrid}>
+        <div className={styles.kpiCard}>
+          <div className={`${styles.tableRow} ${styles.borderTopNone}`}>
+            <span className={styles.tableTitle}>Faturamento Bruto</span>
+            <span className={`${styles.tableValue} ${styles.greenSuccessText}`}>
               {formatCurrency(dashboardData.faturamentoBruto)}
             </span>
           </div>
-          <div style={tableRowStyle}>
-            <span style={tableTitleStyle}>Faturamento Pendente</span>
-            <span style={{ ...tableValueStyle, color: 'orange' }}>
+          <div className={styles.tableRow}>
+            <span className={styles.tableTitle}>Faturamento Pendente</span>
+            <span className={`${styles.tableValue} ${styles.orangeText}`}>
               {formatCurrency(dashboardData.faturamentoPendente)}
             </span>
           </div>
-          <div style={tableRowStyle}>
-            <span style={tableTitleStyle}>Total de Lojistas</span>
-            <span style={tableValueStyle}>{dashboardData.totalLojistas}</span>
+          <div className={styles.tableRow}>
+            <span className={styles.tableTitle}>Total de Lojistas</span>
+            <span className={styles.tableValue}>{dashboardData.totalLojistas}</span>
           </div>
-          <div style={tableRowStyle}>
-            <span style={tableTitleStyle}>Novos Cadastros (7 dias)</span>
-            <span style={tableValueStyle}>{dashboardData.novosCadastrosSemana}</span>
+          <div className={styles.tableRow}>
+            <span className={styles.tableTitle}>Novos Cadastros (7 dias)</span>
+            <span className={styles.tableValue}>{dashboardData.novosCadastrosSemana}</span>
           </div>
-          <div style={tableRowStyle}>
-            <span style={tableTitleStyle}>Tickets Abertos</span>
-            <span style={{ ...tableValueStyle, color: 'orange' }}>{dashboardData.ticketsAbertos}</span>
+          <div className={styles.tableRow}>
+            <span className={styles.tableTitle}>Tickets Abertos</span>
+            <span className={`${styles.tableValue} ${styles.orangeText}`}>{dashboardData.ticketsAbertos}</span>
           </div>
-          <div style={tableRowStyle}>
-            <span style={tableTitleStyle}>Taxa de Churn</span>
-            <span style={{ ...tableValueStyle, color: 'red' }}>{dashboardData.taxaDeChurn}</span>
+          <div className={styles.tableRow}>
+            <span className={styles.tableTitle}>Taxa de Churn</span>
+            <span className={`${styles.tableValue} ${styles.redText}`}>{dashboardData.taxaDeChurn}</span>
           </div>
-          <div style={{...tableRowStyle, borderBottom: 'none'}}>
-            <span style={tableTitleStyle}>Status do Sistema</span>
-            <span style={{...tableValueStyle, color: getStatusColor(dashboardData.sistemaStatus)}}>
-              <span style={{...statusIndicatorStyle, background: getStatusColor(dashboardData.sistemaStatus)}}></span>
+          <div className={`${styles.tableRow} ${styles.borderBottomNone}`}>
+            <span className={styles.tableTitle}>Status do Sistema</span>
+            <span className={`${styles.tableValue} ${getStatusColor(dashboardData.sistemaStatus)}`}>
+              <span className={`${styles.statusIndicator} ${getStatusColor(dashboardData.sistemaStatus)}`}></span>
               {dashboardData.sistemaStatus}
             </span>
           </div>
@@ -158,10 +122,10 @@ const DashboardPage: React.FC = () => {
 
       {/* Painel de Notificações Lateral */}
       {showNotifications && (
-        <div style={{ position: 'fixed', top: '0', right: '0', height: '100%', width: '300px', background: 'white', boxShadow: '-2px 0 5px rgba(0,0,0,0.2)', padding: '2rem', transition: 'transform 0.3s ease-in-out', transform: 'translateX(0)' }}>
-          <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Notificações</h3>
+        <div className={styles.notificationPanel}>
+          <h3 className={styles.notificationTitle}>Notificações</h3>
           <p>O conteúdo das notificações será exibido aqui.</p>
-          <button style={{ background: 'var(--purple-main)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '8px', border: 'none', cursor: 'pointer', marginTop: '1rem' }} onClick={() => setShowNotifications(false)}>Fechar</button>
+          <button className={styles.notificationButton} onClick={() => setShowNotifications(false)}>Fechar</button>
         </div>
       )}
     </div>
