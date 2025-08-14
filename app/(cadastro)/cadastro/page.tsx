@@ -26,7 +26,6 @@ function CadastroForm() {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Função para criar um "slug" a partir do nome da loja
   const slugify = (text: string) => {
     return text
       .toString()
@@ -60,7 +59,6 @@ function CadastroForm() {
     setLoading(true);
     
     try {
-      // 1. Criar o usuário no Supabase Auth
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: form.email,
         password: form.senha,
@@ -72,61 +70,9 @@ function CadastroForm() {
         return;
       }
       
-      // 2. Inserir a loja na tabela 'lojas' após a criação do usuário
-      if (authData.user) {
-        const lojaSlug = slugify(form.nomeLoja);
+      // Corrigido: Agora salva o nome da loja no localStorage para usar na próxima página
+      localStorage.setItem('nomeLoja', form.nomeLoja);
 
-        const { data: lojaInserida, error: dbError } = await supabase
-          .from('lojas')
-          .insert({
-            nome_loja: form.nomeLoja,
-            slug: lojaSlug,
-            user_id: authData.user.id
-          })
-          .select('id')
-          .single();
-
-        if (dbError) {
-          console.error("Erro ao inserir loja:", dbError);
-          await supabase.auth.admin.deleteUser(authData.user.id);
-          setError('Erro ao registrar a loja. Tente novamente.');
-          setLoading(false);
-          return;
-        }
-
-        // NOVO: 3. Buscar o ID do Plano Grátis
-        const { data: planoGratis, error: planoError } = await supabase
-          .from('planos')
-          .select('id')
-          .eq('nome_plano', 'Plano Grátis')
-          .single();
-
-        if (planoError || !planoGratis) {
-          console.error("Erro ao buscar Plano Grátis:", planoError);
-          setError('Erro ao configurar o plano gratuito. Tente novamente.');
-          await supabase.auth.admin.deleteUser(authData.user.id);
-          return;
-        }
-
-        // NOVO: 4. Inserir a assinatura na tabela 'assinaturas'
-        const { error: assinaturaError } = await supabase
-          .from('assinaturas')
-          .insert({
-            loja_id: lojaInserida.id,
-            plano_id: planoGratis.id,
-            status: 'ativa',
-            periodo_atual_inicio: new Date().toISOString(),
-            periodo_atual_fim: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(), // Assinatura válida por 1 ano
-          });
-        
-        if (assinaturaError) {
-          console.error("Erro ao inserir assinatura:", assinaturaError);
-          setError('Erro ao configurar a assinatura. Tente novamente.');
-          await supabase.auth.admin.deleteUser(authData.user.id);
-          return;
-        }
-      }
-      
       setSuccessMessage('Verifique seu e-mail para confirmar sua conta!');
       router.push('/verificar-email');
 
@@ -166,8 +112,8 @@ function CadastroForm() {
             <div className={styles.header}>
               <h1 className={styles.title}>Crie sua loja grátis</h1>
               
-              <Link href="#" className={styles.serviceLink}>
-                Estou prestando serviço de criação de loja
+              <Link href="/sitecriadores/afiliados" className={styles.serviceLink}>
+                Sou criador de loja
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className={styles.linkIcon} viewBox="0 0 16 16">
                   <path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                   <path fillRule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
