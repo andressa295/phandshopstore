@@ -1,26 +1,3 @@
-/* app/(interno)/dashboard/estatisticas/estatisticas.css */
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-:root {
-    --primary-color: #6b21a8;
-    --accent-color: #7C3AED;
-    --text-color: #333333;
-    --light-text-color: #666666;
-    --background-color: #f8f9fa;
-    --white-color: #ffffff;
-    --border-color: #e0e0e0;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    margin: 0;
-}
 
 /* --- Container Principal --- */
 .dashboard-container {

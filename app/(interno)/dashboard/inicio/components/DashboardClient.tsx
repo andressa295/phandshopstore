@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaPlus, FaTag, FaClipboardList, FaStore } from 'react-icons/fa';
-import '../dashboard.css';
+import './dashboard.css';
 
 interface DashboardClientProps {
     data: {
@@ -17,7 +17,7 @@ interface DashboardClientProps {
 
 const DashboardClient: React.FC<DashboardClientProps> = ({ data }) => {
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container-full">
             <h1 className="dashboard-title">
                 👋 Bem-vindo de volta!
             </h1>
@@ -32,18 +32,18 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ data }) => {
                     <p className="kpi-card-value">R$ {data.vendasHoje.toFixed(2).replace('.', ',')}</p>
                 </div>
                 <div className="kpi-card">
-                    <h2 className="kpi-card-title">Visitantes</h2>
+                    <h2 className="kpi-card-title">Visitantes Hoje</h2>
                     <p className="kpi-card-value">{data.visitantesHoje}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title">Produtos em Estoque</h2>
-                    <p className="kpi-card-value" style={{ color: data.estoqueBaixo > 0 ? 'var(--danger-color)' : 'inherit' }}>
+                    <p className={`kpi-card-value ${data.estoqueBaixo > 0 ? 'alert-danger' : ''}`}>
                         {data.estoqueBaixo}
                     </p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title">Pedidos Pendentes</h2>
-                    <p className="kpi-card-value" style={{ color: data.pedidosPendentes > 0 ? 'var(--warning-color)' : 'inherit' }}>
+                    <p className={`kpi-card-value ${data.pedidosPendentes > 0 ? 'alert-warning' : ''}`}>
                         {data.pedidosPendentes}
                     </p>
                 </div>
@@ -53,16 +53,16 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ data }) => {
             <div className="quick-actions-section">
                 <h2 className="quick-actions-title">🚀 Ações rápidas</h2>
                 <div className="quick-actions-grid">
-                    <Link href="/dashboard/produtos/novo" className="quick-action-btn">
+                    <Link href="/dashboard/produtos/novo" className="quick-action-btn primary">
                         <FaPlus /> Adicionar Produto
                     </Link>
-                    <Link href="/dashboard/cupons/novo" className="quick-action-btn">
+                    <Link href="/dashboard/cupons/novo" className="quick-action-btn secondary">
                         <FaTag /> Criar Cupom
                     </Link>
-                    <Link href="/dashboard/vendas/lista" className="quick-action-btn">
+                    <Link href="/dashboard/vendas/lista" className="quick-action-btn info">
                         <FaClipboardList /> Ver Pedidos
                     </Link>
-                    <Link href="/" className="quick-action-btn">
+                    <Link href="/" className="quick-action-btn success">
                         <FaStore /> Abrir Loja Online
                     </Link>
                 </div>

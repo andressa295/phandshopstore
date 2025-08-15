@@ -5,7 +5,7 @@ import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs
 import { useRouter, usePathname } from 'next/navigation';
 
 export interface UserProfile {
-  id: string;
+  id: string; // ID do usuário do Supabase
   email: string | null;
   nome_completo: string | null;
   lojaId: string | null;

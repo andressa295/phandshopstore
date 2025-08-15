@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import ClientDashboard from './components/DashboardClient'; // CORREÇÃO: Nome do componente
 import { notFound } from 'next/navigation';
 import { PostgrestError } from '@supabase/supabase-js';
+import './dashboard.css';
 
 // Definindo a interface para os dados que serão passados para o componente
 interface DashboardData {
