@@ -1,4 +1,3 @@
-// app/auth/callback/page.tsx
 'use client';
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -11,13 +10,14 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
+      // Tenta obter a sessão do usuário
       const { data: { session } } = await supabase.auth.getSession();
       
+      // Se a sessão for válida, redireciona para a página de onboarding
       if (session) {
-        // Se a sessão for válida, redireciona para a página de onboarding
         router.replace('/onboarding');
       } else {
-        // Se a sessão for inválida (token expirado, etc.), redireciona para o login com um erro
+        // Se a sessão for inválida, redireciona para o login com um erro
         router.replace('/login?error=auth_failed');
       }
     };

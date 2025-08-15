@@ -5,15 +5,26 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import Link from 'next/link';
 import { FaBoxes, FaClipboardList, FaCheckCircle, FaExternalLinkAlt, FaPlus, FaTags, FaChartLine, FaChartBar, FaPercent, FaMoneyBillWave, FaUsers } from 'react-icons/fa';
 
-import { DashboardData } from '@/lib/supabase/dashboard/getDashboardData';
-import { UserProfile } from '../UserContext';
-import '../inicio/dashboard.css';
+import { StoreDashboardData } from '@/lib/supabase/dashboard/getStoreDashboardData';
+import { UserProfile } from '../UserContext'; // Ajuste o caminho se necessário
+import styles from '../inicio/dashboard.module.css'; // Importa o CSS Module
 
 interface ClientDashboardProps {
-    dashboardData: DashboardData | null;
+    dashboardData: StoreDashboardData | null;
     userProfile: UserProfile | null;
     userEmail: string | undefined;
 }
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+};
+
+const getStatusColor = (status: string) => {
+  return status === 'Operacional' ? 'var(--green-success)' : 'red';
+};
 
 const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userProfile, userEmail }) => {
     const userFullName = userProfile?.nome_completo || (userEmail ? userEmail.split('@')[0] : 'Usuário');
@@ -21,13 +32,19 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
 
     if (!dashboardData || !userProfile) {
         return (
-            <div className="dashboard-container-full">
-                <div className="alert-error">
+            <div className={styles.dashboardContainerFull}>
+                <div className={styles.alertError}>
                     Erro ao carregar os dados do dashboard.
                 </div>
             </div>
         );
     }
+    
+    // CORRIGIDO: Agora as métricas são calculadas aqui
+    const repasse = dashboardData.faturamentoComRepasse * 0.15;
+    const lucroLiquido = dashboardData.mesAtual - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis;
+    const diferencaPercentual = (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1);
+    const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal;
 
     return (
         <div className="dashboard-container-full">
@@ -113,7 +130,6 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
                     <Link href="/dashboard/vendas/lista" className="quick-action-btn info">
                         <FaClipboardList size={14} /> Ver Pedidos
                     </Link>
-                    {/* CORRIGIDO: Link dinâmico usando o slug da loja */}
                     <Link href={lojaUrl} target="_blank" rel="noopener noreferrer" className="quick-action-btn success">
                         <FaExternalLinkAlt size={14} /> Abrir Loja Online
                     </Link>
