@@ -19,7 +19,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ data }) => {
     return (
         <div className="dashboard-container-full">
             <h1 className="dashboard-title">
-                👋 Bem-vindo de volta!
+                 Bem-vindo de volta!
             </h1>
             <p className="dashboard-subtitle">
                 Aqui está um resumo do desempenho da sua loja.
@@ -51,7 +51,7 @@ const DashboardClient: React.FC<DashboardClientProps> = ({ data }) => {
 
             {/* Ações rápidas */}
             <div className="quick-actions-section">
-                <h2 className="quick-actions-title">🚀 Ações rápidas</h2>
+                <h2 className="quick-actions-title"> Ações rápidas</h2>
                 <div className="quick-actions-grid">
                     <Link href="/dashboard/produtos/novo" className="quick-action-btn primary">
                         <FaPlus /> Adicionar Produto

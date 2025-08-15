@@ -1,0 +1,235 @@
+/* Tipografia e variáveis */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+  --primary:#6b21a8;
+  --secondary:#820AD1;
+  --accent:#7C3AED;
+
+  --text:#333333;
+  --muted:#666666;
+  --bg:#f8f9fa;
+  --white:#ffffff;
+  --border:#e0e0e0;
+
+  --success:#28a745;
+  --danger:#dc3545;
+
+  --header-h:60px;
+  --sidebar-w:260px;
+
+  --z-header:50;
+  --z-sidebar:60;
+  --z-backdrop:55;
+  --z-bottomnav:70;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Estados simples */
+.layout-loading,
+.layout-error{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--bg);
+  
+}
+
+/* Estrutura */
+.layout-root{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+}
+
+/* Botão hambúrguer (visível no mobile) */
+.hamburger-btn{
+  position:fixed;
+  top:calc(var(--header-h) + 8px);
+  left:12px;
+  z-index:var(--z-sidebar);
+  width:40px;
+  height:40px;
+  border:none;
+  border-radius:10px;
+  background:var(--white);
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  display:none; /* desktop: escondido */
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.layout-main{
+  display:flex;
+  flex:1;
+  position:relative;
+}
+
+/* Sidebar */
+.sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  background:var(--white);
+  border-right:1px solid var(--border);
+  height:calc(100vh - var(--header-h));
+  position:sticky;
+  top:var(--header-h);
+  overflow:auto;
+  padding:16px 0;
+  
+}
+
+.sidebar-header{ padding:0 20px 16px; }
+.sidebar-subtitle{
+  margin:0;
+  font-size:.82rem;
+  color:var(--muted);
+  font-family: 'Poppins', sans-serif;
+}
+
+.sidebar-nav ul{ list-style:none; margin:0; padding:0; }
+.nav-item,
+.nav-parent{
+  width:100%;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 20px;
+  text-decoration:none;
+  color:var(--text);
+  font-weight:600;
+  font-size:.88rem;
+  background:transparent;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  transition:background .18s ease;
+  font-family: 'Poppins', sans-serif;
+}
+.nav-item:hover,
+.nav-parent:hover{ background:#f3f4f6; }
+
+.nav-item.active{
+  background:var(--primary);
+  color:#fff;
+  border-radius:0 20px 20px 0;
+}
+.nav-child.active{
+  background:var(--secondary);
+  color:#fff;
+}
+
+.nav-children{
+  margin:4px 0 10px 0;
+  padding:0;
+}
+.nav-child{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:8px 20px 8px 36px;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:.86rem;
+  border-radius:0 18px 18px 0;
+  transition:background .18s ease,color .18s ease;
+  
+}
+.nav-child:hover{ background:#f3f4f6; color:var(--text); }
+
+.nav-icon{ display:inline-flex; }
+.nav-text{ flex:1; }
+.chev{ margin-left:auto; font-size:.85em; color:var(--muted); }
+.nav-children .nav-text {
+  font-family: 'Poppins', sans-serif; /* força a Poppins */
+}
+
+.sidebar-footer{
+  padding:16px 20px 4px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-size:.8rem;
+}
+
+/* Conteúdo */
+.content-area{
+  flex:1;
+  min-height:calc(100vh - var(--header-h));
+  height:calc(100vh - var(--header-h));
+  overflow:auto;
+  padding:20px;
+}
+
+/* Overlay (mobile) */
+.backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:var(--z-backdrop);
+}
+
+/* Bottom Nav (mobile) */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:64px;
+  background:var(--white);
+  border-top:1px solid var(--border);
+  display:none; /* aparece só no mobile */
+  z-index:var(--z-bottomnav);
+}
+.bottom-link{
+  width:20%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:var(--muted);
+  font-size:.72rem;
+  gap:4px;
+}
+.bottom-link.active{
+  color:var(--primary);
+  font-weight:700;
+}
+.bottom-icon{ font-size:18px; line-height:18px; }
+
+/* ------------------- Responsivo ------------------- */
+@media (max-width: 1024px){
+  /* Sidebar vira off-canvas */
+  .sidebar{
+    position:fixed;
+    top:var(--header-h);
+    left:-100%;
+    height:calc(100vh - var(--header-h));
+    z-index:var(--z-sidebar);
+    transition:left .25s ease;
+  }
+  .sidebar.open{ left:0; }
+  .hamburger-btn{ display:flex; }
+  .content-area{ padding:16px; }
+}
+
+@media (max-width: 768px){
+  .content-area{
+    /* deixa espaço pro bottom nav */
+    padding-bottom: calc(16px + 64px);
+  }
+  .bottom-nav{ display:flex; }
+}

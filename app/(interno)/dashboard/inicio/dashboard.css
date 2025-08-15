@@ -37,11 +37,6 @@ a, button {
     transition: all 0.2s ease;
 }
 
-a:focus, button:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
 /* ====== Container ====== */
 .dashboardContainerFull {
     padding: 20px;
@@ -52,12 +47,14 @@ a:focus, button:focus {
     font-weight: 700;
     color: var(--primary-color);
     margin-bottom: 8px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .dashboardSubtitle {
     font-size: 0.95rem;
     color: var(--light-text-color);
     margin-bottom: 32px;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* ====== Plan Banner ====== */

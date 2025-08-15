@@ -70,7 +70,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
 
   return (
     <div className="dashboardContainerFull">
-      <h1 className="dashboardTitle">👋 Bem-vindo de volta, {userFullName}!</h1>
+      <h1 className="dashboardTitle"> Bem-vindo de volta, {userFullName}!</h1>
       <p className="dashboardSubtitle">Aqui está um resumo do desempenho da sua loja.</p>
 
       <div className="kpiCardsGrid">
@@ -110,7 +110,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
 
       <div className="alertsAndChartGrid">
         <div className="alertsCard">
-          <h2 className="alertsCardTitle">🔔 Alertas Importantes</h2>
+          <h2 className="alertsCardTitle">Alertas Importantes</h2>
 
           {dashboardData.pedidosPendentes > 0 ? (
             <Link href="/dashboard/vendas/lista" className="alertBtn danger">
@@ -158,7 +158,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
       </div>
 
       <div className="quickActionsSection">
-        <h2 className="quickActionsTitle">🚀 Ações rápidas</h2>
+        <h2 className="quickActionsTitle"> Ações rápidas</h2>
         <div className="quickActionsGrid">
           <Link href="/dashboard/produtos/novo" className="quickActionBtn primary">
             <FaPlus size={14} /> Adicionar Produto
