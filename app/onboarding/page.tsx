@@ -12,12 +12,21 @@ export default function OnboardingPage() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const savedNomeLoja = localStorage.getItem('nomeLoja');
-        if (savedNomeLoja) {
-            setLojaNome(savedNomeLoja);
-            localStorage.removeItem('nomeLoja');
-        }
-    }, []);
+        const checkUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                router.push('/login');
+                return;
+            }
+            const savedNomeLoja = localStorage.getItem('nomeLoja');
+            if (savedNomeLoja) {
+                setLojaNome(savedNomeLoja);
+                localStorage.removeItem('nomeLoja');
+            }
+        };
+        checkUser();
+    }, [supabase, router]);
+
 
     const slugify = (text: string) => {
         return text
@@ -46,9 +55,6 @@ export default function OnboardingPage() {
         try {
             const lojaSlug = slugify(lojaNome);
             
-            // CORRIGIDO: A ordem das inserções agora é atômica e sequencial.
-            
-            // 1. Inserir a loja na tabela 'lojas'
             const { data: lojaInserida, error: dbError } = await supabase
                 .from('lojas')
                 .insert({
@@ -65,8 +71,7 @@ export default function OnboardingPage() {
                 setLoading(false);
                 return;
             }
-            
-            // 2. Buscar o ID do Plano Grátis
+
             const { data: planoGratis, error: planoError } = await supabase
                 .from('planos')
                 .select('id')
@@ -79,8 +84,7 @@ export default function OnboardingPage() {
                 setLoading(false);
                 return;
             }
-            
-            // 3. Inserir a assinatura na tabela 'assinaturas'
+
             const { error: assinaturaError } = await supabase
                 .from('assinaturas')
                 .insert({
