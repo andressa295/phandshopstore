@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaPlus, FaTag, FaClipboardList, FaStore } from 'react-icons/fa';
-import './dashboard.css';
+import '../dashboard.css';
 
 interface DashboardClientProps {
     data: {
