@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import styles from './onboarding.module.css'; // Importando o CSS Module
 
 export default function OnboardingPage() {
     const supabase = createClientComponentClient();
@@ -112,27 +113,27 @@ export default function OnboardingPage() {
     };
 
     return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <h1>Bem-vindo!</h1>
-            <p>Sua conta foi criada. Agora vamos configurar sua loja.</p>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Bem-vindo!</h1>
+            <p className={styles.subtitle}>Sua conta foi criada. Agora vamos configurar sua loja.</p>
             
-            <div style={{ marginTop: '2rem' }}>
+            <div className={styles.formContainer}>
                 <input 
                     type="text" 
                     value={lojaNome}
                     onChange={(e) => setLojaNome(e.target.value)}
                     placeholder="Nome da sua marca"
-                    style={{ padding: '0.5rem', width: '300px' }}
+                    className={styles.input}
                 />
                 <button 
                     onClick={handleCreateStore} 
                     disabled={loading || !lojaNome}
-                    style={{ marginLeft: '1rem' }}
+                    className={styles.button}
                 >
                     {loading ? 'Criando...' : 'Criar minha loja'}
                 </button>
             </div>
-            {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+            {error && <p className={styles.errorText}>{error}</p>}
         </div>
     );
 }

@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { FaBoxes, FaClipboardList, FaCheckCircle, FaExternalLinkAlt, FaPlus, FaTags, FaChartLine, FaChartBar, FaPercent, FaMoneyBillWave, FaUsers } from 'react-icons/fa';
 
 import { StoreDashboardData } from '@/lib/supabase/dashboard/getStoreDashboardData';
-import { UserProfile } from '../UserContext'; // Ajuste o caminho se necessário
-import styles from '../inicio/dashboard.module.css'; // Importa o CSS Module
+import { UserProfile } from '../UserContext';
+import '../inicio/dashboard.css'; // Importa o CSS global
 
 interface ClientDashboardProps {
     dashboardData: StoreDashboardData | null;
@@ -32,8 +32,8 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
 
     if (!dashboardData || !userProfile) {
         return (
-            <div className={styles.dashboardContainerFull}>
-                <div className={styles.alertError}>
+            <div className="dashboard-container-full">
+                <div className="alert-error">
                     Erro ao carregar os dados do dashboard.
                 </div>
             </div>
@@ -59,7 +59,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
             <div className="kpi-cards-grid">
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaMoneyBillWave /> Vendas Hoje</h2>
-                    <p className="kpi-card-value">R$ {dashboardData.vendasHoje.toFixed(2).replace('.', ',')}</p>
+                    <p className="kpi-card-value">R$ {formatCurrency(dashboardData.vendasHoje)}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaUsers /> Visitantes Hoje</h2>
@@ -67,11 +67,11 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({ dashboardData, userPr
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaChartLine /> Faturamento Mês</h2>
-                    <p className="kpi-card-value">R$ {dashboardData.faturamentoMes.toFixed(2).replace('.', ',')}</p>
+                    <p className="kpi-card-value">R$ {formatCurrency(dashboardData.faturamentoMes)}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaChartBar /> Ticket Médio</h2>
-                    <p className="kpi-card-value">R$ {dashboardData.ticketMedio.toFixed(2).replace('.', ',')}</p>
+                    <p className="kpi-card-value">R$ {formatCurrency(dashboardData.ticketMedio)}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaPercent /> Taxa de Conversão</h2>

@@ -10,14 +10,17 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      // Tenta obter a sessão do usuário
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabase.auth.getSession();
       
-      // Se a sessão for válida, redireciona para a página de onboarding
+      if (error) {
+        console.error('Erro ao obter a sessão:', error);
+        router.replace('/login?error=auth_failed');
+        return;
+      }
+      
       if (session) {
         router.replace('/onboarding');
       } else {
-        // Se a sessão for inválida, redireciona para o login com um erro
         router.replace('/login?error=auth_failed');
       }
     };

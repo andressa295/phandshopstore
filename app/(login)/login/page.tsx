@@ -64,21 +64,12 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Agora, vamos buscar o loja_id e o slug a partir do user_id
+        // CORRIGIDO: A consulta agora usa `.limit(1)` para evitar o erro de 'múltiplas linhas'
         const { data: lojaData, error: lojaError } = await supabase
           .from('lojas')
-          .select(`
-            id,
-            slug,
-            assinaturas(
-              status,
-              planos(
-                nome_plano,
-                preco_mensal
-              )
-            )
-          `)
+          .select('id, slug')
           .eq('user_id', data.user.id)
+          .limit(1)
           .single();
 
         if (lojaError) {
@@ -89,12 +80,7 @@ export default function LoginPage() {
         }
 
         if (lojaData) {
-          const assinatura = lojaData.assinaturas[0];
-          
           console.log("Login bem-sucedido. Loja ID:", lojaData.id);
-          console.log("Status da Assinatura:", assinatura?.status);
-          console.log("Plano:", assinatura?.planos?.[0]?.nome_plano); // CORRIGIDO: Acessando o primeiro item do array
-          
           router.push(`/dashboard?lojaId=${lojaData.id}`);
         } else {
           setError('Nenhuma loja encontrada para este usuário.');
