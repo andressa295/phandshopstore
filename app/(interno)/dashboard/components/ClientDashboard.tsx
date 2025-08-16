@@ -13,7 +13,7 @@ import Link from 'next/link';
 import {
   FaBoxes,
   FaClipboardList,
-  FaCheckCircle,
+  FaCheck,
   FaExternalLinkAlt,
   FaPlus,
   FaTags,
@@ -37,9 +37,6 @@ interface ClientDashboardProps {
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
-const getStatusColor = (status: string) =>
-  status === 'Operacional' ? 'statusOperational' : 'statusError';
-
 const ClientDashboard: React.FC<ClientDashboardProps> = ({
   dashboardData,
   userProfile,
@@ -59,55 +56,36 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
     );
   }
 
-  // Cálculos
-  const repasse = dashboardData.faturamentoComRepasse;
-  const lucroLiquido =
-    dashboardData.mesAtual - repasse - dashboardData.custosFixos - dashboardData.custosVariaveis;
-  const diferencaPercentual = dashboardData.mesAnterior
-    ? (((dashboardData.mesAtual - dashboardData.mesAnterior) / dashboardData.mesAnterior) * 100).toFixed(1)
-    : '0';
-  const metaAtingida = dashboardData.mesAtual >= dashboardData.metaMensal;
-
   return (
     <div className="dashboardContainerFull">
-      <h1 className="dashboardTitle"> Bem-vindo de volta, {userFullName}!</h1>
+      <h1 className="dashboardTitle">Bem-vindo de volta, {userFullName}!</h1>
       <p className="dashboardSubtitle">Aqui está um resumo do desempenho da sua loja.</p>
 
+      {/* ====== KPI Cards ====== */}
       <div className="kpiCardsGrid">
         <div className="kpiCard">
-          <h2 className="kpiCardTitle">
-            <FaMoneyBillWave /> Vendas Hoje
-          </h2>
+          <h2 className="kpiCardTitle"><FaMoneyBillWave /> Vendas Hoje</h2>
           <p className="kpiCardValue">{formatCurrency(dashboardData.vendasHoje)}</p>
         </div>
         <div className="kpiCard">
-          <h2 className="kpiCardTitle">
-            <FaUsers /> Visitantes Hoje
-          </h2>
+          <h2 className="kpiCardTitle"><FaUsers /> Visitantes Hoje</h2>
           <p className="kpiCardValue">{dashboardData.visitantesHoje}</p>
         </div>
         <div className="kpiCard">
-          <h2 className="kpiCardTitle">
-            <FaChartLine /> Faturamento Mês
-          </h2>
+          <h2 className="kpiCardTitle"><FaChartLine /> Faturamento Mês</h2>
           <p className="kpiCardValue">{formatCurrency(dashboardData.faturamentoMes)}</p>
         </div>
         <div className="kpiCard">
-          <h2 className="kpiCardTitle">
-            <FaChartBar /> Ticket Médio
-          </h2>
+          <h2 className="kpiCardTitle"><FaChartBar /> Ticket Médio</h2>
           <p className="kpiCardValue">{formatCurrency(dashboardData.ticketMedio)}</p>
         </div>
         <div className="kpiCard">
-          <h2 className="kpiCardTitle">
-            <FaPercent /> Taxa de Conversão
-          </h2>
-          <p className="kpiCardValue">
-            {dashboardData.taxaConversao.toFixed(1).replace('.', ',')}%
-          </p>
+          <h2 className="kpiCardTitle"><FaPercent /> Taxa de Conversão</h2>
+          <p className="kpiCardValue">{dashboardData.taxaConversao.toFixed(1).replace('.', ',')}%</p>
         </div>
       </div>
 
+      {/* ====== Alertas & Chart ====== */}
       <div className="alertsAndChartGrid">
         <div className="alertsCard">
           <h2 className="alertsCardTitle">Alertas Importantes</h2>
@@ -118,7 +96,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
             </Link>
           ) : (
             <div className="alert-status success">
-              <FaCheckCircle size={18} /> Nenhum pedido pendente.
+              <span className="alertArrow">✔</span> Nenhum pedido pendente.
             </div>
           )}
 
@@ -128,7 +106,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
             </Link>
           ) : (
             <div className="alert-status success">
-              <FaCheckCircle size={18} /> Estoque OK.
+              <span className="alertArrow">✔</span> Estoque OK.
             </div>
           )}
         </div>
@@ -145,10 +123,7 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
               <CartesianGrid strokeDasharray="3 3" />
               <Tooltip
                 formatter={(value: number) =>
-                  new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  }).format(value)
+                  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
                 }
               />
               <Line type="monotone" dataKey="vendas" stroke="#7C3AED" strokeWidth={3} />
@@ -157,23 +132,24 @@ const ClientDashboard: React.FC<ClientDashboardProps> = ({
         </div>
       </div>
 
+      {/* ====== Quick Actions ====== */}
       <div className="quickActionsSection">
-        <h2 className="quickActionsTitle"> Ações rápidas</h2>
-        <div className="quickActionsGrid">
-          <Link href="/dashboard/produtos/novo" className="quickActionBtn primary">
+        <h2 className="quickActionsTitle">Ações rápidas</h2>
+        <div className="quickActionsGrid neutralBg">
+          <Link href="/dashboard/produtos/novo" className="quickActionBtn neutral">
             <FaPlus size={14} /> Adicionar Produto
           </Link>
-          <Link href="/dashboard/descontos/cupons" className="quickActionBtn secondary">
+          <Link href="/dashboard/descontos/cupons" className="quickActionBtn neutral">
             <FaTags size={14} /> Criar Cupom
           </Link>
-          <Link href="/dashboard/vendas/lista" className="quickActionBtn info">
+          <Link href="/dashboard/vendas/lista" className="quickActionBtn neutral">
             <FaClipboardList size={14} /> Ver Pedidos
           </Link>
           <Link
             href={lojaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="quickActionBtn success"
+            className="quickActionBtn neutral"
           >
             <FaExternalLinkAlt size={14} /> Abrir Loja Online
           </Link>

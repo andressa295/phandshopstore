@@ -46,7 +46,7 @@ a, button {
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -109,8 +109,9 @@ a, button {
 
 .kpiCardTitle {
     font-size: 1rem;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     color: var(--light-text-color);
+    font-weight: 500;
 }
 
 .kpiCardValue {
@@ -137,7 +138,7 @@ a, button {
 .alertsCardTitle,
 .chartCardTitle {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 16px;
     color: var(--primary-color);
 }
@@ -168,6 +169,14 @@ a, button {
     font-weight: 500;
 }
 .alertStatus.success { color: var(--success-color); }
+.alert-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--success-color);
+}
 
 /* ====== Quick Actions ====== */
 .quickActionsSection {
@@ -177,7 +186,7 @@ a, button {
 .quickActionsTitle {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
 }
 
 .quickActionsGrid {
@@ -210,10 +219,37 @@ a, button {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* ====== Welcome Header / Avatar ====== */
+.welcomeHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.welcomeHeader h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.welcomeHeader p {
+    font-size: 0.9rem;
+    color: var(--light-text-color);
+    margin: 0;
+}
+
 /* ====== Responsiveness ====== */
 @media (max-width: 992px) {
     .alertsAndChartGrid {
         grid-template-columns: 1fr;
+        row-gap: 24px;
+    }
+    .dashboardTitle {
+        font-size: 1.6rem;
+    }
+    .dashboardSubtitle {
+        font-size: 0.9rem;
     }
 }
 
@@ -221,14 +257,59 @@ a, button {
     .dashboardContainerFull {
         padding: 15px;
     }
+
     .kpiCardsGrid {
         grid-template-columns: 1fr;
+        row-gap: 20px;
     }
+
+    .kpiCard {
+        padding: 20px;
+    }
+
+    .kpiCardTitle {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    .kpiCardValue {
+        font-size: 1.3rem;
+    }
+
     .quickActionsGrid {
         flex-direction: column;
     }
+
     .quickActionBtn {
         width: 100%;
         justify-content: flex-start;
+        font-size: 0.8rem;
+        padding: 10px 14px;
+    }
+
+    .welcomeHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .welcomeHeader h2 {
+        font-size: 1.2rem;
+    }
+
+    .welcomeHeader p {
+        font-size: 0.8rem;
+    }
+
+    .alertsCard,
+    .chartCard {
+        padding: 20px;
+    }
+
+    .alertsCardTitle,
+    .chartCardTitle {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
     }
 }

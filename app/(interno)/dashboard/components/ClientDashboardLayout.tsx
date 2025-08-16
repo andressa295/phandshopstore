@@ -130,12 +130,24 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
   );
 
   if (loading) {
-    return <div className="layout-loading"><h1>Carregando Dashboard...</h1></div>;
-  }
+  return (
+    <div className="layout-loading">
+      <p className="font-poppins text-gray-600 text-lg sm:text-xl md:text-2xl font-medium">
+        Carregando Dashboard...
+      </p>
+    </div>
+  );
+}
 
-  if (!user) {
-    return <div className="layout-error"><h1>Erro: Usuário não autenticado.</h1></div>;
-  }
+if (!user) {
+  return (
+    <div className="layout-error">
+      <p className="font-poppins text-red-600 text-lg sm:text-xl md:text-2xl font-medium">
+        Erro: Usuário não autenticado.
+      </p>
+    </div>
+  );
+}
 
   return (
     <div className="layout-root">
