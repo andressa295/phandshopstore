@@ -44,11 +44,11 @@ a, button {
 
 .dashboardTitle {
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--primary-color);
     margin-bottom: 16px;
     font-family: 'Poppins', sans-serif;
-    text-align: center
+    
 }
 
 .dashboardSubtitle {
@@ -56,7 +56,7 @@ a, button {
     color: var(--light-text-color);
     margin-bottom: 32px;
     font-family: 'Poppins', sans-serif;
-    text-align: center
+    
 }
 
 /* ====== Plan Banner ====== */
@@ -252,11 +252,16 @@ a, button {
         row-gap: 24px;
     }
     .dashboardTitle {
-        font-size: 1.6rem;
-    }
+     font-size: 1.1rem;
+     text-align: center;
+     margin: 0;
+}
+
     .dashboardSubtitle {
-        font-size: 0.9rem;
-    }
+     font-size: 0.6rem;
+     text-align: center;
+     
+  }
 }
 
 @media (max-width: 768px) {
