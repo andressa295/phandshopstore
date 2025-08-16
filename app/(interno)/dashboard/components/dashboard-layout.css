@@ -230,8 +230,7 @@ body{
   .content-area {
     padding-bottom: calc(16px + 64px);
     font-size: 1.0rem; /* menor no mobile */
-    text-align: center; /* centraliza */
-    
   }
+  
   .bottom-nav{ display:flex; }
 }

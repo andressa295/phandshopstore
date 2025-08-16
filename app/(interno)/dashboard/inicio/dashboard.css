@@ -48,6 +48,7 @@ a, button {
     color: var(--primary-color);
     margin-bottom: 16px;
     font-family: 'Poppins', sans-serif;
+    text-align: center
 }
 
 .dashboardSubtitle {
@@ -55,6 +56,7 @@ a, button {
     color: var(--light-text-color);
     margin-bottom: 32px;
     font-family: 'Poppins', sans-serif;
+    text-align: center
 }
 
 /* ====== Plan Banner ====== */
@@ -260,6 +262,7 @@ a, button {
 @media (max-width: 768px) {
     .dashboardContainerFull {
         padding: 15px;
+        
     }
 
     .kpiCardsGrid {
@@ -296,6 +299,7 @@ a, button {
         align-items: flex-start;
         gap: 6px;
         margin-bottom: 16px;
+        
     }
 
     .welcomeHeader h2 {
