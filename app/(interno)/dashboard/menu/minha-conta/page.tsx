@@ -1,37 +1,39 @@
 // app/(interno)/dashboard/menu/minha-conta/page.tsx
-"use client"; // <--- Mantenha esta diretiva aqui!
+"use client";
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import styles from './MeuPerfilPage.module.css'; // <--- Importando o CSS Module
+import styles from './MeuPerfilPage.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-// 1. Definindo as interfaces para tipagem dos dados (mantidas as mesmas)
+// 1. Definindo as interfaces para tipagem dos dados
 interface UserData {
     nomeCompleto: string;
     email: string;
     telefone: string;
     cpfCnpj: string;
     dataNascimento: string;
-    genero?: string; // Opcional
+    genero?: string;
 }
 
 interface AddressData {
     cep: string;
     logradouro: string;
     numero: string;
-    complemento?: string; // Opcional
+    complemento?: string;
     bairro: string;
     cidade: string;
     estado: string;
     pais: string;
 }
 
-interface UserProfile {
+interface UserProfileState {
     personalInfo: UserData;
     address: AddressData;
 }
 
 const MeuPerfilPage: React.FC = () => {
-    const [profile, setProfile] = useState<UserProfile>({
+    const supabase = createClientComponentClient();
+    const [profile, setProfile] = useState<UserProfileState>({
         personalInfo: {
             nomeCompleto: '',
             email: '',
@@ -54,52 +56,64 @@ const MeuPerfilPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                // Simula uma chamada de API com um atraso
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    setError("Usuário não autenticado.");
+                    setLoading(false);
+                    return;
+                }
+                const { data: userData, error: dbError } = await supabase
+                    .from('usuarios')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
 
-                // Dados mockados (substitua por sua chamada real à API)
-                const mockData: UserProfile = {
-                    personalInfo: {
-                        nomeCompleto: "MK Alianças & Joias",
-                        email: "mk_aliancas@email.com",
-                        telefone: "5511998765432",
-                        cpfCnpj: "123.456.789-00",
-                        dataNascimento: "1990-01-01",
-                    },
-                    address: {
-                        cep: "01000-000",
-                        logradouro: "Rua Exemplo",
-                        numero: "123",
-                        complemento: "Apto 45",
-                        bairro: "Centro",
-                        cidade: "São Paulo",
-                        estado: "SP",
-                        pais: "Brasil",
-                    },
-                };
-                setProfile(mockData);
+                if (dbError) {
+                    console.error("Erro ao carregar perfil:", dbError);
+                    setError("Não foi possível carregar as informações do perfil.");
+                } else if (userData) {
+                    setProfile({
+                        personalInfo: {
+                            nomeCompleto: userData.nome_completo || '',
+                            email: userData.email || '',
+                            telefone: userData.telefone || '',
+                            cpfCnpj: userData.cpf_cnpj || '',
+                            dataNascimento: userData.data_nascimento || '',
+                            genero: userData.genero || '',
+                        },
+                        address: {
+                            cep: userData.cep || '',
+                            logradouro: userData.logradouro || '',
+                            numero: userData.numero || '',
+                            complemento: userData.complemento || '',
+                            bairro: userData.bairro || '',
+                            cidade: userData.cidade || '',
+                            estado: userData.estado || '',
+                            pais: userData.pais || '',
+                        },
+                    });
+                }
                 setLoading(false);
             } catch (err) {
-                console.error("Erro ao carregar perfil:", err);
-                setError("Não foi possível carregar as informações do perfil.");
+                console.error("Erro inesperado ao carregar perfil:", err);
+                setError("Erro inesperado ao carregar as informações do perfil.");
                 setLoading(false);
             }
         };
 
         fetchUserProfile();
-    }, []);
+    }, [supabase]);
 
 
     const handlePersonalInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProfile(prevProfile => ({
-            ...prevProfile,
+            ...prevProfile!,
             personalInfo: {
-                ...prevProfile.personalInfo,
+                ...prevProfile!.personalInfo,
                 [name]: value,
             },
         }));
@@ -108,12 +122,52 @@ const MeuPerfilPage: React.FC = () => {
     const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProfile(prevProfile => ({
-            ...prevProfile,
+            ...prevProfile!,
             address: {
-                ...prevProfile.address,
+                ...prevProfile!.address,
                 [name]: value,
             },
         }));
+    };
+    
+    const handleCepBlur = async () => {
+        const cep = profile.address.cep.replace(/\D/g, '');
+        if (cep.length === 8) {
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+                if (!data.erro) {
+                    setProfile(prevProfile => ({
+                        ...prevProfile!,
+                        address: {
+                            ...prevProfile!.address,
+                            logradouro: data.logradouro,
+                            bairro: data.bairro,
+                            cidade: data.localidade,
+                            estado: data.uf,
+                        },
+                    }));
+                } else {
+                    alert("CEP não encontrado.");
+                }
+            } catch (err) {
+                console.error("Erro ao buscar CEP:", err);
+            }
+        }
+    };
+
+    const formatCpfCnpj = (value: string) => {
+        const cleaned = value.replace(/\D/g, '');
+        if (cleaned.length <= 11) {
+            return cleaned.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        } else {
+            return cleaned.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        }
+    };
+
+    const handleCpfCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formattedValue = formatCpfCnpj(e.target.value);
+      handlePersonalInfoChange({ ...e, target: { ...e.target, value: formattedValue } });
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -121,15 +175,51 @@ const MeuPerfilPage: React.FC = () => {
         setSuccessMessage(null);
         setError(null);
 
-        try {
-            console.log("Enviando dados do perfil:", profile);
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            setSuccessMessage("Suas informações foram salvas com sucesso!");
+        if (!profile.personalInfo.cpfCnpj) {
+          setError("O campo CPF/CNPJ é obrigatório.");
+          return;
+        }
 
+        setLoading(true);
+
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                setError("Usuário não autenticado. Faça login novamente.");
+                setLoading(false);
+                return;
+            }
+
+            const { error: dbError } = await supabase
+                .from('usuarios')
+                .update({
+                    nome_completo: profile.personalInfo.nomeCompleto,
+                    telefone: profile.personalInfo.telefone,
+                    cpf_cnpj: profile.personalInfo.cpfCnpj,
+                    data_nascimento: profile.personalInfo.dataNascimento,
+                    genero: profile.personalInfo.genero,
+                    cep: profile.address.cep,
+                    logradouro: profile.address.logradouro,
+                    numero: profile.address.numero,
+                    complemento: profile.address.complemento,
+                    bairro: profile.address.bairro,
+                    cidade: profile.address.cidade,
+                    estado: profile.address.estado,
+                    pais: profile.address.pais,
+                })
+                .eq('id', user.id);
+
+            if (dbError) {
+                console.error("Erro ao salvar perfil:", dbError);
+                setError("Erro ao salvar as informações. Tente novamente.");
+            } else {
+                setSuccessMessage("Suas informações foram salvas com sucesso!");
+            }
         } catch (err) {
-            console.error("Erro ao salvar perfil:", err);
-            setError("Erro ao salvar as informações. Tente novamente.");
+            console.error("Erro inesperado ao salvar perfil:", err);
+            setError("Erro inesperado ao salvar as informações. Tente novamente.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -151,7 +241,7 @@ const MeuPerfilPage: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Informações Pessoais</h2>
-                    <div className={styles.formGrid}> {/* Usar grid para alinhar */}
+                    <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
                             <label htmlFor="nomeCompleto">Nome Completo:</label>
                             <input
@@ -190,16 +280,44 @@ const MeuPerfilPage: React.FC = () => {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="cpfCnpj">CPF/CNPJ:</label>
-                            <input
-                                type="text"
-                                id="cpfCnpj"
-                                name="cpfCnpj"
-                                value={profile.personalInfo.cpfCnpj}
-                                readOnly
-                                className={styles.inputField}
-                            />
-                        </div>
+  <label htmlFor="cpfCnpj">CPF/CNPJ:</label>
+  <input
+    type="text"
+    id="cpfCnpj"
+    name="cpfCnpj"
+    value={profile.personalInfo.cpfCnpj || ""}
+    onChange={(e) => {
+      let value = e.target.value.replace(/\D/g, ""); // só números
+      if (value.length <= 11) {
+        // CPF
+        value = value
+          .replace(/^(\d{3})(\d)/, "$1.$2")
+          .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+          .replace(/\.(\d{3})(\d)/, ".$1-$2");
+        value = value.slice(0, 14); // 000.000.000-00
+      } else {
+        // CNPJ
+        value = value
+          .replace(/^(\d{2})(\d)/, "$1.$2")
+          .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+          .replace(/\.(\d{3})(\d)/, ".$1/$2")
+          .replace(/(\d{4})(\d)/, "$1-$2");
+        value = value.slice(0, 18); // 00.000.000/0000-00
+      }
+
+      setProfile((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          cpfCnpj: value,
+        },
+      }));
+    }}
+    required
+    className={styles.inputField}
+  />
+</div>
+
 
                         <div className={styles.formGroup}>
                             <label htmlFor="dataNascimento">Data de Nascimento:</label>
@@ -212,12 +330,27 @@ const MeuPerfilPage: React.FC = () => {
                                 className={styles.inputField}
                             />
                         </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="genero">Gênero:</label>
+                            <select
+                                id="genero"
+                                name="genero"
+                                value={profile.personalInfo.genero || ''}
+                                onChange={handlePersonalInfoChange}
+                                className={styles.inputField}
+                            >
+                                <option value="">Selecione</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="feminino">Feminino</option>
+                                <option value="prefiro-nao-dizer">Prefiro não dizer</option>
+                            </select>
+                        </div>
                     </div>
                 </section>
 
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Endereço</h2>
-                    <div className={styles.formGrid}> {/* Usar grid para alinhar */}
+                    <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
                             <label htmlFor="cep">CEP:</label>
                             <input
@@ -226,6 +359,7 @@ const MeuPerfilPage: React.FC = () => {
                                 name="cep"
                                 value={profile.address.cep}
                                 onChange={handleAddressChange}
+                                onBlur={handleCepBlur}
                                 className={styles.inputField}
                             />
                         </div>
@@ -309,7 +443,7 @@ const MeuPerfilPage: React.FC = () => {
                                 id="pais"
                                 name="pais"
                                 value={profile.address.pais}
-                                readOnly
+                                onChange={handleAddressChange}
                                 className={styles.inputField}
                             />
                         </div>
@@ -319,7 +453,7 @@ const MeuPerfilPage: React.FC = () => {
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Configurações de Login</h2>
                     <h3 className={styles.subSectionTitle}>Alterar Senha</h3>
-                    <div className={styles.formGrid}> {/* Usar grid para alinhar */}
+                    <div className={styles.formGrid}>
                         <div className={styles.formGroup}>
                             <label htmlFor="senhaAtual">Senha Atual:</label>
                             <input type="password" id="senhaAtual" name="senhaAtual" className={styles.inputField} />

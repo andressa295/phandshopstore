@@ -1,54 +1,60 @@
 /* app/(interno)/dashboard/menu/pagamentos-assinaturas/PagamentosAssinaturasPage.module.css */
 
 .container {
-    font-family: var(--font-poppins), sans-serif; /* Usando a fonte Poppins */
-    max-width: 1000px; /* Um pouco mais largo que a de perfil para a tabela */
+    font-family: 'Poppins', sans-serif;
+    max-width: 1000px;
     margin: 40px auto;
     padding: 30px;
-    background-color: #f9f9f9;
+    background-color: var(--background-color, #f8f9fa); /* Cor de fundo geral */
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    color: #333;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra mais suave */
+    color: var(--gray-dark-text, #333);
 }
 
 .mainTitle {
     font-size: 2.2em;
-    color: #34495e;
+    color: var(--purple-main, #6b21a8); /* Cor roxa da marca */
     margin-bottom: 30px;
     text-align: center;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid var(--gray-light, #eee); /* Linha sutil */
     padding-bottom: 15px;
+    font-weight: 500; /* Fonte mais fina */
+    font-family: 'Poppins', sans-serif;
 }
 
 .section {
-    background-color: #ffffff;
+    background-color: var(--white-color, #ffffff);
     border-radius: 10px;
     padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); /* Sombra mais leve */
 }
 
 .sectionTitle {
     font-size: 1.6em;
-    color: #2c3e50;
+    color: var(--purple-main, #6b21a8); /* Cor roxa da marca */
     margin-top: 0;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--gray-light, #f0f0f0);
+    font-weight: 500; /* Fonte mais fina */
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Cartão de Assinatura */
 .subscriptionCard {
     padding: 20px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color, #e0e0e0);
     border-radius: 8px;
-    background-color: #fcfcfc;
+    background-color: var(--white-color, #fcfcfc);
     margin-top: 15px;
 }
 
 .subscriptionCard p {
     margin-bottom: 8px;
     line-height: 1.6;
+    font-weight: 400; /* Fonte mais fina */
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Badges de Status (Ativo, Pendente, Cancelado, Pago, Falha) */
@@ -59,20 +65,21 @@
     font-size: 0.85em;
     font-weight: 600;
     text-transform: capitalize;
-    color: white; /* Cor do texto padrão para badges */
+    color: white;
+    font-family: 'Poppins', sans-serif;
 }
 
-.statusBadge.active, .statusBadge.paid {
-    background-color: #28a745; /* Verde para ativo/pago */
+.statusActive, .statusPaid {
+    background-color: var(--green-success, #28a745);
 }
 
-.statusBadge.pending {
-    background-color: #ffc107; /* Amarelo para pendente */
-    color: #333; /* Texto escuro para amarelo */
+.statusPending {
+    background-color: var(--warning-color, #ffc107);
+    color: var(--gray-dark-text, #333);
 }
 
-.statusBadge.canceled, .statusBadge.failed {
-    background-color: #dc3545; /* Vermelho para cancelado/falha */
+.statusCanceled, .statusFailed {
+    background-color: var(--danger-color, #dc3545);
 }
 
 /* Grid de Métodos de Pagamento */
@@ -84,26 +91,27 @@
 }
 
 .paymentMethodCard {
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color, #e0e0e0);
     border-radius: 8px;
     padding: 20px;
-    background-color: #fcfcfc;
+    background-color: var(--white-color, #fcfcfc);
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Empurra ações para baixo */
+    justify-content: space-between;
+    font-family: 'Poppins', sans-serif;
 }
 
 .paymentMethodCard.defaultMethod {
-    border-color: #007bff; /* Borda azul para o método padrão */
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+    border-color: var(--purple-main, #6b21a8);
+    box-shadow: 0 2px 8px rgba(107, 33, 168, 0.1);
 }
 
 .defaultBadge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #007bff;
+    background-color: var(--purple-main, #6b21a8);
     color: white;
     padding: 4px 10px;
     border-radius: 15px;
@@ -114,80 +122,85 @@
 .paymentMethodCard p {
     margin-bottom: 5px;
     font-size: 0.95em;
+    font-weight: 400; /* Fonte mais fina */
 }
 
 .cardActions {
     margin-top: 15px;
     display: flex;
     gap: 10px;
-    flex-wrap: wrap; /* Permite que os botões quebrem a linha */
+    flex-wrap: wrap;
 }
 
 .actionButton {
     background: none;
-    border: 1px solid #007bff;
-    color: #007bff;
+    border: 1px solid var(--purple-main, #6b21a8); /* Borda da cor da marca */
+    color: var(--purple-main, #6b21a8);
     padding: 8px 15px;
-    border-radius: 20px; /* Botões menores e ovais para ações dentro do card */
+    border-radius: 20px;
     font-size: 0.85em;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease;
-    flex-grow: 1; /* Permite que os botões cresçam */
+    flex-grow: 1;
     text-align: center;
+    font-weight: 500; /* Fonte mais fina */
+    font-family: 'Poppins', sans-serif;
 }
 
 .actionButton:hover {
-    background-color: #007bff;
+    background-color: var(--purple-main, #6b21a8);
     color: white;
 }
 
 /* Tabela de Transações */
 .transactionTableContainer {
-    overflow-x: auto; /* Garante rolagem horizontal em telas pequenas */
+    overflow-x: auto;
 }
 
 .transactionTable {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px;
     margin-top: 15px;
 }
 
 .transactionTable th,
 .transactionTable td {
     padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color, #eee);
     text-align: left;
     font-size: 0.9em;
+    font-weight: 400; /* Fonte mais fina */
+    font-family: 'Poppins', sans-serif;
 }
 
 .transactionTable th {
-    background-color: #f0f0f0;
+    background-color: var(--gray-light, #f0f0f0);
     font-weight: 600;
-    color: #555;
+    color: var(--gray-dark-text, #555);
     text-transform: uppercase;
 }
 
 .transactionTable tr:last-child td {
-    border-bottom: none; /* Remove a borda inferior da última linha */
+    border-bottom: none;
 }
 
 .transactionTable tbody tr:hover {
-    background-color: #f5f5f5; /* Efeito de hover nas linhas da tabela */
+    background-color: var(--gray-light, #f5f5f5);
 }
 
 .actionLink {
-    color: #007bff;
-    text-decoration: none;
+    color: var(--purple-main, #6b21a8);
+    text-decoration: underline;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .actionLink:hover {
-    text-decoration: underline;
-    color: #0056b3;
+    color: var(--purple-dark, #5a1d8f);
 }
 
-/* Botões Globais (iguais aos da página de perfil) */
+/* Botões Globais (ajustados para as cores da marca) */
 .primaryButton,
 .secondaryButton,
 .dangerButton {
@@ -196,55 +209,58 @@
     align-items: center;
     padding: 12px 25px;
     border: none;
-    border-radius: 50px; /* OVAL! */
+    border-radius: 50px;
     cursor: pointer;
     font-size: 1em;
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     text-decoration: none;
-    font-family: var(--font-poppins), sans-serif; /* Força a fonte Poppins nos botões */
+    font-family: 'Poppins', sans-serif;
 }
 
 .primaryButton {
-    background-color: #007bff; /* Azul vibrante */
+    background-color: var(--purple-main, #6b21a8);
     color: white;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(107, 33, 168, 0.3);
     margin-top: 20px;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
+    
 }
 
 .primaryButton:hover {
-    background-color: #0056b3;
+    background-color: var(--purple-dark, #5b21b6);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 6px 15px rgba(107, 33, 168, 0.4);
 }
 
 .primaryButton:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 2px 5px rgba(107, 33, 168, 0.3);
 }
 
 .secondaryButton {
-    background-color: #6c757d; /* Cinza para botão secundário */
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    color: var(--purple-main, #6b21a8);
+    border: 1px solid var(--purple-main, #6b21a8);
+    box-shadow: none; /* Sem sombra para ser mais clean */
 }
 
 .secondaryButton:hover {
-    background-color: #5a6268;
+    background-color: var(--purple-main, #6b21a8);
+    color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(107, 33, 168, 0.2);
 }
 
 .secondaryButton:active {
     transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
-.dangerButton { /* Novo botão para ações perigosas como "Cancelar Assinatura" */
-    background-color: #dc3545; /* Vermelho */
+.dangerButton {
+    background-color: var(--danger-color, #dc3545);
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -261,35 +277,37 @@
 }
 
 .buttonGroup {
+    margin-top: 1.5rem;
     display: flex;
-    gap: 15px; /* Espaçamento entre botões */
-    justify-content: center; /* Centraliza o grupo de botões */
-    margin-top: 20px;
-    flex-wrap: wrap; /* Garante que os botões quebrem a linha se não couberem */
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Alinhado à esquerda */
 }
 
 
 /* Mensagens de feedback */
 .successMessage {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: var(--green-success-light, #d4edda);
+    color: var(--green-success-dark, #155724);
+    border: 1px solid var(--green-success-border, #c3e6cb);
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
     text-align: center;
     font-weight: 500;
+    font-family: 'Poppins', sans-serif;
 }
 
 .errorMessage {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: var(--danger-light, #f8d7da);
+    color: var(--danger-dark, #721c24);
+    border: 1px solid var(--danger-border, #f5c6cb);
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
     text-align: center;
     font-weight: 500;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Estado de carregamento e erro */
@@ -297,7 +315,8 @@
     text-align: center;
     padding: 50px;
     font-size: 1.2em;
-    color: #555;
+    color: var(--gray-text, #555);
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Responsividade básica para telas menores */
@@ -305,18 +324,37 @@
     .container {
         margin: 20px;
         padding: 20px;
+        background-color: transparent; /* Fundo transparente */
+        box-shadow: none; /* Sem sombra */
     }
 
     .mainTitle {
         font-size: 1.8em;
+        border-bottom: none; /* Remove a linha */
+        padding-bottom: 0;
+        margin-bottom: 20px;
+        text-align: left; /* Alinha à esquerda em mobile */
     }
 
     .sectionTitle {
         font-size: 1.4em;
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        margin-bottom: 15px;
+        border-bottom: none; /* Remove a linha */
+        text-align: left; /* Alinha à esquerda em mobile */
+    }
+
+    .section {
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+        margin-bottom: 20px;
     }
 
     .paymentMethodsGrid {
-        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+        grid-template-columns: 1fr;
     }
 
     .transactionTable th,
@@ -326,17 +364,17 @@
     }
 
     .transactionTable thead {
-        display: none; /* Esconde o cabeçalho da tabela em telas pequenas */
+        display: none;
     }
 
     .transactionTable, .transactionTable tbody, .transactionTable tr, .transactionTable td {
-        display: block; /* Transforma a tabela em blocos para melhor leitura */
+        display: block;
         width: 100%;
     }
     
     .transactionTable tr {
         margin-bottom: 15px;
-        border: 1px solid #eee;
+        border: 1px solid var(--border-color, #eee);
         border-radius: 8px;
         padding: 10px;
     }
@@ -348,7 +386,7 @@
     }
 
     .transactionTable td::before {
-        content: attr(data-label); /* Usa o atributo data-label para mostrar o cabeçalho */
+        content: attr(data-label);
         position: absolute;
         left: 6px;
         width: 45%;
@@ -356,5 +394,17 @@
         white-space: nowrap;
         text-align: left;
         font-weight: bold;
+    }
+
+    .primaryButton, .secondaryButton, .dangerButton {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+        gap: 10px;
+        justify-content: flex-start; /* Alinha os botões à esquerda em mobile */
     }
 }

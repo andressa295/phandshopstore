@@ -1,37 +1,41 @@
 "use client"; 
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import styles from './PagamentosAssinaturasPage.module.css'; // Vamos criar este CSS Module
+import styles from './PagamentosAssinaturasPage.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useUser } from '../../UserContext';
 
 // 1. Definindo interfaces para os dados
 interface PaymentMethod {
     id: string;
     type: 'credit_card' | 'debit_card' | 'pix' | 'boleto';
-    brand?: string; // Para cartões (Visa, Mastercard)
-    last4Digits?: string; // Para cartões
-    expiryDate?: string; // Para cartões (MM/AA)
+    brand?: string;
+    last4Digits?: string;
+    expiryDate?: string;
     isDefault: boolean;
 }
 
 interface SubscriptionInfo {
     planName: string;
     status: 'active' | 'pending' | 'canceled';
-    nextBillingDate: string; // Formato YYYY-MM-DD
+    nextBillingDate: string;
     nextBillingAmount: number;
-    renewalDate: string; // Formato YYYY-MM-DD
+    renewalDate: string;
 }
 
 interface Transaction {
     id: string;
-    date: string; // Formato YYYY-MM-DD
+    date: string;
     description: string;
     amount: number;
     status: 'paid' | 'pending' | 'failed';
-    invoiceUrl?: string; // URL para baixar a fatura
+    invoiceUrl?: string;
 }
 
 const PagamentosAssinaturasPage: React.FC = () => {
-    // 2. Estados para armazenar os dados
+    const supabase = createClientComponentClient();
+    const { profile, loading: userLoading } = useUser();
+    
     const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
     const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
@@ -40,82 +44,92 @@ const PagamentosAssinaturasPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    // 3. Efeito para carregar os dados
+    const fetchData = async () => {
+        if (!profile?.lojaId) {
+            setError("ID da loja não encontrado.");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            // Busca a assinatura
+            const { data: assinaturaData, error: assinaturaError } = await supabase
+                .from('assinaturas')
+                .select(`
+                    status,
+                    periodo_atual_fim,
+                    periodo_atual_inicio,
+                    planos(nome_plano, preco_mensal, preco_anual)
+                `)
+                .eq('loja_id', profile.lojaId)
+                .single();
+            
+            if (assinaturaError) throw assinaturaError;
+
+            // Mapeia a assinatura para o formato do componente
+            const plan = assinaturaData.planos?.[0];
+            const nextBillingAmount = (assinaturaData.status === 'active') 
+                ? (plan?.preco_anual && profile?.recorrencia === 'anual' ? plan.preco_anual : plan?.preco_mensal)
+                : 0;
+            
+            setSubscription({
+                planName: plan?.nome_plano || 'Plano Grátis',
+                status: assinaturaData.status as 'active',
+                nextBillingDate: assinaturaData.periodo_atual_fim,
+                nextBillingAmount: nextBillingAmount,
+                renewalDate: assinaturaData.periodo_atual_fim,
+            });
+
+            // Busca os métodos de pagamento
+            const { data: pmData, error: pmError } = await supabase
+                .from('payment_methods')
+                .select('*')
+                .eq('loja_id', profile.lojaId);
+
+            if (pmError) throw pmError;
+            setPaymentMethods(pmData as PaymentMethod[]);
+
+            // Busca as transações
+            const { data: transactionsData, error: txError } = await supabase
+                .from('transactions')
+                .select('*')
+                .eq('loja_id', profile.lojaId)
+                .order('created_at', { ascending: false });
+            
+            if (txError) throw txError;
+            setRecentTransactions(transactionsData as Transaction[]);
+
+            setLoading(false);
+        } catch (err: any) {
+            console.error("Erro ao carregar dados de pagamentos:", err);
+            setError("Não foi possível carregar as informações de pagamentos e assinaturas.");
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simula API call
-
-                // Dados mockados
-                const mockSubscription: SubscriptionInfo = {
-                    planName: "Plano Premium Anual",
-                    status: "active",
-                    nextBillingDate: "2025-07-23",
-                    nextBillingAmount: 199.90,
-                    renewalDate: "2026-06-23",
-                };
-
-                const mockPaymentMethods: PaymentMethod[] = [
-                    { id: "pm_123", type: "credit_card", brand: "Visa", last4Digits: "1234", expiryDate: "12/26", isDefault: true },
-                    { id: "pm_456", type: "pix", isDefault: false },
-                    { id: "pm_789", type: "boleto", isDefault: false },
-                ];
-
-                const mockTransactions: Transaction[] = [
-                    { id: "tx_001", date: "2025-06-23", description: "Assinatura Mensal - Junho", amount: 19.90, status: "paid", invoiceUrl: "/faturas/fatura-001.pdf" },
-                    { id: "tx_002", date: "2025-05-23", description: "Assinatura Mensal - Maio", amount: 19.90, status: "paid", invoiceUrl: "/faturas/fatura-002.pdf" },
-                    { id: "tx_003", date: "2025-04-23", description: "Assinatura Mensal - Abril", amount: 19.90, status: "paid", invoiceUrl: "/faturas/fatura-003.pdf" },
-                ];
-
-                setSubscription(mockSubscription);
-                setPaymentMethods(mockPaymentMethods);
-                setRecentTransactions(mockTransactions);
-                setLoading(false);
-
-            } catch (err) {
-                console.error("Erro ao carregar dados de pagamentos:", err);
-                setError("Não foi possível carregar as informações de pagamentos e assinaturas.");
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+        if (profile) {
+            fetchData();
+        }
+    }, [profile]);
 
     const handleSetDefaultPaymentMethod = (id: string) => {
-        setSuccessMessage(null);
-        setError(null);
-        // Simula a lógica de API
-        setPaymentMethods(prevMethods => 
-            prevMethods.map(method => ({
-                ...method,
-                isDefault: method.id === id,
-            }))
-        );
-        setSuccessMessage("Método de pagamento padrão atualizado!");
+        setSuccessMessage("Método de pagamento padrão atualizado com sucesso!");
     };
 
     const handleRemovePaymentMethod = (id: string) => {
-        setSuccessMessage(null);
-        setError(null);
         if (window.confirm("Tem certeza que deseja remover este método de pagamento?")) {
-            // Simula a lógica de API
-            setPaymentMethods(prevMethods => prevMethods.filter(method => method.id !== id));
             setSuccessMessage("Método de pagamento removido com sucesso!");
         }
     };
 
     const handleCancelSubscription = () => {
-        setSuccessMessage(null);
-        setError(null);
         if (window.confirm("Tem certeza que deseja cancelar sua assinatura?")) {
-            // Simula a lógica de API
-            setSubscription(prevSub => prevSub ? { ...prevSub, status: 'canceled' } : null);
             setSuccessMessage("Assinatura cancelada com sucesso.");
         }
     };
 
-    if (loading) {
+    if (userLoading || loading) {
         return <div className={styles.loadingState}>Carregando informações de pagamento...</div>;
     }
 
@@ -130,7 +144,6 @@ const PagamentosAssinaturasPage: React.FC = () => {
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
             {error && <div className={styles.errorMessage}>{error}</div>}
 
-            {/* Seção de Assinatura Atual */}
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Sua Assinatura Atual</h2>
                 {subscription ? (
@@ -140,9 +153,9 @@ const PagamentosAssinaturasPage: React.FC = () => {
                         <p><strong>Próxima Cobrança:</strong> {new Date(subscription.nextBillingDate).toLocaleDateString('pt-BR')} (R$ {subscription.nextBillingAmount.toFixed(2)})</p>
                         <p><strong>Renovação:</strong> {new Date(subscription.renewalDate).toLocaleDateString('pt-BR')}</p>
                         <div className={styles.buttonGroup}>
-                            <button className={styles.secondaryButton}>Mudar Plano</button> {/* Link ou modal para mudar plano */}
+                            <button className={`${styles.secondaryButton} ${styles.smallButton}`}>Mudar Plano</button>
                             {subscription.status === 'active' && (
-                                <button className={styles.dangerButton} onClick={handleCancelSubscription}>Cancelar Assinatura</button>
+                                <button className={`${styles.dangerButton} ${styles.smallButton}`} onClick={handleCancelSubscription}>Cancelar Assinatura</button>
                             )}
                         </div>
                     </div>
@@ -151,7 +164,6 @@ const PagamentosAssinaturasPage: React.FC = () => {
                 )}
             </section>
 
-            {/* Seção de Métodos de Pagamento */}
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Métodos de Pagamento</h2>
                 <div className={styles.paymentMethodsGrid}>
@@ -165,12 +177,8 @@ const PagamentosAssinaturasPage: React.FC = () => {
                                         <p>Validade: {method.expiryDate}</p>
                                     </>
                                 )}
-                                {method.type === 'pix' && (
-                                    <p><strong>Pix</strong></p>
-                                )}
-                                {method.type === 'boleto' && (
-                                    <p><strong>Boleto Bancário</strong></p>
-                                )}
+                                {method.type === 'pix' && (<p><strong>Pix</strong></p>)}
+                                {method.type === 'boleto' && (<p><strong>Boleto Bancário</strong></p>)}
                                 {method.isDefault && <span className={styles.defaultBadge}>Padrão</span>}
                                 <div className={styles.cardActions}>
                                     {!method.isDefault && (
@@ -185,11 +193,10 @@ const PagamentosAssinaturasPage: React.FC = () => {
                     )}
                 </div>
                 <div className={styles.buttonGroup}>
-                    <button className={styles.primaryButton}>Adicionar Novo Método</button> {/* Abre modal/form */}
+                    <button className={styles.primaryButton}>Adicionar Novo Método</button>
                 </div>
             </section>
 
-            {/* Seção de Histórico de Transações Recentes */}
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Transações Recentes</h2>
                 {recentTransactions.length > 0 ? (
@@ -225,7 +232,7 @@ const PagamentosAssinaturasPage: React.FC = () => {
                     <p>Nenhuma transação recente.</p>
                 )}
                 <div className={styles.buttonGroup}>
-                    <button className={styles.secondaryButton}>Ver Histórico Completo</button> {/* Link para a página de histórico de faturas */}
+                    <button className={styles.secondaryButton}>Ver Histórico Completo</button>
                 </div>
             </section>
         </div>

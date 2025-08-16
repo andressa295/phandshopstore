@@ -1,54 +1,54 @@
-/* app/(interno)/dashboard/menu/minha-conta/MeuPerfilPage.module.css */
-
+/* MeuPerfilPage.module.css */
 .meuPerfilContainer {
-    /* Usa a variável CSS para a fonte Poppins, definida no layout.tsx */
-    font-family: var(--font-poppins), sans-serif;
-    max-width: 900px; /* Largura máxima para centralizar e não ficar muito esticado */
-    margin: 40px auto; /* Centraliza na página e adiciona espaçamento */
+    max-width: 900px;
+    margin: 40px auto;
     padding: 30px;
     background-color: #f9f9f9;
-    border-radius: 12px; /* Cantos arredondados para a caixa principal */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    color: #333;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: var(--gray-dark-text, #333);
 }
 
 .mainTitle {
-    font-size: 2.2em; /* Tamanho do título principal um pouco menor */
-    color: #34495e; /* Cor mais escura para contraste */
+    font-size: 2.2em;
+    color: var(--purple-main, #6d28d9);
     margin-bottom: 30px;
     text-align: center;
-    border-bottom: 2px solid #eee; /* Linha sutil abaixo do título */
+    border-bottom: 2px solid #eee;
     padding-bottom: 15px;
+    font-weight: 600; /* Fonte mais fina */
 }
 
 .section {
     background-color: #ffffff;
-    border-radius: 10px; /* Cantos arredondados para as seções */
+    border-radius: 10px;
     padding: 25px;
     margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra mais leve para as seções */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .sectionTitle {
-    font-size: 1.6em; /* Títulos de seção proporcionais */
-    color: #2c3e50;
+    font-size: 1.6em;
+    color: var(--purple-main, #6d28d9);
     margin-top: 0;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #f0f0f0;
+    font-weight: 500;
 }
 
 .subSectionTitle {
-    font-size: 1.3em; /* Título de subseção menor */
-    color: #555;
+    font-size: 1.3em;
+    color: var(--gray-dark-text, #333);
     margin-top: 0;
     margin-bottom: 15px;
+    font-weight: 400;
 }
 
 .formGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colunas automáticas para responsividade */
-    gap: 20px; /* Espaçamento entre os campos */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
 .formGroup {
@@ -57,78 +57,75 @@
 }
 
 .formGroup label {
-    font-weight: 600; /* Texto da label um pouco mais negrito */
+    font-weight: 500;
     margin-bottom: 8px;
-    color: #444;
-    font-size: 0.95em; /* Tamanho da fonte da label */
+    color: var(--gray-dark-text, #333);
+    font-size: 0.95em;
 }
 
 .inputField {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd; /* Borda mais suave */
-    border-radius: 8px; /* Cantos arredondados nos campos */
+    border: 1px solid #ddd;
+    border-radius: 8px;
     font-size: 1em;
     color: #555;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave ao focar */
-    box-sizing: border-box; /* Garante que padding não aumente o width */
-    /* *** CORREÇÃO AQUI: APLICAR FONT-FAMILY TAMBÉM NOS INPUTS *** */
-    font-family: var(--font-poppins), sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 .inputField:focus {
-    border-color: #007bff; /* Borda azul ao focar */
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Sombra azul suave ao focar */
-    outline: none; /* Remove o outline padrão do navegador */
+    border-color: var(--purple-main, #6d28d9);
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
+    outline: none;
 }
 
-/* Botões */
 .primaryButton,
 .secondaryButton {
-    display: inline-flex; /* Para centralizar texto e ícone se tiver */
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     padding: 12px 25px;
     border: none;
-    border-radius: 50px; /* OVAL! */
+    border-radius: 50px;
     cursor: pointer;
-    font-size: 1em; /* Tamanho da fonte do botão */
+    font-size: 1em;
     font-weight: 600;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    text-decoration: none; /* Remover sublinhado se for um link */
-    /* *** CORREÇÃO AQUI: APLICAR FONT-FAMILY TAMBÉM NOS BOTÕES *** */
-    font-family: var(--font-poppins), sans-serif;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
 }
 
 .primaryButton {
-    background-color: #007bff; /* Azul vibrante */
+    background-color: var(--purple-main, #6d28d9);
     color: white;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3); /* Sombra para o botão principal */
-    margin-top: 20px; /* Espaçamento acima do botão Salvar */
-    width: fit-content; /* Ajusta a largura ao conteúdo */
-    margin-left: auto; /* Centraliza o botão Salvar Alterações */
-    margin-right: auto; /* Centraliza o botão Salvar Alterações */
+    box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
+    margin-top: 20px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .primaryButton:hover {
-    background-color: #0056b3; /* Azul mais escuro ao hover */
-    transform: translateY(-2px); /* Efeito de levantar */
-    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    background-color: var(--purple-dark, #5b21b6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(109, 40, 217, 0.4);
 }
 
 .primaryButton:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 2px 5px rgba(109, 40, 217, 0.3);
 }
 
 .secondaryButton {
-    background-color: #6c757d; /* Cinza para botão secundário */
+    background-color: var(--gray-dark-text, #374151);
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .secondaryButton:hover {
-    background-color: #5a6268;
+    background-color: #1f2937;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -139,13 +136,12 @@
 }
 
 .buttonGroup {
-    grid-column: 1 / -1; /* Ocupa todas as colunas para centralizar se necessário */
+    grid-column: 1 / -1;
     display: flex;
-    justify-content: center; /* Centraliza o botão de alterar senha */
+    justify-content: center;
     margin-top: 10px;
 }
 
-/* Mensagens de feedback */
 .successMessage {
     background-color: #d4edda;
     color: #155724;
@@ -168,7 +164,6 @@
     font-weight: 500;
 }
 
-/* Estado de carregamento e erro */
 .loadingState, .errorState {
     text-align: center;
     padding: 50px;
@@ -176,7 +171,7 @@
     color: #555;
 }
 
-/* Responsividade básica para telas menores */
+/* === Responsividade para mobile === */
 @media (max-width: 768px) {
     .meuPerfilContainer {
         margin: 20px;
@@ -192,6 +187,22 @@
     }
 
     .formGrid {
-        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+        grid-template-columns: 1fr;
+    }
+
+    /* Removendo o fundo e sombras dos cards para um design mais limpo */
+    .meuPerfilContainer, .section {
+        background-color: transparent;
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .primaryButton, .secondaryButton {
+        width: 100%;
+    }
+
+    .buttonGroup {
+        flex-direction: column;
+        gap: 10px;
     }
 }
