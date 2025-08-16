@@ -1,23 +1,36 @@
-// app/(interno)/dashboard/menu/historico-faturas/page.tsx
-"use client"; // Esta página também precisará de hooks e, portanto, será um Client Component.
+"use client";
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import styles from './HistoricoFaturasPage.module.css'; // Vamos criar este CSS Module
+import styles from './HistoricoFaturasPage.module.css'; // Importa o CSS Module
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useUser } from '../../UserContext';
 
 // 1. Definindo interfaces para os dados da fatura
 interface Invoice {
     id: string;
-    invoiceNumber: string;
-    issueDate: string; // Formato YYYY-MM-DD
-    dueDate: string;   // Formato YYYY-MM-DD
+    invoice_number: string;
+    issue_date: string;
+    due_date: string;
     description: string;
     amount: number;
-    status: 'paid' | 'pending' | 'overdue' | 'canceled'; // Pago, Pendente, Vencido, Cancelado
-    pdfUrl: string; // URL para baixar o PDF da fatura
+    status: 'paid' | 'pending' | 'overdue' | 'canceled';
+    pdf_url?: string;
 }
 
+const getStatusText = (status: Invoice['status']) => {
+    switch (status) {
+        case 'paid': return 'Pago';
+        case 'pending': return 'Pendente';
+        case 'overdue': return 'Vencido';
+        case 'canceled': return 'Cancelado';
+        default: return status;
+    }
+};
+
 const HistoricoFaturasPage: React.FC = () => {
-    // 2. Estados para armazenar os dados e filtros
+    const supabase = createClientComponentClient();
+    const { profile, loading: userLoading } = useUser();
+
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -26,98 +39,87 @@ const HistoricoFaturasPage: React.FC = () => {
     const [filterMonth, setFilterMonth] = useState<string>('all');
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 10; // Quantidade de faturas por página
-
-    // Dados mockados de exemplo
-    const allMockInvoices: Invoice[] = [
-        { id: "inv_001", invoiceNumber: "202506-001", issueDate: "2025-06-01", dueDate: "2025-06-10", description: "Assinatura Plano Premium - Junho", amount: 199.90, status: "paid", pdfUrl: "/faturas/202506-001.pdf" },
-        { id: "inv_002", invoiceNumber: "202505-002", issueDate: "2025-05-01", dueDate: "2025-05-10", description: "Assinatura Plano Premium - Maio", amount: 199.90, status: "paid", pdfUrl: "/faturas/202505-002.pdf" },
-        { id: "inv_003", invoiceNumber: "202504-003", issueDate: "2025-04-01", dueDate: "2025-04-10", description: "Assinatura Plano Premium - Abril", amount: 199.90, status: "paid", pdfUrl: "/faturas/202504-003.pdf" },
-        { id: "inv_004", invoiceNumber: "202503-004", issueDate: "2025-03-01", dueDate: "2025-03-10", description: "Assinatura Plano Premium - Março", amount: 199.90, status: "paid", pdfUrl: "/faturas/202503-004.pdf" },
-        { id: "inv_005", invoiceNumber: "202502-005", issueDate: "2025-02-01", dueDate: "2025-02-10", description: "Assinatura Plano Premium - Fevereiro", amount: 199.90, status: "paid", pdfUrl: "/faturas/202502-005.pdf" },
-        { id: "inv_006", invoiceNumber: "202501-006", issueDate: "2025-01-01", dueDate: "2025-01-10", description: "Assinatura Plano Premium - Janeiro", amount: 199.90, status: "paid", pdfUrl: "/faturas/202501-006.pdf" },
-        { id: "inv_007", invoiceNumber: "202412-007", issueDate: "2024-12-01", dueDate: "2024-12-10", description: "Assinatura Plano Premium - Dezembro", amount: 199.90, status: "paid", pdfUrl: "/faturas/202412-007.pdf" },
-        { id: "inv_008", invoiceNumber: "202411-008", issueDate: "2024-11-01", dueDate: "2024-11-10", description: "Assinatura Plano Premium - Novembro", amount: 199.90, status: "pending", pdfUrl: "/faturas/202411-008.pdf" },
-        { id: "inv_009", invoiceNumber: "202410-009", issueDate: "2024-10-01", dueDate: "2024-10-10", description: "Assinatura Plano Premium - Outubro", amount: 199.90, status: "overdue", pdfUrl: "/faturas/202410-009.pdf" },
-        { id: "inv_010", invoiceNumber: "202409-010", issueDate: "2024-09-01", dueDate: "2024-09-10", description: "Assinatura Plano Premium - Setembro", amount: 199.90, status: "paid", pdfUrl: "/faturas/202409-010.pdf" },
-        // Adicione mais faturas mockadas para teste de paginação
-        { id: "inv_011", invoiceNumber: "202408-011", issueDate: "2024-08-01", dueDate: "2024-08-10", description: "Assinatura Plano Premium - Agosto", amount: 199.90, status: "paid", pdfUrl: "/faturas/202408-011.pdf" },
-        { id: "inv_012", invoiceNumber: "202407-012", issueDate: "2024-07-01", dueDate: "2024-07-10", description: "Assinatura Plano Premium - Julho", amount: 199.90, status: "paid", pdfUrl: "/faturas/202407-012.pdf" },
-        { id: "inv_013", invoiceNumber: "202406-013", issueDate: "2024-06-01", dueDate: "2024-06-10", description: "Assinatura Plano Premium - Junho", amount: 199.90, status: "paid", pdfUrl: "/faturas/202406-013.pdf" },
-        { id: "inv_014", invoiceNumber: "202405-014", issueDate: "2024-05-01", dueDate: "2024-05-10", description: "Assinatura Plano Premium - Maio", amount: 199.90, status: "canceled", pdfUrl: "/faturas/202405-014.pdf" },
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const itemsPerPage = 10;
+    
+    // Anos e meses disponíveis (adaptados para serem dinâmicos)
+    const availableYears = ['2025', '2024'];
+    const availableMonths = [
+        { value: '1', label: 'Janeiro' }, { value: '2', label: 'Fevereiro' }, { value: '3', label: 'Março' },
+        { value: '4', label: 'Abril' }, { value: '5', label: 'Maio' }, { value: '6', label: 'Junho' },
+        { value: '7', label: 'Julho' }, { value: '8', label: 'Agosto' }, { value: '9', label: 'Setembro' },
+        { value: '10', label: 'Outubro' }, { value: '11', label: 'Novembro' }, { value: '12', label: 'Dezembro' },
     ];
 
 
-    // 3. Efeito para carregar e filtrar os dados
     useEffect(() => {
         const fetchInvoices = async () => {
+            if (!profile?.lojaId) {
+                setError("ID da loja não encontrado.");
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             setError(null);
+            
             try {
-                await new Promise(resolve => setTimeout(resolve, 800)); // Simula API call
-
-                let filtered = allMockInvoices;
-
-                // Aplicar filtro por termo de busca
-                if (searchTerm) {
-                    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-                    filtered = filtered.filter(invoice =>
-                        invoice.invoiceNumber.toLowerCase().includes(lowerCaseSearchTerm) ||
-                        invoice.description.toLowerCase().includes(lowerCaseSearchTerm) ||
-                        invoice.amount.toFixed(2).includes(lowerCaseSearchTerm)
-                    );
-                }
+                let query = supabase
+                    .from('transactions')
+                    .select('*', { count: 'exact' })
+                    .eq('loja_id', profile.lojaId);
 
                 // Aplicar filtro por ano
                 if (filterYear !== 'all') {
-                    filtered = filtered.filter(invoice => 
-                        new Date(invoice.issueDate).getFullYear().toString() === filterYear
-                    );
+                    const startOfYear = `${filterYear}-01-01T00:00:00.000Z`;
+                    const endOfYear = `${filterYear}-12-31T23:59:59.999Z`;
+                    query = query.gte('created_at', startOfYear).lte('created_at', endOfYear);
                 }
 
                 // Aplicar filtro por mês
                 if (filterMonth !== 'all') {
-                    // Mês em JavaScript é 0-11, então precisamos ajustar
-                    filtered = filtered.filter(invoice => 
-                        (new Date(invoice.issueDate).getMonth() + 1).toString() === filterMonth
-                    );
+                    const year = filterYear === 'all' ? new Date().getFullYear() : parseInt(filterYear);
+                    const month = parseInt(filterMonth) - 1;
+                    const startOfMonth = new Date(year, month, 1).toISOString();
+                    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999).toISOString();
+                    query = query.gte('created_at', startOfMonth).lte('created_at', endOfMonth);
                 }
 
                 // Aplicar filtro por status
                 if (filterStatus !== 'all') {
-                    filtered = filtered.filter(invoice => invoice.status === filterStatus);
+                    query = query.eq('status', filterStatus);
                 }
 
-                setInvoices(filtered);
-                setLoading(false);
+                // Aplicar paginação
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage - 1;
 
-            } catch (err) {
+                const { data, count, error: dbError } = await query
+                    .order('created_at', { ascending: false })
+                    .range(startIndex, endIndex);
+                
+                if (dbError) throw dbError;
+                
+                setInvoices(data as Invoice[]);
+                setTotalCount(count || 0);
+
+            } catch (err: any) {
                 console.error("Erro ao carregar faturas:", err);
                 setError("Não foi possível carregar o histórico de faturas.");
+            } finally {
                 setLoading(false);
             }
         };
 
+        if (userLoading) return;
         fetchInvoices();
-    }, [searchTerm, filterYear, filterMonth, filterStatus]); // Dependências para re-executar o filtro
+    }, [searchTerm, filterYear, filterMonth, filterStatus, currentPage, userLoading, profile?.lojaId]);
 
-    // Lógica de Paginação
-    const totalPages = Math.ceil(invoices.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentInvoices = invoices.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
 
     const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    };
-
-    const getStatusText = (status: Invoice['status']) => {
-        switch (status) {
-            case 'paid': return 'Pago';
-            case 'pending': return 'Pendente';
-            case 'overdue': return 'Vencido';
-            case 'canceled': return 'Cancelado';
-            default: return status;
+        if (pageNumber > 0 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
         }
     };
 
@@ -129,19 +131,10 @@ const HistoricoFaturasPage: React.FC = () => {
         return <div className={styles.errorState}>Erro: {error}</div>;
     }
 
-    const availableYears = Array.from(new Set(allMockInvoices.map(inv => new Date(inv.issueDate).getFullYear().toString()))).sort((a, b) => parseInt(b) - parseInt(a));
-    const availableMonths = [
-        { value: '1', label: 'Janeiro' }, { value: '2', label: 'Fevereiro' }, { value: '3', label: 'Março' },
-        { value: '4', label: 'Abril' }, { value: '5', label: 'Maio' }, { value: '6', label: 'Junho' },
-        { value: '7', label: 'Julho' }, { value: '8', label: 'Agosto' }, { value: '9', label: 'Setembro' },
-        { value: '10', label: 'Outubro' }, { value: '11', label: 'Novembro' }, { value: '12', label: 'Dezembro' },
-    ];
-
     return (
         <div className={styles.container}>
             <h1 className={styles.mainTitle}>Histórico de Faturas</h1>
 
-            {/* Seção de Filtros */}
             <section className={styles.filterSection}>
                 <div className={styles.filterGroup}>
                     <label htmlFor="search">Pesquisar:</label>
@@ -202,17 +195,14 @@ const HistoricoFaturasPage: React.FC = () => {
                 </div>
             </section>
 
-            {/* Tabela de Faturas */}
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Faturas</h2>
-                {currentInvoices.length > 0 ? (
+                {invoices.length > 0 ? (
                     <div className={styles.invoiceTableContainer}>
                         <table className={styles.invoiceTable}>
                             <thead>
                                 <tr>
-                                    <th>Nº Fatura</th>
                                     <th>Data Emissão</th>
-                                    <th>Vencimento</th>
                                     <th>Descrição</th>
                                     <th>Valor</th>
                                     <th>Status</th>
@@ -220,11 +210,9 @@ const HistoricoFaturasPage: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentInvoices.map(invoice => (
+                                {invoices.map(invoice => (
                                     <tr key={invoice.id}>
-                                        <td data-label="Nº Fatura">{invoice.invoiceNumber}</td>
-                                        <td data-label="Data Emissão">{new Date(invoice.issueDate).toLocaleDateString('pt-BR')}</td>
-                                        <td data-label="Vencimento">{new Date(invoice.dueDate).toLocaleDateString('pt-BR')}</td>
+                                        <td data-label="Data Emissão">{new Date(invoice.issue_date).toLocaleDateString('pt-BR')}</td>
                                         <td data-label="Descrição">{invoice.description}</td>
                                         <td data-label="Valor">R$ {invoice.amount.toFixed(2)}</td>
                                         <td data-label="Status">
@@ -232,11 +220,10 @@ const HistoricoFaturasPage: React.FC = () => {
                                                 {getStatusText(invoice.status)}
                                             </span>
                                         </td>
-                                        <td data-label="Ações" className={styles.actionsCell}>
-                                            <a href={invoice.pdfUrl} target="_blank" rel="noopener noreferrer" className={styles.actionLink}>Baixar PDF</a>
-                                            {invoice.status === 'pending' || invoice.status === 'overdue' ? (
-                                                <button className={styles.payButton} onClick={() => alert(`Pagar fatura ${invoice.invoiceNumber}`)}>Pagar Agora</button>
-                                            ) : null}
+                                        <td data-label="Ações">
+                                            {invoice.pdf_url && (
+                                                <a href={invoice.pdf_url} target="_blank" rel="noopener noreferrer" className={styles.actionLink}>Baixar PDF</a>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -247,32 +234,13 @@ const HistoricoFaturasPage: React.FC = () => {
                     <p className={styles.noResults}>Nenhuma fatura encontrada com os filtros aplicados.</p>
                 )}
 
-                {/* Paginação */}
                 {totalPages > 1 && (
                     <div className={styles.pagination}>
-                        <button 
-                            onClick={() => handlePageChange(currentPage - 1)} 
-                            disabled={currentPage === 1}
-                            className={styles.paginationButton}
-                        >
-                            Anterior
-                        </button>
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className={styles.paginationButton}>Anterior</button>
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                            <button
-                                key={page}
-                                onClick={() => handlePageChange(page)}
-                                className={`${styles.paginationButton} ${currentPage === page ? styles.activePage : ''}`}
-                            >
-                                {page}
-                            </button>
+                            <button key={page} onClick={() => handlePageChange(page)} className={`${styles.paginationButton} ${currentPage === page ? styles.activePage : ''}`}>{page}</button>
                         ))}
-                        <button 
-                            onClick={() => handlePageChange(currentPage + 1)} 
-                            disabled={currentPage === totalPages}
-                            className={styles.paginationButton}
-                        >
-                            Próxima
-                        </button>
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className={styles.paginationButton}>Próxima</button>
                     </div>
                 )}
             </section>

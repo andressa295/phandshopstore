@@ -1,10 +1,9 @@
-// app/(interno)/dashboard/menu/tarifas-por-vendas/page.tsx
 "use client";
 
-import React, { useState, FormEvent, useEffect } from 'react'; // Adicionado useEffect para simular carga do plano
+import React, { useState, useEffect, FormEvent } from 'react';
 import styles from './TarifasPorVendasPage.module.css';
+import { useUser } from '../../UserContext';
 
-// 1. Definindo interfaces (simplificadas com base na nova regra)
 interface TariffDetail {
     name: string;
     description: string;
@@ -12,52 +11,28 @@ interface TariffDetail {
 }
 
 const TarifasPorVendasPage: React.FC = () => {
-    // 2. Estado para a calculadora de tarifas
+    const { profile, loading: userLoading } = useUser();
+    
     const [saleAmount, setSaleAmount] = useState<number | ''>('');
     const [calculatedFee, setCalculatedFee] = useState<number | null>(null);
     const [netAmount, setNetAmount] = useState<number | null>(null);
-    
-    // Novo estado para simular o plano do usuário
-    // Em um cenário real, você buscaria isso da API do usuário logado
-    const [userPlan, setUserPlan] = useState<'gratuito' | 'premium' | 'outro' | null>(null);
-    const [loadingPlan, setLoadingPlan] = useState<boolean>(true);
+    const [tarifaVenda, setTarifaVenda] = useState<number | null>(null);
 
+    const OUR_PLATFORM_FEE_RATE = tarifaVenda !== null ? tarifaVenda : 0;
 
-    // Efeito para carregar o plano do usuário (simulação)
     useEffect(() => {
-        const fetchUserPlan = async () => {
-            setLoadingPlan(true);
-            // Simula uma chamada de API para obter o plano do usuário
-            await new Promise(resolve => setTimeout(resolve, 500));
-            // Exemplo: usuário no plano gratuito
-            setUserPlan('gratuito'); // Ou 'premium' ou 'outro'
-            setLoadingPlan(false);
-        };
-        fetchUserPlan();
-    }, []);
-
-    // Apenas uma tarifa agora: a nossa por venda no plano gratuito
-    const tariffs: TariffDetail[] = [
-        { 
-            name: "Tarifa sobre Vendas (Plano Gratuito)", 
-            description: "Esta é a nossa tarifa de plataforma, aplicada apenas a usuários no plano gratuito. Garante acesso contínuo aos recursos essenciais da plataforma sem mensalidades.", 
-            rate: "2.5% por venda" 
-        },
-        // Você pode adicionar mais itens se houver outras tarifas MUITO específicas e pequenas,
-        // mas com a regra de "demais planos tarifa 0", não haveria tarifa de plataforma aqui.
-    ];
-
-    // Lógica da calculadora de tarifas
-    const OUR_PLATFORM_FEE_RATE = 0.025; // 2.5%
+        if (profile) {
+            setTarifaVenda(profile?.preco_mensal === 0 ? 2.5 : 0);
+        }
+    }, [profile]);
 
     const calculateFees = (amount: number) => {
-        if (userPlan === 'gratuito') {
-            const fee = amount * OUR_PLATFORM_FEE_RATE;
+        if (tarifaVenda !== null && tarifaVenda > 0) {
+            const fee = amount * (tarifaVenda / 100);
             const finalAmount = amount - fee;
             setCalculatedFee(fee);
             setNetAmount(finalAmount);
         } else {
-            // Para planos pagos, a tarifa é 0%
             setCalculatedFee(0);
             setNetAmount(amount);
         }
@@ -74,9 +49,19 @@ const TarifasPorVendasPage: React.FC = () => {
         calculateFees(Number(saleAmount));
     };
 
-    if (loadingPlan) {
+    if (userLoading) {
         return <div className={styles.loadingState}>Carregando informações de tarifas...</div>;
     }
+
+    const tariffs: TariffDetail[] = [
+        {
+            name: "Tarifa sobre Vendas (Plano Gratuito)",
+            description: "Esta é a nossa tarifa de plataforma, aplicada apenas a usuários no plano gratuito. Garante acesso contínuo aos recursos essenciais da plataforma sem mensalidades.",
+            rate: `${OUR_PLATFORM_FEE_RATE}% por venda`
+        },
+    ];
+    
+    const isFreePlan = profile?.plano === 'Plano Grátis' || (profile?.preco_mensal === 0);
 
     return (
         <div className={styles.container}>
@@ -88,21 +73,21 @@ const TarifasPorVendasPage: React.FC = () => {
                     Nossa política de tarifas é desenhada para oferecer flexibilidade e clareza.
                     Compreendemos a importância de otimizar seus ganhos.
                 </p>
-                {userPlan === 'gratuito' ? (
+                {isFreePlan ? (
                     <p className={`${styles.paragraph} ${styles.highlightedText}`}>
-                        **Como usuário do Plano Gratuito, uma tarifa de **<span className={styles.emphasis}>2,5%</span>** é aplicada sobre o valor de cada venda realizada através da plataforma.** Essa taxa nos permite manter a infraestrutura e os recursos essenciais do plano gratuito.
+                        Como usuário do Plano Gratuito, uma tarifa de <span className={styles.emphasis}>2,5%</span> é aplicada sobre o valor de cada venda realizada através da plataforma. Essa taxa nos permite manter a infraestrutura e os recursos essenciais do plano gratuito.
                     </p>
                 ) : (
                     <p className={`${styles.paragraph} ${styles.highlightedText}`}>
-                        **Excelente notícia! Como usuário do seu plano atual ({userPlan ? userPlan.toUpperCase() : 'Plano Pago'}), você possui **<span className={styles.emphasis}>Tarifa 0%</span>** sobre as vendas!** Aproveite para maximizar seus lucros.
+                        Excelente notícia! Como usuário do seu plano atual ({profile?.plano ? profile.plano.toUpperCase() : 'Plano Pago'}), você possui <span className={styles.emphasis}>Tarifa 0%</span>** sobre as vendas!** Aproveite para maximizar seus lucros.
                     </p>
                 )}
                 <p className={styles.paragraph}>
-                    Para conhecer os benefícios dos nossos planos e talvez **eliminar suas tarifas de venda**, visite a página de <a href="/dashboard/planos" className={styles.actionLink}>Planos</a>.
+                    Para conhecer os benefícios dos nossos planos e eliminar suas tarifas de venda, visite a página de <a href="/dashboard/menu/planos" className={styles.actionLink}>Planos</a>.
                 </p>
             </section>
 
-            {userPlan === 'gratuito' && (
+            {isFreePlan && (
                 <>
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>Detalhes da Tarifa</h2>
@@ -138,7 +123,6 @@ const TarifasPorVendasPage: React.FC = () => {
                                     required
                                 />
                             </div>
-                            {/* Removido o seletor de método de pagamento, pois a tarifa é única para o plano gratuito */}
                             <button type="submit" className={styles.primaryButton}>Calcular</button>
                         </form>
 
