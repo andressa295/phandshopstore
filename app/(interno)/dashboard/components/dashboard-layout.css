@@ -231,6 +231,9 @@ body{
     padding-bottom: calc(16px + 64px);
     font-size: 1.0rem; /* menor no mobile */
   }
+    .desktop-only {
+    display: none !important;
+  }
   
   .bottom-nav{ display:flex; }
 }

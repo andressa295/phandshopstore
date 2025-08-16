@@ -130,35 +130,37 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
   );
 
   if (loading) {
-  return (
-    <div className="layout-loading">
-      <p className="font-poppins text-gray-600 text-lg sm:text-xl md:text-2xl font-medium">
-        Carregando Dashboard...
-      </p>
-    </div>
-  );
-}
+    return (
+      <div className="layout-loading">
+        <p className="font-poppins text-gray-600 text-lg sm:text-xl md:text-2xl font-medium">
+          Carregando Dashboard...
+        </p>
+      </div>
+    );
+  }
 
-if (!user) {
-  return (
-    <div className="layout-error">
-      <p className="font-poppins text-red-600 text-lg sm:text-xl md:text-2xl font-medium">
-        Erro: Usuário não autenticado.
-      </p>
-    </div>
-  );
-}
+  if (!user) {
+    return (
+      <div className="layout-error">
+        <p className="font-poppins text-red-600 text-lg sm:text-xl md:text-2xl font-medium">
+          Erro: Usuário não autenticado.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="layout-root">
       <HeaderPainel userProfile={profile} />
 
-      <button className="hamburger-btn" onClick={() => setSidebarOpen(true)}>
+      {/* 🔹 Esconde o botão hambúrguer no mobile */}
+      <button className="hamburger-btn desktop-only" onClick={() => setSidebarOpen(true)}>
         <MdMenu size={22} />
       </button>
 
       <div className="layout-main">
-        <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        {/* 🔹 Sidebar só aparece no desktop */}
+        <aside className={`sidebar desktop-only ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-header">
             <p className="sidebar-subtitle">Painel Administrativo</p>
           </div>
@@ -210,7 +212,7 @@ if (!user) {
           </div>
         </aside>
 
-        {sidebarOpen && <div className="backdrop" onClick={() => setSidebarOpen(false)} />}
+        {sidebarOpen && <div className="backdrop desktop-only" onClick={() => setSidebarOpen(false)} />}
 
         <main className="content-area">{children}</main>
       </div>
@@ -223,7 +225,6 @@ if (!user) {
           </Link>
         ))}
       </nav>
-
     </div>
   );
 }
