@@ -227,9 +227,10 @@ body{
 }
 
 @media (max-width: 768px){
-  .content-area{
-    /* deixa espaço pro bottom nav */
+  .content-area {
     padding-bottom: calc(16px + 64px);
+    font-size: 1.1rem; /* menor no mobile */
+    text-align: center; /* centraliza */
   }
   .bottom-nav{ display:flex; }
 }
