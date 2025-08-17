@@ -139,7 +139,7 @@ const PagamentosAssinaturasPage: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.mainTitle}>Pagamentos e Assinaturas</h1>
+            
 
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
             {error && <div className={styles.errorMessage}>{error}</div>}

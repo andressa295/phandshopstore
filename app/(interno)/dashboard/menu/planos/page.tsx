@@ -1,292 +1,112 @@
+// PlanosPage.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import styles from './PlanosPage.module.css';
+import { FaGift, FaLightbulb, FaGem, FaRocket, FaCrown } from 'react-icons/fa';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
-// 1. Definindo interfaces para os planos e recursos (mantidas)
-interface PlanFeature {
-    name: string;
-    available: boolean; // true para checkmark, false para X
-}
-
-interface Plan {
-    id: string;
-    name: string;
-    price: number; // 0 para gratuito
-    priceDescription: string; // Ex: "Grátis", "R$ 49/mês", "R$ 499/ano"
-    annualPriceDescription?: string; // Novo: para o preço anual
-    billingCycle: 'monthly' | 'annual' | 'free'; // Ciclo de cobrança
-    salesFee: string; // Ex: "2.5%", "0%", "Customizado"
-    features: PlanFeature[]; // Alterado para PlanFeature[]
-    isPopular?: boolean; // Novo: para marcar o plano mais popular
-}
+const planosData = [
+  { icon: <FaGift />, id: 'gratis', name: 'Plano Grátis', monthlyPrice: 'R$ 0,00', monthlyPriceDetails: '', annualFullPrice: 'R$ 0,00', annualMonthlyEquivalent: null, features: ['Até 30 produtos cadastrados','Tema padrão com design responsivo','Integração com meios de pagamento','Integração com transportadoras','Atendimento via WhatsApp','Certificado de segurança','Aviso-me quando chegar','Guias de Tamanho','Dashboard simples','Acesso ao App do lojista'], isFeatured: false, stripePriceIdMonthly: null, stripePriceIdAnnual: null },
+  { icon: <FaLightbulb />, id: 'basico', name: 'Plano Básico', monthlyPrice: 'R$ 69,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 699,00', annualMonthlyEquivalent: 'R$ 58,25/mês', features: ['Tudo do plano Grátis, e mais:','Produtos ilimitados','Suporte via Chat e E-mail','Tarifa por venda de 0%','Certificado SSL Avançado','Domínio próprio','Acesso a temas gratuitos','Sacolinha do Instagram','Painel com estatísticas básicas'], isFeatured: false, stripePriceIdMonthly: 'price_id_basico_mensal', stripePriceIdAnnual: 'price_id_basico_anual' },
+  { icon: <FaGem />, id: 'essencial', name: 'Plano Essencial', monthlyPrice: 'R$ 99,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 999,00', annualMonthlyEquivalent: 'R$ 83,25/mês', features: ['Tudo do plano Básico, e mais:','Temas premium','Tarifa 0%','Dashboard completo com métricas','Domínio próprio + redirecionamento','Funcionalidade de cupons','Acesso a automação básica'], isFeatured: false, stripePriceIdMonthly: 'price_id_essencial_mensal', stripePriceIdAnnual: 'price_id_essencial_anual' },
+  { icon: <FaRocket />, id: 'profissional', name: 'Plano Profissional', monthlyPrice: 'R$ 149,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 1.499,00', annualMonthlyEquivalent: 'R$ 124,92/mês', features: ['Tudo do plano Essencial, e mais:','Compre Junto','Brindes no Carrinho','Upsell e Cross-sell','Recuperação de carrinho abandonado','Relatórios detalhados','Multi-admin'], isFeatured: true, stripePriceIdMonthly: 'price_id_profissional_mensal', stripePriceIdAnnual: 'price_id_profissional_anual' },
+  { icon: <FaCrown />, id: 'premium', name: 'Plano Premium', monthlyPrice: 'R$ 249,90', monthlyPriceDetails: '/mês', annualFullPrice: 'R$ 2.499,00', annualMonthlyEquivalent: 'R$ 208,25/mês', features: ['Tudo do plano Profissional, e mais:','Relatórios complexos','Atendimento prioritário','Acesso antecipado','Domínio grátis','Acesso a parceiros','Consultoria mensal','Loja feita pra você em até 15 dias'], isFeatured: false, stripePriceIdMonthly: 'price_id_premium_mensal', stripePriceIdAnnual: 'price_id_premium_anual' },
+];
 
 const PlanosPage: React.FC = () => {
-    const [userCurrentPlanId, setUserCurrentPlanId] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showAnnual, setShowAnnual] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
+  const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
 
-    // Dados mockados de planos - ATUALIZADOS COM SEUS VALORES E NOMES
-    const availablePlans: Plan[] = [
-        {
-            id: 'free',
-            name: 'Plano Grátis',
-            price: 0,
-            priceDescription: 'R$ 0,00',
-            billingCycle: 'free',
-            salesFee: '2.5% sobre vendas', // Como discutido, 2.5% aqui
-            features: [
-                { name: 'Até 50 produtos cadastrados', available: true },
-                { name: 'Tema Padrão para sua loja (Layout único)', available: true },
-                { name: 'Integração com meios de pagamento', available: true },
-                { name: 'Integração com transportadoras (Envios)', available: true },
-                { name: 'Atendimento via WhatsApp para seus clientes', available: true },
-                { name: 'Certificado de Segurança SSL Gratuito', available: true },
-                { name: 'Aviso-me quando chegar', available: true },
-                { name: 'Guias de Tamanho', available: true },
-                // Abaixo, itens que podem estar implicitamente AUSENTES ou em planos superiores
-                { name: 'Acesso a todos os Temas', available: false },
-                { name: 'Produtos, visitas e usuários ilimitados', available: false },
-                { name: 'Domínio próprio', available: false },
-                { name: 'Sacolinha do Instagram', available: false },
-                { name: 'Ferramentas de Personalização Avançada', available: false },
-                { name: 'Relatórios Complexos', available: false },
-                { name: 'Atendimento Prioritário', available: false },
-                { name: 'Acesso Antecipado a novas funcionalidades', available: false },
-                { name: 'Compre Junto', available: false },
-                { name: 'Brindes no Carrinho', available: false },
-                { name: 'Relatórios Avançados', available: false },
-                { name: 'Gerenciador de Estoque Avançado', available: false },
-                { name: 'Integrações Avançadas', available: false },
-                { name: 'Consultoria Estratégica', available: false },
-                { name: 'Marketing Digital Exclusivo', available: false },
-                { name: 'Desenvolvimento Personalizado', available: false },
-                { name: 'Suporte Exclusivo com Gerente de Conta', available: false },
-                { name: 'Relatórios Gerenciais Personalizados', available: false },
-                { name: 'SLA de Atendimento Garantido', available: false },
-            ],
-        },
-        {
-            id: 'essential',
-            name: 'Plano Essencial',
-            price: 79.90,
-            priceDescription: 'R$ 79,90 /mês',
-            annualPriceDescription: 'ou R$ 49,90/mês no plano anual',
-            billingCycle: 'monthly',
-            salesFee: '0% sobre vendas',
-            features: [
-                { name: 'Tudo do Plano Grátis, e mais:', available: true }, // Marcador
-                { name: 'Acesso a todos os Temas para personalizar sua loja', available: true },
-                { name: 'Tarifa por venda de 0%', available: true },
-                { name: 'Produtos, visitas e usuários ilimitados', available: true },
-                { name: 'Domínio próprio', available: true },
-                { name: 'Sacolinha do Instagram', available: true },
-                { name: 'Ferramentas de Personalização Avançada', available: true },
-                // Abaixo, itens do Plano Profissional/Premium que NÃO estão neste plano
-                { name: 'Acesso a Temas Profissionais', available: false },
-                { name: 'Compre Junto', available: false },
-                { name: 'Brindes no Carrinho', available: false },
-                { name: 'Relatórios Avançados', available: false },
-                { name: 'Relatórios Complexos', available: false },
-                { name: 'Atendimento Prioritário', available: false },
-                { name: 'Acesso Antecipado a novas funcionalidades', available: false },
-                { name: 'Gerenciador de Estoque Avançado', available: false },
-                { name: 'Integrações Avançadas', available: false },
-                { name: 'Consultoria Estratégica', available: false },
-                { name: 'Marketing Digital Exclusivo', available: false },
-                { name: 'Desenvolvimento Personalizado', available: false },
-                { name: 'Suporte Exclusivo com Gerente de Conta', available: false },
-                { name: 'Relatórios Gerenciais Personalizados', available: false },
-                { name: 'SLA de Atendimento Garantido', available: false },
-            ],
-        },
-        {
-            id: 'professional',
-            name: 'Plano Profissional',
-            price: 149.90,
-            priceDescription: 'R$ 149,90 /mês',
-            annualPriceDescription: 'ou R$ 119,90/mês no plano anual',
-            billingCycle: 'monthly',
-            salesFee: '0% sobre vendas',
-            isPopular: true, // Marcado como "Mais Popular"
-            features: [
-                { name: 'Tudo do Plano Essencial, e mais:', available: true }, // Marcador
-                { name: 'Acesso a Temas Profissionais', available: true },
-                { name: 'Compre Junto', available: true },
-                { name: 'Brindes no Carrinho', available: true },
-                { name: 'Relatórios Avançados', available: true },
-                // Abaixo, itens do Plano Phand Premium que NÃO estão neste plano
-                { name: 'Relatórios Complexos', available: false },
-                { name: 'Atendimento Prioritário', available: false },
-                { name: 'Acesso Antecipado a novas funcionalidades', available: false },
-                { name: 'Consultoria Estratégica', available: false },
-                { name: 'Marketing Digital Exclusivo', available: false },
-                { name: 'Desenvolvimento Personalizado', available: false },
-                { name: 'Suporte Exclusivo com Gerente de Conta', available: false },
-                { name: 'Relatórios Gerenciais Personalizados', available: false },
-                { name: 'SLA de Atendimento Garantido', available: false },
-            ],
-        },
-        {
-            id: 'premium',
-            name: 'Plano Phand Premium',
-            price: 299.90,
-            priceDescription: 'R$ 299,90 /mês',
-            annualPriceDescription: 'ou R$ 249,90/mês no plano anual',
-            billingCycle: 'monthly',
-            salesFee: '0% sobre vendas',
-            features: [
-                { name: 'Tudo do plano Profissional, e mais:', available: true }, // Marcador
-                { name: 'Relatórios Complexos', available: true },
-                { name: 'Atendimento Prioritário', available: true },
-                { name: 'Acesso Antecipado a novas funcionalidades', available: true },
-                // Você pode adicionar mais features que são exclusivas do Premium aqui
-                { name: 'Consultoria Estratégica', available: true },
-                { name: 'Marketing Digital Exclusivo', available: true },
-                { name: 'Desenvolvimento Personalizado', available: true },
-                { name: 'Suporte Exclusivo com Gerente de Conta', available: true },
-                { name: 'Relatórios Gerenciais Personalizados', available: true },
-                { name: 'SLA de Atendimento Garantido', available: true },
-            ],
-        },
-    ];
+  const supabase = createClientComponentClient();
+  const router = useRouter();
 
-    // Restante do código (useEffect, handlePlanChange, renderização) permanece o mesmo
-    // ... (o código abaixo é o mesmo da versão anterior, apenas para completar o arquivo) ...
-
-    useEffect(() => {
-        const fetchUserPlan = async () => {
-            setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 800));
-            setUserCurrentPlanId('free'); // Definindo um plano inicial para simulação
-            // Para testar outros planos, descomente um dos abaixo:
-            // setUserCurrentPlanId('essential');
-            // setUserCurrentPlanId('professional');
-            // setUserCurrentPlanId('premium');
-            setLoading(false);
-        };
-        fetchUserPlan();
-    }, []);
-
-    const handlePlanChange = async (planId: string) => {
-        if (planId === userCurrentPlanId) {
-            setErrorMessage('Você já está neste plano.');
-            setSuccessMessage(null);
-            return;
-        }
-
-        const selectedPlan = availablePlans.find(p => p.id === planId);
-        if (!selectedPlan) {
-            setErrorMessage('Plano não encontrado.');
-            return;
-        }
-
-        if (window.confirm(`Tem certeza que deseja mudar para o "${selectedPlan.name}"?`)) {
-            setLoading(true);
-            setSuccessMessage(null);
-            setErrorMessage(null);
-            try {
-                // Simula chamada de API para mudar o plano
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                setUserCurrentPlanId(planId);
-                setSuccessMessage(`Seu plano foi alterado com sucesso para "${selectedPlan.name}"!`);
-            } catch (err) {
-                console.error("Erro ao mudar plano:", err);
-                setErrorMessage("Não foi possível alterar seu plano. Tente novamente.");
-            } finally {
-                setLoading(false);
-            }
-        }
+  useEffect(() => {
+    const fetchUserPlan = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data, error } = await supabase.from('subscriptions').select('plan_id').eq('user_id', user.id).single();
+      if (!error && data) setCurrentPlanId(data.plan_id);
     };
+    fetchUserPlan();
+  }, []);
 
-    const currentUserPlan = availablePlans.find(plan => plan.id === userCurrentPlanId);
+  const handlePlanToggle = (planId: string) => setExpandedPlanId(expandedPlanId === planId ? null : planId);
 
-    if (loading) {
-        return <div className={styles.loadingState}>Carregando planos...</div>;
-    }
+  const handleUpgradeDowngrade = async (plan: typeof planosData[0], isAnnual: boolean) => {
+    if (!currentPlanId) return;
+    const priceId = isAnnual ? plan.stripePriceIdAnnual : plan.stripePriceIdMonthly;
+    if (!priceId) { alert('Não é possível assinar esse plano.'); return; }
+    setLoadingCheckout(true);
+    try {
+      const response = await fetch('/api/create-checkout-session', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ priceId, planName: plan.name, isAnnual }) });
+      if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'Falha ao iniciar checkout'); }
+      const { url } = await response.json(); if(url) router.push(url);
+    } catch (error: any) { alert('Erro ao iniciar checkout: ' + error.message); console.error(error); setLoadingCheckout(false); }
+  };
 
-    return (
-        <div className={styles.container}>
-            <h1 className={styles.mainTitle}>Nossos Planos</h1>
+  return (
+    <section className={styles.planosSection}>
+      <div className={styles.toggleContainer}>
+        <button className={`${styles.toggleButton} ${!showAnnual ? styles.activeToggle : ''}`} onClick={() => setShowAnnual(false)} disabled={loadingCheckout}>Mensal</button>
+        <button className={`${styles.toggleButton} ${showAnnual ? styles.activeToggle : ''}`} onClick={() => setShowAnnual(true)} disabled={loadingCheckout}>Anual (2 meses grátis!)</button>
+      </div>
 
-            {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
-            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+      <div className={styles.plansGrid}>
+        {planosData.map((plano, index) => {
+          const isCurrent = plano.id === currentPlanId;
+          const currentIndex = planosData.findIndex(p => p.id === currentPlanId);
+          const isUpgrade = currentPlanId && index > currentIndex;
+          const isDowngrade = currentPlanId && index < currentIndex;
 
-            <section className={styles.currentPlanSection}>
-                <h2 className={styles.sectionTitle}>Seu Plano Atual: <span className={styles.currentPlanName}>{currentUserPlan?.name || 'Nenhum'}</span></h2>
-                {currentUserPlan ? (
-                    <div className={styles.currentPlanDetails}>
-                        <p>Aproveite os benefícios do seu plano para impulsionar suas vendas.</p>
-                        {currentUserPlan.salesFee !== '0% sobre vendas' && (
-                            <p className={styles.currentPlanInfo}>
-                                **Sua tarifa sobre vendas: **<span className={styles.currentPlanFee}>{currentUserPlan.salesFee}</span>
-                            </p>
-                        )}
-                        <p className={styles.currentPlanInfo}>
-                            Próxima cobrança: Consulte <a href="/dashboard/pagamentos-assinaturas" className={styles.actionLink}>Pagamentos e Assinaturas</a>.
-                        </p>
-                    </div>
-                ) : (
-                    <p>Você não possui um plano ativo. Escolha um abaixo para começar!</p>
+          return (
+            <div key={plano.id} className={styles.planCard}>
+              <div className={styles.planHeader}>
+                <div className={styles.icon}>{plano.icon}</div>
+                <h2 className={styles.planName}>{plano.name}</h2>
+                <p className={styles.planPrice}>
+                  {showAnnual ? plano.annualFullPrice : plano.monthlyPrice}
+                  <span className={styles.pricePerMonth}>{showAnnual ? '' : '/mês'}</span>
+                </p>
+                {plano.annualFullPrice !== 'R$ 0,00' && plano.annualMonthlyEquivalent && (
+                  <p className={styles.annualPrice}>ou {plano.annualMonthlyEquivalent} no plano anual</p>
                 )}
-            </section>
+                {isCurrent && <span className={styles.currentPlanLabel}>Plano Atual</span>}
+              </div>
 
-            <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Escolha o Plano Ideal para Você</h2>
-                <div className={styles.plansGrid}>
-                    {availablePlans.map(plan => (
-                        <div key={plan.id} className={`${styles.planCard} ${plan.id === userCurrentPlanId ? styles.currentPlanCard : ''} ${plan.isPopular ? styles.popularPlanCard : ''}`}>
-                            {plan.id === userCurrentPlanId && <span className={styles.badge}>Seu Plano Atual</span>}
-                            {plan.isPopular && <span className={styles.popularBadge}>Mais Popular</span>} {/* Badge "Mais Popular" */}
-                            
-                            <div className={styles.planIcon}>
-                                {/* Aqui você pode adicionar um ícone SVG ou imagem para cada plano */}
-                                {plan.id === 'free' && <img src="/icons/free-icon.svg" alt="Grátis" />} {/* Exemplo: Caminho para seus ícones */}
-                                {plan.id === 'essential' && <img src="/icons/diamond-icon.svg" alt="Essencial" />}
-                                {plan.id === 'professional' && <img src="/icons/rocket-icon.svg" alt="Profissional" />}
-                                {plan.id === 'premium' && <img src="/icons/crown-icon.svg" alt="Premium" />}
-                            </div>
-
-                            <h3 className={styles.planName}>{plan.name}</h3>
-                            <div className={styles.planPrice}>
-                                {plan.priceDescription}
-                                {plan.annualPriceDescription && <span className={styles.annualPrice}>{plan.annualPriceDescription}</span>}
-                            </div>
-                            <div className={styles.salesFeeDisplay}>
-                                Tarifa de Vendas: <span className={plan.salesFee === '0% sobre vendas' ? styles.salesFeeZero : styles.salesFeeValue}>{plan.salesFee}</span>
-                            </div>
-                            <ul className={styles.featureList}>
-                                {plan.features.map((feature, idx) => (
-                                    <li key={idx} className={styles.featureItem}>
-                                        {feature.available ? (
-                                            <span className={styles.featureIconTrue}>&#10003;</span> // Checkmark
-                                        ) : (
-                                            <span className={styles.featureIconFalse}>&#10006;</span> // X mark
-                                        )}
-                                        {feature.name}
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className={styles.planCardActions}>
-                                {plan.id === userCurrentPlanId ? (
-                                    <button className={styles.currentPlanButton} disabled>Plano Atual</button>
-                                ) : (
-                                    <button 
-                                        className={plan.price > 0 ? styles.primaryButton : styles.secondaryButton} 
-                                        onClick={() => handlePlanChange(plan.id)}
-                                        disabled={loading}
-                                    >
-                                        {plan.price > 0 ? 'Fazer Upgrade' : 'Escolher Plano'}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+              {expandedPlanId === plano.id && (
+                <div className={styles.planFeatures}>
+                  <h3 className={styles.featuresTitle}>Recursos incluídos:</h3>
+                  <ul className={styles.featureList}>
+                    {plano.features.map((feature, idx) => (
+                      <li key={idx} className={styles.featureItem}><span className={styles.checkmark}>&#10003;</span> {feature}</li>
                     ))}
+                  </ul>
                 </div>
-            </section>
-        </div>
-    );
+              )}
+
+              <div className={styles.planCardActions}>
+                <button className={styles.detailsButton} onClick={() => handlePlanToggle(plano.id)}>
+                  {expandedPlanId === plano.id ? 'Ocultar detalhes' : 'Ver detalhes'}
+                </button>
+
+                <button
+                  className={styles.ctaButton}
+                  disabled={isCurrent || loadingCheckout}
+                  onClick={() => handleUpgradeDowngrade(plano, showAnnual)}
+                >
+                  {isCurrent ? 'Plano Atual' : isUpgrade ? 'Fazer Upgrade' : isDowngrade ? 'Fazer Downgrade' : 'Assinar'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
 };
 
 export default PlanosPage;

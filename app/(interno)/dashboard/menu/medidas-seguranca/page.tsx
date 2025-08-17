@@ -1,31 +1,32 @@
 // app/(interno)/dashboard/menu/medidas-seguranca/page.tsx
-"use client"; // Esta página precisará de hooks.
+"use client";
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import styles from './MedidasSegurancaPage.module.css'; // Vamos criar este CSS Module
+import styles from './MedidasSegurancaPage.module.css';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-// 1. Interfaces para os dados
+// 1. Interfaces para os dados (ajustadas para o Supabase)
 interface LoginActivity {
     id: string;
-    timestamp: string; // Data e hora do login
-    device: string;    // Ex: "Desktop - Chrome"
-    location: string;  // Ex: "São Paulo, Brasil"
-    ipAddress: string; // Ex: "192.168.1.1"
-    status: 'success' | 'failed'; // Sucesso ou falha
+    timestamp: string;
+    device: string;
+    location: string;
+    ipAddress: string;
+    status: 'success' | 'failed';
 }
 
 interface ConnectedDevice {
     id: string;
-    type: string;      // Ex: "Desktop", "Mobile"
-    browser: string;   // Ex: "Chrome", "Firefox"
-    os: string;        // Ex: "Windows 10", "iOS"
-    lastAccess: string; // Último acesso
+    type: string;
+    browser: string;
+    os: string;
+    lastAccess: string;
     location: string;
-    isCurrent: boolean; // Se é o dispositivo atual do usuário
+    isCurrent: boolean;
 }
 
 const MedidasSegurancaPage: React.FC = () => {
-    // 2. Estados para gerenciar as configurações de segurança
+    const supabase = createClientComponentClient();
     const [is2faEnabled, setIs2faEnabled] = useState<boolean>(false);
     const [loginActivities, setLoginActivities] = useState<LoginActivity[]>([]);
     const [connectedDevices, setConnectedDevices] = useState<ConnectedDevice[]>([]);
@@ -38,30 +39,58 @@ const MedidasSegurancaPage: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // 3. Efeito para carregar as configurações de segurança e histórico
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Simula API call
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    setErrorMessage("Usuário não autenticado.");
+                    setLoading(false);
+                    return;
+                }
 
-                const mock2faStatus = true; // Exemplo: 2FA está ativado
-                const mockLoginActivities: LoginActivity[] = [
-                    { id: 'l1', timestamp: '2025-06-23T10:30:00Z', device: 'Desktop - Chrome', location: 'São Paulo, Brasil', ipAddress: '192.168.1.1', status: 'success' },
-                    { id: 'l2', timestamp: '2025-06-22T18:00:00Z', device: 'Mobile - Safari (iOS)', location: 'Rio de Janeiro, Brasil', ipAddress: '10.0.0.5', status: 'success' },
-                    { id: 'l3', timestamp: '2025-06-21T09:15:00Z', device: 'Desktop - Firefox', location: 'Belo Horizonte, Brasil', ipAddress: '172.16.0.10', status: 'failed' },
-                ];
-                const mockConnectedDevices: ConnectedDevice[] = [
-                    { id: 'd1', type: 'Desktop', browser: 'Chrome', os: 'Windows 10', lastAccess: '2025-06-23T10:30:00Z', location: 'São Paulo, Brasil', isCurrent: true },
-                    { id: 'd2', type: 'Mobile', browser: 'Safari', os: 'iOS', lastAccess: '2025-06-22T18:00:00Z', location: 'Rio de Janeiro, Brasil', isCurrent: false },
-                ];
+                // Busca atividades de login
+                const { data: activitiesData, error: activitiesError } = await supabase
+                    .from('login_activities')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('timestamp', { ascending: false });
+                
+                if (activitiesError) throw activitiesError;
+                setLoginActivities(activitiesData.map(a => ({
+                    id: a.id,
+                    timestamp: a.timestamp,
+                    device: a.device || 'N/A',
+                    location: a.location || 'N/A',
+                    ipAddress: a.ip_address || 'N/A',
+                    status: a.status as 'success' | 'failed',
+                })));
 
-                setIs2faEnabled(mock2faStatus);
-                setLoginActivities(mockLoginActivities);
-                setConnectedDevices(mockConnectedDevices);
+                // Busca dispositivos conectados
+                const { data: devicesData, error: devicesError } = await supabase
+                    .from('connected_devices')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .order('last_access', { ascending: false });
+                
+                if (devicesError) throw devicesError;
+                setConnectedDevices(devicesData.map(d => ({
+                    id: d.id,
+                    type: d.type || 'N/A',
+                    browser: d.browser || 'N/A',
+                    os: d.os || 'N/A',
+                    lastAccess: d.last_access,
+                    location: d.location || 'N/A',
+                    isCurrent: d.is_current || false,
+                })));
+
+                // Simula status 2FA (em um cenário real, buscaria do perfil do usuário)
+                setIs2faEnabled(true); 
+                
                 setLoading(false);
 
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Erro ao carregar medidas de segurança:", err);
                 setErrorMessage("Não foi possível carregar as configurações de segurança.");
                 setLoading(false);
@@ -69,16 +98,17 @@ const MedidasSegurancaPage: React.FC = () => {
         };
 
         fetchData();
-    }, []);
+    }, [supabase]);
 
-    // Funções de manipulação
     const handleToggle2FA = async () => {
         setSuccessMessage(null);
         setErrorMessage(null);
         setLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 800));
-            setIs2faEnabled(prev => !prev); // Inverte o estado
+            // Lógica real para ativar/desativar 2FA no Supabase
+            // Isso geralmente envolve chamar uma função de backend ou API do Supabase Auth
+            await new Promise(resolve => setTimeout(resolve, 800)); // Simula API call
+            setIs2faEnabled(prev => !prev);
             setSuccessMessage(`Autenticação de Dois Fatores foi ${is2faEnabled ? 'desativada' : 'ativada'} com sucesso!`);
         } catch (err) {
             setErrorMessage("Erro ao alterar o status do 2FA.");
@@ -98,21 +128,23 @@ const MedidasSegurancaPage: React.FC = () => {
             setLoading(false);
             return;
         }
-        if (newPassword.length < 8) { // Exemplo de validação
+        if (newPassword.length < 8) {
             setErrorMessage('A nova senha deve ter no mínimo 8 caracteres.');
             setLoading(false);
             return;
         }
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            // Lógica para enviar a senha atual e nova senha para o backend
+            // Lógica real para alterar a senha no Supabase
+            const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+            if (error) throw error;
+
             setSuccessMessage('Senha alterada com sucesso!');
             setCurrentPassword('');
             setNewPassword('');
             setConfirmNewPassword('');
-        } catch (err) {
-            setErrorMessage('Erro ao alterar a senha. Verifique sua senha atual.');
+        } catch (err: any) {
+            setErrorMessage('Erro ao alterar a senha: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -124,7 +156,9 @@ const MedidasSegurancaPage: React.FC = () => {
         if (window.confirm('Tem certeza que deseja encerrar esta sessão?')) {
             setLoading(true);
             try {
-                await new Promise(resolve => setTimeout(resolve, 800));
+                // Lógica real para encerrar a sessão no Supabase
+                // Isso geralmente envolve chamar uma API para invalidar a sessão
+                await new Promise(resolve => setTimeout(resolve, 800)); // Simula API call
                 setConnectedDevices(prev => prev.filter(device => device.id !== deviceId));
                 setSuccessMessage('Sessão encerrada com sucesso!');
             } catch (err) {
@@ -139,13 +173,16 @@ const MedidasSegurancaPage: React.FC = () => {
         return <div className={styles.loadingState}>Carregando configurações de segurança...</div>;
     }
 
+    if (errorMessage) {
+        return <div className={styles.errorState}>Erro: {errorMessage}</div>;
+    }
+
     return (
         <div className={styles.container}>
             <h1 className={styles.mainTitle}>Medidas de Segurança</h1>
 
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
-            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
-
+            
             {/* Seção de Autenticação de Dois Fatores */}
             <section className={styles.section}>
                 <h2 className={styles.sectionTitle}>Autenticação de Dois Fatores (2FA)</h2>

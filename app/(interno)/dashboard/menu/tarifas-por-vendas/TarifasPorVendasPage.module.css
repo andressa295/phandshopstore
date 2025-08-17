@@ -33,6 +33,7 @@
     line-height: 1.6;
     margin-bottom: 1rem;
     font-weight: 400;
+    
 }
 
 .highlightedText {
@@ -172,6 +173,8 @@
         background-color: transparent;
         box-shadow: none;
         padding: 1rem 0;
+        
+        
     }
     .mainTitle {
         font-size: 1.5em;
@@ -180,6 +183,7 @@
         text-align: center;
         
     }
+    
     .sectionTitle {
         font-size: 1.4em;
         border-bottom: none;

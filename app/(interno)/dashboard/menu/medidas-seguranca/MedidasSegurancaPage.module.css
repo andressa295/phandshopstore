@@ -1,19 +1,19 @@
-/* app/(interno)/dashboard/menu/medidas-seguranca/MedidasSegurancaPage.module.css */
+/* MedidasSegurancaPage.module.css */
 
 .container {
-    font-family: var(--font-poppins), sans-serif;
+    font-family: 'Poppins', sans-serif;
     max-width: 900px;
     margin: 40px auto;
     padding: 30px;
     background-color: #f9f9f9;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    color: #333;
+    color: var(--gray-dark-text, #333);
 }
 
 .mainTitle {
     font-size: 2em;
-    color: #34495e;
+    color: var(--purple-main, #6d28d9);
     margin-bottom: 25px;
     text-align: center;
     border-bottom: 2px solid #eee;
@@ -30,7 +30,7 @@
 
 .sectionTitle {
     font-size: 1.6em;
-    color: #2c3e50;
+    color: var(--purple-main, #6d28d9);
     margin-top: 0;
     margin-bottom: 20px;
     padding-bottom: 10px;
@@ -39,7 +39,7 @@
 
 .sectionDescription {
     font-size: 0.95em;
-    color: #666;
+    color: var(--gray-text, #666);
     line-height: 1.5;
     margin-top: 10px;
 }
@@ -61,17 +61,17 @@
 }
 
 .statusEnabled {
-    color: #28a745;
+    color: var(--green-success, #28a745);
     font-weight: 700;
 }
 
 .statusDisabled {
-    color: #dc3545;
+    color: var(--danger-color, #dc3545);
     font-weight: 700;
 }
 
 .recoveryCodes {
-    background-color: #fff3cd; /* Amarelo claro para aviso */
+    background-color: #fff3cd;
     border: 1px solid #ffeeba;
     border-radius: 8px;
     padding: 15px;
@@ -202,7 +202,7 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 20px; /* Levemente reduzido para seções */
+    padding: 10px 20px;
     border: none;
     border-radius: 50px;
     cursor: pointer;
@@ -214,14 +214,14 @@
 }
 
 .primaryButton {
-    background-color: #007bff;
+    background-color: var(--purple-main, #6d28d9);
     color: white;
     box-shadow: 0 3px 8px rgba(0, 123, 255, 0.25);
-    margin-top: 15px; /* Para botões de formulário */
+    margin-top: 15px;
 }
 
 .primaryButton:hover {
-    background-color: #0056b3;
+    background-color: var(--purple-dark, #5b21b6);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 123, 255, 0.35);
 }
@@ -232,7 +232,7 @@
 }
 
 .secondaryButton {
-    background-color: #6c757d;
+    background-color: var(--gray-dark-text, #374151);
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -249,7 +249,7 @@
 }
 
 .dangerButton {
-    background-color: #dc3545;
+    background-color: var(--danger-color, #dc3545);
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -265,21 +265,22 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.actionButton { /* Botões menores para ações dentro de tabelas/listas */
+.actionButton {
     padding: 6px 12px;
     font-size: 0.85em;
-    border: 1px solid #007bff;
-    color: #007bff;
+    border: 1px solid var(--purple-main, #6d28d9);
+    color: var(--purple-main, #6d28d9);
     background-color: transparent;
     box-shadow: none;
 }
 
 .actionButton:hover {
-    background-color: #007bff;
+    background-color: var(--purple-main, #6d28d9);
     color: white;
     transform: none;
     box-shadow: none;
 }
+
 .actionButton:active {
     transform: none;
     box-shadow: none;
@@ -288,7 +289,7 @@
 
 .buttonGroup {
     display: flex;
-    justify-content: flex-end; /* Alinha à direita */
+    justify-content: flex-end;
     gap: 15px;
     margin-top: 20px;
     flex-wrap: wrap;
@@ -330,15 +331,25 @@
 @media (max-width: 768px) {
     .container {
         margin: 20px;
+        padding: 0;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    .section {
+        background-color: transparent;
+        box-shadow: none;
         padding: 20px;
     }
 
     .mainTitle {
-        font-size: 1.8em;
+        font-size: 1.5em;
+        text-align: center;
     }
 
     .sectionTitle {
-        font-size: 1.4em;
+        font-size: 1.2em;
+        
     }
 
     .toggleGroup {
@@ -354,7 +365,6 @@
         gap: 10px;
     }
 
-    /* Tabelas responsivas */
     .dataTable thead {
         display: none;
     }
@@ -389,10 +399,10 @@
     }
 
     .buttonGroup {
-        justify-content: center; /* Centraliza botões em mobile */
+        justify-content: center;
         gap: 10px;
     }
     .buttonGroup button {
-        width: 100%; /* Botões ocupam largura total */
+        width: 100%;
     }
 }
