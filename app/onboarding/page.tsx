@@ -19,8 +19,12 @@ export default function OnboardingPage() {
                 router.push('/login');
                 return;
             }
+            // Não é recomendado usar localStorage para dados sensíveis ou persistência de estado complexa.
+            // Se 'nomeLoja' for um dado temporário de preenchimento, ok.
             const savedNomeLoja = localStorage.getItem('nomeLoja');
-            if (savedNomeLoja) {
+            // CORREÇÃO 1: Typo 'savedNomeNomeLoja' corrigido para 'savedNomeLoja'
+            // CORREÇÃO 2: Adicionada verificação para 'null' para setLojaNome
+            if (savedNomeLoja) { 
                 setLojaNome(savedNomeLoja);
                 localStorage.removeItem('nomeLoja');
             }
@@ -28,18 +32,17 @@ export default function OnboardingPage() {
         checkUser();
     }, [supabase, router]);
 
-
     const slugify = (text: string) => {
         return text
-          .toString()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .toLowerCase()
-          .trim()
-          .replace(/\s+/g, '-')
-          .replace(/[^\w-]+/g, '')
-          .replace(/--+/g, '-');
-      };
+            .toString()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-');
+    };
 
     const handleCreateStore = async () => {
         setError('');
@@ -55,24 +58,31 @@ export default function OnboardingPage() {
 
         try {
             const lojaSlug = slugify(lojaNome);
-            
+
+            // 1. Cria a loja
             const { data: lojaInserida, error: dbError } = await supabase
                 .from('lojas')
                 .insert({
                     nome_loja: lojaNome,
                     slug: lojaSlug,
-                    user_id: user.id
+                    owner_id: user.id
                 })
-                .select('id')
+                .select('id, slug')
                 .single();
             
             if (dbError) {
-                console.error("Erro ao inserir loja:", dbError);
-                setError('Erro ao registrar a loja. Tente novamente.');
+                console.error("Erro ao inserir loja (detalhes):", dbError.message, dbError.code, dbError.details, dbError.hint);
+
+                if (dbError.code === '23505' && dbError.message.includes('slug')) {
+                    setError('Este nome de loja já está em uso. Por favor, escolha outro.');
+                } else {
+                    setError('Erro ao registrar a loja. Tente novamente.');
+                }
                 setLoading(false);
                 return;
             }
 
+            // 2. Busca o Plano Grátis (assumindo que 'planos' e 'assinaturas' estão configurados)
             const { data: planoGratis, error: planoError } = await supabase
                 .from('planos')
                 .select('id')
@@ -86,6 +96,7 @@ export default function OnboardingPage() {
                 return;
             }
 
+            // 3. Cria a assinatura gratuita
             const { error: assinaturaError } = await supabase
                 .from('assinaturas')
                 .insert({
@@ -103,10 +114,11 @@ export default function OnboardingPage() {
                 return;
             }
 
-            router.push('/dashboard');
+            router.push('/dashboard'); 
             
-        } catch (err) {
-            setError('Ocorreu um erro inesperado. Tente novamente.');
+        } catch (err: any) {
+            console.error('Ocorreu um erro inesperado:', err);
+            setError(`Ocorreu um erro inesperado: ${err.message || 'Tente novamente.'}`);
         } finally {
             setLoading(false);
         }

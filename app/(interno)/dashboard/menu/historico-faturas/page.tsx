@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import styles from './HistoricoFaturasPage.module.css'; // Importa o CSS Module
+import styles from './HistoricoFaturasPage.module.css';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useUser } from '../../UserContext';
+import { useUser } from '../../UserContext'; // Ajuste o caminho se necessário
 
 // 1. Definindo interfaces para os dados da fatura
 interface Invoice {
     id: string;
-    invoice_number: string;
+    invoice_number: string | null; // Adicionado para pesquisa, se existir
     issue_date: string;
     due_date: string;
     description: string;
     amount: number;
     status: 'paid' | 'pending' | 'overdue' | 'canceled';
-    pdf_url?: string;
+    invoice_url?: string; // Alterado de pdf_url para invoice_url conforme a tabela transactions
 }
 
 const getStatusText = (status: Invoice['status']) => {
@@ -34,16 +34,21 @@ const HistoricoFaturasPage: React.FC = () => {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    
+    const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para o input de pesquisa
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>(''); // Estado para o termo de pesquisa com debounce
+
     const [filterYear, setFilterYear] = useState<string>('all');
     const [filterMonth, setFilterMonth] = useState<string>('all');
     const [filterStatus, setFilterStatus] = useState<string>('all');
+    
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalCount, setTotalCount] = useState<number>(0);
     const itemsPerPage = 10;
     
-    // Anos e meses disponíveis (adaptados para serem dinâmicos)
-    const availableYears = ['2025', '2024'];
+    // Anos e meses disponíveis (você pode torná-los dinâmicos buscando no DB, se houver muitos)
+    const currentYear = new Date().getFullYear();
+    const availableYears = Array.from({ length: 5 }, (_, i) => String(currentYear - i)); // Últimos 5 anos
     const availableMonths = [
         { value: '1', label: 'Janeiro' }, { value: '2', label: 'Fevereiro' }, { value: '3', label: 'Março' },
         { value: '4', label: 'Abril' }, { value: '5', label: 'Maio' }, { value: '6', label: 'Junho' },
@@ -51,12 +56,25 @@ const HistoricoFaturasPage: React.FC = () => {
         { value: '10', label: 'Outubro' }, { value: '11', label: 'Novembro' }, { value: '12', label: 'Dezembro' },
     ];
 
+    // Efeito para debounce do termo de pesquisa
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500); // Atraso de 500ms
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
 
     useEffect(() => {
         const fetchInvoices = async () => {
-            if (!profile?.lojaId) {
-                setError("ID da loja não encontrado.");
-                setLoading(false);
+            if (userLoading || !profile?.lojaId) {
+                if (!userLoading && !profile?.lojaId) {
+                    setError("ID da loja não encontrado. Por favor, faça login novamente.");
+                    setLoading(false);
+                }
                 return;
             }
 
@@ -66,8 +84,16 @@ const HistoricoFaturasPage: React.FC = () => {
             try {
                 let query = supabase
                     .from('transactions')
-                    .select('*', { count: 'exact' })
+                    .select('*', { count: 'exact' }) // Seleciona tudo e a contagem exata
                     .eq('loja_id', profile.lojaId);
+
+                // Aplicar filtro de pesquisa por termo
+                if (debouncedSearchTerm) {
+                    // Pesquisa case-insensitive na descrição ou número da fatura
+                    query = query.or(
+                        `description.ilike.%${debouncedSearchTerm}%,invoice_number.ilike.%${debouncedSearchTerm}%`
+                    );
+                }
 
                 // Aplicar filtro por ano
                 if (filterYear !== 'all') {
@@ -111,9 +137,8 @@ const HistoricoFaturasPage: React.FC = () => {
             }
         };
 
-        if (userLoading) return;
         fetchInvoices();
-    }, [searchTerm, filterYear, filterMonth, filterStatus, currentPage, userLoading, profile?.lojaId]);
+    }, [debouncedSearchTerm, filterYear, filterMonth, filterStatus, currentPage, userLoading, profile?.lojaId, supabase]); // Adicionado 'supabase' nas dependências
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -214,15 +239,15 @@ const HistoricoFaturasPage: React.FC = () => {
                                     <tr key={invoice.id}>
                                         <td data-label="Data Emissão">{new Date(invoice.issue_date).toLocaleDateString('pt-BR')}</td>
                                         <td data-label="Descrição">{invoice.description}</td>
-                                        <td data-label="Valor">R$ {invoice.amount.toFixed(2)}</td>
+                                        <td data-label="Valor">R$ {invoice.amount.toFixed(2).replace('.', ',')}</td>
                                         <td data-label="Status">
                                             <span className={`${styles.statusBadge} ${styles[invoice.status]}`}>
                                                 {getStatusText(invoice.status)}
                                             </span>
                                         </td>
                                         <td data-label="Ações">
-                                            {invoice.pdf_url && (
-                                                <a href={invoice.pdf_url} target="_blank" rel="noopener noreferrer" className={styles.actionLink}>Baixar PDF</a>
+                                            {invoice.invoice_url && (
+                                                <a href={invoice.invoice_url} target="_blank" rel="noopener noreferrer" className={styles.actionLink}>Baixar PDF</a>
                                             )}
                                         </td>
                                     </tr>

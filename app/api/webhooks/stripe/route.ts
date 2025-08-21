@@ -1,52 +1,41 @@
+// app/api/stripe-webhook/route.ts
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function POST(req: Request) {
   const supabase = getSupabaseServerClient();
-  
-  // As variáveis de ambiente são acessadas e verificadas DENTRO da função POST
+
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? '';
   const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? '';
 
   if (!stripeSecretKey || !stripeWebhookSecret) {
-    console.error('Erro de configuração: Chaves do Stripe não definidas.');
-    return NextResponse.json({ error: 'Erro interno: Chaves de API do Stripe não configuradas.' }, { status: 500 });
+    return NextResponse.json({ error: 'Chaves do Stripe não configuradas.' }, { status: 500 });
   }
 
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2025-06-30.basil',
-  });
+  const stripe = new Stripe(stripeSecretKey, { apiVersion: '2025-06-30.basil' });
+
 
   const rawBody = await req.text();
   const signature = req.headers.get('stripe-signature');
 
-  if (!signature) {
-    return NextResponse.json({ error: 'Assinatura do webhook ausente.' }, { status: 400 });
-  }
+  if (!signature) return NextResponse.json({ error: 'Assinatura ausente.' }, { status: 400 });
 
   let event: Stripe.Event;
 
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, stripeWebhookSecret);
   } catch (err: any) {
-    console.error(`Erro na assinatura do webhook: ${err.message}`);
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
   try {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      
-      const {
-        supabase_user_id,
-        loja_id,
-        plan_name,
-        is_annual
-      } = session.metadata || {};
+      const { supabase_user_id, loja_id, plan_name, is_annual } = session.metadata || {};
 
       if (!loja_id || !plan_name || !supabase_user_id) {
-        throw new Error('Metadados essenciais ausentes na sessão de checkout.');
+        throw new Error('Metadados essenciais ausentes.');
       }
 
       const { data: planoData, error: planoError } = await supabase
@@ -55,39 +44,49 @@ export async function POST(req: Request) {
         .eq('nome_plano', plan_name)
         .single();
 
-      if (planoError || !planoData) {
-        throw new Error(`Plano '${plan_name}' não encontrado.`);
-      }
+      if (planoError || !planoData) throw new Error(`Plano '${plan_name}' não encontrado.`);
 
       const planoId = planoData.id;
-      const status = 'ativa';
       const now = new Date();
       const periodEnd = is_annual === 'true'
         ? new Date(now.setFullYear(now.getFullYear() + 1))
         : new Date(now.setMonth(now.getMonth() + 1));
-      
-      const { error: dbError } = await supabase
+
+      // Verificar assinatura existente
+      const { data: existing, error: existingError } = await supabase
         .from('assinaturas')
-        .insert({
-          loja_id: loja_id,
-          plano_id: planoId,
-          status: status,
-          periodo_atual_inicio: new Date().toISOString(),
-          periodo_atual_fim: periodEnd.toISOString(),
-          stripe_subscription_id: session.subscription,
-        });
+        .select('id')
+        .eq('loja_id', loja_id)
+        .eq('status', 'ativa')
+        .single();
 
-      if (dbError) {
-        throw new Error(`Erro ao salvar a assinatura no banco de dados: ${dbError.message}`);
+      if (existing) {
+        await supabase
+          .from('assinaturas')
+          .update({
+            plano_id: planoId,
+            periodo_atual_inicio: new Date().toISOString(),
+            periodo_atual_fim: periodEnd.toISOString(),
+            stripe_subscription_id: session.subscription,
+          })
+          .eq('id', existing.id);
+      } else {
+        await supabase
+          .from('assinaturas')
+          .insert({
+            loja_id,
+            plano_id: planoId,
+            status: 'ativa',
+            periodo_atual_inicio: new Date().toISOString(),
+            periodo_atual_fim: periodEnd.toISOString(),
+            stripe_subscription_id: session.subscription,
+          });
       }
-
-      return NextResponse.json({ received: true }, { status: 200 });
     }
 
     return NextResponse.json({ received: true }, { status: 200 });
-
   } catch (error: any) {
-    console.error('Erro no handler do webhook:', error);
-    return NextResponse.json({ error: 'Erro interno do servidor.', details: error.message }, { status: 500 });
+    console.error('Erro no webhook:', error);
+    return NextResponse.json({ error: 'Erro interno.', details: error.message }, { status: 500 });
   }
 }

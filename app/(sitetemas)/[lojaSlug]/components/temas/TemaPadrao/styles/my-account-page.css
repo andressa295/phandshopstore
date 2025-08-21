@@ -1,0 +1,134 @@
+/* app/(sitetemas)/[lojaSlug]/components/temas/TemaPadrao/styles/my-account-page.css */
+
+/* Estilos para a Área do Cliente (Minha Conta) dentro do Tema Padrão */
+
+.ph-my-account-page {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.ph-my-account-title {
+    font-family: var(--fonte-titulos, 'Inter', sans-serif);
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--cor-texto, #333333);
+    margin-bottom: 10px;
+}
+
+.ph-welcome-message {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.ph-account-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+    justify-content: center;
+}
+
+.ph-summary-card {
+    background-color: var(--cor-fundo-card, #ffffff);
+    border-radius: var(--botao-arredondamento, 8px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.ph-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.ph-summary-icon {
+    color: var(--cor-primaria, #7C3AED);
+    margin-bottom: 15px;
+}
+
+.ph-summary-card-title {
+    font-family: var(--fonte-titulos, 'Inter', sans-serif);
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--cor-texto, #333333);
+    margin-bottom: 10px;
+}
+
+.ph-summary-card-text {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 15px;
+    flex-grow: 1; /* Permite que o texto cresça e empurre o link para baixo */
+}
+
+.ph-summary-card-link {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: var(--cor-secundaria, #F0F0F0);
+    color: var(--cor-texto, #333333);
+    text-decoration: none;
+    border-radius: var(--botao-arredondamento, 8px);
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.ph-summary-card-link:hover {
+    background-color: #e0e0e0;
+}
+
+.ph-logout-button {
+    display: inline-flex; /* Para alinhar o ícone e o texto */
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background-color: #dc3545; /* Vermelho para logout */
+    color: #ffffff;
+    border: none;
+    border-radius: var(--botao-arredondamento, 8px);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 20px;
+}
+
+.ph-logout-button:hover {
+    background-color: #c82333;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    .ph-my-account-title {
+        font-size: 2rem;
+    }
+    .ph-welcome-message {
+        font-size: 1rem;
+    }
+    .ph-account-summary {
+        grid-template-columns: 1fr; /* Uma coluna em mobile */
+        gap: 20px;
+    }
+    .ph-summary-card {
+        padding: 20px;
+    }
+    .ph-summary-card-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ph-my-account-page {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    .ph-my-account-title {
+        font-size: 1.8rem;
+    }
+}

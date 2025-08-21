@@ -1,0 +1,126 @@
+// app/(sitetemas)/[lojaSlug]/components/SearchPage.tsx
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Search } from 'lucide-react'; // Ícone de busca
+
+// REMOVIDO: import '../styles/search-page.css'; // O estilo virá do tema ativo
+
+// Interface para os dados do produto (simplificada para o exemplo de busca)
+interface ProdutoData {
+    id: string;
+    nome: string;
+    descricao: string | null;
+    preco: number;
+    imagem_url: string | null;
+    // Adicione outros campos relevantes para exibição nos resultados da busca
+}
+
+interface SearchPageProps {
+    lojaNome: string;
+    // Em uma aplicação real, os resultados da busca viriam de uma API
+    // baseada no termo de pesquisa da URL (query parameter).
+    // Para este componente neutro, vamos mockar uma função de busca.
+    initialSearchTerm?: string;
+    // Você pode passar uma função para buscar produtos aqui
+    // onSearch?: (searchTerm: string) => Promise<ProdutoData[]>; 
+}
+
+const formatCurrency = (value: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+const SearchPage: React.FC<SearchPageProps> = ({ lojaNome, initialSearchTerm = '' }) => {
+    const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+    const [searchResults, setSearchResults] = useState<ProdutoData[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [hasSearched, setHasSearched] = useState(false); // Para mostrar mensagem 'nenhum resultado' após busca
+
+    // Mock de produtos para simular resultados de busca
+    const mockProducts: ProdutoData[] = [
+        { id: '1', nome: 'Anel de Prata', descricao: 'Anel elegante em prata 925.', preco: 150.00, imagem_url: 'https://placehold.co/300x300/E0E7FF/4338CA?text=Anel' },
+        { id: '2', nome: 'Colar de Ouro', descricao: 'Colar com pingente de coração em ouro 18k.', preco: 800.00, imagem_url: 'https://placehold.co/300x300/E0E7FF/4338CA?text=Colar' },
+        { id: '3', nome: 'Brincos de Pérola', descricao: 'Brincos clássicos com pérolas cultivadas.', preco: 250.00, imagem_url: 'https://placehold.co/300x300/E0E7FF/4338CA?text=Brincos' },
+        { id: '4', nome: 'Pulseira de Couro', descricao: 'Pulseira moderna em couro legítimo.', preco: 80.00, imagem_url: 'https://placehold.co/300x300/E0E7FF/4338CA?text=Pulseira' },
+    ];
+
+    useEffect(() => {
+        // Simula a busca quando o termo inicial muda ou a página é carregada com um termo
+        if (initialSearchTerm) {
+            performSearch(initialSearchTerm);
+        }
+    }, [initialSearchTerm]);
+
+    const performSearch = async (term: string) => {
+        setLoading(true);
+        setHasSearched(true);
+        // Simulação de delay da API
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const filtered = mockProducts.filter(product =>
+            product.nome.toLowerCase().includes(term.toLowerCase()) ||
+            product.descricao?.toLowerCase().includes(term.toLowerCase())
+        );
+        setSearchResults(filtered);
+        setLoading(false);
+    };
+
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        performSearch(searchTerm);
+    };
+
+    return (
+        <div className="ph-search-page">
+            <h1 className="ph-search-title">Resultados da Pesquisa</h1>
+
+            <form onSubmit={handleSearchSubmit} className="ph-search-form">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="O que você está procurando?"
+                    className="ph-search-input-main"
+                />
+                <button type="submit" className="ph-search-button-main" disabled={loading}>
+                    {loading ? 'Buscando...' : <Search size={20} />}
+                </button>
+            </form>
+
+            {hasSearched && !loading && searchResults.length === 0 && (
+                <p className="ph-no-results-message">Nenhum resultado encontrado para "{searchTerm}".</p>
+            )}
+
+            {loading ? (
+                <p className="ph-loading-message">Buscando produtos...</p>
+            ) : (
+                searchResults.length > 0 && (
+                    <div className="ph-search-results-grid">
+                        {searchResults.map(product => (
+                            <div key={product.id} className="ph-search-result-card">
+                                <img 
+                                    src={product.imagem_url || `https://placehold.co/150x150/E0E7FF/4338CA?text=${encodeURIComponent(product.nome)}`} 
+                                    alt={product.nome} 
+                                    className="ph-search-result-image"
+                                    onError={(e) => {
+                                        e.currentTarget.src = `https://placehold.co/150x150/CCCCCC/000000?text=Img`;
+                                        e.currentTarget.onerror = null;
+                                    }}
+                                />
+                                <div className="ph-search-result-info">
+                                    <h3 className="ph-search-result-name">{product.nome}</h3>
+                                    <p className="ph-search-result-price">{formatCurrency(product.preco)}</p>
+                                    <Link href={`/produtos/${product.id}`} className="ph-search-result-button">
+                                        Ver Detalhes
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )
+            )}
+        </div>
+    );
+};
+
+export default SearchPage;

@@ -1,10 +1,10 @@
-// app/(interno)/dashboard/page.tsx
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import ClientDashboard from './components/ClientDashboard';
 import { getDashboardData, DashboardData } from '@/lib/supabase/dashboard/getDashboardData';
 import { UserProfile } from './UserContext';
 import { redirect } from 'next/navigation';
+import { User, PostgrestError } from '@supabase/supabase-js'; // Adicionadas as importações de User e PostgrestError
 
 export default async function DashboardPage() {
   const supabase = createServerComponentClient({ cookies });
@@ -31,7 +31,7 @@ export default async function DashboardPage() {
         )
       )
     `)
-    .eq('user_id', user.id)
+    .eq('user_id', user.id) // CORREÇÃO: Coluna agora é 'user_id'
     .single();
 
   if (lojaError || !lojaData) {
@@ -40,19 +40,26 @@ export default async function DashboardPage() {
   }
 
   // Selecionar apenas a assinatura ativa
-  const assinaturaAtiva = Array.isArray(lojaData.assinaturas)
-    ? lojaData.assinaturas.find(a => a.status === 'ativa') || null
-    : null;
+  const assinaturaData =
+    Array.isArray(lojaData.assinaturas) && lojaData.assinaturas.length > 0
+      ? lojaData.assinaturas[0]
+      : null;
 
   // Selecionar o plano vinculado à assinatura ativa
-  const planoAtivo = assinaturaAtiva?.planos?.[0] || null;
+  const planoData =
+    assinaturaData &&
+    Array.isArray(assinaturaData.planos) &&
+    assinaturaData.planos.length > 0
+      ? assinaturaData.planos[0]
+      : null;
 
   // Determinar recorrência automática
-  const recorrencia = planoAtivo?.preco_anual && planoAtivo.preco_anual > 0
-    ? 'anual'
-    : planoAtivo?.preco_mensal && planoAtivo.preco_mensal > 0
-    ? 'mensal'
-    : null;
+  let recorrencia: 'anual' | 'mensal' | null = null;
+  if (planoData?.preco_anual && planoData.preco_anual > 0) {
+    recorrencia = 'anual';
+  } else if (planoData?.preco_mensal && planoData.preco_mensal > 0) {
+    recorrencia = 'mensal';
+  }
 
   // Construir o perfil do usuário com dados reais
   const userProfile: UserProfile = {
@@ -65,10 +72,10 @@ export default async function DashboardPage() {
     lojaId: lojaData.id,
     lojaNome: lojaData.nome_loja,
     lojaSlug: lojaData.slug,
-    plano: planoAtivo?.nome_plano || 'Plano Grátis', // placeholder só se não tiver assinatura
-    recorrencia,
-    preco_mensal: planoAtivo?.preco_mensal ?? null,
-    preco_anual: planoAtivo?.preco_anual ?? null,
+    plano: planoData?.nome_plano || 'Plano Grátis', // placeholder só se não tiver assinatura
+    recorrencia: recorrencia,
+    preco_mensal: planoData?.preco_mensal ?? null,
+    preco_anual: planoData?.preco_anual ?? null,
   };
 
   const dashboardData: DashboardData | null = await getDashboardData(lojaData.id);

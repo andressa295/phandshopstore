@@ -5,7 +5,7 @@ import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs
 import { useRouter, usePathname } from 'next/navigation';
 
 export interface UserProfile {
-  id: string; // ID do usuário do Supabase
+  id: string;
   email: string | null;
   nome_completo: string | null;
   lojaId: string | null;
@@ -47,7 +47,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
       setUser(supabaseUser);
 
-      const { data: lojaData, error: profileError } = await supabase
+      // Busca dados da loja, assinatura e planos
+      const { data: lojaData, error: lojaError } = await supabase
         .from('lojas')
         .select(`
           id, 
@@ -65,8 +66,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
         .eq('user_id', supabaseUser.id)
         .single();
       
-      if (profileError) {
-        console.error("Erro ao carregar perfil:", profileError);
+      // Busca dados do perfil do usuário na tabela `usuarios`
+      const { data: perfilData, error: perfilError } = await supabase
+        .from('usuarios')
+        .select('nome_completo')
+        .eq('id', supabaseUser.id)
+        .single();
+
+      if (lojaError) {
+        console.error("Erro ao carregar loja:", lojaError);
+        setProfile(null);
+      } else if (perfilError) {
+        console.error("Erro ao carregar perfil de usuário:", perfilError);
         setProfile(null);
       } else if (lojaData) {
         const assinaturaData = lojaData.assinaturas?.[0] || null;
@@ -75,7 +86,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         const formattedProfile: UserProfile = {
           id: supabaseUser.id,
           email: supabaseUser.email ?? null,
-          nome_completo: supabaseUser.user_metadata.full_name as string || null,
+          nome_completo: perfilData?.nome_completo || null, // Pega o nome da tabela 'usuarios'
           lojaId: lojaData?.id || null,
           lojaNome: lojaData?.nome_loja || null,
           lojaSlug: lojaData?.slug || null,
