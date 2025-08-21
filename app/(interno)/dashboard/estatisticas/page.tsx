@@ -1,4 +1,5 @@
-'use server';
+// app/(interno)/dashboard/estatisticas/page.tsx
+// REMOVIDO: 'use client'; // Esta página deve ser um Server Component para usar 'cookies'
 
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
@@ -39,8 +40,8 @@ export default async function EstatisticasPage() {
 
   const { data: loja, error: lojaError } = await supabase
     .from('lojas')
-    .select('id, user_id')
-    .eq('user_id', user.id)
+    .select('id, owner_id') // Usando 'owner_id'
+    .eq('owner_id', user.id) // Usando 'owner_id'
     .single();
 
   if (lojaError) {

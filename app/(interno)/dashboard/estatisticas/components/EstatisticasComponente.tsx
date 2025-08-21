@@ -51,6 +51,10 @@ const EstatisticasComponente: React.FC<EstatisticasProps> = ({ data, lojaId }) =
         return calculateStats(data);
     }, [data]);
 
+    // Garantir que 'estoque' é um número antes de usar na string
+    const estoqueDisplay = dashboardData.estoque ?? 0; // Usa 0 se for null/undefined
+    const pedidosPendentesDisplay = dashboardData.pedidosPendentes ?? 0; // Usa 0 se for null/undefined
+
     return (
         <div className="dashboard-container">
             <h1 className="dashboard-title">Dashboard de Estatísticas</h1>
@@ -75,11 +79,13 @@ const EstatisticasComponente: React.FC<EstatisticasProps> = ({ data, lojaId }) =
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaBox /> Estoque Baixo</h2>
-                    <p className={`kpi-card-value ${dashboardData.estoque > 0 ? 'danger-color' : ''}`}>{dashboardData.estoque} itens</p>
+                    {/* CORREÇÃO: Usando estoqueDisplay */}
+                    <p className={`kpi-card-value ${estoqueDisplay > 0 ? 'danger-color' : ''}`}>{estoqueDisplay} itens</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaClock /> Pedidos Pendentes</h2>
-                    <p className={`kpi-card-value ${dashboardData.pedidosPendentes > 0 ? 'danger-color' : ''}`}>{dashboardData.pedidosPendentes}</p>
+                    {/* CORREÇÃO: Usando pedidosPendentesDisplay */}
+                    <p className={`kpi-card-value ${pedidosPendentesDisplay > 0 ? 'danger-color' : ''}`}>{pedidosPendentesDisplay}</p>
                 </div>
                 <div className="kpi-card">
                     <h2 className="kpi-card-title"><FaChartLine /> Faturamento Total</h2>

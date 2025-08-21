@@ -5,11 +5,8 @@ import { redirect } from 'next/navigation';
 import dynamic from 'next/dynamic'; // Importa next/dynamic para carregamento dinâmico
 import ProductListingClient from './components/ProductListingClient';
 
+// REMOVIDO: interface ProductListingPageProps // Não é mais necessária como tipo explícito para a função
 // Interfaces (mantidas do seu código anterior)
-interface ProductListingPageProps {
-    params: { lojaSlug: string };
-}
-
 interface ProdutoData {
     id: string;
     nome: string;
@@ -38,9 +35,24 @@ interface DynamicThemeComponentProps {
     temaConfig: any; // Use um tipo mais específico se você tiver a interface completa para temaConfig
 }
 
-export default async function ProductListingPage({ params }: ProductListingPageProps) {
+// CORREÇÃO: Definindo o tipo de 'params' diretamente na assinatura da função
+export default async function ProductListingPage({ params }: { params: { lojaSlug: string } }) {
     const  lojaSlug  = params;
     const supabase = createServerComponentClient({ cookies: () => cookies() });
+
+    // --- DEPURANDO AUTENTICAÇÃO E LOJA ---
+    console.log("--- page.tsx: Iniciando Depuração de Login/Loja ---");
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+    if (userError) {
+        console.error("Erro ao obter usuário autenticado (page.tsx):", userError);
+    } else if (user) {
+        console.log("Usuário autenticado (auth.uid()):", user.id);
+        console.log("Email do usuário:", user.email);
+    } else {
+        console.log("Nenhum usuário autenticado encontrado (page.tsx).");
+    }
+    console.log("Loja Slug na URL:", lojaSlug);
 
     // --- Buscar loja ---
     const { data: loja, error: lojaError } = await supabase
@@ -49,6 +61,7 @@ export default async function ProductListingPage({ params }: ProductListingPageP
             id,
             nome_loja,
             slug,
+            owner_id,
             theme_id,
             configuracoes_tema_json,
             top_info_bar_text,
@@ -60,10 +73,22 @@ export default async function ProductListingPage({ params }: ProductListingPageP
         .eq('slug', lojaSlug)
         .single();
 
-    if (lojaError || !loja) {
-        console.error('Erro ao buscar loja ou loja não encontrada:', lojaError);
+    if (lojaError) {
+        console.error('Erro ao buscar loja por slug (page.tsx):', lojaError);
+        redirect('/'); 
+    }
+    
+    if (!loja) {
+        console.error('Loja não encontrada para o slug:', lojaSlug);
         redirect('/');
     }
+
+    console.log("Dados da loja buscados (page.tsx):", JSON.stringify(loja, null, 2));
+    if (user && loja.owner_id && user.id !== loja.owner_id) {
+        console.warn(`ATENÇÃO: Usuário autenticado (UID: ${user.id}) NÃO É O DONO da loja (Owner ID: ${loja.owner_id}). Isso pode causar problemas de RLS.`);
+    }
+    console.log("--- Fim da Depuração de Login/Loja ---");
+
 
     // --- Configurações do tema (do JSONB) ---
     let configuracoesTema: any = {};
@@ -92,23 +117,21 @@ export default async function ProductListingPage({ params }: ProductListingPageP
 
         if (temaError || !temaData) {
             console.error('Erro ao buscar tema da loja ou tema não encontrado:', temaError);
-            // Fallback para tema padrão se o tema configurado não for encontrado
             const { data: defaultTema, error: defaultTemaError } = await supabase
                 .from('temas')
                 .select(`id, nome_tema, caminho_componente`)
-                .eq('nome_tema', 'Tema Padrão') // Assumindo que você tem um tema com este nome
+                .eq('nome_tema', 'Tema Padrão')
                 .single();
             
             if (defaultTemaError || !defaultTema) {
                 console.error('Erro ao buscar tema padrão:', defaultTemaError);
-                redirect('/'); // Se nem o tema padrão for encontrado, redireciona
+                redirect('/');
             }
             tema = defaultTema;
         } else {
             tema = temaData;
         }
     } else {
-        // Se a loja não tem um theme_id configurado, usa o tema padrão
         const { data: defaultTema, error: defaultTemaError } = await supabase
             .from('temas')
             .select(`id, nome_tema, caminho_componente`)
@@ -123,12 +146,10 @@ export default async function ProductListingPage({ params }: ProductListingPageP
     }
 
     // --- Carregamento Dinâmico do Componente do Tema ---
-    // O caminho deve ser relativo ao diretório 'components/temas'
     const ThemeWrapper = dynamic<DynamicThemeComponentProps>(() => 
         import(`./components/temas/${tema?.caminho_componente || 'TemaPadrao'}/${tema?.caminho_componente || 'TemaPadrao'}`)
         .catch(err => {
             console.error(`Falha ao carregar componente do tema ${tema?.caminho_componente || 'TemaPadrao'}:`, err);
-            // Retorna um componente fallback caso o tema não possa ser carregado
             return ({ children }: { children: React.ReactNode }) => (
                 <div className="theme-fallback-wrapper">
                     <p>O tema selecionado não pôde ser carregado. Exibindo tema padrão.</p>
@@ -136,7 +157,7 @@ export default async function ProductListingPage({ params }: ProductListingPageP
                 </div>
             );
         }),
-        { ssr: true } // Renderiza no servidor
+        { ssr: true }
     );
 
     // --- Buscar produtos e banners em paralelo ---

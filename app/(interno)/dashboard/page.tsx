@@ -31,7 +31,7 @@ export default async function DashboardPage() {
         )
       )
     `)
-    .eq('user_id', user.id) // CORREÇÃO: Coluna agora é 'user_id'
+    .eq('owner_id', user.id) // CORREÇÃO: Coluna agora é 'owner_id'
     .single();
 
   if (lojaError || !lojaData) {

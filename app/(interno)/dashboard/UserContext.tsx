@@ -38,6 +38,18 @@ export function UserProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       const { data: { user: supabaseUser }, error: userError } = await supabase.auth.getUser();
 
+      // --- LOGS DE DEPURAÇÃO NO USERCONTEXT ---
+      console.log("--- UserContext: Iniciando fetchUserData ---");
+      if (userError) {
+        console.error("UserContext: Erro ao obter usuário do Supabase:", userError);
+      } else {
+        console.log("UserContext: Objeto 'user' do Supabase:", supabaseUser);
+        console.log("UserContext: user.id:", supabaseUser?.id);
+        console.log("UserContext: user.email (direto do auth.getUser()):", supabaseUser?.email); // Verifique este valor!
+        console.log("UserContext: user.user_metadata:", supabaseUser?.user_metadata);
+      }
+      // --- FIM DOS LOGS DE DEPURAÇÃO ---
+
       if (userError || !supabaseUser) {
         setUser(null);
         setProfile(null);
@@ -63,7 +75,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             )
           )
         `)
-        .eq('user_id', supabaseUser.id)
+        .eq('owner_id', supabaseUser.id)
         .single();
       
       // Busca dados do perfil do usuário na tabela `usuarios`
@@ -74,10 +86,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (lojaError) {
-        console.error("Erro ao carregar loja:", lojaError);
+        console.error("UserContext: Erro ao carregar loja:", lojaError);
         setProfile(null);
       } else if (perfilError) {
-        console.error("Erro ao carregar perfil de usuário:", perfilError);
+        console.error("UserContext: Erro ao carregar perfil de usuário:", perfilError);
         setProfile(null);
       } else if (lojaData) {
         const assinaturaData = lojaData.assinaturas?.[0] || null;
@@ -85,8 +97,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
         const formattedProfile: UserProfile = {
           id: supabaseUser.id,
-          email: supabaseUser.email ?? null,
-          nome_completo: perfilData?.nome_completo || null, // Pega o nome da tabela 'usuarios'
+          email: supabaseUser.email ?? null, // Este valor é o que precisamos verificar
+          nome_completo: perfilData?.nome_completo || null,
           lojaId: lojaData?.id || null,
           lojaNome: lojaData?.nome_loja || null,
           lojaSlug: lojaData?.slug || null,
@@ -96,11 +108,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
           preco_anual: planoData?.preco_anual || 0,
         };
         setProfile(formattedProfile);
+        console.log("UserContext: Perfil formatado (email):", formattedProfile.email); // Verifique este valor
       } else {
         setProfile(null);
       }
 
       setLoading(false);
+      console.log("--- UserContext: Fim de fetchUserData ---");
     }
     
     fetchUserData();
@@ -108,6 +122,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+          console.log("UserContext: Evento de autenticação:", event);
           fetchUserData();
         }
       }

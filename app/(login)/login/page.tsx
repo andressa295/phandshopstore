@@ -10,6 +10,7 @@ import styles from './Login.module.css';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
+// Componente de Modal de Mensagem (mantido como está)
 const MessageModal = ({ message, onClose }: { message: string; onClose: () => void }) => {
   return (
     <div className={styles.messageModalOverlay}>
@@ -64,13 +65,11 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // CORRIGIDO: A consulta agora usa `.limit(1)` para evitar o erro de 'múltiplas linhas'
-        const { data: lojaData, error: lojaError } = await supabase
+        // CORREÇÃO: Removido .single() e tratado o resultado como um array
+        const { data: lojasData, error: lojaError } = await supabase
           .from('lojas')
           .select('id, slug')
-          .eq('user_id', data.user.id)
-          .limit(1)
-          .single();
+          .eq('owner_id', data.user.id); // Não usamos .single() aqui
 
         if (lojaError) {
           console.error("Erro ao buscar dados da loja:", lojaError.message);
@@ -79,18 +78,21 @@ export default function LoginPage() {
           return;
         }
 
-        if (lojaData) {
-          console.log("Login bem-sucedido. Loja ID:", lojaData.id);
-          router.push(`/dashboard?lojaId=${lojaData.id}`);
+        // Se o usuário tiver múltiplas lojas, pegamos a primeira (ou defina sua lógica)
+        const loja = lojasData && lojasData.length > 0 ? lojasData[0] : null;
+
+        if (loja) {
+          console.log("Login bem-sucedido. Loja ID:", loja.id);
+          // Redireciona para o slug da loja, que é a página principal do tema
+          router.push(`/${loja.slug}`); 
         } else {
-          setError('Nenhuma loja encontrada para este usuário.');
-          setLoading(false);
-          return;
+          // Se o usuário não tem uma loja, redireciona para o onboarding
+          router.push('/onboarding');
         }
       }
 
       setLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Erro inesperado durante o login:", err);
       setError('Ocorreu um erro inesperado. Tente novamente.');
       setLoading(false);

@@ -19,11 +19,7 @@ export default function OnboardingPage() {
                 router.push('/login');
                 return;
             }
-            // Não é recomendado usar localStorage para dados sensíveis ou persistência de estado complexa.
-            // Se 'nomeLoja' for um dado temporário de preenchimento, ok.
             const savedNomeLoja = localStorage.getItem('nomeLoja');
-            // CORREÇÃO 1: Typo 'savedNomeNomeLoja' corrigido para 'savedNomeLoja'
-            // CORREÇÃO 2: Adicionada verificação para 'null' para setLojaNome
             if (savedNomeLoja) { 
                 setLojaNome(savedNomeLoja);
                 localStorage.removeItem('nomeLoja');
@@ -57,14 +53,40 @@ export default function OnboardingPage() {
         }
 
         try {
-            const lojaSlug = slugify(lojaNome);
+            let baseSlug = slugify(lojaNome);
+            let finalSlug = baseSlug;
+            let counter = 0;
+            let slugIsUnique = false;
 
-            // 1. Cria a loja
+            // Lógica para garantir que o slug seja único
+            while (!slugIsUnique) {
+                const { data: existingLoja, error: checkSlugError } = await supabase
+                    .from('lojas')
+                    .select('slug')
+                    .eq('slug', finalSlug)
+                    .single();
+
+                if (checkSlugError && checkSlugError.code !== 'PGRST116') { // PGRST116 é 'no rows found'
+                    console.error("Erro ao verificar slug existente:", checkSlugError);
+                    setError('Erro ao verificar nome da loja. Tente novamente.');
+                    setLoading(false);
+                    return;
+                }
+
+                if (existingLoja) {
+                    counter++;
+                    finalSlug = `${baseSlug}-${counter}`;
+                } else {
+                    slugIsUnique = true;
+                }
+            }
+
+            // 1. Cria a loja com o slug único
             const { data: lojaInserida, error: dbError } = await supabase
                 .from('lojas')
                 .insert({
                     nome_loja: lojaNome,
-                    slug: lojaSlug,
+                    slug: finalSlug,
                     owner_id: user.id
                 })
                 .select('id, slug')
@@ -72,17 +94,12 @@ export default function OnboardingPage() {
             
             if (dbError) {
                 console.error("Erro ao inserir loja (detalhes):", dbError.message, dbError.code, dbError.details, dbError.hint);
-
-                if (dbError.code === '23505' && dbError.message.includes('slug')) {
-                    setError('Este nome de loja já está em uso. Por favor, escolha outro.');
-                } else {
-                    setError('Erro ao registrar a loja. Tente novamente.');
-                }
+                setError('Erro ao registrar a loja. Tente novamente.');
                 setLoading(false);
                 return;
             }
 
-            // 2. Busca o Plano Grátis (assumindo que 'planos' e 'assinaturas' estão configurados)
+            // 2. Busca o Plano Grátis
             const { data: planoGratis, error: planoError } = await supabase
                 .from('planos')
                 .select('id')
@@ -113,6 +130,24 @@ export default function OnboardingPage() {
                 setLoading(false);
                 return;
             }
+
+            // 4. CRIA O REGISTRO DO USUÁRIO NA TABELA 'public.usuarios'
+            const { error: perfilError } = await supabase
+                .from('usuarios')
+                .insert({
+                    id: user.id, // O ID do usuário autenticado
+                    email: user.email, // O email do usuário autenticado
+                    nome_completo: lojaNome // Nome da loja como nome completo inicial
+                    // Outros campos podem ser nulos ou preenchidos depois
+                });
+
+            if (perfilError) {
+                console.error("Erro ao criar perfil de usuário na tabela 'usuarios':", perfilError);
+                setError('Erro ao configurar seu perfil de usuário. Tente novamente.');
+                setLoading(false);
+                return;
+            }
+
 
             router.push('/dashboard'); 
             

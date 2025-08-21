@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import './HeaderPainel.css';
+// CORREÇÃO: Importa o CSS do dashboard da localização correta
+import './HeaderPainel.css'; 
 import { UserProfile } from '../UserContext';
 
 import { 
@@ -45,27 +46,25 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
             router.push('/login');
         } else {
             console.error('Erro ao fazer logout:', error);
-            alert('Falha ao fazer logout. Tente novamente.');
+            console.warn('Mensagem: Falha ao fazer logout. Tente novamente. (Implementar modal customizado)');
         }
         setIsDropdownOpen(false);
     };
 
     const dropdownItems = [
-        { label: 'Minha conta', href: '/dashboard/menu/minha-conta' },
-        { label: 'Pagamentos e assinaturas', href: '/dashboard/menu/pagamentos-assinaturas' },
-        { label: 'Histórico de faturas', href: '/dashboard/menu/historico-faturas' },
-        { label: 'Tarifas por vendas', href: '/dashboard/menu/tarifas-por-vendas' },
-        { label: 'Planos', href: '/dashboard/menu/planos' },
-        { label: 'Medidas de segurança', href: '/dashboard/menu/medidas-seguranca' },
-        { label: 'Usuários e notificações', href: '/dashboard/menu/usuarios-notificacoes' },
-        { label: 'Sessões e dispositivos', href: '/dashboard/menu/sessoes-dispositivos' },
-        { label: 'Dados da minha conta', href: '/dashboard/menu/dados-conta' },
-        { label: 'Redes sociais', href: '/dashboard/menu/redes-sociais' },
-        { label: 'Dados do meu negócio', href: '/dashboard/menu/dados-negocio' },
-        { label: 'Sair', action: handleLogout, href: '/(site)/login' },
+        { label: 'Minha conta', href: '/dashboard/menu/minha-conta', icon: <FaUsers /> },
+        { label: 'Pagamentos e assinaturas', href: '/dashboard/menu/pagamentos-assinaturas', icon: <FaCreditCard /> },
+        { label: 'Histórico de faturas', href: '/dashboard/menu/historico-faturas', icon: <FaFileInvoiceDollar /> },
+        { label: 'Tarifas por vendas', href: '/dashboard/menu/tarifas-por-vendas', icon: <FaDollarSign /> },
+        { label: 'Planos', href: '/dashboard/menu/planos', icon: <FaTags /> },
+        { label: 'Medidas de segurança', href: '/dashboard/menu/medidas-seguranca', icon: <FaShieldAlt /> },
+        { label: 'Usuários e notificações', href: '/dashboard/menu/usuarios-notificacoes', icon: <FaBell /> },
+        { label: 'Sessões e dispositivos', href: '/dashboard/menu/sessoes-dispositivos', icon: <FaHistory /> },
+        { label: 'Dados da minha conta', href: '/dashboard/menu/dados-conta', icon: <FaBuilding /> },
+        { label: 'Redes sociais', href: '/dashboard/menu/redes-sociais', icon: <FaShareAlt /> },
+        { label: 'Sair', action: handleLogout, href: '/login', icon: <FaSignOutAlt /> },
     ];
 
-    // Fecha dropdown ao clicar fora
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -77,28 +76,28 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
     }, [dropdownRef]);
 
     return (
-        <header className="header-painel">
-            <Link href="/dashboard" className="logo-link">
-                <Image src="/logoroxo.png" alt="Phandshop Logo" width={150} height={50} priority className="logo" /> 
+        <header className="ph-header-painel">
+            <Link href="/dashboard" className="ph-logo-link">
+                <Image src="/logoroxo.png" alt="Phandshop Logo" width={150} height={50} priority className="ph-logo" /> 
             </Link>
 
-            <div className="user-menu-container" ref={dropdownRef}>
-                <div className="user-avatar" onClick={() => setIsDropdownOpen(!isDropdownOpen)} title="Minha Conta">
+            <div className="ph-user-menu-container" ref={dropdownRef}>
+                <div className="ph-user-avatar" onClick={() => setIsDropdownOpen(!isDropdownOpen)} title="Minha Conta">
                     {userInitials}
                 </div>
-                <div className="user-name" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <div className="ph-user-name" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     {userName}
                 </div>
 
                 {isDropdownOpen && (
-                    <div className="user-dropdown-menu">
-                        <div className="dropdown-header">
-                            <p className="user-name-text">{userName}</p>
-                            <p className="user-email-text">{userEmail}</p>
-                            <p className="plan-status-text">
+                    <div className="ph-user-dropdown-menu">
+                        <div className="ph-dropdown-header">
+                            <p className="ph-user-name-text">{userName}</p>
+                            <p className="ph-user-email-text">{userEmail}</p>
+                            <p className="ph-plan-status-text">
                                 Plano: {userPlanDisplay} {userRecorrenciaDisplay && `(${userRecorrenciaDisplay})`}
                             </p>
-                            <p className="plan-price-text">
+                            <p className="ph-plan-price-text">
                                 Preço: {getPlanPrice()}
                             </p>
                         </div>
@@ -108,8 +107,9 @@ const HeaderPainel: React.FC<HeaderPainelProps> = ({ userProfile }) => {
                                 key={item.label} 
                                 href={item.href} 
                                 onClick={item.action ? (e) => { e.preventDefault(); item.action(); setIsDropdownOpen(false); } : undefined}
-                                className="dropdown-item"
+                                className="ph-dropdown-item"
                             >
+                                <span className="ph-dropdown-item-icon">{item.icon}</span>
                                 {item.label}
                             </Link>
                         ))}

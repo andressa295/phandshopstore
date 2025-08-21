@@ -12,14 +12,14 @@ interface UserData {
     telefone: string;
     cpfCnpj: string;
     dataNascimento: string;
-    genero?: string;
+    genero?: string; // Opcional
 }
 
 interface AddressData {
     cep: string;
     logradouro: string;
     numero: string;
-    complemento?: string;
+    complemento?: string; // Opcional
     bairro: string;
     cidade: string;
     estado: string;
@@ -55,6 +55,7 @@ const MeuPerfilPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // Adicionado o estado 'errorMessage'
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -71,8 +72,8 @@ const MeuPerfilPage: React.FC = () => {
                     .eq('id', user.id)
                     .single();
 
-                if (dbError) {
-                    console.error("Erro ao carregar perfil:", dbError);
+                if (dbError && dbError.code !== 'PGRST116') { // PGRST116 = No rows found
+                    console.error("Erro ao carregar perfil (detalhes):", dbError);
                     setError("Não foi possível carregar as informações do perfil.");
                 } else if (userData) {
                     setProfile({
@@ -93,6 +94,27 @@ const MeuPerfilPage: React.FC = () => {
                             cidade: userData.cidade || '',
                             estado: userData.estado || '',
                             pais: userData.pais || '',
+                        },
+                    });
+                } else {
+                    // Se não encontrou dados (PGRST116), inicializa com dados do usuário auth e vazio para outros
+                    setProfile({
+                        personalInfo: {
+                            nomeCompleto: user.user_metadata?.full_name || '',
+                            email: user.email || '', // Preenche o email com o do usuário autenticado
+                            telefone: '',
+                            cpfCnpj: '',
+                            dataNascimento: '',
+                            genero: '',
+                        },
+                        address: {
+                            cep: '',
+                            logradouro: '',
+                            numero: '',
+                            bairro: '',
+                            cidade: '',
+                            estado: '',
+                            pais: '',
                         },
                     });
                 }
@@ -148,10 +170,11 @@ const MeuPerfilPage: React.FC = () => {
                         },
                     }));
                 } else {
-                    alert("CEP não encontrado.");
+                    setErrorMessage("CEP não encontrado."); // Usando setErrorMessage
                 }
             } catch (err) {
                 console.error("Erro ao buscar CEP:", err);
+                setErrorMessage("Erro ao buscar CEP."); // Usando setErrorMessage
             }
         }
     };
@@ -167,7 +190,7 @@ const MeuPerfilPage: React.FC = () => {
 
     const handleCpfCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formattedValue = formatCpfCnpj(e.target.value);
-      handlePersonalInfoChange({ ...e, target: { ...e.target, value: formattedValue } });
+      handlePersonalInfoChange({ ...e, target: { ...e.target, name: 'cpfCnpj', value: formattedValue } });
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -176,8 +199,8 @@ const MeuPerfilPage: React.FC = () => {
         setError(null);
 
         if (!profile.personalInfo.cpfCnpj) {
-          setError("O campo CPF/CNPJ é obrigatório.");
-          return;
+            setError("O campo CPF/CNPJ é obrigatório.");
+            return;
         }
 
         setLoading(true);
@@ -227,16 +250,14 @@ const MeuPerfilPage: React.FC = () => {
         return <div className={styles.loadingState}>Carregando perfil...</div>;
     }
 
-    if (error) {
-        return <div className={styles.errorState}>Erro: {error}</div>;
-    }
-
     return (
         <div className={styles.meuPerfilContainer}>
             <h1 className={styles.mainTitle}>Minha Conta</h1>
 
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
-            {error && <div className={styles.errorMessage}>{error}</div>}
+            {error && <div className={styles.errorMessage}>{error}</div>} {/* Exibe o erro se houver */}
+            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>} {/* Exibe o errorMessage se houver */}
+
 
             <form onSubmit={handleSubmit}>
                 <section className={styles.section}>
@@ -280,43 +301,17 @@ const MeuPerfilPage: React.FC = () => {
                         </div>
 
                         <div className={styles.formGroup}>
-  <label htmlFor="cpfCnpj">CPF/CNPJ:</label>
-  <input
-    type="text"
-    id="cpfCnpj"
-    name="cpfCnpj"
-    value={profile.personalInfo.cpfCnpj || ""}
-    onChange={(e) => {
-      let value = e.target.value.replace(/\D/g, ""); // só números
-      if (value.length <= 11) {
-        // CPF
-        value = value
-          .replace(/^(\d{3})(\d)/, "$1.$2")
-          .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-          .replace(/\.(\d{3})(\d)/, ".$1-$2");
-        value = value.slice(0, 14); // 000.000.000-00
-      } else {
-        // CNPJ
-        value = value
-          .replace(/^(\d{2})(\d)/, "$1.$2")
-          .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
-          .replace(/\.(\d{3})(\d)/, ".$1/$2")
-          .replace(/(\d{4})(\d)/, "$1-$2");
-        value = value.slice(0, 18); // 00.000.000/0000-00
-      }
-
-      setProfile((prev) => ({
-        ...prev,
-        personalInfo: {
-          ...prev.personalInfo,
-          cpfCnpj: value,
-        },
-      }));
-    }}
-    required
-    className={styles.inputField}
-  />
-</div>
+                            <label htmlFor="cpfCnpj">CPF/CNPJ:</label>
+                            <input
+                                type="text"
+                                id="cpfCnpj"
+                                name="cpfCnpj"
+                                value={profile.personalInfo.cpfCnpj || ""}
+                                onChange={handleCpfCnpjChange} // Usa o manipulador de mudança formatado
+                                required
+                                className={styles.inputField}
+                            />
+                        </div>
 
 
                         <div className={styles.formGroup}>

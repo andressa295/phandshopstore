@@ -88,10 +88,11 @@ const DadosMinhaContaPage: React.FC = () => {
                 .eq('id', user.id)
                 .single();
 
+            // CORREÇÃO: Usando 'owner_id' para buscar a loja
             const { data: lojaData, error: lojaError } = await supabase
                 .from('lojas')
                 .select('*')
-                .eq('user_id', user.id)
+                .eq('owner_id', user.id) // ✅ CORRIGIDO AQUI!
                 .single();
 
             if (userError && userError.code !== 'PGRST116') {
