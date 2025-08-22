@@ -2,11 +2,10 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic'; // Importa next/dynamic para carregamento dinâmico
+import dynamic from 'next/dynamic'; 
 import ProductListingClient from './components/ProductListingClient';
 
-// REMOVIDO: interface ProductListingPageProps // Não é mais necessária como tipo explícito para a função
-// Interfaces (mantidas do seu código anterior)
+
 interface ProdutoData {
     id: string;
     nome: string;
@@ -26,21 +25,18 @@ interface InfoBarItem {
 interface TemaData {
     id: string;
     nome_tema: string;
-    caminho_componente: string; // Ex: "TemaPadrao", "Prado"
+    caminho_componente: string; 
 }
 
-// NOVA INTERFACE: Define as props esperadas pelo componente de tema dinâmico
 interface DynamicThemeComponentProps {
     children: React.ReactNode;
-    temaConfig: any; // Use um tipo mais específico se você tiver a interface completa para temaConfig
+    temaConfig: any; 
 }
 
-// CORREÇÃO: Definindo o tipo de 'params' diretamente na assinatura da função
 export default async function ProductListingPage({ params }: { params: { lojaSlug: string } }) {
-    const  lojaSlug  = params;
+    const { lojaSlug } = params;
     const supabase = createServerComponentClient({ cookies: () => cookies() });
 
-    // --- DEPURANDO AUTENTICAÇÃO E LOJA ---
     console.log("--- page.tsx: Iniciando Depuração de Login/Loja ---");
     const { data: { user }, error: userError } = await supabase.auth.getUser();
 
@@ -54,7 +50,6 @@ export default async function ProductListingPage({ params }: { params: { lojaSlu
     }
     console.log("Loja Slug na URL:", lojaSlug);
 
-    // --- Buscar loja ---
     const { data: loja, error: lojaError } = await supabase
         .from('lojas')
         .select(`
@@ -90,7 +85,6 @@ export default async function ProductListingPage({ params }: { params: { lojaSlu
     console.log("--- Fim da Depuração de Login/Loja ---");
 
 
-    // --- Configurações do tema (do JSONB) ---
     let configuracoesTema: any = {};
     try {
         configuracoesTema = loja.configuracoes_tema_json
@@ -102,7 +96,6 @@ export default async function ProductListingPage({ params }: { params: { lojaSlu
         console.error('Erro ao parsear configuracoes_tema_json:', err);
     }
 
-    // --- Buscar dados do Tema para obter o caminho do componente ---
     let tema: TemaData | null = null;
     if (loja.theme_id) {
         const { data: temaData, error: temaError } = await supabase
@@ -145,7 +138,6 @@ export default async function ProductListingPage({ params }: { params: { lojaSlu
         tema = defaultTema;
     }
 
-    // --- Carregamento Dinâmico do Componente do Tema ---
     const ThemeWrapper = dynamic<DynamicThemeComponentProps>(() => 
         import(`./components/temas/${tema?.caminho_componente || 'TemaPadrao'}/${tema?.caminho_componente || 'TemaPadrao'}`)
         .catch(err => {
@@ -160,7 +152,6 @@ export default async function ProductListingPage({ params }: { params: { lojaSlu
         { ssr: true }
     );
 
-    // --- Buscar produtos e banners em paralelo ---
     const [produtosResult, bannersResult] = await Promise.all([
         supabase
             .from('produtos')
