@@ -31,13 +31,11 @@ interface DynamicThemeComponentProps {
   temaConfig: any; 
 }
 
-interface ProductListingPageProps {
-  params: {
-    lojaSlug: string;
-  };
-}
-
-export default async function ProductListingPage({ params }: ProductListingPageProps) {
+export default async function ProductListingPage({
+  params,
+}: {
+  params: { lojaSlug: string };
+}) {
   const { lojaSlug } = params;
   const supabase = createServerComponentClient({ cookies: () => cookies() });
 
