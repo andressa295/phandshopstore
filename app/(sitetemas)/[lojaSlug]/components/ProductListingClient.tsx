@@ -55,7 +55,7 @@ interface LojaData {
     top_info_bar_active: boolean;
     track_order_link_active: boolean;
     support_link_active: boolean;
-    lojaLogoUrl?: string | null; // CORREÇÃO: Adicionado lojaLogoUrl à interface LojaData
+    lojaLogoUrl?: string | null; // Adicionado para passar para o Header
 }
 
 interface ProdutoData {
@@ -86,7 +86,7 @@ interface InfoBarItem {
 interface ProductListingClientProps {
     loja: LojaData;
     produtos: ProdutoData[];
-    temaConfig: LojaData['configuracoes_tema_json']; // Recebe apenas dados do tema (cores, fontes, botões)
+    temaConfig: LojaData['configuracoes_tema_json']; // Recebe as configurações do tema, mas não as aplica diretamente aqui
     banners: BannerData[];
     infoBarItems: InfoBarItem[];
 }
@@ -99,8 +99,7 @@ const ProductListingClient: React.FC<ProductListingClientProps> = ({
     infoBarItems,
 }) => {
     return (
-        <div className="ph-loja-container"> {/* Usando a classe genérica ph-loja-container */}
-            {/* TopInfoBar e Header não precisam de temaConfig aqui, pois já recebem suas props diretamente da 'loja' */}
+        <div className="ph-loja-container">
             <TopInfoBar text={loja.top_info_bar_text} link={loja.top_info_bar_link} isActive={loja.top_info_bar_active} />
 
             <Header
@@ -110,23 +109,36 @@ const ProductListingClient: React.FC<ProductListingClientProps> = ({
                 topInfoBarActive={loja.top_info_bar_active}
                 trackOrderLinkActive={loja.track_order_link_active}
                 supportLinkActive={loja.support_link_active}
-                lojaLogoUrl={loja.lojaLogoUrl} // Passando a URL da logo
+                lojaLogoUrl={loja.lojaLogoUrl}
             />
 
-            <main className="ph-main-content"> {/* Usando a classe genérica ph-main-content */}
+            <main className="ph-main-content">
                 <BannerSlider banners={banners} />
                 <BenefitInfoBar items={infoBarItems} />
 
-                {/* Seções adicionais para a página inicial */}
-                {temaConfig.testimonials_data && temaConfig.testimonials_data.length > 0 && (
-                    <TestimonialsSection testimonials={temaConfig.testimonials_data} />
-                )}
+                {/* Seções adicionais para a página inicial - INTEGRADAS AQUI */}
 
                 {temaConfig.mini_banners_data && temaConfig.mini_banners_data.length > 0 && (
-                    <MiniBannerSection banners={temaConfig.mini_banners_data} />
+                    <MiniBannerSection banners={temaConfig.mini_banners_data} sectionTitle="Nossas Categorias em Destaque" />
                 )}
 
-                {/* CORREÇÃO: Garantindo que todas as props de text_with_image_data sejam passadas corretamente */}
+                <h1 className="ph-page-title">Produtos da {loja.nome_loja}</h1>
+                <p className="ph-page-subtitle">Descubra nossos itens mais recentes e populares.</p>
+
+                {produtos.length === 0 ? (
+                    <p className="ph-no-products-message">Nenhum produto encontrado nesta loja.</p>
+                ) : (
+                    <div className="ph-products-grid">
+                        {produtos.map((produto) => (
+                            <ProductCard key={produto.id} produto={produto} />
+                        ))}
+                    </div>
+                )}
+
+                {temaConfig.testimonials_data && temaConfig.testimonials_data.length > 0 && (
+                    <TestimonialsSection testimonials={temaConfig.testimonials_data} sectionTitle="O que nossos clientes dizem" />
+                )}
+
                 {temaConfig.text_with_image_data && (
                     <TextWithImageSection 
                         title={temaConfig.text_with_image_data.title || undefined}
@@ -138,20 +150,7 @@ const ProductListingClient: React.FC<ProductListingClientProps> = ({
                         callToActionLink={temaConfig.text_with_image_data.callToActionLink || undefined}
                     />
                 )}
-
-                <h1 className="ph-page-title">Produtos da {loja.nome_loja}</h1> {/* Usando classe genérica */}
-                <p className="ph-page-subtitle">Descubra nossos itens mais recentes e populares.</p> 
-
-                {produtos.length === 0 ? (
-                    <p className="ph-no-products-message">Nenhum produto encontrado nesta loja.</p> 
-                ) : (
-                    <div className="ph-products-grid"> {/* Usando classe genérica */}
-                        {produtos.map((produto) => (
-                            <ProductCard key={produto.id} produto={produto} />
-                        ))}
-                    </div>
-                )}
-
+                
                 {temaConfig.newsletter_data && (
                     <NewsletterSection 
                         sectionTitle={temaConfig.newsletter_data.title || undefined} 

@@ -22,7 +22,7 @@ interface ProdutoData {
     preco: number;
     estoque: number;
     imagem_url: string | null;
-    categoria_id: string; // Para filtrar produtos por categoria
+    categoria_id: string | null; // Adicionado '| null' para categoria_id
 }
 
 interface CategoryListingPageProps {
@@ -31,13 +31,15 @@ interface CategoryListingPageProps {
     categories: CategoryData[];
     allProducts: ProdutoData[]; // Todos os produtos da loja para filtrar por categoria
     initialCategoryId?: string; // ID da categoria selecionada inicialmente (da URL)
+    sectionTitle?: string; // CORREÇÃO: Adicionada a propriedade sectionTitle
 }
 
 const CategoryListingPage: React.FC<CategoryListingPageProps> = ({ 
     lojaNome, 
     categories, 
     allProducts, 
-    initialCategoryId 
+    initialCategoryId,
+    sectionTitle // Recebe a prop sectionTitle
 }) => {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategoryId || null);
     const [filteredProducts, setFilteredProducts] = useState<ProdutoData[]>([]);
@@ -60,7 +62,7 @@ const CategoryListingPage: React.FC<CategoryListingPageProps> = ({
 
     return (
         <div className="ph-category-listing-page">
-            <h1 className="ph-category-listing-title">{currentCategoryName}</h1>
+            <h1 className="ph-category-listing-title">{sectionTitle || currentCategoryName}</h1> {/* Usa sectionTitle se disponível */}
 
             <div className="ph-category-navigation">
                 {categories.map(category => (

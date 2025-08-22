@@ -47,7 +47,7 @@ export default function LoginPage() {
     if (senha.length < 6) {
       setError('Senha muito curta.');
       return;
-    }
+      }
 
     setLoading(true);
 
@@ -65,11 +65,11 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // CORREÇÃO: Removido .single() e tratado o resultado como um array
+        // Buscar se o usuário tem alguma loja (não mais apenas uma)
         const { data: lojasData, error: lojaError } = await supabase
           .from('lojas')
           .select('id, slug')
-          .eq('owner_id', data.user.id); // Não usamos .single() aqui
+          .eq('owner_id', data.user.id);
 
         if (lojaError) {
           console.error("Erro ao buscar dados da loja:", lojaError.message);
@@ -78,13 +78,10 @@ export default function LoginPage() {
           return;
         }
 
-        // Se o usuário tiver múltiplas lojas, pegamos a primeira (ou defina sua lógica)
-        const loja = lojasData && lojasData.length > 0 ? lojasData[0] : null;
-
-        if (loja) {
-          console.log("Login bem-sucedido. Loja ID:", loja.id);
-          // Redireciona para o slug da loja, que é a página principal do tema
-          router.push(`/${loja.slug}`); 
+        // Se o usuário tem pelo menos uma loja, redireciona para o dashboard
+        if (lojasData && lojasData.length > 0) {
+          console.log("Login bem-sucedido. Redirecionando para o dashboard.");
+          router.push('/dashboard'); // ✅ CORRIGIDO AQUI: Redireciona para o dashboard
         } else {
           // Se o usuário não tem uma loja, redireciona para o onboarding
           router.push('/onboarding');
