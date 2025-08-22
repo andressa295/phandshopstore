@@ -1,69 +1,194 @@
 // app/(sitetemas)/[lojaSlug]/page.tsx
-import React from 'react';
-import ProductListingClient from './components/ProductListingClient';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import type { Database } from '@/types/next';
+import { redirect } from 'next/navigation';
+import dynamic from 'next/dynamic'; // Importa next/dynamic para carregamento dinâmico
+import ProductListingClient from './components/ProductListingClient';
 
-interface PageProps {
-  params: { lojaSlug: string };
+// Interfaces (mantidas do seu código anterior)
+interface ProdutoData {
+    id: string;
+    nome: string;
+    descricao: string | null;
+    preco: number;
+    estoque: number;
+    imagem_url: string | null;
 }
 
-export default async function ProductListingPage({ params }: PageProps) {
-  // Resolve params corretamente
-  const { lojaSlug } = await params;
+interface InfoBarItem {
+    id: string;
+    icone: string;
+    titulo: string;
+    descricao: string;
+}
 
-  const supabase = createServerComponentClient<Database>({ cookies });
+interface TemaData {
+    id: string;
+    nome_tema: string;
+    caminho_componente: string; // Ex: "TemaPadrao", "Prado"
+}
 
-  // Buscar dados da loja
-  const { data: lojaData, error: lojaError } = await supabase
-    .from('lojas')
-    .select('*')
-    .eq('slug', lojaSlug)
-    .single();
+// NOVA INTERFACE: Define as props esperadas pelo componente de tema dinâmico
+interface DynamicThemeComponentProps {
+    children: React.ReactNode;
+    temaConfig: any; // Use um tipo mais específico se você tiver a interface completa para temaConfig
+}
 
-  if (!lojaData || lojaError) {
-    return <p>Loja não encontrada.</p>;
-  }
+// CORREÇÃO: Definindo o tipo de 'params' como 'any' para contornar o erro de build do Next.js
+export default async function ProductListingPage({ params }: any) { 
+    const { lojaSlug } = params as { lojaSlug: string }; // Mantém a asserção de tipo para uso interno
+    const supabase = createServerComponentClient({ cookies: () => cookies() });
 
-  // Buscar produtos da loja
-  const { data: produtos, error: produtosError } = await supabase
-    .from('produtos')
-    .select('*')
-    .eq('loja_id', lojaData.id);
+    // --- DEPURANDO AUTENTICAÇÃO E LOJA ---
+    console.log("--- page.tsx: Iniciando Depuração de Login/Loja ---");
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-  if (produtosError) {
-    return <p>Erro ao carregar produtos.</p>;
-  }
+    if (userError) {
+        console.error("Erro ao obter usuário autenticado (page.tsx):", userError);
+    } else if (user) {
+        console.log("Usuário autenticado (auth.uid()):", user.id);
+        console.log("Email do usuário:", user.email);
+    } else {
+        console.log("Nenhum usuário autenticado encontrado (page.tsx).");
+    }
+    console.log("Loja Slug na URL:", lojaSlug);
 
-  // Buscar banners da loja
-  const { data: banners, error: bannersError } = await supabase
-    .from('banners')
-    .select('*')
-    .eq('loja_id', lojaData.id)
-    .order('ordem', { ascending: true });
+    // --- Buscar loja ---
+    const { data: loja, error: lojaError } = await supabase
+        .from('lojas')
+        .select(`
+            id,
+            nome_loja,
+            slug,
+            owner_id,
+            theme_id,
+            configuracoes_tema_json,
+            top_info_bar_text,
+            top_info_bar_link,
+            top_info_bar_active,
+            track_order_link_active,
+            support_link_active
+        `)
+        .eq('slug', lojaSlug)
+        .single();
 
-  if (bannersError) {
-    return <p>Erro ao carregar banners.</p>;
-  }
+    if (lojaError) {
+        console.error('Erro ao buscar loja por slug (page.tsx):', lojaError);
+        redirect('/'); 
+    }
+    
+    if (!loja) {
+        console.error('Loja não encontrada para o slug:', lojaSlug);
+        redirect('/');
+    }
 
-  // Buscar items da info bar
-  const { data: infoBarItems, error: infoBarError } = await supabase
-    .from('info_bar_items')
-    .select('*')
-    .eq('loja_id', lojaData.id);
+    console.log("Dados da loja buscados (page.tsx):", JSON.stringify(loja, null, 2));
+    if (user && loja.owner_id && user.id !== loja.owner_id) {
+        console.warn(`ATENÇÃO: Usuário autenticado (UID: ${user.id}) NÃO É O DONO da loja (Owner ID: ${loja.owner_id}). Isso pode causar problemas de RLS.`);
+    }
+    console.log("--- Fim da Depuração de Login/Loja ---");
 
-  if (infoBarError) {
-    return <p>Erro ao carregar Info Bar.</p>;
-  }
 
-  return (
-    <ProductListingClient
-      loja={lojaData}
-      produtos={produtos || []}
-      banners={banners || []}
-      infoBarItems={infoBarItems || []}
-      temaConfig={lojaData.configuracoes_tema_json || {}}
-    />
-  );
+    // --- Configurações do tema (do JSONB) ---
+    let configuracoesTema: any = {};
+    try {
+        configuracoesTema = loja.configuracoes_tema_json
+            ? typeof loja.configuracoes_tema_json === 'string'
+                ? JSON.parse(loja.configuracoes_tema_json)
+                : loja.configuracoes_tema_json
+            : {};
+    } catch (err) {
+        console.error('Erro ao parsear configuracoes_tema_json:', err);
+    }
+
+    // --- Buscar dados do Tema para obter o caminho do componente ---
+    let tema: TemaData | null = null;
+    if (loja.theme_id) {
+        const { data: temaData, error: temaError } = await supabase
+            .from('temas')
+            .select(`
+                id,
+                nome_tema,
+                caminho_componente
+            `)
+            .eq('id', loja.theme_id)
+            .single();
+
+        if (temaError || !temaData) {
+            console.error('Erro ao buscar tema da loja ou tema não encontrado:', temaError);
+            const { data: defaultTema, error: defaultTemaError } = await supabase
+                .from('temas')
+                .select(`id, nome_tema, caminho_componente`)
+                .eq('nome_tema', 'Tema Padrão')
+                .single();
+            
+            if (defaultTemaError || !defaultTema) {
+                console.error('Erro ao buscar tema padrão:', defaultTemaError);
+                redirect('/');
+            }
+            tema = defaultTema;
+        } else {
+            tema = temaData;
+        }
+    } else {
+        const { data: defaultTema, error: defaultTemaError } = await supabase
+            .from('temas')
+            .select(`id, nome_tema, caminho_componente`)
+            .eq('nome_tema', 'Tema Padrão')
+            .single();
+
+        if (defaultTemaError || !defaultTema) {
+            console.error('Erro ao buscar tema padrão:', defaultTemaError);
+            redirect('/');
+        }
+        tema = defaultTema;
+    }
+
+    // --- Carregamento Dinâmico do Componente do Tema ---
+    const ThemeWrapper = dynamic<DynamicThemeComponentProps>(() => 
+        import(`./components/temas/${tema?.caminho_componente || 'TemaPadrao'}/${tema?.caminho_componente || 'TemaPadrao'}`)
+        .catch(err => {
+            console.error(`Falha ao carregar componente do tema ${tema?.caminho_componente || 'TemaPadrao'}:`, err);
+            return ({ children }: { children: React.ReactNode }) => (
+                <div className="theme-fallback-wrapper">
+                    <p>O tema selecionado não pôde ser carregado. Exibindo tema padrão.</p>
+                    {children}
+                </div>
+            );
+        }),
+        { ssr: true }
+    );
+
+    // --- Buscar produtos e banners em paralelo ---
+    const [produtosResult, bannersResult] = await Promise.all([
+        supabase
+            .from('produtos')
+            .select(`id, nome, descricao, preco, estoque, imagem_url`),
+        supabase
+            .from('banners')
+            .select(`id, imagem_url, link_url, titulo, subtitulo, ordem`)
+            .eq('loja_id', loja.id)
+            .eq('is_ativo', true)
+            .order('ordem', { ascending: true }),
+    ]);
+
+    const produtos: ProdutoData[] = (produtosResult.data || []) as ProdutoData[];
+    if (produtosResult.error) console.error('Erro ao buscar produtos:', produtosResult.error);
+
+    const banners = bannersResult.data || [];
+    if (bannersResult.error) console.error('Erro ao buscar banners:', bannersResult.error);
+
+    const infoBarItems: InfoBarItem[] = configuracoesTema.info_bar_items || [];
+
+    return (
+        <ThemeWrapper temaConfig={configuracoesTema}>
+            <ProductListingClient
+                loja={loja}
+                produtos={produtos}
+                temaConfig={configuracoesTema}
+                banners={banners}
+                infoBarItems={infoBarItems}
+            />
+        </ThemeWrapper>
+    );
 }
