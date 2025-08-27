@@ -1,88 +1,117 @@
+/* app/(painel)/personalizar/components/editor/modules/TextImageModule.module.css */
+
+/* --- Container Principal do Módulo --- */
 .sectionBlock {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: 32px; /* Espaçamento entre as seções */
 }
 
-/* --- Cabeçalho do Módulo --- */
+/* --- Cabeçalho do Módulo (Título e Botão de Remover) --- */
 .moduleHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px; /* Espaço entre o cabeçalho e o conteúdo */
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0; /* Linha divisória suave */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* --- Títulos dentro de grupos aninhados / Títulos de Módulo --- */
-.nestedTitle {
-  color: #222222; /* Cor forte para títulos */
+.nestedTitle { /* Título do módulo dentro do editor */
+  color: #333333;
   font-size: 1.1em;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+  margin: 0;
 }
 
-/* --- Grupos de Input (Label + Input/TextArea + Descrição) --- */
+.removeModuleButton { /* Botão de remover o módulo inteiro */
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  
+}
+
+.removeModuleButton:hover {
+  background-color: #c82333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.removeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* --- Descrições de Seção (Texto introdutório do módulo) --- */
+.sectionDescription {
+  color: #666666;
+  font-size: 0.8em; /* Pequeno e discreto */
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição) --- */
 .inputGroup {
-  margin-bottom: 16px; /* Espaçamento entre grupos de input */
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Espaçamento entre label e input */
+  gap: 8px;
+  padding: 16px;
+  background-color: #fdfdfd;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-/* --- Labels dos Inputs --- */
 .inputLabel {
   display: block;
   color: #333333;
-  font-weight: 500;
-  font-size: 0.95em;
+  font-size: 0.9em;
+  font-weight: 600;
   margin-bottom: 0;
 }
 
-/* --- Inputs de Texto, TextArea e Select --- */
-.textInput,
-.textArea,
-.selectInput {
+.textInput, .selectInput, .textArea {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px; /* Cantos arredondados */
+  padding: 10px 12px;
+  border: 1px solid #cccccc; /* Borda clara */
+  border-radius: 4px;
   background-color: #ffffff;
   color: #333333;
   font-size: 0.95em;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   box-sizing: border-box;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   font-family: inherit;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03); /* Sombra interna sutil */
 }
 
-.textInput::placeholder,
-.textArea::placeholder {
-  color: #a0a0a0;
+.textInput::placeholder, .textArea::placeholder {
+  color: #999999;
   opacity: 0.8;
 }
 
-.textInput:focus,
-.textArea:focus,
-.selectInput:focus {
-  border-color: #8d4edb; /* Roxo principal no foco */
-  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.2); /* Sombra de foco */
+.textInput:focus, .selectInput:focus, .textArea:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
   outline: none;
-  background-color: #fafafa; /* Fundo levemente mais claro no foco */
+  background-color: #ffffff;
 }
 
 .textArea {
-  min-height: 120px;
-  resize: vertical;
+  min-height: 80px;
 }
 
-/* --- Select Inputs (Dropdowns) --- */
+/* --- Select Customizado (Seta) --- */
 .selectInput {
   appearance: none;
   -webkit-appearance: none;
@@ -95,34 +124,27 @@
 /* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
-  align-items: flex-start;
-  gap: 8px; /* Espaçamento entre o checkbox e o texto */
+  align-items: center;
+  gap: 12px;
   color: #333333;
   font-size: 0.95em;
   cursor: pointer;
-  padding: 4px 0;
-  transition: color 0.15s ease-in-out;
-}
-
-.checkboxLabel:hover {
-  color: #6b21a8; /* Roxo escuro no hover */
+  user-select: none;
 }
 
 .checkboxInput {
-  margin-right: 0;
-  width: 20px;
-  height: 20px;
-  accent-color: #8d4edb;
-  border-radius: 4px;
-  cursor: pointer;
+  width: 18px;
+  height: 18px;
   border: 1px solid #ccc;
-  flex-shrink: 0;
-  margin-top: 2px;
+  border-radius: 4px;
   appearance: none;
   -webkit-appearance: none;
   background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
   display: grid;
   place-content: center;
+  flex-shrink: 0;
 }
 
 .checkboxInput::before {
@@ -130,182 +152,167 @@
   width: 10px;
   height: 10px;
   transform: scale(0);
-  transition: transform 0.15s ease-in-out;
-  box-shadow: inset 1em 1em #8d4edb;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: inset 1em 1em #6b21a8;
+  background-color: CanvasText;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
 }
 
 .checkboxInput:checked {
-  background-color: #8d4edb;
-  border-color: #8d4edb;
+  background-color: #6b21a8;
+  border-color: #6b21a8;
 }
+.checkboxInput:checked::before { transform: scale(1); }
 
-.checkboxInput:checked::before {
-  transform: scale(1);
-}
 
-/* --- Descrições de Campo --- */
+/* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
   color: #666666;
-  font-size: 0.8em;
-  margin-top: 4px;
-  line-height: 1.4;
+  font-size: 0.7em; /* Tamanho fixo, ~11.2px */
+  margin-top: 8px;
+  line-height: 1.5;
   font-weight: 400;
 }
 
-/* --- Estilos para o Box de Upload de Imagem --- */
-.logoUploadBox {
-  border: 1px dashed #ccc;
-  border-radius: 8px;
+/* --- Grupos de Input Aninhados --- */
+.nestedInputGroup {
+  margin-left: 24px;
+  margin-top: 16px;
   padding: 16px;
-  background-color: #f8f8f8;
+  background-color: #f9f9f9;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+/* --- Estilos para o Box de Upload de Imagem --- */
+.imageUploadBox {
+  border: 1px dashed #e0e0e0;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fafafa;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
-  min-height: 100px;
+  transition: border-color 0.2s ease;
+  min-height: 120px; /* Altura mínima para o box de upload */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
-  position: relative;
+  gap: 8px;
 }
 
-.logoUploadBox:hover {
+.imageUploadBox:hover {
   border-color: #8d4edb;
-  background-color: #f0f0f0;
 }
 
-.logoPlaceholder {
-  color: #a0a0a0;
-  font-size: 0.9em;
-}
-
-/* --- Imagem de Preview em Full-Bleed --- */
-.fullBleedImagePreview {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-  border-radius: 8px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* --- Botão de Remover --- */
-.removeButton {
-  background-color: transparent;
-  border: none;
-  color: #666666;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 4px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+.uploadInner {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  min-width: 32px;
-  min-height: 32px;
-}
-
-.removeButton:hover {
-  color: #dc3545;
-  background-color: rgba(220, 53, 69, 0.08);
-  transform: translateY(-1px);
-}
-.removeButton:active {
-  transform: translateY(0);
-}
-
-.removeIcon {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-/* --- Botão de Adicionar --- */
-.addButton {
-  background-color: #8d4edb;
-  color: #ffffff;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 0.95em;
-  transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  margin-top: 16px;
-  font-weight: 600;
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  color: #999999;
+  font-size: 0.9em;
 }
 
-.addButton:hover {
-  background-color: #6b21a8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.uploadIconPlaceholder {
+  font-size: 2.5em;
+  color: #cccccc;
 }
+
+.uploadPlaceholder {
+  color: #999999;
+  font-size: 0.9em;
+}
+
+.imagePreview {
+  max-width: 100%;
+  height: auto;
+  max-height: 250px; /* Limita a altura do preview */
+  object-fit: contain;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.removeImageButton {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.removeImageButton:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.divider {
+  border: none;
+  border-top: 1px dashed #e0e0e0;
+  margin: 20px 0;
+}
+
 
 /* --- Responsividade --- */
 @media (max-width: 768px) {
   .sectionBlock {
     padding: 16px;
-    margin-bottom: 16px;
-    border-radius: 8px;
   }
-  .moduleHeader {
+  .sectionTitle {
+    font-size: 1.5em;
     margin-bottom: 12px;
-    padding-bottom: 6px;
   }
-  .nestedTitle {
-    font-size: 1em;
-  }
-  .inputGroup {
-    margin-bottom: 12px;
-    gap: 6px;
+  .sectionDescription {
+    font-size: 0.85em;
+    margin-bottom: 24px;
   }
   .inputLabel {
     font-size: 0.9em;
   }
-  .textInput,
-  .textArea,
-  .selectInput {
-    padding: 10px 12px;
-    border-radius: 6px;
+  .textInput, .textArea {
+    padding: 8px 10px;
     font-size: 0.9em;
-  }
-  .textArea {
-    min-height: 80px;
-  }
-  .checkboxLabel {
-    font-size: 0.9em;
-    gap: 6px;
-  }
-  .checkboxInput {
-    width: 18px;
-    height: 18px;
   }
   .fieldDescription {
     font-size: 0.75em;
+    margin-top: 6px;
   }
-  .removeButton {
-    min-width: 28px;
-    min-height: 28px;
-    padding: 4px;
+  .checkboxLabel {
+    font-size: 0.9em;
   }
-  .removeIcon {
-    width: 16px;
-    height: 16px;
+  .nestedInputGroup {
+    margin-left: 15px;
+    padding: 10px;
   }
-  .addButton {
-    padding: 8px 16px;
-    font-size: 0.85em;
-    width: 100%;
+  .imageUploadBox {
+    min-height: 80px;
+    padding: 8px;
+  }
+  .uploadInner {
+    font-size: 0.8em;
+  }
+  .uploadIconPlaceholder {
+    font-size: 2em;
+  }
+  .imagePreview {
+    max-height: 120px;
+  }
+  .removeImageButton {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+  .divider {
+    margin: 15px 0;
   }
 }

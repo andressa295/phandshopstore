@@ -11,13 +11,13 @@ interface SidebarProps {
 const menuItems = [
   { id: 'cores', name: 'Cores', icon: <MdColorLens /> },
   { id: 'fontes', name: 'Fontes', icon: <MdFontDownload /> },
+  { id: 'tipo-designer', name: ' Designer', icon: <MdBrush /> },
   { id: 'cabecalho', name: 'Cabeçalho', icon: <MdWeb /> },
   { id: 'pagina-inicial', name: 'Página Inicial', icon: <MdHome /> },
   { id: 'lista-produtos', name: 'Lista de Produtos', icon: <MdList /> },
   { id: 'detalhes-produto', name: 'Detalhes do Produto', icon: <MdInfo /> },
   { id: 'carrinho-compras', name: 'Carrinho de Compras', icon: <MdShoppingCart /> },
   { id: 'rodape-pagina', name: 'Rodapé da Página', icon: <MdCropDin /> },
-  { id: 'tipo-designer', name: 'Tipo de Designer', icon: <MdBrush /> },
   { id: 'avancado', name: 'Avançado', icon: <MdCode /> },
 ];
 

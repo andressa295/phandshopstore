@@ -1,27 +1,30 @@
+// app/(painel)/personalizar/components/editor/AdvancedSection.tsx
 'use client';
 
-import React, { useRef } from 'react'; // Importa useRef
+import React, { useRef } from 'react';
 import { ThemeConfig, ThemeUpdateFn } from '../../../types';
-// Importa o novo arquivo de estilos específico para AdvancedSection
 import styles from './AdvancedSection.module.css';
+import { useTheme } from '../../../context/ThemeContext'; // Importa useTheme
 
 interface Props {
-  config: ThemeConfig;
-  updateConfig: ThemeUpdateFn;
-  saveThemeConfig: () => void; // Mantido para um possível botão de salvar separado
+  // Config e updateConfig virão do useTheme, não mais de props diretas
+  // config: ThemeConfig;
+  // updateConfig: ThemeUpdateFn;
+  // saveThemeConfig: () => void; // Este botão de salvar será no PanelHeader
 }
 
-const AdvancedSection: React.FC<Props> = ({ config, updateConfig, saveThemeConfig }) => {
+const AdvancedSection: React.FC = () => {
+  const { config, updateConfig, saveThemeConfig } = useTheme(); // Usa o hook para acessar o contexto
+
   const advancedConfig = config.advanced || {
     customCss: '',
     customJs: '',
-    faviconUrl: '', // Agora será gerenciado via upload
+    faviconUrl: '',
     enableLazyLoading: true,
     enableCodeMinification: false,
+    lastUpdatedScript: '', // Garante que exista para evitar undefined
+    lastUpdatedEditor: '', // Garante que exista para evitar undefined
   };
-
-  // Ref para o input de upload do favicon
-  const faviconInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpdate = (field: keyof typeof advancedConfig, value: any) => {
     updateConfig({
@@ -32,27 +35,12 @@ const AdvancedSection: React.FC<Props> = ({ config, updateConfig, saveThemeConfi
     });
   };
 
-  // Nova função para lidar com o upload do favicon
-  const handleFaviconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        // ATENÇÃO: reader.result é uma string Base64. Em um sistema real,
-        // você faria um upload para um servidor e salvaria a URL pública.
-        handleUpdate('faviconUrl', reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // Removida a função handleFaviconUpload (Base64)
+  // Removido o useRef para o input de arquivo
 
-  // Função para simular o "teste" das alterações
   const handleTestChanges = () => {
-    // Aqui você pode adicionar a lógica real para aplicar e pré-visualizar as alterações
-    // sem necessariamente salvá-las no backend.
     console.log('Testando alterações:', config);
-    // Exemplo: Poderia enviar a 'config' para uma API de preview
-    alert('As alterações foram aplicadas para teste na pré-visualização!'); // Usando alert para feedback simples
+    alert('As alterações foram aplicadas para teste na pré-visualização!');
   };
 
   return (
@@ -96,28 +84,25 @@ const AdvancedSection: React.FC<Props> = ({ config, updateConfig, saveThemeConfi
         </p>
       </div>
 
-      {/* Favicon Upload (AGORA COM UPLOAD) */}
+      {/* Favicon URL (AGORA COM INPUT DE TEXTO) */}
       <div className={styles.inputGroup}>
-        <label className={styles.inputLabel}>Favicon:</label>
-        <div
-          className={styles.logoUploadBox} // Reutilizando o estilo do upload de logo
-          onClick={() => faviconInputRef.current?.click()}
-        >
-          {advancedConfig.faviconUrl ? (
-            <img src={advancedConfig.faviconUrl} alt="Favicon Preview" className={styles.faviconImagePreview} />
-          ) : (
-            <span className={styles.logoPlaceholder}>Clique para adicionar o Favicon</span>
-          )}
-        </div>
+        <label htmlFor="faviconUrlInput" className={styles.inputLabel}>URL do Favicon:</label>
         <input
-          ref={faviconInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={handleFaviconUpload}
+          id="faviconUrlInput"
+          type="text"
+          className={styles.textInput} // Use um estilo de input de texto
+          value={advancedConfig.faviconUrl}
+          onChange={(e) => handleUpdate('faviconUrl', e.target.value)}
+          placeholder="https://seusite.com/favicon.ico"
         />
+        {advancedConfig.faviconUrl && (
+          <div className={styles.faviconPreviewContainer}>
+            <p className={styles.fieldDescription}>Pré-visualização:</p>
+            <img src={advancedConfig.faviconUrl} alt="Favicon Preview" className={styles.faviconImagePreview} />
+          </div>
+        )}
         <small className={styles.fieldDescription}>
-          Adicione o ícone que aparecerá na aba do navegador (geralmente um arquivo .ico ou .png).
+          Adicione a URL pública do ícone que aparecerá na aba do navegador (ex: um arquivo .ico ou .png).
         </small>
       </div>
 

@@ -1,20 +1,35 @@
 // Tipos de Módulos da Homepage
-export interface BannerModuleData {
-  desktopImageUrl?: string; // Tornando opcional, pode ter apenas um imageUrl
-  mobileImageUrl?: string;  // Tornando opcional
-  imageUrl?: string;        // Adicionado para caso de imagem única
-  title?: string;
-  subtitle?: string;
+// --- INTERFACE PARA UM BANNER INDIVIDUAL ---
+export interface SingleBannerData {
+  id: string;
+  desktopImageUrl?: string;
+  mobileImageUrl?: string;
+  title?: string; // Título do banner individual
+  subtitle?: string; // Subtítulo do banner individual
   buttonText?: string;
   buttonLink?: string;
-  overlayColor?: string; // Cor do overlay
-  overlayOpacity?: number; // Opacidade do overlay
-  textColor?: string;    // Cor do texto do banner
-  titleFontSize?: string; // Tamanho da fonte do título
-  subtitleFontSize?: string; // Tamanho da fonte do subtítulo
-  buttonBackgroundColor?: string; // Cor de fundo do botão
-  buttonTextColor?: string;     // Cor do texto do botão
-  isActive: boolean; // Controla se o módulo está ativo
+  overlayColor?: string; // Cor do overlay (mantido)
+  overlayOpacity?: number; // Opacidade do overlay (mantido)
+  textColor?: string;
+  titleFontSize?: string;
+  subtitleFontSize?: string;
+  buttonBackgroundColor?: string;
+  buttonTextColor?: string;
+  isActive?: boolean; // <<-- isActive está aqui
+}
+
+// --- INTERFACE PARA O MÓDULO BANNER ROTATIVO COMPLETO ---
+export interface BannerModuleData {
+  title?: string; // Título GERAL do módulo (ex: "Nossos Banners Promocionais")
+  subtitle?: string; // Subtítulo GERAL do módulo
+  
+  banners: SingleBannerData[]; // Array de banners individuais
+  
+  layout?: 'carousel' | 'fade'; // Tipo de transição do carrossel
+  autoplay?: boolean; // Se o carrossel deve reproduzir automaticamente
+  interval?: number; // Intervalo de tempo entre os slides (em segundos)
+  
+  isActive: boolean; // <<-- isActive está aqui
 }
 
 export interface SingleMiniBannerData {
@@ -23,21 +38,34 @@ export interface SingleMiniBannerData {
   title?: string;
   subtitle?: string;
   link?: string;
+  isActive?: boolean; // <<-- isActive está aqui
 }
 
 export interface MiniBannerModuleData {
   title?: string;
-  layout?: 'grid' | 'carousel';
+  layout?: 'grid' | 'carousel'; // <<-- layout aqui aceita 'grid' ou 'carousel'
   banners: SingleMiniBannerData[];
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
+}
+
+// --- NOVA INTERFACE PARA UMA VITRINE DE PRODUTOS INDIVIDUAL ---
+export interface SingleProductShowcaseData {
+  id: string;
+  title?: string; // Título desta vitrine específica (ex: "Calças em Destaque")
+  displayType?: 'latest' | 'best_sellers' | 'featured' | 'selected';
+  categoryId?: string | null; // ID da categoria para filtrar produtos
+  productIds?: string[]; // IDs de produtos selecionados manualmente (se displayType for 'selected')
+  numberOfProducts?: number;
+  isActive?: boolean; // <<-- isActive está aqui
 }
 
 export interface ProductShowcaseModuleData {
-  title?: string;
-  displayType?: 'latest' | 'best_sellers' | 'featured' | 'selected';
-  productIds?: string[];
-  numberOfProducts?: number;
-  isActive: boolean;
+  title?: string; // Título GERAL do módulo (ex: "Seções de Produtos")
+  subtitle?: string; // Subtítulo GERAL do módulo
+  
+  showcases: SingleProductShowcaseData[]; // Array de vitrines individuais
+  
+  isActive: boolean; // <<-- isActive está aqui
 }
 
 export interface TextImageModuleData {
@@ -47,7 +75,7 @@ export interface TextImageModuleData {
   imagePosition?: 'left' | 'right';
   buttonText?: string;
   buttonLink?: string;
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
 }
 
 export interface NewsletterModuleData {
@@ -55,21 +83,47 @@ export interface NewsletterModuleData {
   subtitle?: string;
   buttonText?: string;
   privacyPolicyLink?: string;
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
+}
+
+export interface CategoryData { // <--- INTERFACE CategoryData (para categorias do Supabase)
+  id: string;
+  nome: string;
+  slug: string;
+  imagem_url?: string | null;
+}
+
+// --- NOVA INTERFACE PARA UMA CATEGORIA SELECIONADA PARA EXIBIÇÃO ---
+export interface SelectedCategoryDisplayData {
+  id: string; // ID da categoria (do Supabase)
+  nome: string; // Nome da categoria (para display no painel)
+  slug: string; // Slug da categoria
+  imageUrl?: string; // URL da imagem customizada para esta categoria
+  isActive?: boolean; // <<-- isActive está aqui
 }
 
 export interface CategoriesModuleData {
   title?: string;
-  selectedCategories?: string[]; 
+  categoriesToDisplay?: SelectedCategoryDisplayData[]; // <--- AGORA É UM ARRAY DE OBJETOS
   layout?: 'grid' | 'carousel';
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
+}
+
+// --- NOVA INTERFACE PARA UM ITEM DE DESTAQUE INDIVIDUAL ---
+export interface SingleHighlightItem { // <--- NOVA INTERFACE EXPORTADA
+  id: string; // ID único do item
+  icon: string; // Nome do ícone (ex: 'MdStar', 'MdCreditCard') ou emoji
+  title: string; // Título do destaque (ex: "Frete Grátis")
+  subtitle: string; // Subtítulo do destaque (ex: "Em compras acima de R$199")
+  isActive?: boolean; // <<-- isActive está aqui
 }
 
 export interface HighlightsModuleData {
   title?: string;
-  highlightItems?: Array<{ icon: string; text: string }>;
+  subtitle?: string; // Adicionado subtítulo geral para o módulo
+  highlightItems?: SingleHighlightItem[]; // Array de itens de destaque
   layout?: 'icons-text' | 'cards';
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
 }
 
 export interface VideoModuleData {
@@ -78,8 +132,45 @@ export interface VideoModuleData {
   autoplay?: boolean;
   loop?: boolean;
   controls?: boolean;
-  isActive: boolean;
+  isActive: boolean; // <<-- isActive está aqui
 }
+
+// --- NOVA INTERFACE PARA UM DEPOIMENTO INDIVIDUAL ---
+export interface SingleTestimonialData { // <--- NOVA INTERFACE EXPORTADA
+  id: string;
+  text: string; // Texto do depoimento
+  author: string; // Nome do autor
+  imageUrl?: string; // Imagem do cliente (opcional)
+  rating?: 1 | 2 | 3 | 4 | 5; // Avaliação em estrelas (opcional)
+  isActive?: boolean; // Se este depoimento individual está ativo
+}
+
+export interface TestimonialsModuleData { // <--- NOVA INTERFACE EXPORTADA
+  title?: string; // Título geral do módulo (ex: "O que nossos clientes dizem")
+  subtitle?: string; // Subtítulo geral do módulo
+  testimonials: SingleTestimonialData[]; // Array de depoimentos
+  layout?: 'carousel' | 'grid'; // Layout dos depoimentos
+  isActive: boolean; // Se o módulo como um todo está ativo
+}
+
+// --- NOVAS INTERFACES PARA O MÓDULO DE GALERIA DE IMAGENS ---
+export interface SingleImageGalleryData { // <--- NOVA INTERFACE EXPORTADA
+  id: string;
+  imageUrl?: string; // URL da imagem da galeria
+  title?: string; // Título da imagem (opcional)
+  link?: string; // Link ao clicar na imagem (opcional)
+  isActive?: boolean; // Se esta imagem individual está ativa
+}
+
+export interface ImageGalleryModuleData { // <--- NOVA INTERFACE EXPORTADA
+  title?: string; // Título geral do módulo (ex: "Nossa Galeria")
+  subtitle?: string; // Subtítulo geral do módulo
+  images: SingleImageGalleryData[]; // Array de imagens da galeria
+  layout?: 'grid' | 'carousel'; // Layout da galeria
+  gridColumns?: 2 | 3 | 4; // Número de colunas se o layout for grid
+  isActive: boolean; // Se o módulo como um todo está ativo
+}
+
 
 export interface ProductDetailConfig {
   galleryLayout?: 'carousel' | 'grid';
@@ -111,7 +202,7 @@ export interface ProductListConfig {
   enableSorting?: boolean;
   productsPerPage?: number;
   showPagination?: boolean;
-  addToCartButtonColor?: string; 
+  addToCartButtonColor?: string;
 }
 
 export interface CartConfig {
@@ -120,46 +211,53 @@ export interface CartConfig {
   showShippingEstimator?: boolean;
   showCouponField?: boolean;
   showCartNotes?: boolean;
-  checkoutButtonText?: string;
   showCrossSellProducts?: boolean;
   crossSellTitle?: string;
+  checkoutButtonText?: string;
 }
 
 export interface FooterConfig {
-  showQuickLinks?: boolean;
+  showQuickLinks?: boolean; // Propriedade de links rápidos foi substituída, se for o caso
   quickLinksTitle?: string;
   quickLinks?: Array<{ id: string; text: string; url: string }>;
-  
+
+  
+
+  showMenu?: boolean; // Adicione esta linha
   showSocialMediaIcons?: boolean;
   socialMediaTitle?: string;
   socialMediaLinks?: Array<{ id: string; platform: 'facebook' | 'instagram' | 'x' | 'youtube' | 'linkedin' | 'pinterest' | 'tiktok'; url: string }>;
 
-  showNewsletterSignup?: boolean;
-  newsletterTitle?: string;
-  newsletterSubtitle?: string;
-  privacyPolicyLink?: string;
+  showNewsletterSignup?: boolean;
+  newsletterTitle?: string;
+  newsletterSubtitle?: string;
+  privacyPolicyLink?: string;
 
-  showContactInfo?: boolean;
-  contactAddress?: string;
-  contactPhone?: string;
-  contactEmail?: string;
+  showContactInfo?: boolean;
+  contactAddress?: string;
+  contactPhone?: string;
+  contactEmail?: string;
 
-  showPaymentMethods?: boolean;
-  paymentMethodsImages?: Array<{ id: string; imageUrl: string; }>;
+  showPaymentMethods?: boolean;
+  paymentMethodsImages?: Array<{ id: string; imageUrl: string; }>;
 
-  showCopyright?: boolean;
-  copyrightText?: string;
-  showCnpj?: boolean;
-  cnpjText?: string;
+  // ADD THE MISSING PROPERTIES HERE
+  showShippingMethods?: boolean; // New property for the checkbox
+  shippingMethodsImages?: Array<{ id: string; imageUrl: string; }>; // New property for the array of images
 
-  footerBackgroundColor?: string;
-  footerTextColor?: string;
+  showCopyright?: boolean;
+  copyrightText?: string;
+  showCnpj?: boolean;
+  cnpjText?: string;
+
+  footerBackgroundColor?: string;
+  footerTextColor?: string;
 }
 
 export interface DesignConfig {
   buttonBorderRadius?: 'square' | 'rounded' | 'oval';
   buttonHoverAnimation?: 'none' | 'scale' | 'opacity' | 'slide';
-  buttonVariant?: 'filled' | 'bordered'; 
+  buttonVariant?: 'filled' | 'bordered';
 
   cartIcon?: 'cart' | 'bag' | 'shopping_cart_outlined' | 'shopping_bag_outlined';
   showCartIconText?: boolean;
@@ -184,27 +282,30 @@ export interface AdvancedConfig {
   faviconUrl?: string;
   enableLazyLoading?: boolean;
   enableCodeMinification?: boolean;
+  lastUpdatedScript?: string;
+  lastUpdatedEditor?: string;
 }
 
 export interface HeaderSettingsConfig {
-  logoUrl?: string; 
+  logoUrl?: string;
   logoSize?: 'small' | 'medium' | 'large';
   iconSize?: 'small' | 'medium' | 'large';
-  desktopSearch?: 'icon' | 'bar' | 'none'; // Adicionado 'none'
-  mobileSearch?: 'icon' | 'bar' | 'none';  // Adicionado 'none'
+  desktopSearch?: 'icon' | 'bar' | 'none';
+  mobileSearch?: 'icon' | 'bar' | 'none';
   showAnnouncementBar?: boolean;
   announcementText?: string;
   announcementLink?: string;
   announcementMarquee?: boolean;
-  useCustomHeaderColors?: boolean; 
-  headerBackgroundColor?: string; // Cor de fundo do cabeçalho, se useCustomHeaderColors for true
-  headerTextColor?: string;     // Cor do texto do cabeçalho, se useCustomHeaderColors for true
-  announcementBackgroundColor?: string; // Cor de fundo da barra de anúncio
-  announcementTextColor?: string;     // Cor do texto da barra de anúncio
-  searchBarBackgroundColor?: string; // Cor de fundo da barra de pesquisa no header
+  useCustomHeaderColors?: boolean;
+  headerBackgroundColor?: string;
+  headerTextColor?: string;
+  announcementBackgroundColor?: string;
+  announcementTextColor?: string;
+  searchBarBackgroundColor?: string;
 }
 
 // Tipo Union para Módulos da Homepage
+// A propriedade 'data' agora é 'any' para simplificar a inferência no HomepageEditor
 export type HomepageModuleType =
   | { id: string; type: 'banner'; data: BannerModuleData }
   | { id: string; type: 'mini_banners'; data: MiniBannerModuleData }
@@ -213,13 +314,15 @@ export type HomepageModuleType =
   | { id: string; type: 'newsletter'; data: NewsletterModuleData }
   | { id: string; type: 'categories'; data: CategoriesModuleData }
   | { id: string; type: 'highlights'; data: HighlightsModuleData }
-  | { id: string; type: 'video'; data: VideoModuleData };
+  | { id: string; type: 'video'; data: VideoModuleData }
+  | { id: string; type: 'testimonials'; data: TestimonialsModuleData }
+  | { id: string; type: 'image_gallery'; data: ImageGalleryModuleData }; // <--- ADICIONADO AQUI
 
 // Interface da Configuração Geral do Tema
 export interface ThemeConfig {
   primaryColor?: string;
   secondaryColor?: string;
-  textColor?: string; 
+  textColor?: string;
 
   primaryFont?: string;
   secondaryFont?: string;
@@ -227,19 +330,19 @@ export interface ThemeConfig {
   textBaseFontSize?: 'small' | 'medium' | 'large';
 
   headerTitle?: string;
-  // showSearchBar?: boolean; // Esta propriedade é redundante com headerSettings.desktopSearch/mobileSearch, pode ser removida se quiser
   fixedHeader?: boolean;
-  headerBackgroundColor?: string; // Cor de fundo do cabeçalho (pode ser sobrescrita por headerSettings)
-  headerTextColor?: string;     // Cor do texto do cabeçalho (pode ser sobrescrita por headerSettings)
-  
-  // Novas propriedades adicionadas para a barra de navegação principal (menu)
-  navbarBackgroundColor?: string; // Cor de fundo da barra de navegação
-  navbarTextColor?: string;       // Cor do texto da barra de navegação
+  headerBackgroundColor?: string;
+  headerTextColor?: string;
 
-  headerSettings?: HeaderSettingsConfig; // Objeto de configurações específicas do cabeçalho
+  navbarBackgroundColor?: string;
+  navbarTextColor?: string;
+
+  headerSettings?: HeaderSettingsConfig;
 
   homepage?: {
     modules: HomepageModuleType[];
+    categoriesData?: CategoryData[]; // <--- Adicionado para passar categorias disponíveis
+    productsData?: any[]; // <--- Adicionado para passar produtos disponíveis (para seleção)
   };
   productDetail?: ProductDetailConfig;
   productList?: ProductListConfig;

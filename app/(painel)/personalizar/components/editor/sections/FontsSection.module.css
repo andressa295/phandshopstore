@@ -1,212 +1,379 @@
-/* app/(painel)/personalizar/components/editor/sections/FontsSection.module.css */
 
-/* --- Container Principal da Seção --- */
 .fontsSection {
-  padding: 24px; /* Espaçamento interno generoso, como no Carrinho */
-  background-color: #ffffff; /* Fundo branco e limpo */
-  border-radius: 8px; /* Cantos levemente arredondados */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
-  margin-bottom: 32px; /* Espaço entre seções */
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: 32px; /* Espaçamento entre as seções */
 }
 
 /* --- Títulos da Seção --- */
 .sectionTitle {
-  color: #333333; /* Cor de texto principal */
-  font-size: 1.2em; /* Levemente maior para destaque, como no Carrinho */
-  font-weight: 700; /* Forte, mas não excessivo */
-  margin-bottom: 12px; /* Como no Carrinho */
-  padding-bottom: 8px; /* Como no Carrinho */
+  color: #333333; /* Cor fixa para o título da seção */
+  font-size: 1.25em; /* ~20px */
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
   border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
-  text-align: left; /* Alinhado à esquerda, como no Carrinho */
+  text-align: left;
+  letter-spacing: -0.03em;
 }
 
-/* --- Grupos de Input (Genéricos) --- */
+/* --- Descrições de Seção (O "subtítulo" da seção - agora menor e fixo) --- */
+.sectionDescription {
+  color: #666666; /* VALOR FIXO */
+  font-size: 0.8rem; /* AJUSTADO: Tamanho fixo, ~12.8px */
+  line-height: 1.6;
+  margin-top: 4px;
+  margin-bottom: 24px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* --- Grupos de Input (Cada Bloco de Opção - agora mais "lisinho") --- */
 .inputGroup {
-  margin-bottom: 20px; /* Bom espaçamento entre os grupos de configuração, como no Carrinho */
-  display: flex; /* Para alinhar labels com inputs/selects */
-  flex-direction: column; /* Coloca os elementos em coluna */
-  /* Removido 'gap' para corresponder ao estilo do Carrinho, onde o espaçamento é dado por margin-bottom */
+  margin-bottom: 16px; /* Espaçamento entre os grupos de input */
+  padding: 16px; /* Espaçamento interno para cada grupo de input */
+  background-color: transparent; /* Fundo transparente para o design "lisinho" */
+  border-radius: 4px;
+  border: 1px solid #eeeeee; /* Borda sutil para agrupar */
+  /* Removido box-shadow para o design "lisinho" */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* --- Labels dos Inputs e Selects --- */
 .inputLabel {
-  display: block; /* Garante que a label ocupe sua própria linha */
-  color: #333333;
-  font-size: 0.9em; /* Menor e mais delicado, como no Carrinho */
-  font-weight: 600; /* Suficiente para destaque, mas não pesado */
-  margin-bottom: 8px; /* Espaçamento entre label e o campo (input/select), como no Carrinho */
+  display: block;
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.9em; /* ~14.4px */
+  font-weight: 600;
+  margin-bottom: 0;
 }
 
-/* --- Inputs de Texto, Número, Select, Textarea (DESIGN DE ÚLTIMA GERAÇÃO!) --- */
+/* --- Select Inputs (Dropdowns) --- */
+.selectInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cccccc; /* BORDA CLARA E FIXA */
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.95em; /* ~15.2px */
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.selectInput:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
+  outline: none;
+  background-color: #ffffff;
+}
+
+/* --- Text Input (para campos de texto simples) --- */
 .textInput,
-.numberInput,
-.selectInput,
 .textArea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0; /* Borda padrão */
-  border-radius: 4px; /* **AJUSTADO**: Arredondamento de 4px, como no Carrinho */
+  border: 1px solid #cccccc; /* BORDA CLARA E FIXA */
+  border-radius: 4px;
   background-color: #ffffff;
-  color: #333333;
-  font-size: 0.95em; /* Tamanho confortável */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transições rápidas */
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.95em; /* ~15.2px */
   box-sizing: border-box;
-  font-family: inherit; /* Mantém a fonte do elemento pai */
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  font-family: inherit;
 }
 
 .textInput::placeholder,
 .textArea::placeholder {
-  color: #999999; /* Cor de placeholder padrão */
+  color: #999999; /* VALOR FIXO */
   opacity: 0.8;
 }
 
 .textInput:focus,
-.numberInput:focus,
-.selectInput:focus,
 .textArea:focus {
-  border-color: #6b21a8; /* Borda roxa no foco */
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra suave de foco, como no Carrinho */
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
   outline: none;
-  background-color: #ffffff; /* Mantém fundo no foco */
+  background-color: #ffffff;
 }
-
-.textArea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-/* --- Select Customizado (Seta) --- */
-.selectInput {
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
-}
-
-/* --- Color Input (REMOVIDO: Não presente no estilo de referência) --- */
-/*
-.colorInput {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.colorInput:hover {
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.15);
-  transform: scale(1.05);
-}
-
-.colorInput::-webkit-color-swatch-wrapper { padding: 0; }
-.colorInput::-webkit-color-swatch { border-radius: 50%; border: none; }
-.colorInput::-moz-color-swatch { border-radius: 50%; border: none; }
-*/
 
 /* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 12px; /* Espaçamento ENTRE o checkbox e o texto, como no Carrinho */
-  color: #333333;
-  font-size: 0.95em; /* Como no Carrinho */
+  gap: 8px;
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.95em; /* ~15.2px */
   cursor: pointer;
   user-select: none;
-  margin-top: 0;
-  margin-bottom: 8px; /* Como no Carrinho */
-  padding-top: 5px; /* Como no Carrinho */
-  padding-bottom: 5px; /* Como no Carrinho */
 }
 
 .checkboxInput {
-  width: 18px; /* **AJUSTADO**: Largura de 18px, como no Carrinho */
-  height: 18px; /* **AJUSTADO**: Altura de 18px, como no Carrinho */
-  border: 1px solid #ccc; /* Borda padrão, como no Carrinho */
-  border-radius: 4px; /* **AJUSTADO**: Arredondamento de 4px, como no Carrinho */
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: #ffffff;
-  transition: background-color 0.2s ease, border-color 0.2s ease; /* Transições rápidas */
+  width: 20px;
+  height: 20px;
+  accent-color: #8d4edb; /* Cor primária */
+  border-radius: 6px;
   cursor: pointer;
-  display: grid;
-  place-content: center;
   flex-shrink: 0;
   margin-top: 0;
 }
 
-.checkboxInput::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  transform: scale(0);
-  transition: transform 0.2s ease-in-out;
-  box-shadow: inset 1em 1em #6b21a8; /* Cor roxa para o checkmark */
-  background-color: CanvasText; /* Fallback */
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
-}
-
-.checkboxInput:checked {
-  background-color: #6b21a8;
-  border-color: #6b21a8;
-}
-.checkboxInput:checked::before { transform: scale(1); }
-
-
-/* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
+/* --- Descrições de Campo (O "subtítulo" pequeno para cada input - agora menor e fixo) --- */
 .fieldDescription {
-  color: #666666;
-  font-size: 0.85em; /* Pequeno e discreto, como no Carrinho */
-  margin-top: 8px; /* Espaçamento para o campo acima, como no Carrinho */
+  color: #666666; /* VALOR FIXO */
+  font-size: 0.7rem; /* AJUSTADO: Tamanho fixo, ~11.2px */
   line-height: 1.5;
-  font-weight: 400; /* Sem negrito */
+  margin-top: 4px;
+  font-weight: 400;
 }
 
-/* --- Grupos de Input Aninhados (indentados quando dependem de um checkbox/select) --- */
+/* --- Grupos de Input Aninhados --- */
 .nestedInputGroup {
-  margin-left: 24px; /* Indentação para clareza visual, como no Carrinho */
-  margin-top: 16px; /* Espaçamento superior, como no Carrinho */
-  padding: 16px; /* Padding interno, como no Carrinho */
-  background-color: #f9f9f9; /* Fundo levemente diferente para destacar */
-  border: 1px solid #f0f0f0; /* Borda muito leve */
-  border-radius: 6px; /* Como no Carrinho */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Sombra mais sutil ainda */
+  margin-left: 24px;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f9f9f9; /* Fundo levemente mais escuro para aninhados */
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* ---------------------------------------------------- */
-/* Media Queries para Responsividade (AJUSTADO) */
-/* ---------------------------------------------------- */
+/* --- Container de Preview de Imagens (Selos de Confiança) --- */
+.imagePreviewContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px dashed #e0e0e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
 
+.imagePreviewSmall {
+  max-height: 50px;
+  width: auto;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  object-fit: contain;
+}
+
+/* --- Color Option (Item individual de cor) --- */
+/* (Este bloco não é usado diretamente em FontsSection, mas mantido para consistência se for copiado) */
+.colorOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.colorOption:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* --- Color Swatch Container (para a bolinha de cor) --- */
+.colorSwatchContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.colorSwatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #cccccc;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.colorSwatch:hover {
+  transform: scale(1.05);
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.15);
+}
+
+.hiddenColorInput {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+}
+
+/* --- Color Details (Texto ao lado da bolinha de cor) --- */
+.colorDetails {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.colorLabel {
+  font-size: 1em; /* ~16px */
+  font-weight: 600;
+  color: #444444; /* VALOR FIXO */
+  margin-bottom: 0.1rem;
+}
+
+.colorDescription {
+  color: #666666; /* VALOR FIXO */
+  font-size: 0.7em; /* AJUSTADO: Tamanho fixo, ~11.2px */
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* --- Botões --- */
+.addButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease;
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.addButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+.addButton:active {
+  transform: translateY(0);
+}
+
+.removeButton {
+  background-color: #dc3545;
+  color: #ffffff;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.removeButton:hover {
+  background-color: #c82333;
+}
+.removeIcon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* --- Outros elementos --- */
+.inputWithButton {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.paymentMethodsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.paymentMethodItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.paymentMethodImage {
+  max-height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* === Responsivo === */
 @media (max-width: 768px) {
-  .fontsSection {
-    padding: 16px; /* Como no Carrinho */
+  .sectionBlock {
+    padding: 16px;
   }
+
   .sectionTitle {
-    font-size: 1.5em; /* Como no Carrinho */
-    margin-bottom: 12px; /* Ajustado para mobile */
+    font-size: 1.5em;
   }
-  /* Ajustes para inputs em mobile */
-  .textInput, .numberInput, .selectInput, .textArea {
-    padding: 8px 10px; /* Como no Carrinho */
-    font-size: 0.9em; /* Como no Carrinho */
+
+  .sectionDescription {
+    font-size: 0.85em; /* VALOR FIXO para mobile */
+    margin-bottom: 24px;
   }
-  /* .colorInput foi removido */
+
+  .inputLabel {
+    font-size: 0.9em;
+  }
+
+  .selectInput,
+  .textInput,
+  .textArea {
+    padding: 8px 10px;
+    font-size: 0.9em;
+    border-radius: 4px;
+  }
+
+  .fieldDescription {
+    font-size: 0.75em; /* VALOR FIXO para mobile */
+  }
+
   .checkboxLabel {
-    font-size: 0.9em; /* Como no Carrinho */
+    font-size: 0.9em;
   }
+
   .nestedInputGroup {
-    margin-left: 16px; /* Como no Carrinho */
-    padding: 12px; /* Como no Carrinho */
+    margin-left: 16px;
+    padding: 12px;
+    border-radius: 4px;
+  }
+
+  .colorOption {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 8px;
+    padding: 5px 0;
+  }
+
+  .colorSwatch {
+    width: 28px;
+    height: 28px;
+  }
+
+  .colorLabel {
+    font-size: 0.9em;
+  }
+
+  .colorDescription {
+    font-size: 0.75em; /* VALOR FIXO para mobile */
   }
 }

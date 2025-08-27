@@ -1,61 +1,64 @@
+/* app/(painel)/personalizar/components/editor/ColorsSection.module.css */
+
 /* --- Container Principal da Seção --- */
 .colorsSection {
-  padding: 24px; /* Ajustado para 24px como o sectionBlock do modelo */
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Ajustado para 0 2px 5px rgba(0,0,0,0.05) */
-  margin-bottom: 32px; /* Ajustado para 32px */
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
 }
 
 /* --- Títulos da Seção --- */
 .sectionTitle {
-  color: #333333; /* Cor de texto principal */
-  font-size: 1.2em; /* Ajustado para 1.2em como o sectionTitle do modelo */
-  font-weight: 700; /* Ajustado para 700 */
-  margin-bottom: 12px; /* Ajustado para 12px */
-  padding-bottom: 8px; /* Ajustado para 8px */
+  color: #333333; /* Valor fixo */
+  font-size: 1.25em; /* ~20px */
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
   border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
-  text-align: left; /* Ajustado para left, como o sectionTitle do modelo */
+  text-align: left;
+  letter-spacing: -0.03em;
 }
 
-/* --- Descrições de Seção (Adicionado para consistência, se aplicável) --- */
-/* Se esta seção tiver uma descrição geral, pode usar esta classe */
+/* --- Descrições de Seção (O "subtítulo" da seção - agora menor e fixo) --- */
 .sectionDescription {
-  color: #666666; /* Cor de texto secundária para descrições */
-  font-size: 0.95em;
+  color: #666666; /* Valor fixo */
+  font-size: 0.9em; /* ~14px - Menor que o título */
   line-height: 1.6;
-  margin-bottom: 32px; /* Espaçamento generoso para respirar */
-  font-weight: 400; /* Sem negrito excessivo */
+  margin-top: 4px;
+  margin-bottom: 24px;
+  font-style: normal;
+  font-weight: 400;
 }
 
-/* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição - Adicionado para consistência, se aplicável) --- */
-/* Se as opções de cor forem agrupadas como inputs, use esta classe */
-.inputGroup { /* Reutiliza o estilo do modelo */
-  margin-bottom: 20px;
+/* --- Grupos de Input (Cada Bloco de Opção - agora mais "lisinho") --- */
+.inputGroup {
+  margin-bottom: 16px; /* Espaçamento entre os grupos de input */
+  padding: 16px; /* Espaçamento interno para cada grupo de input */
+  background-color: transparent; /* Fundo transparente */
+  border-radius: 4px;
+  border: 1px solid #eeeeee; /* Borda sutil para agrupar */
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Espaçamento entre label e input */
+  gap: 8px;
 }
 
-/* --- Labels dos Inputs e Selects (Adicionado para consistência, se aplicável) --- */
-.inputLabel { /* Reutiliza o estilo do modelo */
+/* --- Labels dos Inputs e Selects --- */
+.inputLabel {
   display: block;
-  color: #333333;
-  font-size: 0.9em;
+  color: #444444; /* Valor fixo */
+  font-size: 1em; /* ~16px */
   font-weight: 600;
   margin-bottom: 0;
 }
 
-/* --- Select Inputs (Dropdowns - Reutiliza o estilo do modelo) --- */
+/* --- Select Inputs (Dropdowns) --- */
 .selectInput {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   background-color: #ffffff;
-  color: #333333;
-  font-size: 0.95em;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #444444; /* Valor fixo */
+  font-size: 1em; /* ~16px */
   box-sizing: border-box;
   appearance: none;
   -webkit-appearance: none;
@@ -63,121 +66,104 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  font-family: inherit;
 }
 
 .selectInput:focus {
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2);
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
   outline: none;
+  background-color: #ffffff;
 }
 
-/* --- Text Input (para campos de texto simples - Reutiliza o estilo do modelo) --- */
+/* --- Text Input (para campos de texto simples) --- */
 .textInput,
 .textArea {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   background-color: #ffffff;
-  color: #333333;
-  font-size: 0.95em;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #444444; /* Valor fixo */
+  font-size: 1em; /* ~16px */
   box-sizing: border-box;
   resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: #999999; /* Valor fixo */
+  opacity: 0.8;
 }
 
 .textInput:focus,
 .textArea:focus {
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2);
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
   outline: none;
+  background-color: #ffffff;
 }
 
-/* --- Checkbox Customizado (Reutiliza o estilo do modelo) --- */
+/* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #333333;
-  font-size: 0.95em;
+  gap: 8px;
+  color: #444444; /* Valor fixo */
+  font-size: 1em; /* ~16px */
   cursor: pointer;
-  margin-top: 0;
-  margin-bottom: 8px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  user-select: none;
 }
 
 .checkboxInput {
-  width: 18px;
-  height: 18px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: #ffffff;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  width: 20px;
+  height: 20px;
+  accent-color: #8d4edb; /* Cor primária */
+  border-radius: 6px;
   cursor: pointer;
-  display: grid;
-  place-content: center;
   flex-shrink: 0;
+  margin-top: 0;
 }
 
-.checkboxInput::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  transform: scale(0);
-  transition: transform 0.2s ease-in-out;
-  box-shadow: inset 1em 1em #6b21a8;
-  background-color: CanvasText; /* Fallback */
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
-}
-
-.checkboxInput:checked {
-  background-color: #6b21a8;
-  border-color: #6b21a8;
-}
-
-.checkboxInput:checked::before {
-  transform: scale(1);
-}
-
-/* --- Descrições de Campo (Texto abaixo dos inputs/selects - Reutiliza o estilo do modelo) --- */
+/* --- Descrições de Campo (O "subtítulo" pequeno para cada input - agora menor e fixo) --- */
 .fieldDescription {
-  color: #666666;
-  font-size: 0.85em;
-  margin-top: 8px;
+  color: #666666; /* Valor fixo */
+  font-size: 0.8em; /* ~12px - Menor que o label */
   line-height: 1.5;
+  margin-top: 4px;
   font-weight: 400;
 }
 
-/* --- Grupos de Input Aninhados (indentados quando dependem de um checkbox/select - Reutiliza o estilo do modelo) --- */
+/* --- Grupos de Input Aninhados --- */
 .nestedInputGroup {
-  margin-left: 24px;
+  margin-left: 16px;
   margin-top: 16px;
   padding: 16px;
-  background-color: #f9f9f9;
+  background-color: #f9f9f9; /* Fundo levemente mais escuro para aninhados */
   border: 1px solid #f0f0f0;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* --- Container de Preview de Imagens (Selos de Confiança - Reutiliza o estilo do modelo) --- */
+/* --- Container de Preview de Imagens (Selos de Confiança) --- */
 .imagePreviewContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-  padding: 10px;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
   border: 1px dashed #e0e0e0;
   border-radius: 4px;
-  background-color: #fafafa;
+  background-color: #ffffff;
 }
 
 .imagePreviewSmall {
   max-height: 50px;
   width: auto;
-  border: 1px solid #ddd;
+  border: 1px solid #cccccc;
   border-radius: 3px;
   object-fit: contain;
 }
@@ -186,10 +172,10 @@
 .colorOption {
   display: flex;
   align-items: center;
-  gap: 10px; /* Mantido 10px */
-  margin-bottom: 10px; /* Ajustado para 10px */
-  padding: 8px 0; /* Ajustado para 8px 0 */
-  border-bottom: 1px solid #eee;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .colorOption:last-child {
@@ -198,28 +184,28 @@
 }
 
 /* --- Color Swatch Container (para a bolinha de cor) --- */
-.colorSwatchContainer { /* Reutiliza o estilo do modelo */
+.colorSwatchContainer {
   position: relative;
   flex-shrink: 0;
 }
 
-.colorSwatch { /* Reutiliza o estilo do modelo */
+.colorSwatch {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 2px solid #ddd;
+  border: 2px solid #cccccc;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.colorSwatch:hover { /* Reutiliza o estilo do modelo */
+.colorSwatch:hover {
   transform: scale(1.05);
-  border-color: #6b21a8;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.15);
 }
 
-.hiddenColorInput { /* Reutiliza o estilo do modelo */
+.hiddenColorInput {
   position: absolute;
   opacity: 0;
   width: 1px;
@@ -236,17 +222,97 @@
 }
 
 .colorLabel {
-  font-size: 0.9em; /* Ajustado para 0.9em como inputLabel */
-  font-weight: 600; /* Ajustado para 600 como inputLabel */
-  color: #333;
+  font-size: 1em; /* ~16px */
+  font-weight: 600;
+  color: #444444; /* Valor fixo */
   margin-bottom: 0.1rem;
 }
 
 .colorDescription {
-  font-size: 0.85em; /* Ajustado para 0.85em como fieldDescription */
-  color: #666;
+  color: #666666; /* Valor fixo */
+  font-size: 0.8em; /* ~12px - Menor que o label */
   line-height: 1.4;
   margin: 0;
+}
+
+/* --- Botões --- */
+.addButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.15s ease;
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.addButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+.addButton:active {
+  transform: translateY(0);
+}
+
+.removeButton {
+  background-color: #dc3545;
+  color: #ffffff;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.removeButton:hover {
+  background-color: #c82333;
+}
+.removeIcon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* --- Outros elementos --- */
+.inputWithButton {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.paymentMethodsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.paymentMethodItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.paymentMethodImage {
+  max-height: 30px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* === Responsivo === */
@@ -260,12 +326,12 @@
   }
 
   .sectionDescription {
-    font-size: 0.9em;
+    font-size: 0.85em; /* Ajustado para mobile */
     margin-bottom: 24px;
   }
 
   .inputLabel {
-    font-size: 0.85em;
+    font-size: 0.9em;
   }
 
   .selectInput,
@@ -273,10 +339,11 @@
   .textArea {
     padding: 8px 10px;
     font-size: 0.9em;
+    border-radius: 4px;
   }
 
   .fieldDescription {
-    font-size: 0.8em;
+    font-size: 0.75em; /* Ajustado para mobile */
   }
 
   .checkboxLabel {
@@ -286,14 +353,15 @@
   .nestedInputGroup {
     margin-left: 16px;
     padding: 12px;
+    border-radius: 4px;
   }
 
-  .colorOption { /* Ajustes para mobile */
+  .colorOption {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
-    margin-bottom: 8px; /* Ajustado para 8px */
-    padding: 5px 0; /* Ajustado para 5px 0 */
+    margin-bottom: 8px;
+    padding: 5px 0;
   }
 
   .colorSwatch {
@@ -302,10 +370,10 @@
   }
 
   .colorLabel {
-    font-size: 0.85em; /* Ajustado para 0.85em */
+    font-size: 0.9em; /* Ajustado para mobile */
   }
 
   .colorDescription {
-    font-size: 0.8em; /* Ajustado para 0.8em */
+    font-size: 0.75em; /* Ajustado para mobile */
   }
 }

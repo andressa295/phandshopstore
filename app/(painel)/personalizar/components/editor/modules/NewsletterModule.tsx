@@ -17,17 +17,19 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
   return (
     <div className={styles.sectionBlock}>
       <div className={styles.moduleHeader}>
-        <h4 className={styles.nestedTitle}>Configurações do Módulo Newsletter</h4>
+        <h4 className={styles.nestedTitle}>Newsletter</h4>
         <button
           onClick={() => onRemove(id)}
-          className={styles.removeButton}
+          className={styles.removeModuleButton}
           title="Remover este módulo"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
-            <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
-          </svg>
+          <MdDeleteForever className={styles.removeIcon} />
         </button>
       </div>
+
+      <p className={styles.sectionDescription}>
+        Personalize o formulário de inscrição da newsletter para capturar e-mails de clientes.
+      </p>
 
       {/* Campo Título */}
       <div className={styles.inputGroup}>
@@ -36,7 +38,7 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
           id={`newsletter-title-${id}`}
           type="text"
           className={styles.textInput}
-          value={data.title}
+          value={data.title ?? ''} // Garante que o valor não seja undefined
           onChange={(e) => onChange({ title: e.target.value })}
           placeholder="Ex: Assine nossa Newsletter!"
         />
@@ -50,7 +52,7 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
           id={`newsletter-subtitle-${id}`}
           type="text"
           className={styles.textInput}
-          value={data.subtitle}
+          value={data.subtitle ?? ''}
           onChange={(e) => onChange({ subtitle: e.target.value })}
           placeholder="Receba novidades e ofertas exclusivas."
         />
@@ -64,7 +66,7 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
           id={`newsletter-button-text-${id}`}
           type="text"
           className={styles.textInput}
-          value={data.buttonText}
+          value={data.buttonText ?? ''}
           onChange={(e) => onChange({ buttonText: e.target.value })}
           placeholder="Ex: Cadastrar"
         />
@@ -78,7 +80,7 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
           id={`newsletter-privacy-link-${id}`}
           type="text"
           className={styles.textInput}
-          value={data.privacyPolicyLink}
+          value={data.privacyPolicyLink ?? ''}
           onChange={(e) => onChange({ privacyPolicyLink: e.target.value })}
           placeholder="Ex: /politica-de-privacidade"
         />
@@ -92,7 +94,7 @@ const NewsletterModule: React.FC<NewsletterModuleProps> = ({ id, data, onChange,
             id={`newsletter-isActive-${id}`}
             type="checkbox"
             className={styles.checkboxInput}
-            checked={data.isActive}
+            checked={data.isActive ?? false}
             onChange={(e) => onChange({ isActive: e.target.checked })}
           /> Ativo
         </label>

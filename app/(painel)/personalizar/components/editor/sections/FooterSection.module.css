@@ -1,135 +1,148 @@
+/* app/(painel)/personalizar/components/editor/FooterSection.module.css */
+
 /* --- Container Principal da Seção --- */
 .sectionBlock {
-  padding: 24px; /* Espaçamento interno generoso */
-  background-color: #ffffff; /* Fundo branco e limpo */
-  border-radius: 8px; /* Cantos levemente arredondados */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
-  margin-bottom: 32px; /* Espaço entre seções */
+  padding: 0;
+  margin-bottom: var(--spacing-xl);
 }
 
 /* --- Títulos da Seção --- */
 .sectionTitle {
-  color: #333333; /* Cor de texto principal */
-  font-size: 1.2em; /* Levemente maior para destaque */
-  font-weight: 700; /* Forte, mas não excessivo */
+  color: #333333;
+  font-size: 1.2em;
+  font-weight: 700;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
-  text-align: left; /* Alinhado à esquerda */
+  border-bottom: 2px solid #8d4edb;
+  text-align: left;
 }
 
-/* --- Descrições de Seção --- */
-.sectionDescription {
-  color: #666666; /* Cor de texto secundária para descrições */
+.nestedTitle { /* Título de subseção */
+  color: #555555;
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.nestedSubtitle { /* Título de sub-subseção */
   font-size: 0.95em;
+  font-weight: 600;
+  color: #333333;
+  margin: 0 0 8px 0;
+}
+
+/* --- Descrições de Seção (Texto introdutório do módulo) --- */
+.sectionDescription {
+  color: #666666;
+  font-size: 0.8em;
   line-height: 1.6;
-  margin-bottom: 32px; /* Espaçamento generoso para respirar */
-  font-weight: 400; /* Sem negrito excessivo */
+  margin-bottom: 24px;
 }
 
 /* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição) --- */
 .inputGroup {
-  margin-bottom: 20px; /* Bom espaçamento entre os grupos de configuração */
-  display: flex; /* Para alinhar labels com inputs/selects */
-  flex-direction: column; /* Coloca os elementos em coluna */
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background-color: transparent;
+  border-left: 3px solid #e0e0e0; /* Borda lateral sutil */
+  transition: border-color 0.3s ease;
 }
 
-/* --- Labels dos Inputs e Selects --- */
+.inputGroup:hover {
+  border-color: #d0d0d0;
+}
+
 .inputLabel {
-  display: block; /* Garante que a label ocupe sua própria linha */
+  display: block;
   color: #333333;
-  font-size: 0.9em; /* Menor e mais delicado */
-  font-weight: 600; /* Suficiente para destaque, mas não pesado */
-  margin-bottom: 8px; /* Espaçamento entre label e o campo (input/select) */
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 0;
 }
 
-/* --- Select Inputs (Dropdowns) --- */
-.selectInput {
+.textInput, .selectInput {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0; /* Borda suave */
-  border-radius: 4px; /* Cantos arredondados */
-  background-color: #ffffff;
-  color: #333333;
-  font-size: 0.95em; /* Tamanho confortável */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-sizing: border-box;
-  appearance: none; /* Remove a seta padrão do select */
-  -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
-}
-
-.selectInput:focus {
-  border-color: #6b21a8; /* Borda roxa no foco */
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra suave de foco */
-  outline: none;
-}
-
-/* --- Text Input (para campos de texto simples) --- */
-.textInput,
-.textArea { /* Aplica os mesmos estilos básicos para textarea */
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   background-color: #ffffff;
   color: #333333;
   font-size: 0.95em;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
-  resize: vertical; /* Permite redimensionar verticalmente o textarea */
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  font-family: inherit;
 }
 
-.textInput:focus,
-.textArea:focus {
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2);
+.textInput::placeholder {
+  color: #999999;
+  opacity: 0.8;
+}
+
+.textInput:focus, .selectInput:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
   outline: none;
-}
-
-/* --- Small Text Input (para campos menores dentro de listas, como links) --- */
-.smallTextInput {
-  flex: 1; /* Permite que o input preencha o espaço disponível */
-  padding: 8px 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
   background-color: #ffffff;
-  color: #333333;
-  font-size: 0.9em;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-sizing: border-box;
 }
 
-.smallTextInput:focus {
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2);
-  outline: none;
+/* --- Select Customizado (Seta) --- */
+.selectInput {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  padding-left: 40px; /* Espaço para o ícone */
+}
+
+/* --- Wrapper para Select e Ícone de Rede Social --- */
+.socialSelectWrapper {
+  position: relative;
+  flex-grow: 1; /* Permite que ele cresça */
+  display: flex;
+  align-items: center;
+}
+
+.socialSelectIcon {
+  position: absolute;
+  left: 12px;
+  pointer-events: none; /* Garante que o clique ainda vá para o select */
+  color: #666; /* Cor padrão para os ícones */
+  display: flex; /* Para alinhar o SVG corretamente */
+  align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 
 /* --- Color Input (Bolinha Perfeita para Cor) --- */
 .colorSwatchContainer {
   position: relative;
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .colorSwatch {
-  width: 32px; /* Tamanho da bolinha */
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 2px solid #ddd; /* Borda da bolinha */
+  border: 2px solid #cccccc;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  flex-shrink: 0;
 }
 
 .colorSwatch:hover {
   transform: scale(1.05);
-  border-color: #6b21a8; /* Cor de destaque no hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.15);
 }
 
 .hiddenColorInput {
@@ -145,15 +158,12 @@
 /* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
-  align-items: center; /* Alinha o checkbox verticalmente com o texto */
-  gap: 12px; /* Espaçamento ENTRE o checkbox e o texto */
+  align-items: center;
+  gap: 12px;
   color: #333333;
   font-size: 0.95em;
   cursor: pointer;
-  margin-top: 0;
-  margin-bottom: 8px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  user-select: none;
 }
 
 .checkboxInput {
@@ -177,8 +187,8 @@
   height: 10px;
   transform: scale(0);
   transition: transform 0.2s ease-in-out;
-  box-shadow: inset 1em 1em #6b21a8; /* Cor roxa para o checkmark */
-  background-color: CanvasText; /* Fallback */
+  box-shadow: inset 1em 1em #6b21a8;
+  background-color: CanvasText;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
 }
 
@@ -186,278 +196,131 @@
   background-color: #6b21a8;
   border-color: #6b21a8;
 }
+.checkboxInput:checked::before { transform: scale(1); }
 
-.checkboxInput:checked::before {
-  transform: scale(1);
-}
 
 /* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
   color: #666666;
-  font-size: 0.85em; /* Pequeno e discreto */
-  margin-top: 8px; /* Espaçamento para o campo acima */
+  font-size: 0.7em;
+  margin-top: 8px;
   line-height: 1.5;
-  font-weight: 400; /* Sem negrito */
+  font-weight: 400;
 }
 
-/* --- Grupos de Input Aninhados (indentados quando dependem de um checkbox/select) --- */
+/* --- Grupos de Input Aninhados (para a barra de anúncio) --- */
 .nestedInputGroup {
-  margin-left: 24px; /* Indentação para clareza visual */
-  margin-top: 16px; /* Espaçamento superior */
-  padding: 16px; /* Padding interno */
-  background-color: #f9f9f9; /* Fundo levemente diferente para destacar */
-  border: 1px solid #f0f0f0; /* Borda muito leve */
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Sombra mais sutil ainda */
+  margin-left: 24px;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: transparent; /* Fundo transparente */
+  border: none; /* Removida a borda, para ficar "mais profundo" */
+  border-radius: 0;
+  box-shadow: none;
 }
 
-/* --- Títulos dentro de grupos aninhados (h4 para "Gerenciar Links") --- */
-.nestedTitle {
-  color: #555555;
-  font-size: 1.1em;
-  font-weight: 600;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  padding-bottom: 5px;
-  border-bottom: 1px dashed #e0e0e0; /* Linha tracejada suave */
-}
-
-/* --- Itens de Array (para links rápidos, redes sociais) --- */
+/* --- Itens de Array (Links, Redes Sociais) --- */
 .arrayItem {
   display: flex;
-  align-items: center; /* Alinha todos os itens (inputs, select, botão) verticalmente */
-  gap: 10px; /* Espaçamento entre os inputs e o botão de remover */
-  margin-bottom: 10px; /* Espaçamento entre os itens */
-  flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-  padding: 8px; /* Adiciona um padding para dar um "respiro" */
-  border: 1px solid #f0f0f0; /* Borda suave para cada item */
-  border-radius: 4px; /* Cantos arredondados */
-  background-color: #ffffff; /* Fundo branco para cada item */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03); /* Sombra sutil para cada item */
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative; /* Para posicionar o botão de remover */
 }
 
-/* --- Botões de Ação (Adicionar/Remover) --- */
+.arrayItem input,
+.arrayItem .socialSelectWrapper { /* Ajustado para o wrapper do select */
+  flex-grow: 1;
+}
+
+/* --- Botões de Adicionar/Remover --- */
 .addButton {
-  background-color: #8d4edb; /* Cor primária do tema */
+  background-color: #8d4edb;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   padding: 10px 15px;
   font-size: 0.9em;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 15px; /* Espaçamento superior */
-  align-self: flex-start; /* Alinha o botão à esquerda */
-}
-
-.addButton:hover {
-  background-color: #6b21a8; /* Escurece um pouco no hover */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .removeButton {
-  background-color: #dc3545; /* Cor de perigo (vermelho) */
+  background-color: #dc3545;
   color: #ffffff;
   border: none;
   border-radius: 4px;
-  padding: 8px; /* Padding para o ícone */
-  font-size: 0.85em; /* Tamanho base, mas o ícone define o tamanho real */
+  padding: 6px; /* Ajuste para o tamanho menor */
+  width: 30px; /* Largura menor */
+  height: 30px; /* Altura menor */
+  font-size: 0; /* Remove o texto se houver */
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  flex-shrink: 0; /* Impede que o botão encolha */
-  display: flex; /* Para centralizar o ícone */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px; /* Tamanho fixo para o botão de ícone */
-  height: 32px;
-  margin-left: auto; /* Empurra o botão para a direita dentro do flex container */
+  flex-shrink: 0; /* Impede que ele encolha */
 }
 
-.removeButton:hover {
-  background-color: #c82333; /* Escurece um pouco no hover */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+.addButton:hover { background-color: #6b21a8; }
+.removeButton:hover { background-color: #c82333; }
 
-.removeIcon {
-  width: 18px; /* Tamanho do ícone de lixeira */
-  height: 18px;
-  fill: currentColor; /* Usa a cor do texto do botão */
-}
-
-/* --- Container de Preview de Imagens (bandeiras de pagamento) --- */
-.imagePreviewContainer {
+/* --- Lista de Métodos de Pagamento e Envio --- */
+.paymentMethodsList {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
   padding: 10px;
-  border: 1px dashed #e0e0e0; /* Borda tracejada para área de preview */
+  border: 1px dashed #e0e0e0;
   border-radius: 4px;
   background-color: #fafafa;
 }
 
-.imagePreviewSmall {
-  max-height: 40px; /* Altura máxima para as imagens de bandeira */
-  width: auto; /* Largura automática para manter proporção */
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
-}
-
-/* --- Item de Imagem de Pagamento Individual --- */
-.paymentImageItem {
+.paymentMethodItem {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #ddd; /* Borda para cada imagem */
-  border-radius: 3px;
-  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   padding: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.removeImageButton {
-  position: absolute;
-  top: -8px; /* Ajuste para posicionar fora da imagem */
-  right: -8px; /* Ajuste para posicionar fora da imagem */
-  background-color: #dc3545;
-  color: #ffffff;
-  border: none;
-  border-radius: 50%; /* Botão redondo */
-  width: 20px; /* Tamanho do botão */
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  z-index: 1; /* Garante que fique acima da imagem */
-}
-
-.removeImageButton:hover {
-  background-color: #c82333;
-  transform: scale(1.1);
-}
-
-.removeImageIcon {
-  width: 12px; /* Tamanho do ícone de "x" */
-  height: 12px;
-  fill: currentColor;
-}
-
-/* --- Estilo para o Box de Upload de Logo (reutilizado) --- */
-.logoUploadBox {
-  border: 1px dashed #e0e0e0; /* Borda fina tracejada */
-  border-radius: 4px; /* Arredondamento de 4px */
-  padding: 10px; /* Espaçamento interno consistente */
-  background-color: #fafafa; /* Fundo claro */
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-  min-height: 60px; /* Para dar um espaço mínimo */
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.logoUploadBox:hover {
-  border-color: #6b21a8; /* Cor de destaque no hover */
+.paymentMethodImage {
+  width: 60px;
+  height: 40px;
+  object-fit: contain;
 }
 
-.logoPlaceholder {
-  color: #999999;
-  font-size: 0.9em;
-}
-
-
-/* --- Responsividade (Ajustes para telas menores) --- */
+/* --- Responsividade --- */
 @media (max-width: 768px) {
-  .sectionBlock {
-    padding: 16px;
-  }
-
-  .sectionTitle {
-    font-size: 1.5em;
-  }
-
-  .sectionDescription {
-    font-size: 0.9em;
-    margin-bottom: 24px;
-  }
-
-  .inputLabel {
-    font-size: 0.85em;
-  }
-
-  .selectInput,
-  .textInput,
-  .textArea,
-  .smallTextInput {
-    padding: 8px 10px;
-    font-size: 0.9em;
-  }
-
-  .colorSwatch { /* Ajuste para a bolinha de cor em mobile */
-    width: 28px;
-    height: 28px;
-  }
-
-  .checkboxLabel {
-    font-size: 0.9em;
-  }
-
-  .nestedInputGroup {
-    margin-left: 16px;
-    padding: 12px;
-  }
-
-  .nestedTitle {
-    font-size: 1em;
-  }
-
-  .addButton {
-    padding: 8px 12px;
-    font-size: 0.85em;
-    width: 100%; /* Botão de adicionar ocupa largura total em mobile */
-  }
-
-  .removeButton {
-    width: 28px; /* Ajuste o tamanho do botão de remover */
-    height: 28px;
-  }
-
-  .removeIcon {
-    width: 16px; /* Ajuste o tamanho do ícone de lixeira */
-    height: 16px;
-  }
-
-  .arrayItem {
-    flex-direction: column; /* Empilha os inputs e botões em telas pequenas */
-    align-items: stretch; /* Estica os itens para preencher a largura */
-    gap: 8px;
-    padding: 10px; /* Aumenta o padding para mobile */
-  }
-
-  .imagePreviewSmall {
-    max-height: 30px; /* Ajuste para imagens de pagamento em mobile */
-  }
-
-  .removeImageButton {
-    width: 18px;
-    height: 18px;
-    top: -6px;
-    right: -6px;
-  }
-
-  .removeImageIcon {
-    width: 10px;
-    height: 10px;
-  }
-
-  .logoUploadBox {
-    padding: 8px;
-    min-height: 50px;
+  .sectionBlock { padding: 16px; }
+  .sectionTitle { font-size: 1.1em; }
+  .sectionDescription { font-size: 0.8em; margin-bottom: 20px; }
+  .nestedTitle, .nestedSubtitle { font-size: 1em; }
+  .inputGroup { padding: 10px; margin-bottom: 15px; }
+  .inputLabel { font-size: 0.85em; }
+  .textInput, .selectInput { font-size: 0.9em; }
+  .fieldDescription { font-size: 0.7em; }
+  .checkboxLabel { font-size: 0.9em; }
+  .nestedInputGroup { margin-left: 15px; padding: 12px; }
+  .arrayItem { flex-direction: column; align-items: stretch; }
+  .arrayItem input, .arrayItem .socialSelectWrapper { width: 100%; } /* Ajuste para o wrapper */
+  .removeButton { width: 100%; padding: 8px 12px; }
+  .addButton { width: 100%; padding: 8px 12px; }
+  .paymentMethodItem {
+    width: 80px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

@@ -1,150 +1,653 @@
+/* app/(painel)/personalizar/components/editor/modules/BannerModule.module.css */
+
+/* --- Container Principal do Módulo --- */
 .sectionBlock {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: 32px; /* Espaçamento entre as seções */
 }
 
+/* --- Cabeçalho do Módulo (Título e Botão de Remover) --- */
 .moduleHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #8d4edb;
-}
-
-.nestedTitle {
-  color: #222;
-  font-size: 1.1em;
-  font-weight: 700;
-  margin: 0;
-  padding: 0;
-}
-
-.inputGroup {
   margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.nestedTitle { /* Título do módulo dentro do editor */
+  color: #333333;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.removeModuleButton { /* Botão de remover o módulo inteiro */
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.removeModuleButton:hover {
+  background-color: #c82333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.removeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* --- Descrições de Seção (Texto introdutório do módulo) --- */
+.sectionDescription {
+  color: #666666;
+  font-size: 0.8em; /* Pequeno e discreto */
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* --- Botão para Adicionar Novo Banner --- */
+.addBannerButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px; /* Espaçamento abaixo do botão */
+  font-family: 'Poppins', sans-serif;
+}
+
+.addBannerButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.addBannerButton:active {
+  transform: translateY(0);
+}
+
+/* --- Mensagem de Sem Conteúdo --- */
+.noContentMessage {
+  text-align: center;
+  color: #999999;
+  margin-top: 20px;
+  font-size: 1em;
+  padding: 20px;
+  border: 1px dashed #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+/* --- Lista de Banners Individuais --- */
+.bannersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaçamento entre cada item de banner */
+  margin-top: 20px;
+}
+
+/* --- Item de Preview de Banner Individual --- */
+.bannerPreviewItem {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px; /* Padding menor para o preview */
+  background-color: #fcfcfc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px; /* Altura mínima para o preview */
+  overflow: hidden;
+  cursor: pointer; /* Indica que é clicável */
+}
+
+.bannerPreviewItem:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-color: #8d4edb; /* Borda primária no hover */
+}
+
+.bannerPreviewImageWrapper { /* Wrapper para a imagem e o input de arquivo oculto */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.bannerPreviewImage {
+  max-width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.bannerPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #cccccc;
+  font-size: 0.9em;
+  gap: 5px;
+  min-height: 120px; /* Altura mínima para o placeholder */
+  width: 100%;
+  height: 100%;
+  border: 1px dashed #cccccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+
+/* --- Botões de Ação no Canto Superior Direito (visíveis no hover) --- */
+.bannerActionsOverlay {
+  position: absolute;
+  top: 5px; /* Posição no canto superior */
+  right: 5px; /* Posição no canto direito */
+  display: flex;
+  gap: 5px;
+  opacity: 0; /* Inicialmente invisível */
+  transition: opacity 0.2s ease;
+  z-index: 5; /* Acima da imagem, mas abaixo do modal */
+}
+
+.bannerPreviewItem:hover .bannerActionsOverlay {
+  opacity: 1; /* Visível no hover do item */
+}
+
+.editBannerInlineButton, .removeBannerInlineButton {
+  background-color: rgba(141, 78, 219, 0.8); /* Cor primária semi-transparente */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px; /* Botão pequeno */
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; /* Tamanho fixo para botões pequenos */
+  height: 28px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.removeBannerInlineButton {
+  background-color: rgba(220, 53, 69, 0.8); /* Cor de perigo semi-transparente */
+}
+
+.editBannerInlineButton:hover { background-color: #6b21a8; }
+.removeBannerInlineButton:hover { background-color: #c82333; }
+
+.bannerPreviewTitleBelowImage { /* Título abaixo da imagem */
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #555555;
+  margin-top: 10px;
+  text-align: center;
+}
+
+
+/* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição) --- */
+.inputGroup {
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 12px;
+  background-color: #fdfdfd;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+/* --- inputGroupSmall (Para o intervalo de segundos) --- */
+.inputGroupSmall {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px; /* Padding menor */
+  background-color: #fdfdfd;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  max-width: 200px; /* Largura menor para este grupo específico */
 }
 
 .inputLabel {
-  color: #333;
+  display: block;
+  color: #333333;
+  font-size: 0.9em;
   font-weight: 600;
-  font-size: 0.95em;
+  margin-bottom: 0;
 }
 
+/* --- Inputs de Texto, Número, Select, Textarea --- */
 .textInput,
-.textArea,
-.selectInput {
+.textArea {
   width: 100%;
-  padding: 12px 17px;
-  border: 1px solid #d0d0d0;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #333;
-  font-size: 1em;
+  padding: 10px 12px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em;
+  box-sizing: border-box;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   font-family: inherit;
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.03);
+}
+
+.textInput::placeholder,
+.textArea::placeholder {
+  color: #999999;
+  opacity: 0.8;
 }
 
 .textInput:focus,
 .textArea:focus {
   border-color: #8d4edb;
-  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.25);
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
   outline: none;
+  background-color: #ffffff;
 }
 
 .textArea {
-  min-height: 150px;
-  resize: vertical;
+  min-height: 60px;
 }
 
-.fieldDescription {
-  font-size: 0.85em;
-  color: #777;
+/* --- Color Input --- */
+.colorInput {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #cccccc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
+.colorInput:hover {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.15);
+  transform: scale(1.05);
+}
+
+.colorInput:focus {
+  outline: 2px solid #6b21a8;
+  outline-offset: 1px;
+}
+
+.colorInput::-webkit-color-swatch-wrapper { padding: 2px; border-radius: 50%; }
+.colorInput::-webkit-color-swatch { border: none; border-radius: 50%; width: 100%; height: 100%; box-sizing: border-box; }
+.colorInput::-moz-color-swatch { border: none; border-radius: 50%; width: calc(100% - 4px); height: calc(100% - 4px); box-sizing: border-box; }
+
+
+/* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  color: #333333;
   font-size: 0.95em;
+  cursor: pointer;
+  user-select: none;
 }
 
 .checkboxInput {
-  width: 20px;
-  height: 20px;
-  accent-color: #8d4edb;
-}
-
-.logoUploadBox {
-  position: relative;
-  width: 100%;
-  height: 160px;
-  border: 2px dashed #d0d0d0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafafa;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  overflow: hidden;
-  transition: border-color 0.2s ease;
+  display: grid;
+  place-content: center;
+  flex-shrink: 0;
 }
 
-.logoUploadBox:hover {
-  border-color: #8d4edb;
+.checkboxInput::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  transition: transform 0.2s ease-in-out;
+  box-shadow: inset 1em 1em #6b21a8;
+  background-color: CanvasText;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
 }
 
-.uploadIconPlaceholder {
-  font-size: 2.5em;
-  color: #bbb;
+.checkboxInput:checked {
+  background-color: #6b21a8;
+  border-color: #6b21a8;
+}
+.checkboxInput:checked::before { transform: scale(1); }
+
+
+/* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
+.fieldDescription {
+  color: #666666;
+  font-size: 0.7em;
+  margin-top: 8px;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
-.logoPlaceholder {
-  font-size: 0.9em;
-  color: #999;
+/* --- Grupos de Input Aninhados --- */
+.nestedInputGroup {
+  margin-left: 24px;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-.uploadInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  text-align: center;
+/* --- Separador --- */
+.divider {
+  border: none;
+  border-top: 1px dashed #e0e0e0;
+  margin: 20px 0;
 }
 
-.fullBleedImagePreview {
-  position: absolute;
+
+/* --- Modal de Edição de Banner --- */
+.modalOverlay {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 4px;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro transparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Acima de tudo */
+  padding: 20px;
 }
 
-.removeButton {
+.modalContent {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 600px; /* Largura máxima para o modal */
+  max-height: 90vh; /* Altura máxima com scroll */
+  overflow-y: auto; /* Scroll interno se o conteúdo for grande */
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f8f8;
+}
+
+.modalTitle {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+.modalCloseButton {
   background: none;
   border: none;
-  color: #666;
   cursor: pointer;
-  padding: 4px;
-  margin-left: 8px;
-  transition: color 0.2s ease;
+  color: #666666;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.removeButton:hover {
-  color: #dc3545;
+.modalCloseButton:hover {
+  background-color: #eeeeee;
+  color: #333333;
 }
 
-.removeIcon {
-  width: 20px;
-  height: 20px;
-  fill: currentColor;
+.modalBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espaçamento entre os grupos de input no modal */
 }
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f8f8f8;
+}
+
+.primaryButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
+}
+
+.primaryButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.secondaryButton {
+  background-color: #e0e0e0;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-family: 'Poppins', sans-serif;
+}
+
+.secondaryButton:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+  .sectionBlock {
+    padding: 16px;
+  }
+  .sectionTitle {
+    font-size: 1.5em;
+    margin-bottom: 12px;
+  }
+  .sectionDescription {
+    font-size: 0.85em;
+    margin-bottom: 24px;
+  }
+  .addBannerButton {
+    width: 100%;
+    font-size: 0.9em;
+  }
+  .noContentMessage {
+    padding: 15px;
+    font-size: 0.9em;
+  }
+  .bannersList {
+    gap: 15px;
+  }
+  .bannerItem {
+    padding: 15px;
+  }
+  .bannerItemHeader {
+    margin-bottom: 10px;
+  }
+  .bannerItemTitle {
+    font-size: 0.95em;
+  }
+  .removeBannerItemButton {
+    width: 24px;
+    height: 24px;
+  }
+  .inputGroup {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  .inputLabel {
+    font-size: 0.85em;
+  }
+  .textInput, .textArea, .colorInput {
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+  .textArea {
+    min-height: 50px;
+  }
+  .fieldDescription {
+    font-size: 0.7em;
+  }
+  .checkboxLabel {
+    font-size: 0.9em;
+  }
+  .nestedInputGroup {
+    margin-left: 15px;
+    padding: 10px;
+  }
+  .imageUploadBox {
+    min-height: 80px;
+    padding: 8px;
+  }
+  .uploadInner {
+    font-size: 0.8em;
+    gap: 5px;
+  }
+  .uploadIconPlaceholder {
+    font-size: 2em;
+  }
+  .imagePreview {
+    max-height: 120px;
+  }
+  .removeImageButton {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+  .modalOverlay {
+    padding: 10px;
+  }
+  .modalContent {
+    width: 95%;
+    max-height: 90vh;
+  }
+  .modalHeader {
+    padding: 15px;
+  }
+  .modalTitle {
+    font-size: 1.1em;
+  }
+  .modalCloseButton {
+    width: 28px;
+    height: 28px;
+  }
+  .modalBody {
+    padding: 15px;
+    gap: 10px;
+  }
+  .modalFooter {
+    padding: 15px;
+    gap: 10px;
+  }
+  .primaryButton, .secondaryButton {
+    padding: 8px 15px;
+    font-size: 0.9em;
+  }
+}
+
+/* --- Select Customizado (Seta) --- */
+.selectInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cccccc; /* BORDA CLARA E FIXA */
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 0.95em;
+  box-sizing: border-box;
+  appearance: none; /* Remove a seta padrão do select */
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  font-family: inherit;
+}
+
+.selectInput:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
+  outline: none;
+  background-color: #ffffff;
+}
+

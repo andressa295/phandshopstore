@@ -1,10 +1,11 @@
+// app/(painel)/personalizar/context/ThemeContext.tsx
 'use client'; 
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react';
 import defaultThemeConfig from './defaultThemeConfig'; // Importa a config padrão
-import { ThemeConfig, ThemeUpdateFn, HomepageModuleType } from '../types'; 
+import { ThemeConfig, ThemeUpdateFn, HomepageModuleType, AdvancedConfig } from '../types'; // Importa AdvancedConfig
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'; 
 
-// 2. Tipagem para o contexto (o que será provido)
 interface ThemeContextType {
   config: ThemeConfig;
   updateConfig: ThemeUpdateFn;
@@ -13,19 +14,32 @@ interface ThemeContextType {
   saveThemeConfig: () => Promise<void>;
   selectedTheme: string;
   setSelectedTheme: (themeName: string) => void;
+  isLoading: boolean; 
+  isSaving: boolean; 
+  error: string | null; 
+  iframeRef: React.RefObject<HTMLIFrameElement | null>; 
 }
 
 // 4. Criação do Contexto
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const supabase = createClientComponentClient();
+
+
 // 5. Provedor do Contexto
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [config, setConfig] = useState<ThemeConfig>(defaultThemeConfig); // Usa a config padrão
+export const ThemeProvider: React.FC<{ children: ReactNode; lojaSlug: string; initialThemeConfig?: ThemeConfig }> = ({ children, lojaSlug, initialThemeConfig }) => {
+  const [config, setConfig] = useState<ThemeConfig>(initialThemeConfig || defaultThemeConfig);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
-  const [selectedTheme, setSelectedTheme] = useState<string>('tema-base-1'); 
+  const [selectedTheme, setSelectedTheme] = useState<string>('tema-base-1'); // Pode ser carregado do Supabase também
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null); // Movido para o ThemeProvider
+
+  const hasJustSaved = useRef(false); // Para controlar o carregamento após salvar
 
   // Função para atualizar partes da configuração (merge profundo para objetos aninhados)
-  const updateConfig: ThemeUpdateFn = (newConfig) => {
+  const updateConfig: ThemeUpdateFn = useCallback((newConfig) => {
     setConfig(prevConfig => {
       const mergedConfig = { ...prevConfig };
 
@@ -46,32 +60,128 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
       return mergedConfig;
     });
-  };
+  }, []); // Sem dependências, pois setConfig já garante a atualização
 
-  // Função para salvar as configurações no backend (placeholder)
-  const saveThemeConfig = async () => {
-    console.log("Salvando configurações do tema:", config);
-    // TODO: Implementar chamada à API para salvar 'config'
-    // Ex: await fetch('/api/save-theme-config', { method: 'POST', body: JSON.stringify(config) });
-    alert('Configurações salvas (simulado)! Veja o console.');
-  };
+  // --- FUNÇÃO PARA SALVAR AS CONFIGURAÇÕES NO SUPABASE ---
+  const saveThemeConfig = useCallback(async () => {
+    setIsSaving(true);
+    setError(null);
+    try {
+      // Adiciona um timestamp de atualização para controle
+      const configToSave: ThemeConfig = JSON.parse(JSON.stringify(config)); // Faz uma cópia profunda para não modificar o estado diretamente
+      if (configToSave.advanced) {
+        configToSave.advanced.lastUpdatedEditor = new Date().toISOString();
+      } else {
+        configToSave.advanced = { lastUpdatedEditor: new Date().toISOString() };
+      }
+
+      const { data, error: updateError } = await supabase
+        .from('lojas')
+        .update({ configuracoes_tema_json: configToSave })
+        .eq('slug', lojaSlug)
+        .select(); // Adicionamos .select() para garantir o retorno dos dados
+
+      if (updateError) {
+        console.error("Erro ao salvar configurações do tema:", updateError);
+        setError(`Falha ao salvar: ${updateError.message}`);
+        alert(`Erro ao salvar configurações: ${updateError.message}`); // Usar um modal customizado em prod
+      } else if (data && data.length > 0) {
+        console.log("Configurações do tema salvas com sucesso:", data[0].configuracoes_tema_json);
+        alert('Configurações salvas com sucesso!'); // Usar um modal customizado em prod
+        hasJustSaved.current = true; // Marca que acabou de salvar
+        // Opcional: Atualizar o estado 'config' com os dados retornados pelo Supabase
+        setConfig(data[0].configuracoes_tema_json as ThemeConfig); 
+      } else {
+        setError("Nenhuma linha afetada ao salvar. Verifique se a loja existe.");
+        alert("Nenhuma alteração foi salva. Verifique se a loja existe."); // Usar um modal customizado em prod
+      }
+    } catch (err: any) {
+      console.error("Erro inesperado ao salvar configurações:", err);
+      setError(`Erro inesperado: ${err.message}`);
+      alert(`Erro inesperado ao salvar: ${err.message}`); // Usar um modal customizado em prod
+    } finally {
+      setIsSaving(false);
+    }
+  }, [config, lojaSlug]); // Re-cria a função se 'config' ou 'lojaSlug' mudar
+
+  // --- EFEITO PARA CARREGAR A CONFIGURAÇÃO INICIAL DO SUPABASE ---
+  useEffect(() => {
+    async function fetchInitialConfig() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const { data: loja, error: fetchError } = await supabase
+          .from('lojas')
+          .select('configuracoes_tema_json, theme_id') // Também buscamos o theme_id
+          .eq('slug', lojaSlug)
+          .single();
+
+        if (fetchError) {
+          console.error("Erro ao carregar configurações iniciais do tema:", fetchError);
+          setError(`Falha ao carregar tema: ${fetchError.message}`);
+          setConfig(defaultThemeConfig); 
+        } else if (loja && loja.configuracoes_tema_json) {
+          let loadedConfig: ThemeConfig;
+          try {
+            // Garante que o JSON é parseado se for string
+            loadedConfig = typeof loja.configuracoes_tema_json === 'string'
+              ? JSON.parse(loja.configuracoes_tema_json)
+              : loja.configuracoes_tema_json;
+          } catch (parseError) {
+            console.error("Erro ao parsear JSON do tema do Supabase:", parseError);
+            setError("Erro ao processar as configurações do tema. Carregando padrão.");
+            loadedConfig = defaultThemeConfig;
+          }
+          setConfig(loadedConfig);
+          if (loja.theme_id) { // Se a loja tiver um theme_id, podemos usá-lo para selectedTheme
+            // TODO: Buscar o nome do tema da tabela 'temas' usando loja.theme_id
+            // Por enquanto, vamos usar um valor padrão ou o que já está em selectedTheme
+            // setSelectedTheme(nomeDoTemaBaseadoNoId);
+          }
+        } else {
+          // Se a loja não tiver configuracoes_tema_json, usa a config padrão
+          setConfig(defaultThemeConfig);
+          setError("Nenhuma configuração de tema encontrada para esta loja. Carregando padrão.");
+        }
+      } catch (err: any) {
+        console.error("Erro inesperado ao carregar configurações iniciais:", err);
+        setError(`Erro inesperado ao carregar: ${err.message}`);
+        setConfig(defaultThemeConfig); // Em caso de erro inesperado, usa o padrão
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    // Só busca se tiver um slug e se não acabou de salvar
+    if (lojaSlug && !hasJustSaved.current) { 
+      fetchInitialConfig();
+    } else if (!lojaSlug) {
+      setIsLoading(false); // Se não tiver slug, não está carregando nada
+    }
+
+    // Resetar hasJustSaved após o carregamento inicial ou se o slug mudar
+    if (hasJustSaved.current && lojaSlug) {
+      hasJustSaved.current = false;
+    }
+
+  }, [lojaSlug, initialThemeConfig]); // Depende de lojaSlug e initialThemeConfig
 
   // Efeito para aplicar as variáveis CSS globais no documento (para o tema no iframe)
+  // Este useEffect é para estilizar o DOM do PAINEL (onde o Preview.tsx está).
+  // O Preview.tsx já injeta esses estilos no IFRAME.
   useEffect(() => {
-    // Isso é para o DOM do PARENT (onde o Preview.tsx está). O Preview.tsx já injeta esses estilos no IFRAME.
-    // Você pode remover essa parte do ThemeContext se ela não for necessária no DOM principal do painel.
     const root = document.documentElement; 
     
-    // Core Colors
+    // Cores
     root.style.setProperty('--primary-color', config.primaryColor ?? '#5b21b6'); 
     root.style.setProperty('--secondary-color', config.secondaryColor ?? '#6c757d');
     root.style.setProperty('--text-color', config.textColor ?? '#343a40'); 
 
-    // Header Colors
+    // Header
     root.style.setProperty('--header-background-color', config.headerBackgroundColor ?? '#ffffff');
     root.style.setProperty('--header-text-color', config.headerTextColor ?? '#343a40');
 
-    // Footer Colors
+    // Footer
     root.style.setProperty('--footer-background-color', config.footer?.footerBackgroundColor ?? '#343a40');
     root.style.setProperty('--footer-text-color', config.footer?.footerTextColor ?? '#ffffff');
 
@@ -86,7 +196,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         'large': '1.125em'
     };
     const titleFontSizeMap = {
-        'small': '2em', // H1 (ou outro base)
+        'small': '2em',
         'medium': '2.5em',
         'large': '3em'
     };
@@ -107,10 +217,26 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         config.design?.imageBorderRadius === 'circle' ? '50%' : '0'
     );
     root.style.setProperty('--scrollbar-color', config.design?.scrollbarColor ?? '#007bff');
-    root.style.setProperty('--shadow-style', config.design?.enableShadows && config.design.shadowStyle !== 'none' ?
-        (config.design.shadowStyle === 'small' ? '0 1px 3px rgba(0,0,0,0.1)' :
-         config.design.shadowStyle === 'medium' ? '0 4px 8px rgba(0,0,0,0.15)' :
-         '0 8px 16px rgba(0,0,0,0.2)') : 'none');
+    
+    // --- Lógica Corrigida para --shadow-style ---
+    let shadowStyleValue = 'none';
+    if (config.design?.enableShadows && config.design.shadowStyle && config.design.shadowStyle !== 'none') {
+        switch (config.design.shadowStyle) {
+            case 'small':
+                shadowStyleValue = '0 1px 3px rgba(0,0,0,0.1)';
+                break;
+            case 'medium':
+                shadowStyleValue = '0 4px 8px rgba(0,0,0,0.15)';
+                break;
+            case 'large': 
+                shadowStyleValue = '0 8px 16px rgba(0,0,0,0.2)';
+                break;
+            default:
+                shadowStyleValue = 'none'; 
+        }
+    }
+    root.style.setProperty('--shadow-style', shadowStyleValue);
+    // --- Fim da Lógica Corrigida ---
 
     // Apply custom CSS (if this styleTag affects the main app, not just iframe)
     if (config.advanced?.customCss) {
@@ -137,6 +263,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       saveThemeConfig,
       selectedTheme,
       setSelectedTheme,
+      isLoading,
+      isSaving,
+      error,
+      iframeRef, // Passa o iframeRef para o contexto
     }}>
       {children}
     </ThemeContext.Provider>

@@ -2,9 +2,55 @@
 'use client';
 
 import React from 'react';
-import { HighlightsModuleData } from '../../../types';
-import styles from './HighlightsModule.module.css';
-import { MdDeleteForever, MdAdd } from 'react-icons/md';
+import { HighlightsModuleData, SingleHighlightItem } from '../../../types';
+import styles from './HighlightsModule.module.css'; // Importa o CSS Module do componente
+import {
+  MdDeleteForever,
+  MdAdd,
+  MdLocalShipping,    // Entrega
+  MdCreditCard,       // Cartão de Crédito
+  MdHeadset,          // Suporte
+  MdStar,             // Qualidade
+  MdSecurity,         // Segurança
+  MdAccessTime,       // Rapidez
+  MdWorkspacePremium, // Premium
+  MdOutlineVerified,  // Verificado
+  MdWhatsapp,         // WhatsApp
+  MdArchive,          // Caixa / Estoque
+  MdClose,            // <--- CORRIGIDO: MdClose importado corretamente
+} from 'react-icons/md'; // Ícones de exemplo
+import { v4 as uuidv4 } from 'uuid'; // Para gerar IDs únicos
+
+// Ícones de exemplo para o lojista escolher (SOMENTE ÍCONES, SEM EMOJIS)
+const availableIcons = [
+  { value: 'MdLocalShipping', label: 'Entrega Rápida' },
+  { value: 'MdCreditCard', label: 'Cartão de Crédito' },
+  { value: 'MdHeadset', label: 'Suporte Dedicado' },
+  { value: 'MdStar', label: 'Alta Qualidade' },
+  { value: 'MdSecurity', label: 'Segurança Online' },
+  { value: 'MdAccessTime', label: 'Envio Imediato' },
+  { value: 'MdWorkspacePremium', label: 'Produtos Premium' },
+  { value: 'MdOutlineVerified', label: 'Verificado' },
+  { value: 'MdWhatsapp', label: 'WhatsApp' },
+  { value: 'MdArchive', label: 'Em Estoque' },
+  // Adicione mais ícones de Md aqui conforme necessário
+];
+
+// Mapeamento de strings de ícones para componentes React-Icons
+const IconComponents: Record<string, React.ElementType> = {
+  MdLocalShipping: MdLocalShipping,
+  MdCreditCard: MdCreditCard,
+  MdHeadset: MdHeadset,
+  MdStar: MdStar,
+  MdSecurity: MdSecurity,
+  MdAccessTime: MdAccessTime,
+  MdWorkspacePremium: MdWorkspacePremium,
+  MdOutlineVerified: MdOutlineVerified,
+  MdWhatsapp: MdWhatsapp,
+  MdArchive: MdArchive,
+  // Adicione outros ícones aqui conforme necessário
+};
+
 
 interface HighlightsModuleProps {
   id: string;
@@ -14,23 +60,28 @@ interface HighlightsModuleProps {
 }
 
 const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange, onRemove }) => {
-  const highlightItems = data.highlightItems ?? []; // fallback defensivo
+  const highlightItems: SingleHighlightItem[] = data.highlightItems ?? []; // fallback defensivo
 
-  const handleHighlightItemChange = (index: number, field: 'icon' | 'text', value: string) => {
-    const updatedItems = highlightItems.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
+  const handleHighlightItemChange = (itemId: string, field: keyof SingleHighlightItem, value: any) => {
+    const updatedItems = highlightItems.map((item) =>
+      item.id === itemId ? { ...item, [field]: value } : item
     );
     onChange({ highlightItems: updatedItems });
   };
 
   const handleAddHighlightItem = () => {
-    const newItem = { icon: '✨', text: 'Novo Destaque' };
+    // Limita a 4 itens, como você sugeriu
+    if (highlightItems.length >= 4) {
+      alert('Limite de 4 itens de destaque atingido.'); // Mantido alert temporariamente para feedback
+      return;
+    }
+    const newItem: SingleHighlightItem = { id: uuidv4(), icon: 'MdStar', title: 'Novo Destaque', subtitle: 'Descrição breve', isActive: true }; // Usando MdStar como default
     onChange({ highlightItems: [...highlightItems, newItem] });
   };
 
-  const handleRemoveHighlightItem = (index: number) => {
+  const handleRemoveHighlightItem = (itemId: string) => {
     if (window.confirm('Tem certeza que deseja remover este item de destaque?')) {
-      const updatedItems = highlightItems.filter((_, i) => i !== index);
+      const updatedItems = highlightItems.filter((item) => item.id !== itemId);
       onChange({ highlightItems: updatedItems });
     }
   };
@@ -39,30 +90,32 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
     <div className={styles.sectionBlock}>
       {/* Cabeçalho do módulo com título e botão de remover */}
       <div className={styles.moduleHeader}>
-        <h4 className={styles.nestedTitle}>Configurações de Destaques</h4>
+        <h4 className={styles.nestedTitle}>Banner Info</h4>
         <button
           onClick={() => onRemove(id)}
-          className={styles.removeButton}
+          className={styles.removeModuleButton}
           title="Remover este módulo"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
-            <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
-          </svg>
+          <MdDeleteForever className={styles.removeIcon} />
         </button>
       </div>
 
-      {/* Campo Título */}
+      <p className={styles.sectionDescription}>
+        Crie uma barra informativa com ícones e textos para destacar benefícios da sua loja.
+      </p>
+
+      {/* Campo Título Geral do Módulo */}
       <div className={styles.inputGroup}>
         <label className={styles.inputLabel} htmlFor={`hl-title-${id}`}>Título:</label>
         <input
           type="text"
           id={`hl-title-${id}`}
           className={styles.textInput}
-          value={data.title}
+          value={data.title ?? ''}
           onChange={(e) => onChange({ title: e.target.value })}
           placeholder="Ex: Por Que Nos Escolher?"
         />
-        <p className={styles.fieldDescription}>Título exibido acima dos itens de destaque.</p>
+        <p className={styles.fieldDescription}>Título exibido acima dos itens de destaque (opcional).</p>
       </div>
 
       {/* Campo Layout */}
@@ -71,10 +124,10 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
         <select
           id={`hl-layout-${id}`}
           className={styles.selectInput}
-          value={data.layout}
+          value={data.layout ?? 'icons-text'}
           onChange={(e) => onChange({ layout: e.target.value as 'icons-text' | 'cards' })}
         >
-          <option value="icons-text">Ícones e Texto (Lista)</option>
+          <option value="icons-text">Ícones e Texto (Lista Horizontal)</option>
           <option value="cards">Cards (Blocos com borda)</option>
         </select>
         <p className={styles.fieldDescription}>Define como os itens de destaque serão exibidos.</p>
@@ -82,50 +135,101 @@ const HighlightsModule: React.FC<HighlightsModuleProps> = ({ id, data, onChange,
 
       {/* Itens de Destaque */}
       <h5 className={styles.nestedTitle}>Itens de Destaque:</h5>
+      <p className={styles.fieldDescription}>Adicione até 4 itens de destaque.</p>
+
       {highlightItems.length === 0 && (
-        <p className={styles.fieldDescription}>Nenhum item de destaque adicionado ainda.</p>
+        <p className={styles.noContentMessage}>Nenhum item de destaque adicionado ainda.</p>
       )}
-      {highlightItems.map((item, index) => (
-        <div key={index} className={styles.highlightItem}>
-          <span className={styles.highlightItemIcon}>{item.icon}</span>
-          <input
-            type="text"
-            className={styles.textInput}
-            value={item.text}
-            onChange={(e) => handleHighlightItemChange(index, 'text', e.target.value)}
-            placeholder="Texto do Destaque"
-          />
-          <input
-            type="text"
-            className={styles.textInput}
-            value={item.icon}
-            onChange={(e) => handleHighlightItemChange(index, 'icon', e.target.value)}
-            placeholder="Ícone/Emoji (Ex: ✨)"
-            style={{ width: '80px', flexShrink: 0 }}
-          />
-          <button
-            onClick={() => handleRemoveHighlightItem(index)}
-            className={styles.removeHighlightItemButton}
-            title="Remover este destaque"
-          >
-            <MdDeleteForever size={18} />
-          </button>
-        </div>
-      ))}
-      <button onClick={handleAddHighlightItem} className={styles.addButton}>
+
+      <div className={styles.highlightItemsList}>
+        {highlightItems.map((item, index) => {
+          const IconComponent = IconComponents[item.icon as string] || MdStar; // Fallback para MdStar
+          return (
+            <div key={item.id} className={styles.highlightItem}>
+              <div className={styles.highlightItemIcon}>
+                {IconComponent ? <IconComponent size={24} /> : <span>{item.icon}</span>}
+              </div>
+
+              {/* Seletor de Ícone */}
+              <div className={styles.inputGroupInline}>
+                <label htmlFor={`hl-icon-${item.id}`} className={styles.inputLabel}>Ícone:</label>
+                <select
+                  id={`hl-icon-${item.id}`}
+                  className={styles.selectInput}
+                  value={item.icon ?? 'MdStar'}
+                  onChange={(e) => handleHighlightItemChange(item.id, 'icon', e.target.value)}
+                >
+                  {availableIcons.map(icon => (
+                    <option key={icon.value} value={icon.value}>{icon.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Título do Destaque */}
+              <div className={styles.inputGroupInline}>
+                <label htmlFor={`hl-item-title-${item.id}`} className={styles.inputLabel}>Título:</label>
+                <input
+                  type="text"
+                  id={`hl-item-title-${item.id}`}
+                  className={styles.textInput}
+                  value={item.title ?? ''}
+                  onChange={(e) => handleHighlightItemChange(item.id, 'title', e.target.value)}
+                  placeholder="Ex: Frete Grátis"
+                />
+              </div>
+
+              {/* Subtítulo do Destaque */}
+              <div className={styles.inputGroupInline}>
+                <label htmlFor={`hl-item-subtitle-${item.id}`} className={styles.inputLabel}>Subtítulo:</label>
+                <input
+                  type="text"
+                  id={`hl-item-subtitle-${item.id}`}
+                  className={styles.textInput}
+                  value={item.subtitle ?? ''}
+                  onChange={(e) => handleHighlightItemChange(item.id, 'subtitle', e.target.value)}
+                  placeholder="Ex: Em compras acima de R$199"
+                />
+              </div>
+
+              {/* Checkbox Ativo */}
+              <div className={styles.inputGroupInline}>
+                <label className={styles.checkboxLabel} htmlFor={`hl-item-active-${item.id}`}>
+                  <input
+                    type="checkbox"
+                    id={`hl-item-active-${item.id}`}
+                    className={styles.checkboxInput}
+                    checked={item.isActive ?? false}
+                    onChange={(e) => handleHighlightItemChange(item.id, 'isActive', e.target.checked)}
+                  /> Ativo
+                </label>
+              </div>
+
+              <button
+                onClick={() => handleRemoveHighlightItem(item.id)}
+                className={styles.removeHighlightItemButton}
+                title="Remover este destaque"
+              >
+                <MdClose size={18} />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <button onClick={handleAddHighlightItem} className={styles.addHighlightButton}>
         <MdAdd /> Adicionar Destaque
       </button>
 
-      {/* Campo Ativo */}
+      {/* Campo Ativo do Módulo */}
       <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel} htmlFor={`hl-active-${id}`}>
+        <label className={styles.checkboxLabel} htmlFor={`hl-module-active-${id}`}>
           <input
             type="checkbox"
-            id={`hl-active-${id}`}
+            id={`hl-module-active-${id}`}
             className={styles.checkboxInput}
-            checked={data.isActive}
+            checked={data.isActive ?? false}
             onChange={(e) => onChange({ isActive: e.target.checked })}
-          /> Ativo
+          /> Módulo Ativo
         </label>
         <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
       </div>

@@ -1,7 +1,7 @@
 // app/(painel)/personalizar/components/editor/HomepageEditor.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // --- DND-KIT IMPORTS ---
 import {
@@ -33,12 +33,15 @@ import NewsletterModule from './modules/NewsletterModule';
 import CategoriesModule from './modules/CategoriesModule';
 import HighlightsModule from './modules/HighlightsModule';
 import VideoModule from './modules/VideoModule';
+import TestimonialsModule from './modules/TestimonialsModule';
+import ImageGalleryModule from './modules/ImageGalleryModule';
 
 // Importa a interface para o item da lista de módulos (o quadradinho arrastável)
 import HomepageModuleListItem from './modules/HomepageModuleListItem';
 
 // Importa os estilos específicos do HomepageEditor
 import styles from './HomepageEditor.module.css';
+import { useTheme } from '../../context/ThemeContext';
 
 // Importa todas as interfaces de dados de módulo do arquivo de tipos
 import {
@@ -53,12 +56,21 @@ import {
   CategoriesModuleData,
   HighlightsModuleData,
   VideoModuleData,
+  TestimonialsModuleData,
+  ImageGalleryModuleData,
+  SingleBannerData,
+  SingleProductShowcaseData,
+  SingleHighlightItem,
+  SelectedCategoryDisplayData,
+  SingleMiniBannerData,
+  SingleTestimonialData,
+  SingleImageGalleryData,
 } from '../../types';
+import { v4 as uuidv4 } from 'uuid';
 
 
 // --- DEFINIÇÕES DE AJUDA PARA MÓDULOS (GLOBAL PARA REUSO) ---
 
-// Define MODULE_DISPLAY_NAMES com `as const` para inferência de tipos literais
 const MODULE_DISPLAY_NAMES_RAW = {
   banner: 'Banner Principal',
   mini_banners: 'Mini Banners',
@@ -66,16 +78,15 @@ const MODULE_DISPLAY_NAMES_RAW = {
   text_image: 'Texto e Imagem',
   newsletter: 'Newsletter',
   categories: 'Categorias',
-  highlights: 'Destaques (Confiança)',
+  highlights: 'Banner Info',
   video: 'Vídeo',
+  testimonials: 'Depoimentos',
+  image_gallery: 'Galeria de Imagens',
 } as const;
 
-// Mapeamento dos tipos de módulo para nomes de exibição (visíveis no painel)
 type ModuleDisplayKeys = keyof typeof MODULE_DISPLAY_NAMES_RAW;
 const MODULE_DISPLAY_NAMES: Record<ModuleDisplayKeys, string> = MODULE_DISPLAY_NAMES_RAW;
 
-
-// Mapeamento dos tipos de módulo para seus componentes de edição
 const ModuleEditorComponents: Record<ModuleDisplayKeys, React.FC<any>> = {
   banner: BannerModule,
   mini_banners: MiniBannerModule,
@@ -85,47 +96,141 @@ const ModuleEditorComponents: Record<ModuleDisplayKeys, React.FC<any>> = {
   categories: CategoriesModule,
   highlights: HighlightsModule,
   video: VideoModule,
+  testimonials: TestimonialsModule,
+  image_gallery: ImageGalleryModule,
 };
 
-// Função para criar um novo módulo com dados padrão (para quando o usuário adicionar um)
-const createNewModule = (type: ModuleDisplayKeys): HomepageModuleType => {
-  const newId = `${type}-${Date.now()}`;
-
-  switch (type) {
-    case 'banner':
-      return {
-        id: newId, type: 'banner',
-        data: {
-          desktopImageUrl: 'https://via.placeholder.com/1200x400?text=Novo+Banner+Desktop',
-          mobileImageUrl: 'https://via.placeholder.com/600x800?text=Novo+Banner+Mobile',
-          title: 'Novo Banner',
-          subtitle: 'Clique para editar o conteúdo',
-          buttonText: 'Saiba Mais',
-          buttonLink: '#',
-          isActive: true
-        }
-      };
-    case 'mini_banners':
-      return {
-        id: newId, type: 'mini_banners',
-        data: { title: 'Nova Seção de Mini Banners', banners: [{ id: `mb-${Date.now()}-1`, imageUrl: 'https://via.placeholder.com/300x150?text=MiniBanner', link: '#', title: 'Mini Banner', subtitle: 'Descrição' }], layout: 'grid', isActive: true }
-      };
-    case 'product_showcase':
-      return { id: newId, type: 'product_showcase', data: { title: 'Nova Vitrine de Produtos', displayType: 'latest', productIds: [], numberOfProducts: 4, isActive: true } };
-    case 'text_image':
-      return { id: newId, type: 'text_image', data: { title: 'Novo Bloco de Texto e Imagem', text: 'Este é um novo bloco de texto e imagem. Edite o conteúdo e a imagem ao lado.', imageUrl: 'https://via.placeholder.com/400x200?text=Texto+e+Imagem', imagePosition: 'left', buttonText: 'Ler Mais', buttonLink: '#', isActive: true } };
-    case 'newsletter':
-      return { id: newId, type: 'newsletter', data: { title: 'Nova Newsletter', subtitle: 'Assine para receber novidades!', buttonText: 'Assinar', privacyPolicyLink: '#', isActive: true } };
-    case 'categories':
-      return { id: newId, type: 'categories', data: { title: 'Novas Categorias', selectedCategories: [], layout: 'grid', isActive: true } };
-    case 'highlights':
-      return { id: newId, type: 'highlights', data: { title: 'Novos Destaques', highlightItems: [{ icon: '✨', text: 'Qualidade' }, { icon: '🚀', text: 'Rapidez' }], layout: 'icons-text', isActive: true } };
-    case 'video':
-        return { id: newId, type: 'video', data: { title: 'Novo Vídeo', videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', autoplay: false, loop: false, controls: true, isActive: true } };
-    default:
-      throw new Error(`Tipo de módulo desconhecido ou inválido: ${type}`);
+const initialModuleData: { [key in ModuleDisplayKeys]: HomepageModuleType['data'] } = {
+  banner: {
+    title: 'Novo Banner Principal',
+    subtitle: 'Subtítulo do Banner',
+    banners: [{
+      id: uuidv4(),
+      desktopImageUrl: 'https://via.placeholder.com/1200x400?text=Novo+Banner+Desktop',
+      mobileImageUrl: 'https://via.placeholder.com/600x800?text=Novo+Banner+Mobile',
+      title: 'Novo Banner',
+      subtitle: 'Clique para editar o conteúdo',
+      buttonText: 'Saiba Mais',
+      buttonLink: '#',
+      overlayColor: '#000000',
+      overlayOpacity: 0.3,
+      isActive: true
+    }],
+    layout: 'carousel',
+    autoplay: true,
+    interval: 5,
+    isActive: true
+  },
+  mini_banners: {
+    title: 'Nova Seção de Mini Banners',
+    banners: [{
+      id: uuidv4(),
+      imageUrl: 'https://via.placeholder.com/300x150?text=MiniBanner',
+      link: '#',
+      title: 'Mini Banner',
+      subtitle: 'Descrição',
+      isActive: true
+    }],
+    layout: 'grid',
+    isActive: true
+  },
+  product_showcase: {
+    title: 'Nova Vitrine de Produtos',
+    subtitle: 'Explore nossos produtos.',
+    showcases: [{
+      id: uuidv4(),
+      title: 'Mais Vendidos',
+      displayType: 'best_sellers',
+      categoryId: null,
+      productIds: [],
+      numberOfProducts: 4,
+      isActive: true
+    }],
+    isActive: true
+  },
+  text_image: {
+    title: 'Novo Bloco de Texto e Imagem',
+    text: 'Este é um novo bloco de texto e imagem. Edite o conteúdo e a imagem ao lado.',
+    imageUrl: 'https://via.placeholder.com/400x200?text=Texto+e+Imagem',
+    imagePosition: 'left',
+    buttonText: 'Ler Mais',
+    buttonLink: '#',
+    isActive: true
+  },
+  newsletter: {
+    title: 'Nova Newsletter',
+    subtitle: 'Assine para receber novidades!',
+    buttonText: 'Assinar',
+    privacyPolicyLink: '#',
+    isActive: true
+  },
+  categories: {
+    title: 'Novas Categorias',
+    categoriesToDisplay: [],
+    layout: 'grid',
+    isActive: true
+  },
+  highlights: {
+    title: 'Novos Destaques',
+    subtitle: 'Conheça nossos diferenciais.',
+    highlightItems: [{
+      id: uuidv4(),
+      icon: 'MdStar',
+      title: 'Qualidade',
+      subtitle: 'Produtos de alta qualidade',
+      isActive: true
+    }],
+    layout: 'icons-text',
+    isActive: true
+  },
+  video: {
+    title: 'Novo Vídeo',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    autoplay: false,
+    loop: false,
+    controls: true,
+    isActive: true
+  },
+  testimonials: {
+    title: 'Novos Depoimentos',
+    subtitle: 'O que nossos clientes dizem.',
+    testimonials: [{
+      id: uuidv4(),
+      text: 'Amei os produtos e o atendimento!',
+      author: 'Cliente Satisfeito',
+      imageUrl: 'https://via.placeholder.com/80x80?text=Cliente',
+      rating: 5,
+      isActive: true,
+    }],
+    layout: 'carousel',
+    isActive: true,
+  },
+  image_gallery: {
+    title: 'Nova Galeria de Imagens',
+    subtitle: 'Confira nossas fotos.',
+    images: [{
+      id: uuidv4(),
+      imageUrl: 'https://via.placeholder.com/400x300?text=Galeria+Imagem',
+      title: 'Imagem da Galeria',
+      link: '#',
+      isActive: true,
+    }],
+    layout: 'grid',
+    gridColumns: 3,
+    isActive: true,
   }
 };
+
+
+const createNewModule = (type: ModuleDisplayKeys): HomepageModuleType => {
+  const newId = `${type}-${Date.now()}`;
+  return {
+    id: newId,
+    type: type,
+    data: initialModuleData[type],
+  } as HomepageModuleType;
+};
+
 
 const getSafeDisplayName = (type: HomepageModuleType['type'] | undefined | string): string => {
   if (type && (MODULE_DISPLAY_NAMES as any).hasOwnProperty(type)) {
@@ -153,7 +258,7 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
   useEffect(() => {
     const newModules = JSON.parse(JSON.stringify(config.homepage?.modules || []));
     if (JSON.stringify(newModules) !== JSON.stringify(homepageModules)) {
-        setHomepageModules(newModules);
+      setHomepageModules(newModules);
     }
   }, [config.homepage?.modules]);
 
@@ -164,30 +269,28 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
   }, [editingModuleId, homepageModules]);
 
 
-  const handleUpdateModuleData = (moduleId: string, newData: Partial<any>) => {
+  const handleUpdateModuleData = useCallback((moduleId: string, newData: Partial<any>) => {
     setHomepageModules(prevModules => {
       const updatedModules = prevModules.map(mod => {
-        if (mod.id === moduleId) {
-          switch (mod.type) {
-            case 'banner': return { ...mod, data: { ...mod.data, ...(newData as Partial<BannerModuleData>) } };
-            case 'mini_banners': return { ...mod, data: { ...mod.data, ...(newData as Partial<MiniBannerModuleData>) } };
-            case 'product_showcase': return { ...mod, data: { ...mod.data, ...(newData as Partial<ProductShowcaseModuleData>) } };
-            case 'text_image': return { ...mod, data: { ...mod.data, ...(newData as Partial<TextImageModuleData>) } };
-            case 'newsletter': return { ...mod, data: { ...mod.data, ...(newData as Partial<NewsletterModuleData>) } };
-            case 'categories': return { ...mod, data: { ...mod.data, ...(newData as Partial<CategoriesModuleData>) } };
-            case 'highlights': return { ...mod, data: { ...mod.data, ...(newData as Partial<HighlightsModuleData>) } };
-            case 'video': return { ...mod, data: { ...mod.data, ...(newData as Partial<VideoModuleData>) } };
-            default: return mod;
-          }
-        }
-        return mod;
+        if (mod.id !== moduleId) return mod;
+
+        // Solução mais robusta: garantir que o tipo do módulo é mantido
+        // Isso resolve o erro de 'Type incompatibility'
+        const updatedModule = {
+          ...mod,
+          data: { ...mod.data, ...newData }
+        };
+
+        // Usa 'as' para forçar o tipo, já que a estrutura de união é complexa
+        return updatedModule as HomepageModuleType;
       });
       updateConfig({ homepage: { modules: updatedModules } });
       return updatedModules;
     });
-  };
+  }, [homepageModules, updateConfig]);
 
-  const handleAddModule = (type: ModuleDisplayKeys) => {
+
+  const handleAddModule = useCallback((type: ModuleDisplayKeys) => {
     const newModule = createNewModule(type);
     setHomepageModules(prevModules => {
       const updated = [...prevModules, newModule];
@@ -196,9 +299,10 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
     });
     setEditingModuleId(newModule.id);
     setShowAddModuleDropdown(false);
-  };
+  }, [updateConfig]);
 
-  const handleRemoveModule = (moduleId: string) => {
+
+  const handleRemoveModule = useCallback((moduleId: string) => {
     const moduleTypeForDisplay = homepageModules.find(m => m.id === moduleId)?.type;
     const displayName = getSafeDisplayName(moduleTypeForDisplay);
 
@@ -209,10 +313,11 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
         return updatedModules;
       });
       if (editingModuleId === moduleId) {
-          setEditingModuleId(null);
+        setEditingModuleId(null);
       }
     }
-  };
+  }, [homepageModules, updateConfig, editingModuleId]);
+
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -267,13 +372,12 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
       {/* Botão de Voltar para os Módulos (visível SOMENTE quando editando um módulo específico) */}
       {editingModuleId && (
         <button className={styles.backToModulesButton} onClick={() => setEditingModuleId(null)}>
-          <MdArrowBack size={20} /> {/* Ícone de flecha para voltar */}
+          <MdArrowBack size={20} />
         </button>
       )}
 
       {/* Conteúdo Principal: Lista de Módulos OU Editor de Módulo Específico */}
       {!editingModuleId ? (
-        // --- VISÃO DA LISTA DE MÓDULOS (Adicionar e Reordenar) ---
         <>
           <h3 className={styles.sectionTitle}>Página Inicial: Gerenciar Módulos</h3>
           <p className={styles.fieldDescription}>
@@ -289,19 +393,19 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
             >
               <MdAdd size={24} />
             </button>
-             <div className={`${styles.addModuleDropdown} ${showAddModuleDropdown ? styles.isActive : ''}`}>
-                <h4 className={styles.dropdownLabel}>Escolha o tipo de módulo:</h4>
-                <div className={styles.moduleSelectionGrid}>
-                    {Object.keys(MODULE_DISPLAY_NAMES).map((typeKey: string) => (
-                        <button
-                            key={typeKey}
-                            className={styles.moduleSelectionButton}
-                            onClick={() => handleAddModule(typeKey as ModuleDisplayKeys)}
-                        >
-                            {MODULE_DISPLAY_NAMES[typeKey as ModuleDisplayKeys]}
-                        </button>
-                    ))}
-                </div>
+            <div className={`${styles.addModuleDropdown} ${showAddModuleDropdown ? styles.isActive : ''}`}>
+              <h4 className={styles.dropdownLabel}>Escolha o tipo de módulo:</h4>
+              <div className={styles.moduleSelectionGrid}>
+                {Object.keys(MODULE_DISPLAY_NAMES).map((typeKey: string) => (
+                  <button
+                    key={typeKey}
+                    className={styles.moduleSelectionButton}
+                    onClick={() => handleAddModule(typeKey as ModuleDisplayKeys)}
+                  >
+                    {MODULE_DISPLAY_NAMES[typeKey as ModuleDisplayKeys]}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -331,7 +435,74 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
                       displayName={getSafeDisplayName(module.type)}
                       onEdit={() => setEditingModuleId(module.id)}
                       onRemove={handleRemoveModule}
-                      onToggleActive={(moduleId, isActive) => handleUpdateModuleData(moduleId, { isActive })}
+                      onToggleActive={(moduleId, isActive) => {
+                        setHomepageModules((prevModules) => {
+  const updated = prevModules.map((mod) => {
+    if (mod.id !== moduleId) return mod;
+
+    // narrow por tipo
+    switch (mod.type) {
+      case "banner":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as BannerModuleData,
+        };
+      case "mini_banners":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as MiniBannerModuleData,
+        };
+      case "product_showcase":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as ProductShowcaseModuleData,
+        };
+      case "text_image":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as TextImageModuleData,
+        };
+      case "newsletter":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as NewsletterModuleData,
+        };
+      case "categories":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as CategoriesModuleData,
+        };
+      case "highlights":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as HighlightsModuleData,
+        };
+      case "video":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as VideoModuleData,
+        };
+      case "testimonials":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as TestimonialsModuleData,
+        };
+      case "image_gallery":
+        return {
+          ...mod,
+          data: { ...mod.data, isActive } as ImageGalleryModuleData,
+        };
+      default:
+        return mod;
+    }
+  });
+
+  updateConfig({ homepage: { modules: updated } });
+  return updated;
+});
+
+                      
+                      }}
                     />
                   ))}
                 </ul>
@@ -340,7 +511,6 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ config, updateConfig })
           </div>
         </>
       ) : (
-        // VISÃO DO EDITOR DE MÓDULO ESPECÍFICO
         <div className={styles.moduleEditorBlock}>
           {SpecificModuleEditorComponent && (
             <SpecificModuleEditorComponent

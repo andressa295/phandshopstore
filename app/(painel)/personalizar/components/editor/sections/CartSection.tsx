@@ -1,16 +1,20 @@
+// app/(painel)/personalizar/components/editor/CartSection.tsx
 'use client';
 
 import React from 'react';
-import { ThemeConfig, ThemeUpdateFn } from '../../../types';
-import styles from './CartSection.module.css'; 
+import { ThemeConfig, ThemeUpdateFn, CartConfig } from '../../../types'; // Importa CartConfig
+import styles from './CartSection.module.css';
+import { useTheme } from '../../../context/ThemeContext'; // Importa useTheme
 
 interface Props {
-  config: ThemeConfig;
-  updateConfig: ThemeUpdateFn;
+  // config e updateConfig virão do useTheme, não mais de props diretas
+  // updateConfig: ThemeUpdateFn;
 }
 
-const CartSection: React.FC<Props> = ({ config, updateConfig }) => {
-  const cartConfig = config.cart || {
+const CartSection: React.FC<Props> = () => { // Remove as props config e updateConfig
+  const { config, updateConfig } = useTheme(); // Usa o hook para acessar o contexto
+
+  const cartConfig: CartConfig = config.cart || { // Garante que cartConfig seja do tipo CartConfig
     enableWholesaleMinOrder: false,
     minWholesaleOrderValue: null,
     showShippingEstimator: true,
@@ -21,7 +25,7 @@ const CartSection: React.FC<Props> = ({ config, updateConfig }) => {
     crossSellTitle: 'Produtos que você também pode gostar',
   };
 
-  const handleUpdate = (field: keyof typeof cartConfig, value: any) => {
+  const handleUpdate = (field: keyof CartConfig, value: any) => { // Usa keyof CartConfig
     updateConfig({
       cart: {
         ...cartConfig,
@@ -49,7 +53,7 @@ const CartSection: React.FC<Props> = ({ config, updateConfig }) => {
           Ativar Pedido Mínimo para Atacado
         </label>
         {cartConfig.enableWholesaleMinOrder && (
-          <div className={styles.nestedInputGroup}> {/* Nova classe para o input aninhado */}
+          <div className={styles.nestedInputGroup}>
             <label htmlFor="minWholesaleOrderValue" className={styles.inputLabel}>Valor Mínimo (R$):</label>
             <input
               type="number"
@@ -124,10 +128,10 @@ const CartSection: React.FC<Props> = ({ config, updateConfig }) => {
             onChange={(e) => handleUpdate('showCrossSellProducts', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Produtos Relacionados/Complementares no Carrinho
+          Exibir Produtos Relacionados
         </label>
         {cartConfig.showCrossSellProducts && (
-          <div className={styles.nestedInputGroup}> {/* Nova classe para o input aninhado */}
+          <div className={styles.nestedInputGroup}>
             <label htmlFor="crossSellTitle" className={styles.inputLabel}>Título da Seção de Complementares:</label>
             <input
               type="text"

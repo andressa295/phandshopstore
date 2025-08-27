@@ -1,10 +1,7 @@
 /* --- Container Principal da Seção --- */
 .sectionBlock {
-  padding: 24px; /* Espaçamento interno generoso */
-  background-color: #ffffff; /* Fundo branco e limpo */
-  border-radius: 8px; /* Cantos levemente arredondados */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
-  margin-bottom: 32px; /* Espaço entre seções */
+padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
 }
 
 /* --- Títulos da Seção --- */
@@ -20,7 +17,7 @@
 /* --- Descrições de Seção --- */
 .sectionDescription {
   color: #666666; /* Cor de texto secundária para descrições */
-  font-size: 0.95em;
+  font-size: 0.80em;
   line-height: 1.6;
   margin-bottom: 32px; /* Espaçamento generoso para respirar */
   font-weight: 400; /* Sem negrito excessivo */
@@ -59,6 +56,8 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
+  font-family: 'Poppins', sans-serif;
+  
 }
 
 .selectInput:focus {
@@ -75,9 +74,10 @@
   border-radius: 4px;
   background-color: #ffffff;
   color: #333333;
-  font-size: 0.95em;
+  font-size: 0.85em;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 .textInput:focus {
@@ -140,7 +140,7 @@
   align-items: center; /* Alinha o checkbox verticalmente com o texto */
   gap: 12px; /* Espaçamento ENTRE o checkbox e o texto */
   color: #333333;
-  font-size: 0.95em;
+  font-size: 0.85em;
   cursor: pointer;
   margin-top: 0;
   margin-bottom: 8px;

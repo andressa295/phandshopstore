@@ -1,10 +1,9 @@
-/* app/(painel)/personalizar/components/editor/modules/ProductShowcaseModule.module.css */
+/* app/(painel)/personalizar/components/editor/modules/TestimonialsModule.module.css */
 
 /* --- Container Principal do Módulo --- */
 .sectionBlock {
   padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
   margin-bottom: 32px; /* Espaçamento entre as seções */
-  
 }
 
 /* --- Cabeçalho do Módulo (Título e Botão de Remover) --- */
@@ -15,7 +14,6 @@
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e0e0e0;
-  font-family: 'Poppins', sans-serif;
 }
 
 .nestedTitle { /* Título do módulo dentro do editor */
@@ -93,7 +91,7 @@
   box-sizing: border-box;
   resize: vertical;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  font-family: 'Poppins', sans-serif;
+  font-family: inherit;
 }
 
 .textInput::placeholder, .textArea::placeholder {
@@ -111,148 +109,6 @@
 .textArea {
   min-height: 80px;
 }
-
-/* --- Select Customizado (Seta) --- */
-.selectInput {
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
-}
-
-/* --- Botão para Adicionar Nova Vitrine --- */
-.addShowcaseButton {
-  background-color: #8d4edb;
-  color: #ffffff;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 15px;
-  font-size: 0.95em;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-  font-family: 'Poppins', sans-serif;
-}
-
-.addShowcaseButton:hover {
-  background-color: #6b21a8;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  font-family: 'Poppins', sans-serif;
-}
-
-.addShowcaseButton:active {
-  transform: translateY(0);
-}
-
-/* --- Mensagem de Sem Conteúdo --- */
-.noContentMessage {
-  text-align: center;
-  color: #999999;
-  margin-top: 20px;
-  font-size: 1em;
-  padding: 20px;
-  border: 1px dashed #e0e0e0;
-  border-radius: 8px;
-  background-color: #fafafa;
-  font-style: italic;
-  margin-bottom: 20px;
-}
-
-/* --- Lista de Vitrines Individuais --- */
-.showcasesList {
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* Espaçamento entre cada item de vitrine */
-  margin-top: 20px;
-}
-
-/* --- Item de Preview de Vitrine Individual --- */
-.showcasePreviewItem {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
-  background-color: #fcfcfc;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  position: relative; /* Para o overlay de ações */
-}
-
-.showcasePreviewItem:hover {
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  border-color: #8d4edb; /* Borda primária no hover */
-}
-
-.showcasePreviewContent {
-  flex-grow: 1;
-  text-align: left;
-}
-
-.showcasePreviewTitle {
-  font-size: 1em;
-  font-weight: 600;
-  color: #333333;
-  margin: 0;
-}
-
-.showcasePreviewSubtitle, .showcasePreviewCategory {
-  font-size: 0.85em;
-  color: #666666;
-  margin-top: 5px;
-}
-
-/* --- Overlay de Ações no Preview (Editar/Remover) --- */
-.showcaseActionsOverlay {
-  position: absolute;
-  top: 5px; /* Posição no canto superior */
-  right: 5px; /* Posição no canto direito */
-  display: flex;
-  gap: 5px;
-  opacity: 0; /* Inicialmente invisível */
-  transition: opacity 0.2s ease;
-  z-index: 5; /* Acima do conteúdo, mas abaixo do modal */
-}
-
-.showcasePreviewItem:hover .showcaseActionsOverlay {
-  opacity: 1; /* Visível no hover do item */
-}
-
-.editShowcaseInlineButton, .removeShowcaseInlineButton {
-  background-color: rgba(141, 78, 219, 0.8); /* Cor primária semi-transparente */
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 4px; /* Botão pequeno */
-  font-size: 0.8em;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px; /* Tamanho fixo para botões pequenos */
-  height: 28px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  font-family: 'Poppins', sans-serif;
-}
-
-.removeShowcaseInlineButton {
-  background-color: rgba(220, 53, 69, 0.8); /* Cor de perigo semi-transparente */
-}
-
-.editShowcaseInlineButton:hover { background-color: #6b21a8; }
-.removeShowcaseInlineButton:hover { background-color: #c82333; }
-
 
 /* --- Checkbox Customizado --- */
 .checkboxLabel {
@@ -301,24 +157,169 @@
 /* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
   color: #666666;
-  font-size: 0.7em;
+  font-size: 0.7em; /* Tamanho fixo, ~11.2px */
   margin-top: 8px;
   line-height: 1.5;
   font-weight: 400;
 }
 
-/* --- Grupos de Input Aninhados --- */
-.nestedInputGroup {
-  margin-left: 24px;
-  margin-top: 16px;
-  padding: 16px;
-  background-color: #f9f9f9;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+/* --- Botão para Adicionar Novo Depoimento --- */
+.addTestimonialButton {
+  background-color: #8d4edb;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* --- Modal de Edição de Vitrine --- */
+.addTestimonialButton:hover {
+  background-color: #6b21a8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.addTestimonialButton:active {
+  transform: translateY(0);
+}
+
+/* --- Mensagem de Sem Conteúdo --- */
+.noContentMessage {
+  text-align: center;
+  color: #999999;
+  margin-top: 20px;
+  font-size: 1em;
+  padding: 20px;
+  border: 1px dashed #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+/* --- Lista de Depoimentos Individuais --- */
+.testimonialsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espaçamento entre cada item de depoimento */
+  margin-top: 20px;
+}
+
+/* --- Item de Preview de Depoimento Individual --- */
+.testimonialPreviewItem {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #fcfcfc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative; /* Para os botões de ação */
+}
+
+.testimonialPreviewContent {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.testimonialPreviewImage {
+  width: 60px; /* Tamanho da imagem do autor */
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+.testimonialTextInfo {
+  flex-grow: 1;
+}
+
+.testimonialPreviewAuthor {
+  font-size: 1em;
+  font-weight: 600;
+  color: #333333;
+  margin: 0;
+}
+
+.testimonialPreviewText {
+  font-size: 0.85em;
+  color: #555555;
+  margin: 5px 0 0 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.testimonialPreviewRating {
+  display: flex;
+  gap: 2px;
+  color: #FFD700; /* Cor das estrelas */
+  margin-top: 5px;
+}
+
+.starFilled {
+  color: #FFD700; /* Estrela preenchida */
+}
+
+.starEmpty {
+  color: #cccccc; /* Estrela vazia */
+}
+
+/* --- Overlay de Ações no Preview (Editar/Remover) --- */
+.testimonialActionsOverlay {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  gap: 5px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+}
+
+.testimonialPreviewItem:hover .testimonialActionsOverlay {
+  opacity: 1;
+}
+
+.editTestimonialInlineButton, .removeTestimonialInlineButton {
+  background-color: rgba(141, 78, 219, 0.8);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.removeTestimonialInlineButton {
+  background-color: rgba(220, 53, 69, 0.8);
+}
+
+.editTestimonialInlineButton:hover { background-color: #6b21a8; }
+.removeTestimonialInlineButton:hover { background-color: #c82333; }
+
+
+/* --- Modal de Edição de Depoimento --- */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -374,7 +375,6 @@
   height: 32px;
   border-radius: 50%;
   transition: background-color 0.2s ease, color 0.2s ease;
-  font-family: 'Poppins', sans-serif;
 }
 
 .modalCloseButton:hover {
@@ -389,14 +389,92 @@
   gap: 15px;
 }
 
-.productListSelector {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #e0e0e0;
+.imageUploadBox { /* Reutilizado para upload de imagem do autor */
+  border: 1px dashed #e0e0e0;
   border-radius: 4px;
   padding: 10px;
-  background-color: #fcfcfc;
+  background-color: #fafafa;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+
+.imageUploadBox:hover {
+  border-color: #8d4edb;
+}
+
+.uploadInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #999999;
+  font-size: 0.9em;
+}
+
+.uploadIconPlaceholder {
+  font-size: 2.5em;
+  color: #cccccc;
+}
+
+.uploadPlaceholder {
+  color: #999999;
+  font-size: 0.9em;
+}
+
+.imagePreview { /* Para preview de imagem do autor */
+  max-width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.removeImageButton {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.removeImageButton:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.ratingInput {
+  display: flex;
+  gap: 5px;
+  color: #FFD700; /* Cor das estrelas */
+}
+
+.starIcon {
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.starIcon:hover {
+  transform: scale(1.1);
+}
+
 
 .modalFooter {
   display: flex;
@@ -414,17 +492,17 @@
   border-radius: 20px;
   padding: 10px 20px;
   font-size: 0.95em;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
 }
 
 .primaryButton:hover {
   background-color: #6b21a8;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  font-family: 'Poppins', sans-serif;
 }
 
 .secondaryButton {
@@ -445,24 +523,33 @@
   background-color: #d0d0d0;
   transform: translateY(-1px);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  font-family: 'Poppins', sans-serif;
 }
-
 
 /* --- Responsividade --- */
 @media (max-width: 768px) {
   .sectionBlock {
     padding: 16px;
   }
-  .sectionTitle {
-    font-size: 1.5em;
-    margin-bottom: 12px;
+  .moduleHeader {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  .nestedTitle {
+    font-size: 1em;
+  }
+  .removeModuleButton {
+    width: 28px;
+    height: 28px;
+  }
+  .removeIcon {
+    width: 16px;
+    height: 16px;
   }
   .sectionDescription {
     font-size: 0.85em;
     margin-bottom: 24px;
   }
-  .addShowcaseButton {
+  .addTestimonialButton {
     width: 100%;
     font-size: 0.9em;
     padding: 8px 12px;
@@ -471,25 +558,40 @@
     padding: 15px;
     font-size: 0.9em;
   }
-  .showcasesList {
+  .testimonialsList {
     gap: 15px;
   }
-  .showcasePreviewItem {
+  .testimonialPreviewItem {
     padding: 10px;
     gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .showcasePreviewTitle {
-    font-size: 0.9em;
+  .testimonialPreviewContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
-  .showcasePreviewSubtitle, .showcasePreviewCategory {
+  .testimonialPreviewImage {
+    width: 50px;
+    height: 50px;
+  }
+  .testimonialTextInfo {
+    width: 100%;
+  }
+  .testimonialPreviewAuthor {
+    font-size: 0.95em;
+  }
+  .testimonialPreviewText {
     font-size: 0.8em;
   }
-  .showcaseActions {
-    gap: 8px;
+  .testimonialPreviewRating {
+    margin-top: 5px;
   }
-  .editShowcaseButton, .removeShowcaseButton {
-    padding: 6px 10px;
-    font-size: 0.8em;
+  .editTestimonialInlineButton, .removeTestimonialInlineButton {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75em;
   }
   .inputGroup {
     margin-bottom: 10px;
@@ -498,7 +600,7 @@
   .inputLabel {
     font-size: 0.85em;
   }
-  .textInput, .selectInput, .textArea {
+  .textInput, .textArea, .selectInput {
     padding: 8px 10px;
     font-size: 0.9em;
   }
@@ -510,14 +612,6 @@
   }
   .checkboxLabel {
     font-size: 0.9em;
-  }
-  .nestedInputGroup {
-    margin-left: 15px;
-    padding: 10px;
-  }
-  .productListSelector {
-    max-height: 150px;
-    padding: 8px;
   }
   .modalOverlay {
     padding: 10px;

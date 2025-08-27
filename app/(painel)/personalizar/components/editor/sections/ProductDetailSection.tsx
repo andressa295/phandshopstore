@@ -1,32 +1,18 @@
+// app/(painel)/personalizar/components/editor/ProductDetailSection.tsx
 'use client';
 
 import React from 'react';
-import { ThemeConfig, ThemeUpdateFn } from '../../../types';
+import { ThemeConfig, ThemeUpdateFn, ProductDetailConfig } from '../../../types'; // Importa ProductDetailConfig
 import styles from './ProductDetailSection.module.css';
-
-export interface ProductDetailConfig {
-  galleryLayout: 'carousel' | 'grid';
-  showPrice: boolean;
-  showSku: boolean;
-  showStock: boolean;
-  enableQuantitySelector: boolean;
-  showVariations: boolean;
-  showProductDescription: boolean;
-  showAdditionalInfoTabs: boolean;
-  showReviewsSection: boolean;
-  showRelatedProducts: boolean;
-  relatedProductsTitle: string;
-  showTrustBadges: boolean;
-  trustBadgesImages: string[];
-}
+import { useTheme } from '../../../context/ThemeContext'; 
 
 interface Props {
-  config: ThemeConfig;
-  updateConfig: ThemeUpdateFn;
 }
 
-const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
-  const productDetailConfig = config.productDetail || {
+const ProductDetailSection: React.FC<Props> = () => { 
+  const { config, updateConfig } = useTheme(); 
+
+  const productDetailConfig: ProductDetailConfig = config.productDetail || { // Garante que productDetailConfig seja do tipo ProductDetailConfig
     galleryLayout: 'carousel',
     showPrice: true,
     showSku: true,
@@ -40,14 +26,14 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
     relatedProductsTitle: 'Produtos Relacionados',
     showTrustBadges: false,
     trustBadgesImages: [],
+    imagePosition: 'side-gallery', // Valor padrão do defaultThemeConfig
   };
 
-  // Garanto que trustBadgesImages é um array
   const trustBadgesImages = Array.isArray(productDetailConfig.trustBadgesImages)
     ? productDetailConfig.trustBadgesImages
     : [];
 
-  const handleUpdate = (field: keyof typeof productDetailConfig, value: any) => {
+  const handleUpdate = (field: keyof ProductDetailConfig, value: any) => { // Usa keyof ProductDetailConfig
     updateConfig({
       productDetail: {
         ...productDetailConfig,
@@ -58,41 +44,56 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
 
   return (
     <div className={styles.sectionBlock}>
-      <h3 className={styles.sectionTitle}>Página de Detalhes do Produto</h3>
+      <h3 className={styles.sectionTitle}>Detalhes do Produto</h3>
       <p className={styles.sectionDescription}>
         Ajuste como os produtos individuais são exibidos na sua loja.
       </p>
 
+      {/* 1. Layout da Galeria de Imagens */}
       <div className={styles.inputGroup}>
         <label htmlFor="galleryLayout" className={styles.inputLabel}>Layout da Galeria de Imagens:</label>
         <select
           id="galleryLayout"
           className={styles.selectInput}
           value={productDetailConfig.galleryLayout}
-          onChange={(e) => handleUpdate('galleryLayout', e.target.value)}
+          onChange={(e) => handleUpdate('galleryLayout', e.target.value as 'carousel' | 'grid')}
         >
-          <option value="carousel">Carrossel (Padrão)</option>
+          <option value="carousel">Carrossel </option>
           <option value="grid">Grade de Miniaturas</option>
         </select>
       </div>
 
-      {/* Checkboxes gerais */}
+      {/* 2. Posição da Imagem Principal */}
+      <div className={styles.inputGroup}>
+        <label htmlFor="imagePosition" className={styles.inputLabel}>Posição da Imagem Principal:</label>
+        <select
+          id="imagePosition"
+          className={styles.selectInput}
+          value={productDetailConfig.imagePosition}
+          onChange={(e) => handleUpdate('imagePosition', e.target.value as 'left' | 'right' | 'top-gallery' | 'side-gallery')}
+        >
+          <option value="side-gallery">Ao Lado da Descrição</option>
+          <option value="top-gallery">Acima da Descrição</option>
+        </select>
+      </div>
+
+      {/* 3. Checkboxes gerais */}
       {[
         { label: 'Exibir Preço', field: 'showPrice' },
         { label: 'Exibir SKU', field: 'showSku' },
         { label: 'Exibir Quantidade em Estoque', field: 'showStock' },
         { label: 'Habilitar Seletor de Quantidade', field: 'enableQuantitySelector' },
-        { label: 'Exibir Variações do Produto (Tamanho, Cor, etc.)', field: 'showVariations' },
+        { label: 'Exibir Variações do Produto ', field: 'showVariations' },
         { label: 'Exibir Descrição Completa do Produto', field: 'showProductDescription' },
-        { label: 'Exibir Abas de Informações Adicionais (Especificações, Dimensões, etc.)', field: 'showAdditionalInfoTabs' },
+        { label: 'Exibir Abas de Informações Adicionais ', field: 'showAdditionalInfoTabs' },
         { label: 'Exibir Seção de Avaliações de Clientes', field: 'showReviewsSection' },
       ].map(({ label, field }) => (
         <div className={styles.inputGroup} key={field}>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
-              checked={productDetailConfig[field as keyof typeof productDetailConfig] as boolean}
-              onChange={(e) => handleUpdate(field as keyof typeof productDetailConfig, e.target.checked)}
+              checked={productDetailConfig[field as keyof ProductDetailConfig] as boolean}
+              onChange={(e) => handleUpdate(field as keyof ProductDetailConfig, e.target.checked)}
               className={styles.checkboxInput}
             />
             {label}
@@ -100,7 +101,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
         </div>
       ))}
 
-      {/* Produtos Relacionados */}
+      {/* 4. Produtos Relacionados */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -126,7 +127,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
         )}
       </div>
 
-      {/* Selos de Confiança */}
+      {/* 5. Selos de Confiança */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
@@ -135,7 +136,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
             onChange={(e) => handleUpdate('showTrustBadges', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Selos de Confiança (Segurança, Pagamento, etc.)
+          Exibir Selos de Confiança
         </label>
         {productDetailConfig.showTrustBadges && (
           <div className={styles.nestedInputGroup}>
@@ -147,7 +148,7 @@ const ProductDetailSection: React.FC<Props> = ({ config, updateConfig }) => {
               className={styles.textArea}
               value={trustBadgesImages.join('\n')}
               onChange={(e) => handleUpdate('trustBadgesImages', e.target.value.split('\n'))}
-              placeholder="Ex: /images/selo-seguro.png\n/images/selo-pagamento.png"
+              placeholder="Ex: https://seusite.com/images/selo-seguro.png\nhttps://seusite.com/images/selo-pagamento.png"
               rows={4}
             />
             <small className={styles.fieldDescription}>

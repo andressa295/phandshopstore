@@ -1,20 +1,19 @@
+// app/(painel)/personalizar/components/editor/ColorsSection.tsx
 'use client';
 
 import React from 'react';
-import styles from './ColorsSection.module.css';
 import { ThemeConfig, ThemeUpdateFn } from '../../../types'; // Importa os tipos corretos
+import styles from './ColorsSection.module.css';
+import { useTheme } from '../../../context/ThemeContext'; // Importa useTheme
 
 // Define a interface para as props da seção de cores
 interface ColorsSectionProps {
-  config: ThemeConfig; // Agora tipado corretamente
-  updateConfig: ThemeUpdateFn; // Agora tipado corretamente
+  // config e updateConfig virão do useTheme, não mais de props diretas
 }
 
 // Define a interface para as props do componente de entrada de cor
 interface ColorInputProps {
   label: string;
-  // A chave de configuração pode ser uma chave direta de ThemeConfig ou uma chave de sub-objeto
-  // Usamos string aqui para flexibilidade, mas o onChange garantirá a tipagem
   configPath: string; // Ex: 'primaryColor', 'headerBackgroundColor', 'footer.footerBackgroundColor'
   description: string;
   value: string;
@@ -56,7 +55,8 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, configPath, description,
 };
 
 
-const ColorsSection: React.FC<ColorsSectionProps> = ({ config, updateConfig }) => {
+const ColorsSection: React.FC<ColorsSectionProps> = () => { // Remove as props config e updateConfig
+  const { config, updateConfig } = useTheme(); // Usa o hook para acessar o contexto
 
   // Função genérica para atualizar configurações aninhadas
   const handleUpdate = (path: string, value: string) => {
@@ -164,8 +164,8 @@ const ColorsSection: React.FC<ColorsSectionProps> = ({ config, updateConfig }) =
         onChange={handleUpdate}
       />
 
-       {/* Exemplo de cor do botão de adicionar ao carrinho na lista de produtos */}
-       <ColorInput
+        {/* Exemplo de cor do botão de adicionar ao carrinho na lista de produtos */}
+        <ColorInput
         label="Cor do Botão Comprar (Lista)"
         configPath="productList.addToCartButtonColor" // Caminho aninhado
         description="Cor de fundo do botão 'Adicionar ao Carrinho' exibido nas listas de produtos."

@@ -4,17 +4,17 @@
   height: 100vh;
   background-color: var(--color-background-app);
   font-family: 'Poppins', sans-serif;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
-.topbar { 
+.topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1.25rem;
-  background-color: var(--color-primary); 
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: var(--color-primary);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   min-height: 50px;
   color: var(--color-text-light);
 }
@@ -32,8 +32,8 @@
   flex-shrink: 0;
   background-color: var(--color-background-card);
   border-right: 1px solid var(--color-border);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-  overflow-y: auto; 
+  box-shadow: var(--shadow-sm);
+  overflow-y: auto;
   padding: var(--spacing-lg);
   transition: all var(--transition-normal) ease-in-out;
   display: flex;
@@ -59,7 +59,7 @@
   padding: var(--spacing-lg);
 }
 
-/* --- Títulos e Descrições de Seção (Genéricos) --- */
+/* --- Títulos e Descrições de Seção (Genéricos para o Painel) --- */
 .editorContentH3 { /* Usado em Editor.tsx e HomepageEditor.tsx */
   color: var(--color-text-strong);
   font-size: var(--font-size-lg);
@@ -73,16 +73,16 @@
 
 .nestedTitle { /* Usado em módulos e grupos aninhados */
   color: var(--color-text-primary);
-  font-size: 1.1em; 
+  font-size: 1.1em;
   font-weight: 600;
   margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-xs);
   border-bottom: 1px dashed var(--color-border);
 }
 
-.description { /* Usado para descrições de seção */
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+.description { /* Usado para descrições de seção (o "subtítulo" grande da seção) */
+  color: #666666; /* VALOR FIXO */
+  font-size: 0.8rem; /* AJUSTADO: Tamanho fixo, ~12.8px */
   line-height: 1.6;
   margin-top: var(--spacing-xs);
   margin-bottom: var(--spacing-lg);
@@ -90,9 +90,9 @@
   font-weight: 400;
 }
 
-.fieldDescription { /* Usado para descrições de campo */
-  color: var(--color-text-secondary);
-  font-size: 0.8em; 
+.fieldDescription { /* Usado para descrições de campo (o "subtítulo" pequeno) */
+  color: #666666; /* VALOR FIXO */
+  font-size: 0.7rem; /* AJUSTADO: Tamanho fixo, ~11.2px */
   line-height: 1.5;
   margin-top: var(--spacing-xs);
   font-weight: 400;
@@ -107,19 +107,24 @@
 
 
 /* --- Grupos de Input (Genéricos) --- */
-.inputGroup { 
+.inputGroup {
   margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm); /* Espaçamento entre label e input */
+  padding: var(--spacing-md); /* Espaçamento interno para cada grupo de input */
+  background-color: transparent; /* Fundo transparente para o design "lisinho" */
+  border-radius: var(--spacing-xs);
+  border: 1px solid var(--color-border-input-group); /* Borda sutil para agrupar */
+  box-shadow: var(--shadow-sm-light); /* Sombra super leve */
 }
 
-.inputLabel { 
+.inputLabel {
   display: block;
-  color: var(--color-text-primary);
-  font-size: var(--font-size-md);
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.9em; /* ~14.4px */
   font-weight: 600;
-  margin-bottom: 0; 
+  margin-bottom: 0;
 }
 
 
@@ -127,14 +132,14 @@
 .textInput,
 .numberInput,
 .selectInput,
-.textArea { 
+.textArea {
   width: 100%;
-  padding: 10px 12px; 
-  border: 1px solid var(--color-border-input); /* Borda padrão */
-  border-radius: var(--spacing-xs); /* Arredondamento padrão */
-  background-color: var(--color-background-input);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-md); /* Use var para consistência */
+  padding: 10px 12px;
+  border: 1px solid #cccccc; /* BORDA CLARA E FIXA */
+  border-radius: var(--spacing-xs);
+  background-color: #ffffff;
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.95em; /* ~15.2px */
   box-sizing: border-box;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   font-family: inherit;
@@ -142,7 +147,7 @@
 
 .textInput::placeholder,
 .textArea::placeholder {
-  color: var(--color-text-placeholder);
+  color: #999999; /* VALOR FIXO */
   opacity: 0.8;
 }
 
@@ -150,10 +155,10 @@
 .numberInput:focus,
 .selectInput:focus,
 .textArea:focus {
-  border-color: var(--color-primary); /* Borda roxa no foco */
-  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.25); /* Sombra suave de foco */
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.25);
   outline: none;
-  background-color: var(--color-background-input); /* Mantém fundo no foco */
+  background-color: #ffffff;
 }
 
 .textArea {
@@ -177,7 +182,7 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 32px; 
+  width: 32px;
   height: 32px;
   background-color: transparent;
   border: none;
@@ -185,19 +190,19 @@
   padding: 0;
   border-radius: 50%; /* Bolinha perfeita */
   overflow: hidden;
-  border: 2px solid var(--color-border-input); /* Borda da bolinha */
+  border: 2px solid #cccccc; /* Borda da bolinha */
   box-shadow: var(--shadow-sm); /* Sombra sutil na bolinha */
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .colorInput:hover {
-  border-color: var(--color-primary); /* Borda roxa no hover */
-  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15); /* Sombra de foco sutil */
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15);
   transform: scale(1.05); /* Pequeno zoom */
 }
 
 .colorInput::-webkit-color-swatch-wrapper { padding: 0; }
-.colorInput::-webkit-color-swatch { border-radius: 50%; border: none; } 
+.colorInput::-webkit-color-swatch { border-radius: 50%; border: none; }
 .colorInput::-moz-color-swatch { border-radius: 50%; border: none; }
 
 
@@ -206,25 +211,25 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-md);
+  color: #333333; /* VALOR FIXO */
+  font-size: 0.95em; /* ~15.2px */
   cursor: pointer;
-  user-select: none; 
+  user-select: none;
 }
 
 .checkboxInput {
-  width: 20px; 
+  width: 20px;
   height: 20px;
-  accent-color: var(--color-primary); 
-  border-radius: 6px; 
+  accent-color: var(--color-primary);
+  border-radius: 6px;
   cursor: pointer;
   flex-shrink: 0;
-  margin-top: 0; 
+  margin-top: 0;
 }
 
 
 /* --- Botões de Ação Genéricos --- */
-.smallButton { 
+.smallButton {
   background-color: var(--color-secondary);
   color: var(--color-text-primary);
   border: none;
@@ -248,12 +253,12 @@
   transform: translateY(1px);
 }
 
-.addButton, .primaryButton { 
+.addButton, .primaryButton {
   background-color: var(--color-primary);
   color: var(--color-text-light);
   border: none;
-  padding: 10px 20px; 
-  border-radius: 8px; 
+  padding: 10px 20px;
+  border-radius: 8px;
   font-size: var(--font-size-md);
   font-weight: 600;
   cursor: pointer;
@@ -274,7 +279,7 @@
 }
 
 
-.secondaryButton { 
+.secondaryButton {
   background-color: var(--color-secondary);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
@@ -293,12 +298,12 @@
   transform: translateY(0);
 }
 
-.saveButton { 
+.saveButton {
   background-color: var(--color-primary);
   color: var(--color-text-light);
   padding: 12px 28px;
   border: none;
-  border-radius: 50px; 
+  border-radius: 50px;
   font-size: var(--font-size-lg);
   font-weight: 700;
   cursor: pointer;
@@ -313,16 +318,16 @@
 
 
 /* --- Elementos de Layout Comuns --- */
-.nestedInputGroup { 
+.nestedInputGroup {
     background-color: var(--color-background-nested);
     border: 1px solid var(--color-border-nested);
-    border-radius: var(--spacing-sm); 
+    border-radius: var(--spacing-sm);
     padding: var(--spacing-md);
     margin-top: var(--spacing-md);
     box-shadow: var(--shadow-sm);
 }
 
-.arrayItem { 
+.arrayItem {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
@@ -338,20 +343,20 @@
     background-color: var(--color-background-hover);
 }
 
-.divider { 
+.divider {
     border: none;
     border-top: 1px dashed var(--color-border);
     margin: var(--spacing-xl) 0;
 }
 
-.buttonGroup { 
+.buttonGroup {
     margin-top: var(--spacing-xl);
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-md);
 }
 
-.saveWrapper { 
+.saveWrapper {
     padding: var(--spacing-md);
     margin-top: auto;
     display: flex;
@@ -361,12 +366,12 @@
     position: sticky;
     bottom: 0;
     z-index: 10;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.05); 
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
 }
 
 /* --- Responsividade (Ajustes Gerais para Mobile) --- */
 @media (max-width: 768px) {
-  .panelArea { 
+  .panelArea {
     padding: var(--spacing-md);
   }
   .editorWrapper {
@@ -377,13 +382,13 @@
     border-radius: var(--spacing-sm);
     margin-bottom: var(--spacing-lg);
   }
-  .editorContentH3, .nestedTitle { 
-    font-size: 1.2em;
+  .editorContentH3, .nestedTitle {
+    font-size: var(--font-size-lg-mobile);
     margin-bottom: var(--spacing-sm);
     padding-bottom: var(--spacing-xs);
   }
   .description, .fieldDescription {
-    font-size: 0.85em;
+    font-size: var(--font-size-sm-mobile);
     margin-bottom: var(--spacing-md);
   }
   .inputGroup {
@@ -391,7 +396,7 @@
     gap: var(--spacing-xs);
   }
   .inputLabel {
-    font-size: 0.9em;
+    font-size: var(--font-size-sm-mobile);
   }
   .textInput, .numberInput, .selectInput, .textArea {
     padding: 8px 10px;
@@ -403,14 +408,14 @@
     height: 28px;
   }
   .checkboxLabel {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm-mobile);
   }
   .smallButton {
     padding: 4px 8px;
     font-size: 0.75rem;
   }
   .addButton, .primaryButton, .secondaryButton, .saveButton, .backButton {
-    font-size: var(--font-size-md); 
+    font-size: var(--font-size-md-mobile);
     padding: 10px 20px;
   }
   .saveButton {
@@ -423,7 +428,13 @@
   }
   .arrayItem {
     gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs);
+  }
+  .paymentMethodItem {
+    padding: var(--spacing-xs);
+  }
+  .paymentMethodImage {
+    max-height: 25px;
   }
   .buttonGroup {
     margin-top: var(--spacing-lg);

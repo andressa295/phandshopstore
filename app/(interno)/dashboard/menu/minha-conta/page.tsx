@@ -197,6 +197,7 @@ const MeuPerfilPage: React.FC = () => {
         e.preventDefault();
         setSuccessMessage(null);
         setError(null);
+        setErrorMessage(null); // Limpa mensagens de erro anteriores
 
         if (!profile.personalInfo.cpfCnpj) {
             setError("O campo CPF/CNPJ é obrigatório.");
@@ -212,6 +213,12 @@ const MeuPerfilPage: React.FC = () => {
                 setLoading(false);
                 return;
             }
+
+            // --- DEPURANDO AQUI: LOG DETALHADO ANTES DO UPDATE ---
+            console.log("--- MeuPerfilPage: Tentando salvar perfil ---");
+            console.log("Dados do perfil a serem atualizados:", profile);
+            console.log("ID do usuário para update:", user.id);
+            // --- FIM DA DEPURACAO ---
 
             const { error: dbError } = await supabase
                 .from('usuarios')
@@ -233,10 +240,14 @@ const MeuPerfilPage: React.FC = () => {
                 .eq('id', user.id);
 
             if (dbError) {
-                console.error("Erro ao salvar perfil:", dbError);
+                // --- DEPURANDO AQUI: LOG DETALHADO DO ERRO DO UPDATE ---
+                console.error("Erro ao salvar perfil (detalhes):", dbError.message, dbError.code, dbError.details, dbError.hint);
+                // --- FIM DA DEPURACAO ---
                 setError("Erro ao salvar as informações. Tente novamente.");
             } else {
                 setSuccessMessage("Suas informações foram salvas com sucesso!");
+                // Opcional: recarregar o perfil após o sucesso para garantir que o estado esteja atualizado
+                // fetchUserProfile(); 
             }
         } catch (err) {
             console.error("Erro inesperado ao salvar perfil:", err);

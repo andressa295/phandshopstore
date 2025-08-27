@@ -1,73 +1,67 @@
+/* app/(painel)/personalizar/components/editor/HomepageEditor.module.css */
 .editorWrapper {
-  padding: 1.2rem;
-  background-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
 }
 
+/* --- Títulos da Seção --- */
 .sectionTitle {
-  color: #222222;
-  font-size: 1.2em;
-  font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e5e5e5;
+  color: #333333; /* Cor de texto principal */
+  font-size: 1.2em; /* Levemente maior para destaque */
+  font-weight: 700; /* Forte, mas não excessivo */
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
   text-align: left;
-  letter-spacing: -0.03em;
 }
 
+/* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
-  color: #666666;
-  font-size: 0.6em;
-  margin-top: 0px;
-  line-height: 1.2;
-  margin-bottom: 15px;
+  color: #666666; /* Cor de texto secundária */
+  font-size: 0.7em; /* AJUSTADO: Pequeno e discreto (~11.2px) */
+  margin-top: 8px; /* Espaçamento para o campo acima */
+  line-height: 1.5;
+  font-weight: 400; /* Sem negrito */
 }
 
-.noContentMessage {
-  text-align: center;
-  color: #a0a0a0;
-  padding: 30px 20px;
-  border: 1px dashed #cccccc;
-  border-radius: 10px;
-  background-color: #ffffff;
-  font-style: italic;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.modulesListContainer {
-    margin-top: 10px;
-}
-
-.modulesList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* --- Botão de Voltar --- */
+.backToModulesButton {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin-bottom: 24px;
+  background-color: #f0f2f5; /* Fundo cinza claro */
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333333;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  width: fit-content; /* Ajusta a largura ao conteúdo */
 }
 
-/* --- FAB (Floating Action Button) Container - CENTRALIZADO E MAIS ALTO --- */
+.backToModulesButton:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* --- Container do Botão Adicionar Módulo (FAB) --- */
 .addModuleFabContainer {
-  position: relative; 
-  margin: 10px auto 0 auto; /* MUDANÇA: Centraliza horizontalmente com auto e sobe (20px top, 0 bottom) */
-  width: fit-content; /* MUDANÇA: Ocupa apenas a largura do conteúdo para centralizar corretamente */
+  position: relative; /* Para posicionar o dropdown */
+  margin: 10px auto 0 auto; /* Centraliza horizontalmente e sobe */
+  width: fit-content; /* Ocupa apenas a largura do conteúdo para centralizar corretamente */
   z-index: 1000;
   display: flex;
   justify-content: center;
-  
 }
 
 .addModuleFab {
-  background-color: #8d4edb;
+  background-color: #8d4edb; /* Cor primária roxa */
   color: #ffffff;
   border: none;
-  border-radius: 50%;
+  border-radius: 50%; /* Botão redondo */
   width: 50px;
   height: 50px;
   display: flex;
@@ -77,10 +71,11 @@
   cursor: pointer;
   box-shadow: 0 6px 12px rgba(0,0,0,0.25);
   transition: all 0.25s ease-in-out;
+  margin: 20px;
 }
 
 .addModuleFab:hover {
-  background-color: #6b21a8;
+  background-color: #6b21a8; /* Escurece no hover */
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 8px 16px rgba(0,0,0,0.35);
 }
@@ -93,8 +88,8 @@
 /* --- Dropdown de Adicionar Módulo - POSICIONADO ACIMA DO FAB --- */
 .addModuleDropdown {
   position: absolute;
-  bottom: 60px; /* MUDANÇA: Altura do FAB (50px) + 10px de gap */
-  left: 50%;
+  bottom: -320px; /* Altura do FAB (50px) + 10px de gap */
+  left: 60%;
   transform: translateX(-50%) translateY(10px);
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
@@ -115,12 +110,12 @@
   transform: translateX(-50%) translateY(0);
 }
 
-.addModuleDropdown h4 {
+.dropdownLabel {
   color: #333333;
   font-size: 0.95em;
   font-weight: 600;
   margin-top: 0;
-  margin-bottom: 12px; /* AJUSTADO */
+  margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -145,7 +140,6 @@
   white-space: normal;
   line-height: 1.2;
   font-family: 'Poppins', sans-serif;
-
 }
 
 .moduleSelectionButton:hover {
@@ -161,36 +155,126 @@
 }
 
 
-.backToModulesButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: #8d4edb;
-  font-size: 1.05em;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 10px 15px;
+/* --- Lista de Módulos Arrastáveis --- */
+.modulesListContainer {
+  /* Pode ter um padding se quiser que a lista não encoste nas bordas */
+}
+
+.noContentMessage {
+  text-align: center;
+  color: #999999;
+  margin-top: 50px;
+  font-size: 1em;
+  padding: 20px;
+  border: 1px dashed #e0e0e0;
   border-radius: 8px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  margin-bottom: 25px;
-  text-decoration: none;
+  background-color: #fafafa;
+  font-style: italic;
+  margin-bottom: 20px;
 }
 
-.backToModulesButton:hover {
-  background-color: rgba(141, 78, 219, 0.1);
-  color: #6b21a8;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.modulesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Espaçamento entre os itens da lista */
 }
 
+/* --- Bloco do Editor de Módulo Específico --- */
+.moduleEditorBlock {
+  /* Pode ter estilos específicos para a área de edição de um módulo */
+}
+
+
+/* --- Estilos para HomepageModuleListItem (o item individual na lista) --- */
+/* Estes estilos devem ser definidos no próprio HomepageModuleListItem.module.css */
+/* Mas aqui estão alguns padrões que ele pode usar: */
+.moduleListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  cursor: grab; /* Indica que é arrastável */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.moduleListItem:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.moduleListItem.dragging { /* Classe para quando está sendo arrastado */
+  opacity: 0.7;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.moduleHandle { /* Área para arrastar */
+  cursor: grab;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  color: #999999;
+}
+
+.moduleInfo {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.moduleName {
+  font-weight: 600;
+  color: #333333;
+  font-size: 1em;
+}
+
+.moduleStatus {
+  font-size: 0.85em;
+  color: #666666;
+  margin-top: 2px;
+}
+
+.moduleActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.moduleActionButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666666;
+  font-size: 1.1em;
+  transition: color 0.2s ease;
+}
+
+.moduleActionButton:hover {
+  color: #8d4edb;
+}
+
+.moduleRemoveButton {
+  color: #dc3545;
+}
+
+.moduleRemoveButton:hover {
+  color: #c82333;
+}
+
+
+/* --- Responsividade --- */
 @media (max-width: 768px) {
   .editorWrapper {
     padding: 20px;
     border-radius: 10px;
   }
   .sectionTitle {
-    font-size: 1.2em;
+    font-size: 1.5em;
     margin-bottom: 15px;
     padding-bottom: 8px;
   }
@@ -211,7 +295,7 @@
   .addModuleFab {
     width: 45px;
     height: 45px;
-    font-size: 1.1em;
+    font-size: 1.3rem;
   }
   .addModuleDropdown {
     bottom: 60px; /* AJUSTADO para mobile */

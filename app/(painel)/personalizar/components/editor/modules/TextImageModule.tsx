@@ -4,7 +4,8 @@
 import React, { ChangeEvent, useRef } from 'react';
 import { TextImageModuleData } from '../../../types';
 import styles from './TextImageModule.module.css'; // Importa estilos locais
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDeleteForever, MdOutlineFileUpload, MdClose } from 'react-icons/md'; // Ícones
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'; // Cliente Supabase
 
 interface TextImageModuleProps {
   id: string;
@@ -13,34 +14,67 @@ interface TextImageModuleProps {
   onRemove: (id: string) => void;
 }
 
+// Inicializa o cliente Supabase para Client Components
+const supabase = createClientComponentClient();
+const SUPABASE_STORAGE_BUCKET = 'theme-images'; // <--- NOME DO SEU BUCKET NO SUPABASE STORAGE!
+
 const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, onRemove }) => {
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        onChange({ imageUrl: event.target?.result as string });
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const fileExtension = file.name.split('.').pop();
+    const filePath = `${id}/text-image-${Date.now()}.${fileExtension}`; // Caminho único no storage
+
+    try {
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(SUPABASE_STORAGE_BUCKET)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error('Erro ao fazer upload da imagem:', uploadError);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from(SUPABASE_STORAGE_BUCKET)
+        .getPublicUrl(filePath);
+
+      if (publicUrlData?.publicUrl) {
+        onChange({ imageUrl: publicUrlData.publicUrl as string });
+        console.log('Upload de imagem concluído com sucesso:', publicUrlData.publicUrl);
+      } else {
+        console.error('Não foi possível obter a URL pública da imagem.');
+      }
+
+    } catch (error: any) {
+      console.error('Erro inesperado no upload:', error);
+    } finally {
+      if (e.target) e.target.value = ''; // Limpa o input de arquivo
     }
   };
 
   return (
     <div className={styles.sectionBlock}>
       <div className={styles.moduleHeader}>
-        <h4 className={styles.nestedTitle}>Configurações de Texto e Imagem</h4>
+        <h4 className={styles.nestedTitle}>Texto e Imagem</h4>
         <button
           onClick={() => onRemove(id)}
-          className={styles.removeButton}
+          className={styles.removeModuleButton}
           title="Remover este módulo"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
-            <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
-          </svg>
+          <MdDeleteForever className={styles.removeIcon} />
         </button>
       </div>
+
+      <p className={styles.sectionDescription}>
+        Adicione um bloco de texto com uma imagem lateral para destacar informações ou histórias.
+      </p>
 
       {/* Campo Título */}
       <div className={styles.inputGroup}>
@@ -49,7 +83,7 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
             type="text"
             id={`ti-title-${id}`}
             className={styles.textInput}
-            value={data.title}
+            value={data.title ?? ''}
             onChange={(e) => onChange({ title: e.target.value })}
             placeholder="Ex: Conheça Nossa História"
         />
@@ -62,7 +96,7 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
         <textarea
             id={`ti-text-${id}`}
             className={styles.textArea}
-            value={data.text}
+            value={data.text ?? ''}
             onChange={(e) => onChange({ text: e.target.value })}
             rows={6}
             placeholder="Insira o texto descritivo aqui."
@@ -74,14 +108,16 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
       <div className={styles.inputGroup}>
         <label className={styles.inputLabel}>Imagem:</label>
         <div
-          className={styles.logoUploadBox}
-          style={{ minHeight: '150px' }}
+          className={styles.imageUploadBox}
           onClick={() => imageInputRef.current?.click()}
         >
           {data.imageUrl ? (
-            <img src={data.imageUrl} alt="Preview Imagem" className={styles.fullBleedImagePreview} />
+            <img src={data.imageUrl} alt="Preview Imagem" className={styles.imagePreview} />
           ) : (
-            <span className={styles.logoPlaceholder}>Clique ou arraste para adicionar imagem</span>
+            <div className={styles.uploadInner}>
+              <MdOutlineFileUpload className={styles.uploadIconPlaceholder} />
+              <span className={styles.uploadPlaceholder}>Clique para fazer upload (600x400px)</span>
+            </div>
           )}
         </div>
         <input
@@ -92,8 +128,17 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
           style={{ display: 'none' }}
           onChange={handleFileUpload}
         />
+        {data.imageUrl && (
+            <button
+                type="button"
+                className={styles.removeImageButton}
+                onClick={() => onChange({ imageUrl: '' })}
+            >
+                <MdClose size={18} /> Remover Imagem
+            </button>
+        )}
         <p className={styles.fieldDescription}>
-          Faça upload de uma imagem ou insira a URL diretamente. Dimensões recomendadas: 600x400px.
+          Faça upload de uma imagem. Dimensões recomendadas: 600x400px.
         </p>
       </div>
 
@@ -103,7 +148,7 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
         <select
             id={`ti-position-${id}`}
             className={styles.selectInput}
-            value={data.imagePosition}
+            value={data.imagePosition ?? 'left'}
             onChange={(e) => onChange({ imagePosition: e.target.value as 'left' | 'right' })}
         >
             <option value="left">Esquerda do Texto</option>
@@ -119,7 +164,7 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
             type="text"
             id={`ti-btntext-${id}`}
             className={styles.textInput}
-            value={data.buttonText}
+            value={data.buttonText ?? ''}
             onChange={(e) => onChange({ buttonText: e.target.value })}
             placeholder="Ex: Saiba Mais"
         />
@@ -133,7 +178,7 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
             type="text"
             id={`ti-btnlink-${id}`}
             className={styles.textInput}
-            value={data.buttonLink}
+            value={data.buttonLink ?? ''}
             onChange={(e) => onChange({ buttonLink: e.target.value })}
             placeholder="Ex: /sobre-nos"
         />
@@ -147,14 +192,14 @@ const TextImageModule: React.FC<TextImageModuleProps> = ({ id, data, onChange, o
                 type="checkbox"
                 id={`ti-active-${id}`}
                 className={styles.checkboxInput}
-                checked={data.isActive}
+                checked={data.isActive ?? false}
                 onChange={(e) => onChange({ isActive: e.target.checked })}
             /> Ativo
         </label>
         <p className={styles.fieldDescription}>Marque para exibir este módulo na página inicial.</p>
     </div>
-  </div>
-);
-}
+    </div>
+  );
+};
 
- export default TextImageModule;
+export default TextImageModule;

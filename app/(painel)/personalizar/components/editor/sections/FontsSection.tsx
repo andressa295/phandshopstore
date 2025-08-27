@@ -1,13 +1,14 @@
+// app/(painel)/personalizar/components/editor/FontsSection.tsx
 'use client';
 
 import React from 'react';
-import { ThemeConfig, ThemeUpdateFn } from '../../../types'; 
-import styles from './FontsSection.module.css'; 
-import editorStyles from '../../../context/theme-editor-panel.module.css'; 
+import { ThemeConfig, ThemeUpdateFn } from '../../../types';
+import styles from './FontsSection.module.css';
+import editorStyles from '../../../context/theme-editor-panel.module.css';
+import { useTheme } from '../../../context/ThemeContext'; // Importa useTheme
 
 interface FontsSectionProps {
-  config: ThemeConfig; 
-  updateConfig: ThemeUpdateFn; 
+  // config e updateConfig virão do useTheme, não mais de props diretas
 }
 
 const modernFonts = [
@@ -24,7 +25,8 @@ const modernFonts = [
 ];
 
 
-const FontsSection: React.FC<FontsSectionProps> = ({ config, updateConfig }) => {
+const FontsSection: React.FC<FontsSectionProps> = () => { // Remove as props config e updateConfig
+  const { config, updateConfig } = useTheme(); // Usa o hook para acessar o contexto
 
   const getSafeValue = <K extends keyof ThemeConfig>(key: K): ThemeConfig[K] | '' => {
     return config[key] ?? '';
@@ -39,17 +41,17 @@ const FontsSection: React.FC<FontsSectionProps> = ({ config, updateConfig }) => 
   };
 
   const handleTitleFontSizeChange = (value: 'small' | 'medium' | 'large') => {
-    updateConfig({ titleBaseFontSize: value }); 
+    updateConfig({ titleBaseFontSize: value });
   };
 
   const handleTextFontSizeChange = (value: 'small' | 'medium' | 'large') => {
-    updateConfig({ textBaseFontSize: value }); 
+    updateConfig({ textBaseFontSize: value });
   };
 
 
   return (
-    <div className={styles.fontsSection}> {/* Uso da classe 'fontsSection' do Styles */}
-      <h3 className={styles.sectionTitle}>Fontes do Tema</h3> {/* Uso da classe 'sectionTitle' do Styles */}
+    <div className={styles.fontsSection}>
+      <h3 className={styles.sectionTitle}>Fontes do Tema</h3>
 
       {/* Fonte Principal (para Títulos) */}
       <div className={editorStyles.inputGroup}>

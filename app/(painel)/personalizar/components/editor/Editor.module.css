@@ -1,11 +1,6 @@
 .editorWrapper {
-  padding: 1.2rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
 }
 
 .backButton {

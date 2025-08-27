@@ -1,6 +1,6 @@
 /* --- Container Principal da Seção --- */
 .sectionBlock {
-  padding: 24px; /* Espaçamento interno generoso */
+  padding: 0px; /* Espaçamento interno generoso */
   background-color: #ffffff; /* Fundo branco e limpo */
   border-radius: 8px; /* Cantos levemente arredondados */
   box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */

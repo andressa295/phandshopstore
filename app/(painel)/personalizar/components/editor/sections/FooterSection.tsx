@@ -1,24 +1,30 @@
+// app/(painel)/personalizar/components/editor/sections/FooterSection.tsx
 'use client';
 
-import React, { useRef } from 'react';
-import { ThemeConfig, ThemeUpdateFn, FooterConfig } from '../../../types'; 
-import { v4 as uuidv4 } from 'uuid'; 
-import styles from './FooterSection.module.css'; 
+import React, { useRef, useCallback } from 'react';
+import { ThemeConfig, FooterConfig, ThemeUpdateFn } from '../../../types';
+import { v4 as uuidv4 } from 'uuid';
+import styles from './FooterSection.module.css';
+import { useTheme } from '../../../context/ThemeContext';
+import { MdAdd, MdClose } from 'react-icons/md';
+import { FaInstagram, FaFacebook, FaTwitter, FaYoutube, FaLinkedin, FaPinterest, FaTiktok } from 'react-icons/fa';
 
-interface Props {
-  config: ThemeConfig;
-  updateConfig: ThemeUpdateFn;
-}
+// Mapeamento de plataformas para seus nomes de exibição e ícones
+const socialMediaOptions = [
+  { platform: 'facebook', name: 'Facebook', icon: <FaFacebook size={18} /> },
+  { platform: 'instagram', name: 'Instagram', icon: <FaInstagram size={18} /> },
+  { platform: 'x', name: 'X (Twitter)', icon: <FaTwitter size={18} /> },
+  { platform: 'youtube', name: 'YouTube', icon: <FaYoutube size={18} /> },
+  { platform: 'linkedin', name: 'LinkedIn', icon: <FaLinkedin size={18} /> },
+  { platform: 'pinterest', name: 'Pinterest', icon: <FaPinterest size={18} /> },
+  { platform: 'tiktok', name: 'TikTok', icon: <FaTiktok size={18} /> },
+];
 
-const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
+const FooterSection: React.FC = () => {
+  const { config, updateConfig } = useTheme();
+
   const defaultFooterConfig: FooterConfig = {
-    showQuickLinks: true,
-    quickLinks: [
-      { id: uuidv4(), text: 'Sobre Nós', url: '/sobre' },
-      { id: uuidv4(), text: 'Contato', url: '/contato' },
-      { id: uuidv4(), text: 'Política de Privacidade', url: '/politica-privacidade' },
-    ],
-    quickLinksTitle: 'Links Rápidos',
+    showMenu: false, // Nova propriedade para o menu principal
     showSocialMediaIcons: true,
     socialMediaTitle: 'Siga-nos',
     socialMediaLinks: [
@@ -28,12 +34,15 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
     showNewsletterSignup: true,
     newsletterTitle: 'Receba Novidades',
     newsletterSubtitle: 'Inscreva-se e receba ofertas exclusivas!',
+    privacyPolicyLink: '/politica-de-privacidade',
     showContactInfo: true,
     contactAddress: 'Rua Exemplo, 123 - Cidade, Estado, CEP',
     contactPhone: '(XX) XXXX-XXXX',
     contactEmail: 'contato@sua_loja.com',
     showPaymentMethods: true,
-    paymentMethodsImages: [], 
+    paymentMethodsImages: [],
+    showShippingMethods: true,
+    shippingMethodsImages: [],
     showCopyright: true,
     copyrightText: `© ${new Date().getFullYear()} Sua Loja. Todos os direitos reservados.`,
     showCnpj: false,
@@ -42,201 +51,132 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
     footerTextColor: '#ffffff',
   };
 
-  const footerConfig: FooterConfig = {
-    ...defaultFooterConfig,
-    ...(config.footer || {}),
+  const footerConfig = config.footer || defaultFooterConfig;
 
-    quickLinks: (config.footer?.quickLinks ?? defaultFooterConfig.quickLinks ?? []).map(link => ({
-      id: (link as any).id || uuidv4(),
-      text: link.text,
-      url: link.url,
-    })),
-
-    socialMediaLinks: (config.footer?.socialMediaLinks ?? defaultFooterConfig.socialMediaLinks ?? []).map(link => ({
-      id: (link as any).id || uuidv4(),
-      platform: link.platform,
-      url: link.url,
-    })),
-
-    paymentMethodsImages: (config.footer?.paymentMethodsImages ?? defaultFooterConfig.paymentMethodsImages ?? []).map(image => {
-      if (typeof image === 'string') {
-        return { id: uuidv4(), imageUrl: image };
-      }
-      return { id: (image as any).id || uuidv4(), imageUrl: image.imageUrl };
-    }),
-  };
-
-  const footerBgColorInputRef = useRef<HTMLInputElement>(null);
-  const footerTextColorInputRef = useRef<HTMLInputElement>(null);
-  const paymentImageInputRef = useRef<HTMLInputElement>(null);
-
-  const handleUpdate = (field: keyof FooterConfig, value: any) => {
+  const handleUpdate = useCallback((field: keyof FooterConfig, value: any) => {
     updateConfig({
       footer: {
         ...footerConfig,
         [field]: value,
       },
     });
-  };
+  }, [updateConfig, footerConfig]);
 
-  // Definindo variáveis locais para garantir que não sejam undefined
-  const quickLinks = footerConfig.quickLinks ?? [];
-  const socialMediaLinks = footerConfig.socialMediaLinks ?? [];
-  const paymentMethodsImages = footerConfig.paymentMethodsImages ?? [];
-
-  // Funções para Quick Links
-  const handleQuickLinkChange = (id: string, field: 'text' | 'url', value: string) => {
-    const newLinks = quickLinks.map(link => 
-      link.id === id ? { ...link, [field]: value } : link
-    );
-    handleUpdate('quickLinks', newLinks);
-  };
-
-  const handleAddQuickLink = () => {
-    handleUpdate('quickLinks', [...quickLinks, { id: uuidv4(), text: '', url: '' }]);
-  };
-
-  const handleRemoveQuickLink = (id: string) => {
-    const newLinks = quickLinks.filter(link => link.id !== id);
-    handleUpdate('quickLinks', newLinks);
-  };
-
-  // Funções para Social Media Links
-  const handleSocialMediaLinkChange = (id: string, field: 'platform' | 'url', value: string) => {
-    const newLinks = socialMediaLinks.map(link =>
+  const handleSocialMediaLinkChange = useCallback((id: string, field: 'platform' | 'url', value: string) => {
+    const newLinks = (footerConfig.socialMediaLinks || []).map(link =>
       link.id === id ? { ...link, [field]: value as any } : link
     );
     handleUpdate('socialMediaLinks', newLinks);
-  };
+  }, [footerConfig.socialMediaLinks, handleUpdate]);
 
-  const handleAddSocialMediaLink = () => {
-    handleUpdate('socialMediaLinks', [...socialMediaLinks, { id: uuidv4(), platform: 'instagram', url: '' }]);
-  };
+  const handleAddSocialMediaLink = useCallback(() => {
+    handleUpdate('socialMediaLinks', [...(footerConfig.socialMediaLinks || []), { id: uuidv4(), platform: 'instagram', url: '' }]);
+  }, [footerConfig.socialMediaLinks, handleUpdate]);
 
-  const handleRemoveSocialMediaLink = (id: string) => {
-    const newLinks = socialMediaLinks.filter(link => link.id !== id);
+  const handleRemoveSocialMediaLink = useCallback((id: string) => {
+    const newLinks = (footerConfig.socialMediaLinks || []).filter(link => link.id !== id);
     handleUpdate('socialMediaLinks', newLinks);
-  };
+  }, [footerConfig.socialMediaLinks, handleUpdate]);
 
-  // Funções para Payment Methods Images
-  const handlePaymentImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const newImage = { id: uuidv4(), imageUrl: reader.result as string };
-        handleUpdate('paymentMethodsImages', [...paymentMethodsImages, newImage]);
-      };
-      reader.readAsDataURL(file);
+  const paymentMethodsList = [
+    { id: 'visa', imageUrl: 'https://via.placeholder.com/60x40?text=Visa' },
+    { id: 'mastercard', imageUrl: 'https://via.placeholder.com/60x40?text=Mastercard' },
+    { id: 'boleto', imageUrl: 'https://via.placeholder.com/60x40?text=Boleto' },
+    { id: 'pix', imageUrl: 'https://via.placeholder.com/60x40?text=Pix' },
+  ];
+  
+  const shippingMethodsList = [
+    { id: 'correios', imageUrl: 'https://via.placeholder.com/60x40?text=Correios' },
+    { id: 'sedex', imageUrl: 'https://via.placeholder.com/60x40?text=Sedex' },
+    { id: 'jadlog', imageUrl: 'https://via.placeholder.com/60x40?text=Jadlog' },
+  ];
+  
+  const handleTogglePaymentMethod = useCallback((imageId: string, isChecked: boolean) => {
+    if (isChecked) {
+      const newImage = paymentMethodsList.find(img => img.id === imageId);
+      if (newImage) {
+        handleUpdate('paymentMethodsImages', [...(footerConfig.paymentMethodsImages || []), { id: newImage.id, imageUrl: newImage.imageUrl }]);
+      }
+    } else {
+      handleUpdate('paymentMethodsImages', (footerConfig.paymentMethodsImages || []).filter(img => img.id !== imageId));
     }
-  };
+  }, [footerConfig.paymentMethodsImages, handleUpdate]);
 
-  const handleRemovePaymentImage = (id: string) => {
-    const newImages = paymentMethodsImages.filter(image => image.id !== id);
-    handleUpdate('paymentMethodsImages', newImages);
-  };
+  const handleToggleShippingMethod = useCallback((imageId: string, isChecked: boolean) => {
+    if (isChecked) {
+      const newImage = shippingMethodsList.find(img => img.id === imageId);
+      if (newImage) {
+        handleUpdate('shippingMethodsImages', [...(footerConfig.shippingMethodsImages || []), { id: newImage.id, imageUrl: newImage.imageUrl }]);
+      }
+    } else {
+      handleUpdate('shippingMethodsImages', (footerConfig.shippingMethodsImages || []).filter(img => img.id !== imageId));
+    }
+  }, [footerConfig.shippingMethodsImages, handleUpdate]);
+
+  const footerBgColorInputRef = useRef<HTMLInputElement>(null);
+  const footerTextColorInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={styles.sectionBlock}>
-      <h3 className={styles.sectionTitle}>Configurações do Rodapé da Página</h3>
+      <h3 className={styles.sectionTitle}>Rodapé da Página</h3>
       <p className={styles.sectionDescription}>
         Ajuste o conteúdo e o estilo do rodapé da sua loja.
       </p>
 
-      {/* Cor de Fundo do Rodapé */}
-      <div className={styles.inputGroup}>
-        <label htmlFor="footerBackgroundColor" className={styles.inputLabel}>Cor de Fundo do Rodapé:</label>
-        <div className={styles.colorSwatchContainer}>
-          <div
-            className={styles.colorSwatch}
-            style={{ backgroundColor: footerConfig.footerBackgroundColor }}
-            onClick={() => footerBgColorInputRef.current?.click()}
-          />
-          <input
-            ref={footerBgColorInputRef}
-            type="color"
-            id="footerBackgroundColor"
-            className={styles.hiddenColorInput}
-            value={footerConfig.footerBackgroundColor}
-            onChange={(e) => handleUpdate('footerBackgroundColor', e.target.value)}
-          />
+      {/* Cores */}
+      <div className={styles.nestedInputGroup}>
+        <h4 className={styles.nestedTitle}>Cores do Rodapé</h4>
+        <div className={styles.inputGroup}>
+          <label htmlFor="footerBackgroundColor" className={styles.inputLabel}>Cor de Fundo:</label>
+          <div className={styles.colorSwatchContainer}>
+            <div
+              className={styles.colorSwatch}
+              style={{ backgroundColor: footerConfig.footerBackgroundColor ?? '#343a40' }}
+              onClick={() => footerBgColorInputRef.current?.click()}
+            />
+            <input
+              ref={footerBgColorInputRef}
+              type="color"
+              id="footerBackgroundColor"
+              className={styles.hiddenColorInput}
+              value={footerConfig.footerBackgroundColor ?? '#343a40'}
+              onChange={(e) => handleUpdate('footerBackgroundColor', e.target.value)}
+            />
+          </div>
+          <p className={styles.fieldDescription}>Cor de fundo do rodapé.</p>
+        </div>
+        <div className={styles.inputGroup}>
+          <label htmlFor="footerTextColor" className={styles.inputLabel}>Cor do Texto:</label>
+          <div className={styles.colorSwatchContainer}>
+            <div
+              className={styles.colorSwatch}
+              style={{ backgroundColor: footerConfig.footerTextColor ?? '#ffffff' }}
+              onClick={() => footerTextColorInputRef.current?.click()}
+            />
+            <input
+              ref={footerTextColorInputRef}
+              type="color"
+              id="footerTextColor"
+              className={styles.hiddenColorInput}
+              value={footerConfig.footerTextColor ?? '#ffffff'}
+              onChange={(e) => handleUpdate('footerTextColor', e.target.value)}
+            />
+          </div>
+          <p className={styles.fieldDescription}>Cor do texto, links e ícones do rodapé.</p>
         </div>
       </div>
-
-      {/* Cor do Texto do Rodapé */}
-      <div className={styles.inputGroup}>
-        <label htmlFor="footerTextColor" className={styles.inputLabel}>Cor do Texto do Rodapé:</label>
-        <div className={styles.colorSwatchContainer}>
-          <div
-            className={styles.colorSwatch}
-            style={{ backgroundColor: footerConfig.footerTextColor }}
-            onClick={() => footerTextColorInputRef.current?.click()}
-          />
-          <input
-            ref={footerTextColorInputRef}
-            type="color"
-            id="footerTextColor"
-            className={styles.hiddenColorInput}
-            value={footerConfig.footerTextColor}
-            onChange={(e) => handleUpdate('footerTextColor', e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Exibir Links Rápidos */}
+      
+      {/* Exibir Menu Principal no Rodapé */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showQuickLinks}
-            onChange={(e) => handleUpdate('showQuickLinks', e.target.checked)}
+            checked={footerConfig.showMenu ?? false}
+            onChange={(e) => handleUpdate('showMenu', e.target.checked)}
             className={styles.checkboxInput}
           />
-          Exibir Links Rápidos
+          Exibir Menu Principal no Rodapé
         </label>
-        {footerConfig.showQuickLinks && (
-          <div className={styles.nestedInputGroup}>
-            <label htmlFor="quickLinksTitle" className={styles.inputLabel}>Título dos Links Rápidos:</label>
-            <input
-              type="text"
-              id="quickLinksTitle"
-              className={styles.textInput}
-              value={footerConfig.quickLinksTitle}
-              onChange={(e) => handleUpdate('quickLinksTitle', e.target.value)}
-            />
-            <h4 className={styles.nestedTitle}>Gerenciar Links:</h4>
-            {quickLinks.map((link) => (
-              <div key={link.id} className={styles.arrayItem}>
-                <input
-                  type="text"
-                  placeholder="Texto do Link"
-                  value={link.text}
-                  onChange={(e) => handleQuickLinkChange(link.id, 'text', e.target.value)}
-                  className={styles.textInput}
-                />
-                <input
-                  type="text"
-                  placeholder="URL do Link"
-                  value={link.url}
-                  onChange={(e) => handleQuickLinkChange(link.id, 'url', e.target.value)}
-                  className={styles.textInput}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveQuickLink(link.id)}
-                  className={styles.removeButton}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
-                    <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
-                  </svg>
-                </button>
-              </div>
-            ))}
-            <button type="button" onClick={handleAddQuickLink} className={styles.addButton}>
-              Adicionar Link Rápido
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Exibir Ícones de Redes Sociais */}
@@ -244,7 +184,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showSocialMediaIcons}
+            checked={footerConfig.showSocialMediaIcons ?? false}
             onChange={(e) => handleUpdate('showSocialMediaIcons', e.target.checked)}
             className={styles.checkboxInput}
           />
@@ -257,29 +197,37 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               type="text"
               id="socialMediaTitle"
               className={styles.textInput}
-              value={footerConfig.socialMediaTitle}
+              value={footerConfig.socialMediaTitle ?? ''}
               onChange={(e) => handleUpdate('socialMediaTitle', e.target.value)}
+              placeholder="Ex: Siga-nos"
             />
-            <h4 className={styles.nestedTitle}>Gerenciar Redes:</h4>
-            {socialMediaLinks.map((link) => (
+            <p className={styles.fieldDescription}>O título exibido acima dos ícones de redes sociais.</p>
+
+            <h4 className={styles.nestedSubtitle}>Redes:</h4>
+            {(footerConfig.socialMediaLinks || []).map((link) => (
               <div key={link.id} className={styles.arrayItem}>
-                <select
-                  value={link.platform}
-                  onChange={(e) => handleSocialMediaLinkChange(link.id, 'platform', e.target.value)}
-                  className={styles.selectInput}
-                >
-                  <option value="facebook">Facebook</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="x">X (Twitter)</option>
-                  <option value="youtube">YouTube</option>
-                  <option value="linkedin">LinkedIn</option>
-                  <option value="pinterest">Pinterest</option>
-                  <option value="tiktok">TikTok</option>
-                </select>
+                {/* Ícone agora renderizado diretamente no select, com CSS para alinhar */}
+                <div className={styles.socialSelectWrapper}>
+                  <span className={styles.socialSelectIcon}>
+                    {socialMediaOptions.find(opt => opt.platform === link.platform)?.icon}
+                  </span>
+                  <select
+                    value={link.platform ?? 'instagram'}
+                    onChange={(e) => handleSocialMediaLinkChange(link.id, 'platform', e.target.value)}
+                    className={styles.selectInput}
+                  >
+                    {socialMediaOptions.map(option => (
+                      <option key={option.platform} value={option.platform}>
+                        {/* Texto da opção */}
+                        {option.name} 
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <input
                   type="text"
-                  placeholder="URL da Rede Social"
-                  value={link.url}
+                  placeholder="URL do Perfil"
+                  value={link.url ?? ''}
                   onChange={(e) => handleSocialMediaLinkChange(link.id, 'url', e.target.value)}
                   className={styles.textInput}
                 />
@@ -287,26 +235,25 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
                   type="button"
                   onClick={() => handleRemoveSocialMediaLink(link.id)}
                   className={styles.removeButton}
+                  title="Remover rede social"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={styles.removeIcon}>
-                    <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V4C7 3.44772 7.44772 3 8 3H16C16.5523 3 17 3.44772 17 4V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 5V6H15V5H9Z"></path>
-                  </svg>
+                  <MdClose size={20} /> {/* Aumentado o tamanho do ícone do X para visibilidade */}
                 </button>
               </div>
             ))}
             <button type="button" onClick={handleAddSocialMediaLink} className={styles.addButton}>
-              Adicionar Rede Social
+              <MdAdd size={18} /> Rede Social
             </button>
           </div>
         )}
       </div>
 
-      {/* Exibir Imagens de Métodos de Pagamento */}
+      {/* Exibir Imagens de Métodos de Pagamento e Envio */}
       <div className={styles.inputGroup}>
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showPaymentMethods}
+            checked={footerConfig.showPaymentMethods ?? false}
             onChange={(e) => handleUpdate('showPaymentMethods', e.target.checked)}
             className={styles.checkboxInput}
           />
@@ -314,29 +261,41 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         </label>
         {footerConfig.showPaymentMethods && (
           <div className={styles.nestedInputGroup}>
-            <label htmlFor="paymentMethodsUpload" className={styles.inputLabel}>Adicionar Imagem de Método de Pagamento:</label>
-            <input
-              type="file"
-              id="paymentMethodsUpload"
-              accept="image/*"
-              ref={paymentImageInputRef}
-              onChange={handlePaymentImageUpload}
-              className={styles.fileInput}
-            />
+            <h4 className={styles.nestedSubtitle}>Métodos de Pagamento:</h4>
             <div className={styles.paymentMethodsList}>
-              {paymentMethodsImages.map((image) => (
+              {paymentMethodsList.map((image) => (
                 <div key={image.id} className={styles.paymentMethodItem}>
-                  <img src={image.imageUrl} alt="Método de Pagamento" className={styles.paymentMethodImage} />
-                  <button
-                    type="button"
-                    onClick={() => handleRemovePaymentImage(image.id)}
-                    className={styles.removeButton}
-                  >
-                    Remover
-                  </button>
+                  <img src={image.imageUrl} alt={image.id} className={styles.paymentMethodImage} />
                 </div>
               ))}
             </div>
+            <p className={styles.fieldDescription}>As imagens dos métodos de pagamento são padrões da plataforma.</p>
+          </div>
+        )}
+      </div>
+      
+      {/* Exibir Métodos de Envio */}
+      <div className={styles.inputGroup}>
+        <label className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            checked={footerConfig.showShippingMethods ?? false}
+            onChange={(e) => handleUpdate('showShippingMethods', e.target.checked)}
+            className={styles.checkboxInput}
+          />
+          Exibir Métodos de Envio
+        </label>
+        {footerConfig.showShippingMethods && (
+          <div className={styles.nestedInputGroup}>
+            <h4 className={styles.nestedSubtitle}>Métodos de Envio:</h4>
+            <div className={styles.paymentMethodsList}>
+              {shippingMethodsList.map((image) => (
+                <div key={image.id} className={styles.paymentMethodItem}>
+                  <img src={image.imageUrl} alt={image.id} className={styles.paymentMethodImage} />
+                </div>
+              ))}
+            </div>
+            <p className={styles.fieldDescription}>As imagens dos métodos de envio são padrões da plataforma.</p>
           </div>
         )}
       </div>
@@ -346,7 +305,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showContactInfo}
+            checked={footerConfig.showContactInfo ?? false}
             onChange={(e) => handleUpdate('showContactInfo', e.target.checked)}
             className={styles.checkboxInput}
           />
@@ -359,57 +318,27 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               type="text"
               id="contactAddress"
               className={styles.textInput}
-              value={footerConfig.contactAddress}
+              value={footerConfig.contactAddress ?? ''}
               onChange={(e) => handleUpdate('contactAddress', e.target.value)}
+              placeholder="Rua Exemplo, 123"
             />
             <label htmlFor="contactPhone" className={styles.inputLabel}>Telefone:</label>
             <input
               type="text"
               id="contactPhone"
               className={styles.textInput}
-              value={footerConfig.contactPhone}
+              value={footerConfig.contactPhone ?? ''}
               onChange={(e) => handleUpdate('contactPhone', e.target.value)}
+              placeholder="(XX) XXXX-XXXX"
             />
             <label htmlFor="contactEmail" className={styles.inputLabel}>E-mail:</label>
             <input
               type="email"
               id="contactEmail"
               className={styles.textInput}
-              value={footerConfig.contactEmail}
+              value={footerConfig.contactEmail ?? ''}
               onChange={(e) => handleUpdate('contactEmail', e.target.value)}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Newsletter */}
-      <div className={styles.inputGroup}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            checked={footerConfig.showNewsletterSignup}
-            onChange={(e) => handleUpdate('showNewsletterSignup', e.target.checked)}
-            className={styles.checkboxInput}
-          />
-          Exibir Cadastro de Newsletter
-        </label>
-        {footerConfig.showNewsletterSignup && (
-          <div className={styles.nestedInputGroup}>
-            <label htmlFor="newsletterTitle" className={styles.inputLabel}>Título:</label>
-            <input
-              type="text"
-              id="newsletterTitle"
-              className={styles.textInput}
-              value={footerConfig.newsletterTitle}
-              onChange={(e) => handleUpdate('newsletterTitle', e.target.value)}
-            />
-            <label htmlFor="newsletterSubtitle" className={styles.inputLabel}>Subtítulo:</label>
-            <input
-              type="text"
-              id="newsletterSubtitle"
-              className={styles.textInput}
-              value={footerConfig.newsletterSubtitle}
-              onChange={(e) => handleUpdate('newsletterSubtitle', e.target.value)}
+              placeholder="contato@sua_loja.com"
             />
           </div>
         )}
@@ -420,7 +349,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showCopyright}
+            checked={footerConfig.showCopyright ?? false}
             onChange={(e) => handleUpdate('showCopyright', e.target.checked)}
             className={styles.checkboxInput}
           />
@@ -433,9 +362,11 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               type="text"
               id="copyrightText"
               className={styles.textInput}
-              value={footerConfig.copyrightText}
+              value={footerConfig.copyrightText ?? ''}
               onChange={(e) => handleUpdate('copyrightText', e.target.value)}
+              placeholder={`© ${new Date().getFullYear()} Sua Loja.`}
             />
+            <p className={styles.fieldDescription}>O texto de direitos autorais exibido no rodapé.</p>
           </div>
         )}
       </div>
@@ -445,7 +376,7 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
         <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
-            checked={footerConfig.showCnpj}
+            checked={footerConfig.showCnpj ?? false}
             onChange={(e) => handleUpdate('showCnpj', e.target.checked)}
             className={styles.checkboxInput}
           />
@@ -458,8 +389,9 @@ const FooterSection: React.FC<Props> = ({ config, updateConfig }) => {
               type="text"
               id="cnpjText"
               className={styles.textInput}
-              value={footerConfig.cnpjText}
+              value={footerConfig.cnpjText ?? ''}
               onChange={(e) => handleUpdate('cnpjText', e.target.value)}
+              placeholder="CNPJ: XX.XXX.XXX/XXXX-XX"
             />
           </div>
         )}

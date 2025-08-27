@@ -1,146 +1,148 @@
+/* app/(painel)/personalizar/components/editor/DesignTypeSection.module.css */
+
 /* --- Container Principal da Seção --- */
 .sectionBlock {
-  padding: 24px; /* Espaçamento interno generoso */
-  background-color: #ffffff; /* Fundo branco e limpo */
-  border-radius: 8px; /* Cantos levemente arredondados */
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra sutil para leveza */
-  margin-bottom: 32px; /* Espaço entre seções */
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
 }
 
 /* --- Títulos da Seção --- */
 .sectionTitle {
-  color: #333333; /* Cor de texto principal */
-  font-size: 1.2em; /* Ajustei para 1.8em para ser consistente com o outro que enviei antes */
-  font-weight: 700; /* Forte, mas não excessivo */
+  color: #333333;
+  font-size: 1.2em;
+  font-weight: 700;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #8d4edb; /* Linha roxa sutil */
+  border-bottom: 2px solid #8d4edb;
+  text-align: left;
 }
 
-/* --- Descrições de Seção --- */
+/* --- Descrições de Seção (Texto introdutório do módulo) --- */
 .sectionDescription {
-  color: #666666; /* Cor de texto secundária para descrições */
-  font-size: 0.95em;
+  color: #666666;
+  font-size: 0.8em; /* Pequeno e discreto */
   line-height: 1.6;
-  margin-bottom: 32px; /* Espaçamento generoso para respirar */
-  font-weight: 400; /* Sem negrito excessivo */
+  margin-bottom: 24px;
 }
 
 /* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição) --- */
 .inputGroup {
-  margin-bottom: 20px; /* Bom espaçamento entre os grupos de configuração */
-  display: flex; /* Para alinhar labels com inputs/selects */
-  flex-direction: column; /* Coloca os elementos em coluna */
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background-color: #fdfdfd;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-/* --- Labels dos Inputs e Selects --- */
 .inputLabel {
-  display: block; /* Garante que a label ocupe sua própria linha */
+  display: block;
   color: #333333;
-  font-size: 0.9em; /* Menor e mais delicado */
-  font-weight: 600; /* Suficiente para destaque, mas não pesado */
-  margin-bottom: 8px; /* Espaçamento entre label e o campo (input/select) */
+  font-size: 0.9em;
+  font-weight: 600;
+  margin-bottom: 0;
 }
 
-/* --- Select Inputs (Dropdowns) --- */
-.selectInput {
+.textInput, .selectInput {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0; /* Borda suave */
-  border-radius: 4px; /* Cantos arredondados */
+  border: 1px solid #cccccc; /* Borda clara */
+  border-radius: 4px;
   background-color: #ffffff;
   color: #333333;
-  font-size: 0.95em; /* Tamanho confortável */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-size: 0.95em;
   box-sizing: border-box;
-  appearance: none; /* Remove a seta padrão do select */
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  font-family: inherit;
+}
+
+.textInput::placeholder {
+  color: #999999;
+  opacity: 0.8;
+}
+
+.textInput:focus, .selectInput:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
+  outline: none;
+  background-color: #ffffff;
+}
+
+/* --- Select Customizado (Seta) --- */
+.selectInput {
+  appearance: none;
   -webkit-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292%22%20height%3D%22292%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069L146%20208%205%2069z%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 10px;
 }
 
-.selectInput:focus {
-  border-color: #6b21a8; /* Borda roxa no foco */
-  box-shadow: 0 0 0 2px rgba(107, 33, 168, 0.2); /* Sombra suave de foco */
-  outline: none;
-}
-
-/* --- Color Input (AGORA COM BOLINHA PERFEITA) --- */
+/* --- Color Input (Bolinha Perfeita para Cor) --- */
 .colorInput {
-  -webkit-appearance: none; /* Essencial para customizar */
+  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 38px; /* Largura igual à altura para um container quadrado */
-  height: 38px; /* Altura do container */
+  width: 38px;
+  height: 38px;
   padding: 0;
-  border: 1px solid transparent; /* Borda transparente para não aparecer */
-  border-radius: 50%; /* Tornar o CONTAINER redondo (esconder cantos) */
+  border: 2px solid #cccccc; /* Borda clara */
+  border-radius: 50%; /* CORREÇÃO AQUI: Fica redondo */
   cursor: pointer;
-  background-color: #fff; /* Fundo branco para o container (se necessário) */
+  background-color: #fff;
   box-sizing: border-box;
-  overflow: hidden; /* **CRUCIAL**: Esconde qualquer parte que saia do círculo */
-  display: flex; /* Para centralizar o swatch perfeitamente */
+  overflow: hidden;
+  display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* Estilo do preview de cor (a "bolinha") para Webkit browsers */
-.colorInput::-webkit-color-swatch-wrapper {
-  padding: 2px; /* Pequeno padding para afastar a bolinha da borda */
-  border-radius: 50%; /* Garante que o wrapper também seja redondo */
-}
-
-.colorInput::-webkit-color-swatch {
-  border: none; /* Remove a borda padrão do swatch */
-  border-radius: 50%; /* Bolinha perfeita */
-  width: 100%; /* Ocupa todo o espaço interno */
-  height: 100%;
-  box-sizing: border-box;
-}
-
-/* Estilo do preview de cor para Firefox */
-.colorInput::-moz-color-swatch {
-  border: none;
-  border-radius: 50%;
-  width: calc(100% - 4px); /* Considera o padding do wrapper */
-  height: calc(100% - 4px);
-  box-sizing: border-box;
+.colorInput:hover {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 3px rgba(141, 78, 219, 0.15);
+  transform: scale(1.05);
 }
 
 .colorInput:focus {
-  outline: 2px solid #6b21a8; /* Adiciona um outline de foco visível */
+  outline: 2px solid #6b21a8;
   outline-offset: 1px;
 }
+
+.colorInput::-webkit-color-swatch-wrapper { padding: 2px; border-radius: 50%; }
+.colorInput::-webkit-color-swatch { border: none; border-radius: 50%; width: 100%; height: 100%; box-sizing: border-box; }
+.colorInput::-moz-color-swatch { border: none; border-radius: 50%; width: calc(100% - 4px); height: calc(100% - 4px); box-sizing: border-box; }
+
 
 /* --- Checkbox Customizado --- */
 .checkboxLabel {
   display: flex;
-  align-items: center; /* Alinha o checkbox verticalmente com o texto */
-  gap: 12px; /* Espaçamento ENTRE o checkbox e o texto (RESOLVE O GRUDADO) */
+  align-items: center;
+  gap: 12px;
   color: #333333;
   font-size: 0.95em;
   cursor: pointer;
-  margin-top: 0; /* Garante que não tenha margem superior indesejada */
-  margin-bottom: 8px; /* Espaçamento para a descrição abaixo, se houver */
-  padding-top: 5px; /* Pequeno padding para ajustar a altura visualmente */
-  padding-bottom: 5px; /* Pequeno padding para ajustar a altura visualmente */
+  user-select: none;
 }
 
 .checkboxInput {
   width: 18px;
   height: 18px;
-  border: 1px solid #ccc; /* Borda cinza */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  appearance: none; /* Esconde o estilo nativo */
+  appearance: none;
   -webkit-appearance: none;
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
   display: grid;
   place-content: center;
-  flex-shrink: 0; /* Impede que o checkbox encolha */
+  flex-shrink: 0;
 }
 
 .checkboxInput::before {
@@ -149,8 +151,8 @@
   height: 10px;
   transform: scale(0);
   transition: transform 0.2s ease-in-out;
-  box-shadow: inset 1em 1em #6b21a8; /* Cor roxa para o checkmark */
-  background-color: CanvasText; /* Fallback */
+  box-shadow: inset 1em 1em #6b21a8;
+  background-color: CanvasText;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
 }
 
@@ -158,29 +160,27 @@
   background-color: #6b21a8;
   border-color: #6b21a8;
 }
+.checkboxInput:checked::before { transform: scale(1); }
 
-.checkboxInput:checked::before {
-  transform: scale(1);
-}
 
 /* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
   color: #666666;
-  font-size: 0.85em; /* Pequeno e discreto */
-  margin-top: 8px; /* Espaçamento para o campo acima */
+  font-size: 0.7em; /* Tamanho fixo, ~11.2px */
+  margin-top: 8px;
   line-height: 1.5;
-  font-weight: 400; /* Sem negrito */
+  font-weight: 400;
 }
 
 /* --- Grupos de Input Aninhados (indentados quando dependem de um checkbox) --- */
 .nestedInputGroup {
-  margin-left: 24px; /* Indentação para clareza visual */
-  margin-top: 16px; /* Espaçamento superior */
-  padding: 16px; /* Padding interno */
-  background-color: #f9f9f9; /* Fundo levemente diferente para destacar */
-  border: 1px solid #f0f0f0; /* Borda muito leve */
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03); /* Sombra mais sutil ainda */
+  margin-left: 24px;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 /* --- Responsividade (Ajustes para telas menores) --- */
@@ -188,35 +188,30 @@
   .sectionBlock {
     padding: 16px;
   }
-
   .sectionTitle {
     font-size: 1.5em; /* Ajuste para mobile */
   }
-
   .sectionDescription {
     font-size: 0.9em;
     margin-bottom: 24px;
   }
-
+  .inputGroup {
+    padding: 10px;
+  }
   .inputLabel {
     font-size: 0.85em;
   }
-
-  .selectInput,
-  .colorInput {
+  .textInput, .selectInput, .colorInput { /* Adicionado .colorInput aqui */
     padding: 8px 10px;
     font-size: 0.9em;
-    height: 38px; /* Altura para alinhar com outros inputs em mobile */
+    height: 38px;
   }
-
   .fieldDescription {
     font-size: 0.8em;
   }
-
   .checkboxLabel {
     font-size: 0.9em;
   }
-
   .nestedInputGroup {
     margin-left: 16px;
     padding: 12px;

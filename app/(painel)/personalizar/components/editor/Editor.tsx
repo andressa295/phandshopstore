@@ -21,61 +21,60 @@ interface EditorProps {
 }
 
 const Editor: React.FC<EditorProps> = ({ activeSection, goBack }) => {
-  const { config, updateConfig, saveThemeConfig } = useTheme();
+  // Os componentes de seção agora pegam config e updateConfig diretamente do useTheme()
+  // Não precisamos passá-los como props aqui.
+  const { config, updateConfig, saveThemeConfig, isLoading, error } = useTheme();
 
+  // Se estiver carregando ou com erro, exibe um feedback
+  if (isLoading) {
+    return <div className={styles.loadingMessage}>Carregando configurações do tema...</div>;
+  }
+  if (error) {
+    return <div className={styles.errorMessage}>Erro ao carregar tema: {error}</div>;
+  }
+  if (!config) {
+    return <div className={styles.noConfigMessage}>Nenhuma configuração de tema disponível.</div>;
+  }
+
+  // Renderiza o componente de seção correto com base em activeSection
   const renderSection = () => {
     switch (activeSection) {
       case 'cores':
-        return <ColorsSection config={config} updateConfig={updateConfig} />;
+        return <ColorsSection />; // Não passa props config/updateConfig
       case 'fontes':
-        return <FontsSection config={config} updateConfig={updateConfig} />;
+        return <FontsSection />; // Não passa props config/updateConfig
       case 'cabecalho':
-        return <HeaderSection config={config} updateConfig={updateConfig} />;
+        return <HeaderSection />; // Não passa props config/updateConfig
       case 'pagina-inicial':
-        return (
-          <HomepageEditor
-            config={config}
-            updateConfig={updateConfig}
-          />
-        );
+        return <HomepageEditor config={config} updateConfig={updateConfig} />; // HomepageEditor ainda espera essas props
       case 'lista-produtos':
-        return <ProductListSection config={config} updateConfig={updateConfig} />;
+        return <ProductListSection />; // Não passa props config/updateConfig
       case 'detalhes-produto':
-        return <ProductDetailSection config={config} updateConfig={updateConfig} />;
+        return <ProductDetailSection />; // Não passa props config/updateConfig
       case 'carrinho-compras':
-        return <CartSection config={config} updateConfig={updateConfig} />;
+        return <CartSection />; // Não passa props config/updateConfig
       case 'rodape-pagina':
-        return <FooterSection config={config} updateConfig={updateConfig} />;
-      case 'tipo-designer':
-        return <DesignTypeSection config={config} updateConfig={updateConfig} />;
+        return <FooterSection />; // Não passa props config/updateConfig
+      case 'tipo-designer': // Este pode ser o DesignTypeSection
+        return <DesignTypeSection />; // Não passa props config/updateConfig
       case 'avancado':
-        return (
-          <AdvancedSection
-            config={config}
-            updateConfig={updateConfig}
-            saveThemeConfig={saveThemeConfig}
-          />
-        );
+        return <AdvancedSection />; // Não passa props config/updateConfig
       default:
-        return <p className={styles.noSectionSelected}>Selecione uma seção para configurar.</p>;
+        return (
+          <div className={styles.noSectionSelected}>
+            <p>Selecione uma seção no menu lateral para começar a editar.</p>
+          </div>
+        );
     }
   };
 
   return (
-    <div className={styles.editorWrapper} style={{ flexGrow: 1 }}>
-      <button
-        className={styles.backButton}
-        onClick={goBack} 
-      >
+    <div className={styles.editorWrapper}>
+      <button onClick={goBack} className={styles.backButton}>
         ← Voltar ao menu
       </button>
-
-      {renderSection()}
-
-      <div className={styles.saveWrapper}>
-        <button className={styles.saveButton} onClick={saveThemeConfig}>
-          Salvar todas as alterações
-        </button>
+      <div className={styles.sectionContent}>
+        {renderSection()}
       </div>
     </div>
   );

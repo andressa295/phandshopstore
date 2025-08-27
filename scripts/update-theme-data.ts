@@ -1,124 +1,122 @@
-// scripts/update-theme-data.ts (ou em uma API Route do Next.js)
+// scripts/update-theme-data.ts
 
 import { createClient } from '@supabase/supabase-js';
+import { v4 as uuidv4 } from 'uuid'; // Para gerar UUIDs se necessário
 
-// Carrega as variáveis de ambiente. Em um ambiente Next.js, elas são carregadas automaticamente.
-// Se estiver executando como um script Node.js puro, você pode precisar de 'dotenv'.
-// require('dotenv').config(); 
+// Importa a interface ThemeConfig e o defaultThemeConfig para garantir a estrutura
+import { ThemeConfig, HomepageModuleType } from '../app/(painel)/personalizar/types'; // Ajuste o caminho se necessário
+import defaultThemeConfig from '../app/(painel)/personalizar//context/defaultThemeConfig'; // Ajuste o caminho se necessário
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Verifica se as credenciais estão disponíveis
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Erro: Variáveis de ambiente NEXT_PUBLIC_SUPABASE_URL ou NEXT_PUBLIC_SUPABASE_ANON_KEY não estão definidas.');
-  process.exit(1); // Sai com erro
+  process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ====================================================================
-// ATENÇÃO: SUBSTITUA ESTE VALOR PELO ID OU SLUG DA SUA LOJA DE TESTE!
-// Você pode usar o ID (UUID) da loja ou o slug (nome na URL).
-// Se usar o slug, mude a linha '.eq('id', lojaIdentifier)' para '.eq('slug', lojaIdentifier)'.
-const lojaIdentifier = '2a12f653-f582-4ea4-b7e1-988601715f1c'; // Ex: 'a1b2c3d4-e5f6-7890-1234-567890abcdef'
+// ATENÇÃO: SUBSTITUA ESTE VALOR PELO SLUG DA SUA LOJA DE TESTE!
+// Este é o slug da loja que terá as configurações de tema atualizadas.
+const lojaIdentifier = 'andressa-aliancas-1';
+const lojaIdentifierType = 'slug';
 // ====================================================================
 
+// ====================================================================
 // O objeto JSON que será salvo na coluna 'configuracoes_tema_json'
-const novasConfiguracoesDoTema = {
-  info_bar_items: [
-    {
-      id: "1",
-      icone: "CreditCard",
-      titulo: "Parcele em até 12x",
-      descricao: "No cartão de crédito"
-    },
-    {
-      id: "2",
-      icone: "Truck",
-      titulo: "Envio Full em até 24h",
-      descricao: "Para capitais selecionadas"
-    },
-    {
-      id: "3",
-      icone: "Gift",
-      titulo: "Frete Grátis",
-      descricao: "Estado de SP (consulte condições)"
-    },
-    {
-      id: "4",
-      icone: "ShieldCheck",
-      titulo: "Segurança na Compra",
-      descricao: "Seus dados protegidos"
-    },
-    {
-      id: "5",
-      icone: "MessageSquareText",
-      titulo: "Atendimento WhatsApp",
-      descricao: "Fale conosco agora!"
-    },
-    {
-      id: "6",
-      icone: "Package",
-      titulo: "Entrega Rápida",
-      descricao: "Receba em 2 dias úteis"
-    },
-    {
-      id: "7",
-      icone: "AlertCircle",
-      titulo: "Atenção!",
-      "descricao": "Verifique a disponibilidade"
-    },
-    {
-      id: "8",
-      icone: "QrCode",
-      titulo: "Pague com Pix",
-      descricao: "Pagamento instantâneo"
-    },
-    {
-      id: "9",
-      icone: "Receipt",
-      titulo: "Boleto Bancário",
-      descricao: "Pague em qualquer banco"
-    }
-  ],
-  // Mantenha outras configurações do tema que você já tem aqui ou adicione novas
-  outras_configuracoes_do_tema: {
-    cor_primaria: "#7C3AED",
-    fonte_titulos: "Inter, sans-serif"
-    // ...
-  }
-};
+// Usamos o defaultThemeConfig como base e o modificamos para incluir
+// um timestamp, garantindo que o JSON seja sempre diferente a cada execução.
+// ====================================================================
+const novasConfiguracoesDoTema: ThemeConfig = JSON.parse(JSON.stringify(defaultThemeConfig)); // Faz uma cópia profunda
+
+// Adiciona um timestamp para garantir que o JSON seja sempre diferente
+if (novasConfiguracoesDoTema.advanced) {
+  novasConfiguracoesDoTema.advanced.lastUpdatedScript = new Date().toISOString();
+} else {
+  novasConfiguracoesDoTema.advanced = { lastUpdatedScript: new Date().toISOString() };
+}
+
+// Opcional: Você pode modificar módulos específicos aqui se quiser testar
+// Por exemplo, desativar um módulo ou mudar um título
+// if (novasConfiguracoesDoTema.homepage?.modules && novasConfiguracoesDoTema.homepage.modules.length > 0) {
+//   novasConfiguracoesDoTema.homepage.modules[0].data.title = "Novo Título do Banner via Script!";
+//   novasConfiguracoesDoTema.homepage.modules[0].isActive = true;
+// }
+
 
 async function updateLojaThemeConfig() {
-  console.log(`Tentando atualizar a loja com identificador: ${lojaIdentifier}`);
-  console.log('Novas configurações a serem salvas:', JSON.stringify(novasConfiguracoesDoTema, null, 2));
+  console.log(`Tentando encontrar a loja com identificador: ${lojaIdentifier} (Tipo: ${lojaIdentifierType})`);
+  console.log('Novas configurações a serem salvas (incluindo timestamp):', JSON.stringify(novasConfiguracoesDoTema, null, 2));
 
   try {
+    // Primeiro, vamos verificar se a loja é encontrada usando o slug
+    const { data: existingLoja, error: fetchError } = await supabase
+      .from('lojas')
+      .select('id, slug, configuracoes_tema_json')
+      .eq(lojaIdentifierType, lojaIdentifier);
+
+    if (fetchError) {
+      console.error('Erro ao verificar a loja existente:', fetchError.message);
+      return { success: false, error: fetchError.message };
+    }
+
+    if (!existingLoja || existingLoja.length === 0) {
+      console.warn(`Atenção: Nenhuma loja encontrada com ${lojaIdentifierType} '${lojaIdentifier}'.`);
+      console.warn('Por favor, verifique se o slug está correto no banco de dados e no script.');
+      return { success: false, error: 'Loja não encontrada.' };
+    }
+
+    const lojaIdParaAtualizar = existingLoja[0].id;
+    console.log(`Loja encontrada com ID: ${lojaIdParaAtualizar} e Slug: ${existingLoja[0].slug}`);
+    console.log('Conteúdo atual de configuracoes_tema_json na loja (antes do update):', JSON.stringify(existingLoja[0].configuracoes_tema_json, null, 2));
+
+
+    // Se a loja foi encontrada, procedemos com a atualização USANDO O ID
+    console.log(`Tentando atualizar a loja com ID: ${lojaIdParaAtualizar}`);
     const { data, error } = await supabase
-      .from('lojas') // Nome da sua tabela de lojas
+      .from('lojas')
       .update({ configuracoes_tema_json: novasConfiguracoesDoTema })
-      .eq('id', lojaIdentifier); // Use 'id' se lojaIdentifier for um UUID, ou 'slug' se for o slug da URL
+      .eq('id', lojaIdParaAtualizar)
+      .select();
+
+    console.log('--- RESULTADO SUPABASE UPDATE ---');
+    console.log('Data:', data);
+    console.log('Error:', error);
+    console.log('---------------------------------');
 
     if (error) {
       console.error('Erro ao atualizar configurações do tema:', error.message);
       return { success: false, error: error.message };
     }
 
-    // Correção: Adiciona uma asserção de tipo explícita para 'data'
-    // Isso informa ao TypeScript que, se 'data' existe e é um array, ele é um array de objetos.
-    if (data && Array.isArray(data)) {
-      const updatedData = data as Array<Record<string, any>>; // Asserção de tipo
-      if (updatedData.length > 0) {
-        console.log('Configurações do tema atualizadas com sucesso para a loja:', updatedData);
-        return { success: true, data: updatedData };
-      } else {
-        console.warn('Nenhum registro encontrado ou atualizado. Verifique se o ID/Slug da loja está correto.');
-        return { success: false, error: 'Loja não encontrada ou não atualizada.' };
-      }
+    if (data && Array.isArray(data) && data.length > 0) {
+      const updatedData = data as Array<Record<string, any>>;
+      console.log('Configurações do tema atualizadas com sucesso para a loja:', updatedData);
+      console.log('O ID da loja é:', updatedData[0].id);
+      console.log('O novo conteúdo JSON é:', JSON.stringify(updatedData[0].configuracoes_tema_json, null, 2));
+      return { success: true, data: updatedData };
     } else {
-      console.warn('Nenhum registro encontrado ou atualizado. Verifique se o ID/Slug da loja está correto.');
-      return { success: false, error: 'Loja não encontrada ou não atualizada.' };
+      console.warn('Atenção: A operação de atualização foi concluída, mas nenhuma linha foi afetada ou os dados não foram retornados. Isso é inesperado, pois o RLS está desativado e o ID está correto. Além disso, o UPDATE de JSONB via SQL Editor funcionou.');
+      console.warn('Isso sugere um problema na comunicação ou interpretação da resposta pelo cliente supabase-js para a coluna JSONB.');
+      console.warn('\nRealizando uma re-leitura do configuracoes_tema_json para verificar o estado atual do banco...');
+
+      const { data: reReadLoja, error: reReadError } = await supabase
+        .from('lojas')
+        .select('configuracoes_tema_json')
+        .eq('id', lojaIdParaAtualizar);
+
+      if (reReadError) {
+        console.error('Erro ao re-ler a loja após a tentativa de update:', reReadError.message);
+      } else if (reReadLoja && reReadLoja.length > 0) {
+        console.log('Conteúdo de configuracoes_tema_json na loja (APÓS A TENTATIVA DE UPDATE VIA SCRIPT):', JSON.stringify(reReadLoja[0].configuracoes_tema_json, null, 2));
+      } else {
+        console.warn('Não foi possível re-ler o configuracoes_tema_json após a tentativa de update.');
+      }
+
+      console.warn('Por favor, compartilhe este log COMPLETO. Se este problema persistir, será necessário investigar a fundo a comunicação entre o supabase-js e sua instância Supabase, possivelmente com o suporte do Supabase.');
+      return { success: false, error: 'Nenhuma alteração aplicada ou linha afetada. Problema na comunicação do cliente/banco.' };
     }
   } catch (err: any) {
     console.error('Erro inesperado ao atualizar configurações:', err.message);
@@ -126,23 +124,4 @@ async function updateLojaThemeConfig() {
   }
 }
 
-// Para executar a função, chame-a.
-// Se este for um script temporário, você pode chamá-la diretamente:
 updateLojaThemeConfig();
-
-// Se for uma API Route, a chamada seria no handler da API, por exemplo:
-/*
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const result = await updateLojaThemeConfig();
-    if (result.success) {
-      res.status(200).json({ message: 'Configurações atualizadas com sucesso!', data: result.data });
-    } else {
-      res.status(500).json({ error: result.error });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
-*/

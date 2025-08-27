@@ -1,93 +1,112 @@
+/* app/(painel)/personalizar/components/editor/modules/HighlightsModule.module.css */
+
+/* --- Container Principal do Módulo --- */
 .sectionBlock {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  margin: 0;
+  padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
+  margin-bottom: 32px; /* Espaçamento entre as seções */
 }
 
-.sectionBlock:hover {
-  transform: none; /* REMOVIDO: transform de hover */
-  box-shadow: none; /* REMOVIDO: sombra de hover */
-}
-
-/* --- Cabeçalho do Módulo --- */
+/* --- Cabeçalho do Módulo (Título e Botão de Remover) --- */
 .moduleHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px; /* Ajuste de espaçamento */
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eeeeee; /* Linha divisória muito suave */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* --- Títulos dentro de grupos aninhados / Títulos de Módulo --- */
-.nestedTitle {
-  color: #333333; /* Cor mais suave para títulos internos */
-  font-size: 1.05em; /* Levemente menor */
+.nestedTitle { /* Título do módulo dentro do editor */
+  color: #333333;
+  font-size: 1.1em;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+  margin: 0;
 }
 
-/* --- Grupos de Input --- */
+.removeModuleButton { /* Botão de remover o módulo inteiro */
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.removeModuleButton:hover {
+  background-color: #c82333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.removeIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* --- Descrições de Seção (Texto introdutório do módulo) --- */
+.sectionDescription {
+  color: #666666;
+  font-size: 0.8em; /* Pequeno e discreto */
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* --- Grupos de Input (Label + Input/Select/Checkbox + Descrição) --- */
 .inputGroup {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding: 16px;
+  background-color: #fdfdfd;
+  border-radius: 4px;
+  border: 1px solid #eeeeee;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
-/* --- Labels dos Inputs --- */
 .inputLabel {
   display: block;
-  color: #444444;
-  font-weight: 500;
+  color: #333333;
   font-size: 0.9em;
+  font-weight: 600;
   margin-bottom: 0;
 }
 
-/* --- Inputs de Texto, TextArea e Select --- */
-.textInput,
-.textArea,
-.selectInput {
+.textInput, .selectInput {
   width: 100%;
-  padding: 10px 14px;
-  border: 1px solid #e5e5e5;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border: 1px solid #cccccc; /* Borda clara */
+  border-radius: 4px;
   background-color: #ffffff;
   color: #333333;
-  font-size: 0.9em;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-size: 0.95em;
   box-sizing: border-box;
-  font-family: inherit;
-  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.02);
-}
-
-.textInput::placeholder,
-.textArea::placeholder {
-  color: #b0b0b0;
-  opacity: 0.9;
-}
-
-.textInput:focus,
-.textArea:focus,
-.selectInput:focus {
-  border-color: #8d4edb;
-  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.15);
-  outline: none;
-  background-color: #fcfcfc;
-}
-
-.textArea {
-  min-height: 100px;
   resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  font-family: inherit;
 }
 
-/* --- Select Inputs (Dropdowns) --- */
+.textInput::placeholder {
+  color: #999999;
+  opacity: 0.8;
+}
+
+.textInput:focus, .selectInput:focus {
+  border-color: #8d4edb;
+  box-shadow: 0 0 0 2px rgba(141, 78, 219, 0.2);
+  outline: none;
+  background-color: #ffffff;
+}
+
+/* --- Select Customizado (Seta) --- */
 .selectInput {
   appearance: none;
   -webkit-appearance: none;
@@ -101,238 +120,213 @@
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   color: #333333;
-  font-size: 0.9em;
+  font-size: 0.95em;
   cursor: pointer;
-  padding: 2px 0;
-  transition: color 0.15s ease-in-out;
-}
-
-.checkboxLabel:hover {
-  color: #6b21a8;
+  user-select: none;
 }
 
 .checkboxInput {
-  margin-right: 0;
   width: 18px;
   height: 18px;
-  accent-color: #8d4edb;
-  border-radius: 3px;
-  cursor: pointer;
-  border: 1px solid #d0d0d0;
-  flex-shrink: 0;
-  margin-top: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   appearance: none;
   -webkit-appearance: none;
   background-color: #ffffff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
   display: grid;
   place-content: center;
+  flex-shrink: 0;
 }
 
 .checkboxInput::before {
   content: "";
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   transform: scale(0);
-  transition: transform 0.15s ease-in-out;
-  box-shadow: inset 1em 1em #8d4edb;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: inset 1em 1em #6b21a8;
+  background-color: CanvasText;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 60%);
 }
 
 .checkboxInput:checked {
-  background-color: #8d4edb;
-  border-color: #8d4edb;
+  background-color: #6b21a8;
+  border-color: #6b21a8;
 }
+.checkboxInput:checked::before { transform: scale(1); }
 
-.checkboxInput:checked::before {
-  transform: scale(1);
-}
 
-/* --- Descrições de Campo --- */
+/* --- Descrições de Campo (Texto abaixo dos inputs/selects) --- */
 .fieldDescription {
-  color: #888888;
-  font-size: 0.75em;
-  margin-top: 2px;
-  line-height: 1.4;
+  color: #666666;
+  font-size: 0.7em; /* Tamanho fixo, ~11.2px */
+  margin-top: 8px;
+  line-height: 1.5;
   font-weight: 400;
 }
 
-/* --- Botão de Remover Módulo (lixeira) --- */
-.removeButton {
-  background-color: transparent;
-  border: none;
-  color: #888888;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 50%;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+/* --- Lista de Itens de Destaque --- */
+.highlightItemsList {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  min-width: 28px;
-  min-height: 28px;
+  flex-direction: column;
+  gap: 15px; /* Espaçamento entre os itens */
+  margin-top: 20px;
 }
 
-.removeButton:hover {
-  color: #dc3545;
-  background-color: rgba(220, 53, 69, 0.06);
-  transform: translateY(-1px);
-}
-.removeButton:active {
-  transform: translateY(0);
-}
-
-.removeIcon {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-}
-
-/* --- Estilos Específicos para Itens de Destaque (Highlights) --- */
 .highlightItem {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  background-color: #f8f8f8;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  padding: 15px;
+  background-color: #fcfcfc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar linha em mobile */
+  align-items: center;
+  gap: 10px; /* Espaçamento entre os inputs */
+  position: relative; /* Para o botão de remover */
 }
 
 .highlightItemIcon {
-  font-size: 1.5em;
-  flex-shrink: 0;
-}
-
-.highlightItemText {
-  flex-grow: 1;
-  color: #333333;
-  font-size: 0.95em;
-}
-
-/* Botão de remover item de destaque individual */
-.removeHighlightItemButton {
-  background-color: transparent;
-  border: none;
-  color: #999999;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: 4px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  font-size: 1.5em; /* Tamanho do ícone */
+  flex-shrink: 0; /* Não deixa o ícone encolher */
+  width: 32px; /* Largura fixa para o ícone */
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  min-width: 28px;
-  min-height: 28px;
+  border-radius: 50%;
+  background-color: #f0f2f5;
+  color: #8d4edb; /* Cor primária */
+}
+
+.inputGroupInline { /* Para os inputs dentro do highlightItem */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-grow: 1; /* Permite que os inputs cresçam */
+}
+
+.removeHighlightItemButton {
+  background: none;
+  border: none;
+  color: #999999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  position: absolute; /* Posiciona no canto */
+  top: 8px;
+  right: 8px;
 }
 
 .removeHighlightItemButton:hover {
   color: #dc3545;
-  background-color: rgba(220, 53, 69, 0.08);
+  background-color: rgba(220, 53, 69, 0.1);
 }
 
-/* --- Botão de Adicionar --- */
-.addButton {
+/* --- Botões de Ação (Adicionar Destaque) --- */
+.addHighlightButton {
   background-color: #8d4edb;
   color: #ffffff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 50px;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 0.95em;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  margin-top: 15px;
-  font-weight: 600;
-  display: inline-flex;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  font-family: 'Poppins', sans-serif;
 }
 
-.addButton:hover {
+.addHighlightButton:hover {
   background-color: #6b21a8;
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
+
+.addHighlightButton:active {
+  transform: translateY(0);
+}
+
 
 /* --- Responsividade --- */
 @media (max-width: 768px) {
   .sectionBlock {
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 6px;
+    padding: 16px;
   }
   .moduleHeader {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
   }
   .nestedTitle {
-    font-size: 0.95em;
+    font-size: 1em;
+  }
+  .removeModuleButton {
+    width: 28px;
+    height: 28px;
+  }
+  .removeIcon {
+    width: 16px;
+    height: 16px;
+  }
+  .sectionDescription {
+    font-size: 0.8em;
+    margin-bottom: 20px;
   }
   .inputGroup {
-    margin-bottom: 10px;
-    gap: 5px;
+    padding: 10px;
   }
   .inputLabel {
     font-size: 0.85em;
   }
-  .textInput,
-  .textArea,
-  .selectInput {
+  .textInput, .selectInput {
     padding: 8px 10px;
-    border-radius: 5px;
-    font-size: 0.85em;
-  }
-  .textArea {
-    min-height: 70px;
-  }
-  .checkboxLabel {
-    font-size: 0.85em;
-    gap: 5px;
-  }
-  .checkboxInput {
-    width: 16px;
-    height: 16px;
+    font-size: 0.9em;
   }
   .fieldDescription {
     font-size: 0.7em;
   }
-  .removeButton {
-    min-width: 24px;
-    min-height: 24px;
-    padding: 3px;
+  .checkboxLabel {
+    font-size: 0.9em;
   }
-  .removeIcon {
-    width: 14px;
-    height: 14px;
+  .highlightItemsList {
+    gap: 15px;
   }
-  .addButton {
-    padding: 8px 16px;
-    font-size: 0.85em;
-    width: 100%;
-  }
-  /* Estilos responsivos específicos para Highlights */
   .highlightItem {
-    flex-direction: column;
+    flex-direction: column; /* Empilha em mobile */
     align-items: flex-start;
-    gap: 5px;
-    padding: 8px;
+    gap: 8px;
+    padding: 10px;
   }
   .highlightItemIcon {
-    font-size: 1.2em;
+    margin-bottom: 5px;
   }
-  .highlightItemText {
-    font-size: 0.85em;
+  .inputGroupInline {
+    width: 100%; /* Ocupa largura total em mobile */
   }
   .removeHighlightItemButton {
-    min-width: 24px;
-    min-height: 24px;
-    padding: 3px;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+  }
+  .addHighlightButton {
+    width: 100%;
+    font-size: 0.9em;
+    padding: 8px 12px;
   }
 }

@@ -1,0 +1,280 @@
+/* app/(interno)/dashboard/menu/gerenciar-tema/ThemeManagementPage.module.css */
+
+.themeManagementContainer {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Poppins', sans-serif;
+    color: var(--ph-dashboard-text-color);
+}
+
+.mainTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--ph-dashboard-primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.description {
+    font-size: 1rem;
+    color: var(--ph-dashboard-light-text-color);
+    text-align: center;
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.loadingState, .errorState, .unauthenticatedState {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2rem;
+    color: var(--ph-dashboard-text-color);
+    background-color: var(--ph-dashboard-white-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.errorState {
+    color: var(--ph-dashboard-danger-color);
+}
+
+.successMessage {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.errorMessage {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sectionTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--ph-dashboard-primary-color);
+    margin-top: 40px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--ph-dashboard-border-color);
+    padding-bottom: 10px;
+    text-align: left;
+}
+
+.currentThemeSection {
+    background-color: var(--ph-dashboard-white-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.currentThemePreview {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--ph-dashboard-border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.currentThemePreview img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.availableThemesSection {
+    background-color: var(--ph-dashboard-white-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 30px;
+}
+
+.themesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.themeCard {
+    border: 1px solid var(--ph-dashboard-border-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.themeCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    border-color: var(--ph-dashboard-accent-color);
+}
+
+.activeTheme {
+    border-color: var(--ph-dashboard-primary-color);
+    box-shadow: 0 0 0 3px var(--ph-dashboard-primary-color), 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.themeCardTitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--ph-dashboard-text-color);
+    margin-bottom: 10px;
+}
+
+.themeCardPreview {
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.themeCardPreview img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.themeCardDescription {
+    font-size: 0.9rem;
+    color: var(--ph-dashboard-light-text-color);
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.applyThemeButton {
+    background-color: var(--ph-dashboard-accent-color);
+    color: var(--ph-dashboard-white-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.applyThemeButton:hover:not(:disabled) {
+    background-color: var(--ph-dashboard-primary-color);
+}
+
+.applyThemeButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: var(--ph-dashboard-white-color);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+}
+
+.modalContent p {
+    font-size: 1.1rem;
+    color: var(--ph-dashboard-text-color);
+    margin-bottom: 25px;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modalConfirmButton, .modalCancelButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modalConfirmButton {
+    background-color: var(--ph-dashboard-danger-color);
+    color: var(--ph-dashboard-white-color);
+}
+
+.modalConfirmButton:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+.modalCancelButton {
+    background-color: var(--ph-dashboard-background-color);
+    color: var(--ph-dashboard-text-color);
+}
+
+.modalCancelButton:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .mainTitle {
+        font-size: 2rem;
+    }
+    .sectionTitle {
+        font-size: 1.5rem;
+    }
+    .themesGrid {
+        grid-template-columns: 1fr;
+    }
+    .themeCard {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mainTitle {
+        font-size: 1.8rem;
+    }
+    .description {
+        font-size: 0.9rem;
+    }
+    .themeManagementContainer {
+        padding: 0 15px;
+    }
+    .currentThemeSection, .availableThemesSection {
+        padding: 20px;
+    }
+}
