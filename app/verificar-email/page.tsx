@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import styles from './verificar-email.module.css'; // Importando o CSS Module
+import styles from './verificar-email.module.css'; 
 
 export default function VerificarEmailPage() {
   return (
