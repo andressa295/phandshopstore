@@ -1,26 +1,31 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Removida a inicialização e verificação fora da função POST
-// const resendApiKey = process.env.RESEND_API_KEY;
-// if (!resendApiKey) {
-//   throw new Error('RESEND_API_KEY não está configurada nas variáveis de ambiente.');
-// }
-// const resend = new Resend(resendApiKey);
+// Váriavel de ambiente para o e-mail de envio
+const RESEND_SENDER_EMAIL = process.env.RESEND_SENDER_EMAIL || 'PhandShop <no-reply@phandshop.com>';
+// Váriavel de ambiente para a URL do seu site
+const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
 export async function POST(req: Request) {
-  const resendApiKey = process.env.RESEND_API_KEY; // Acessa a variável aqui
+  let body;
+  try {
+    body = await req.json();
+  } catch (error) {
+    return NextResponse.json({ error: 'Erro ao processar a requisição JSON.' }, { status: 400 });
+  }
 
-  // A verificação e inicialização do Resend agora está dentro da função POST
+  const { nome, email, plano, recorrencia } = body;
+
+  const resendApiKey = process.env.RESEND_API_KEY;
+
   if (!resendApiKey) {
     console.error('RESEND_API_KEY não está configurada no servidor.');
     return NextResponse.json({ error: 'Erro interno do servidor: chave de API de e-mail ausente.' }, { status: 500 });
   }
+
   const resend = new Resend(resendApiKey);
 
   try {
-    const { nome, email, plano, recorrencia } = await req.json();
-
     // Validação de dados obrigatórios
     if (!nome || !email || !plano || !recorrencia) {
       return NextResponse.json(
@@ -111,7 +116,7 @@ export async function POST(req: Request) {
       <p>Você escolheu o plano <strong>${plano}</strong>, com pagamento <strong>${recorrencia === 'anual' ? 'anual' : 'mensal'}</strong>.</p>
       <p>Estamos muito felizes em tê-lo(a) conosco. Prepare-se para criar sua loja online e impulsionar suas vendas!</p>
       <div class="button-container">
-        <a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard" class="button">Acessar sua Dashboard</a>
+        <a href="${NEXT_PUBLIC_SITE_URL}/dashboard" class="button">Acessar sua Dashboard</a>
       </div>
       <p>Se tiver qualquer dúvida, nossa equipe de suporte está à disposição.</p>
       <p>Boas vendas!<br>— Equipe PhandShop</p>
@@ -125,7 +130,7 @@ export async function POST(req: Request) {
 </html>`;
 
     const { data, error } = await resend.emails.send({
-      from: 'PhandShop <no-reply@phandshop.com>',
+      from: RESEND_SENDER_EMAIL, // Usando a variável de ambiente
       to: email,
       subject: `🎉 Bem-vindo(a) à PhandShop! Seu plano ${plano} está ativo.`,
       html: emailHtmlContent,
