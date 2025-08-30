@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/pre-lancamento",
+      "has": [
+        {
+          "type": "host",
+          "value": "pre-lancamento.phandshop.com.br"
+        }
+      ],
+      "permanent": false
+    }
+  ]
+}
