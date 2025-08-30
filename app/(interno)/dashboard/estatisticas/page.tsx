@@ -7,6 +7,15 @@ import EstatisticasComponente from './components/EstatisticasComponente';
 import { notFound } from 'next/navigation';
 import { PostgrestError } from '@supabase/supabase-js';
 
+// Adicionando as variáveis sem o prefixo para o servidor
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+
+// Verificando se as variáveis estão presentes no ambiente de compilação
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error('As variáveis de ambiente SUPABASE_URL e SUPABASE_ANON_KEY são obrigatórias.');
+}
+
 interface VendaData {
   id: string;
   valor_total: number;

@@ -1,15 +1,23 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { Resend } from 'resend';
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabase = createClient(supabaseUrl!, supabaseAnonKey!, {
+  auth: { persistSession: false },
+});
+
+const PHANDSHOP_LOGO_URL = process.env.PHANDSHOP_LOGO_URL;
+
 export async function POST(request: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
   const { name, email, whatsapp } = await request.json();
 
   try {
-    // Insere o lead
-    const { error } = await supabase.from('leads').insert([{ name, email, whatsapp }]);
+    const { data, error } = await supabase
+      .from('leads')
+      .insert([{ name, email, whatsapp }]);
 
     if (error) {
       if (error.code === '23505') {
@@ -18,15 +26,14 @@ export async function POST(request: Request) {
           success: false
         }, { status: 409 });
       }
-
       console.error('Erro ao salvar lead:', error);
       return NextResponse.json({
         message: 'Houve um erro. Tente novamente!',
         success: false
       }, { status: 500 });
     }
-
-    // --- Envio de e-mail ---
+    
+    // --- LÓGICA DE ENVIO DE E-MAIL ---
     const resendApiKey = process.env.RESEND_API_KEY;
 
     if (resendApiKey) {
@@ -50,6 +57,16 @@ export async function POST(request: Request) {
               .logo-container img { max-width: 150px; height: auto; display: block; margin: 0 auto; }
               .content { padding: 20px; line-height: 1.6; color: #555; background-color: #ffffff; }
               .content p { font-size: 16px; }
+              .cta-button { text-align: center; margin: 20px 0; }
+              .cta-button a {
+                display: inline-block;
+                padding: 12px 24px;
+                background-color: #6b21a8;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+              }
               .footer { text-align: center; font-size: 12px; color: #999; padding: 20px; background-color: #f0f0f0; border-top: 1px solid #ddd; }
             </style>
           </head>
@@ -57,14 +74,14 @@ export async function POST(request: Request) {
             <div class="container">
               <div class="header">
                 <div class="logo-container">
-                  <img src="${process.env.PHANDSHOP_LOGO_URL}" alt="Logo Phandshop">
+                  <img src="${PHANDSHOP_LOGO_URL}" alt="Logo Phandshop">
                 </div>
                 <h1>Bem-vindo(a) à nossa Lista VIP!</h1>
               </div>
               <div class="content">
-                <p>Olá, <strong>${name}</strong>!</p>
-                <p>Seu cadastro foi confirmado com sucesso. Agora você faz parte de um grupo seleto de lojistas que terá acesso a novidades e benefícios exclusivos.</p>
-                <p>Fique de olho na sua caixa de entrada! Em breve entraremos em contato.</p>
+                <p>Olá, **${name}**!</p>
+                <p>Seu cadastro para a nossa lista de pré-lançamento foi confirmado com sucesso. Você agora faz parte de um grupo seleto de lojistas que terá acesso a novidades e benefícios exclusivos.</p>
+                <p>Fique de olho na sua caixa de entrada! Em breve, entraremos em contato para o processo de seleção.</p>
                 <p>Atenciosamente,<br>A Equipe Phandshop</p>
               </div>
               <div class="footer">
@@ -81,7 +98,7 @@ export async function POST(request: Request) {
       message: 'Cadastro realizado com sucesso!',
       success: true
     }, { status: 201 });
-
+    
   } catch (err) {
     console.error('Erro na requisição:', err);
     return NextResponse.json({

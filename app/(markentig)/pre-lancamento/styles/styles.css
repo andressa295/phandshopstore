@@ -53,7 +53,7 @@ body {
 
 .hero .highlight-message {
   font-size: 1.25rem; /* Fonte menor */
-  font-weight: 600; /* Menos "grosso" */
+  font-weight: 400; /* Menos "grosso" */
   color: #ffffff;
   background-color: #6b21a8;
   padding: 20px 30px; /* Padding reduzido */
@@ -233,10 +233,12 @@ body {
   background-color: #6b21a8;
   color: white;
   text-align: center;
+  font-size: 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  
 }
 
 .social-icons {
@@ -256,8 +258,8 @@ body {
 }
 
 .social-icons .icon {
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   stroke-width: 1.6;
 }
 

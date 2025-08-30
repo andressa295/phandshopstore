@@ -47,7 +47,7 @@ export default function PreLancamento() {
       </header>
 
       <section className="hero">
-        <h1>Seja um dos primeiríssimos lojistas da Phandshop!</h1>
+        <h1>Seja um dos primeiros lojistas!</h1>
         <p>
           O lançamento oficial da nossa plataforma será no dia <b>20 de janeiro</b>. Mas, em <b>dezembro</b>, estamos abrindo uma oportunidade única para um grupo seleto de empreendedores.
         </p>
@@ -55,7 +55,7 @@ export default function PreLancamento() {
           Garanta sua vaga para ser um dos primeiros a criar e testar sua loja online com acesso gratuito aos recursos completos e suporte VIP, ajudando a moldar a plataforma antes de todo mundo!
         </p>
         <p>
-          Preencha o formulário abaixo para participar da seleção.
+          Preencha o formulário abaixo:
         </p>
         
         <form onSubmit={handleSubmit} className="lead-form">
@@ -93,14 +93,14 @@ export default function PreLancamento() {
       </section>
 
       <section className="info">
-        <h2>Vantagens exclusivas para quem chega primeiro!</h2>
+        <h2>Vantagens para quem chegar primeiro!</h2>
         <ul className="info-list">
           <li>
-            <h3>Acesso antecipado à plataforma</h3>
+            <h3>Exclusividade</h3>
             <p>Seja um dos primeiros a criar sua loja virtual e saia na frente da concorrência.</p>
           </li>
           <li>
-            <h3>Descontos especiais de lançamento</h3>
+            <h3>Descontos de lançamento</h3>
             <p>Condições únicas e exclusivas para os primeiros lojistas da Phandshop.</p>
           </li>
           <li>
@@ -108,7 +108,7 @@ export default function PreLancamento() {
             <p>Conte com nossa equipe para tirar suas dúvidas e otimizar suas vendas desde o início.</p>
           </li>
           <li>
-            <h3>Participe da construção do futuro</h3>
+            <h3>Participe do futuro</h3>
             <p>Ajude a moldar a plataforma com seu feedback e tenha recursos pensados para você.</p>
           </li>
         </ul>
@@ -140,6 +140,7 @@ export default function PreLancamento() {
           </a>
         </div>
         <p>© 2025 Phandshop - Todos os direitos reservados</p>
+        
       </footer>
     </>
   );
