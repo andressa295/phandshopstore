@@ -1,7 +1,9 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+// lib/supabaseServer.ts
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-// Exporta função para criar client server-side
-export function supaBaseServer() {
-  return createRouteHandlerClient({ cookies });
-}
+export const getSupabaseServerClient = () => {
+  // Passa a função cookies diretamente para o cliente Supabase.
+  // Isso resolve o erro de contexto síncrono.
+  return createServerComponentClient({ cookies });
+};
