@@ -11,13 +11,31 @@ export default function PreLancamento() {
   const [whatsapp, setWhatsapp] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Dados capturados:', { name, email, whatsapp }); 
-    setSuccess(true);
-    setName('');
-    setEmail('');
-    setWhatsapp('');
+
+    // Chama a API Route que criamos para salvar os dados na Supabase
+    const response = await fetch('/api/leads', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, whatsapp }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Se a resposta da API for bem-sucedida
+      setSuccess(true);
+      // Opcional: Limpar os campos do formulário
+      setName('');
+      setEmail('');
+      setWhatsapp('');
+    } else {
+      // Se houver um erro, exibe a mensagem do servidor
+      alert(data.message);
+    }
   };
 
   return (
