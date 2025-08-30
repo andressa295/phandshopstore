@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { useState, useEffect, useMemo, ReactNode } from 'react'; // CORRIGIDO: Importado ReactNode
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '../UserContext';
@@ -58,7 +58,8 @@ const menuItems: MenuItem[] = [
   {
     icon: <FaStore />, label: 'Loja online', children: [
       { label: 'Loja Temas', href: '/dashboard/editarloja/temas' },
-      { label: 'Editar loja', href: '/personalizar' },
+      // CORRIGIDO: O href para 'Editar loja' será gerado dinamicamente
+      { label: 'Editar loja', href: '/personalizar/[lojaSlug]' }, 
       { label: 'Páginas', href: '/dashboard/paginas' },
       { label: 'Menus', href: '/dashboard/loja/menus' },
       { label: 'Página em construção', href: '/dashboard/construcao' },
@@ -97,6 +98,7 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
   useEffect(() => {
     const initial: Record<string, boolean> = {};
     menuItems.forEach((item) => {
+      // CORRIGIDO: Verifica se item.children existe antes de chamar .some()
       if (item.children) {
         initial[item.label] = item.children.some((sub) => pathname.startsWith(sub.href));
       }
@@ -109,15 +111,22 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
 
   const isActive = (href: string) => {
     if (!href) return false;
+    // CORRIGIDO: Lida com a rota dinâmica /personalizar/[lojaSlug]
+    if (href.includes('[lojaSlug]')) {
+      // Pega o slug da URL atual para comparar
+      const currentLojaSlug = pathname.split('/personalizar/')[1]?.split('/')[0];
+      const targetLojaSlug = profile?.lojaSlug; // O slug da loja do usuário
+      
+      // Se o slug na URL e o slug do perfil correspondem, e a base da rota é a mesma
+      if (currentLojaSlug && targetLojaSlug && currentLojaSlug === targetLojaSlug) {
+        return pathname.startsWith('/personalizar/');
+      }
+      return false; // Não está na rota de personalização da loja correta
+    }
     if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
 
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
-
-  // 🔹 mover o useMemo para antes dos returns condicionais
   const bottomNav = useMemo(
     () => [
       { href: '/dashboard', label: 'Início', icon: <FaHome /> },
@@ -149,17 +158,18 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
     );
   }
 
+  // CORRIGIDO: Obtém o lojaSlug do profile para construir o link "Editar loja"
+  const lojaSlug = profile?.lojaSlug; // Assume que profile.lojaSlug existe no UserContext
+
   return (
     <div className="layout-root">
       <HeaderPainel userProfile={profile} />
 
-      {/* 🔹 Esconde o botão hambúrguer no mobile */}
       <button className="hamburger-btn desktop-only" onClick={() => setSidebarOpen(true)}>
         <MdMenu size={22} />
       </button>
 
       <div className="layout-main">
-        {/* 🔹 Sidebar só aparece no desktop */}
         <aside className={`sidebar desktop-only ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-header">
             <p className="sidebar-subtitle">Painel Administrativo</p>
@@ -180,23 +190,33 @@ export default function ClientDashboardLayout({ children }: { children: ReactNod
                       </button>
                       {openMenus[item.label] && (
                         <ul className="nav-children">
-                          {item.children.map((child) => (
-                            <li key={child.href}>
-                              <Link
-                                href={child.href}
-                                className={`nav-child ${isActive(child.href) ? 'active' : ''}`}
-                              >
-                                {child.icon && <span className="nav-icon">{child.icon}</span>}
-                                <span className="nav-text">{child.label}</span>
-                              </Link>
-                            </li>
-                          ))}
+                          {item.children.map((child) => {
+                            // CORRIGIDO: Constrói o href dinamicamente para 'Editar loja'
+                            const childHref = child.href === '/personalizar/[lojaSlug]' && lojaSlug
+                              ? `/personalizar/${lojaSlug}`
+                              : child.href;
+
+                            return (
+                              <li key={child.href}>
+                                <Link
+                                  href={childHref}
+                                  className={`nav-child ${isActive(childHref) ? 'active' : ''}`}
+                                >
+                                  {child.icon && <span className="nav-icon">{child.icon}</span>}
+                                  <span className="nav-text">{child.label}</span>
+                                </Link>
+                              </li>
+                            );
+                          })}
                         </ul>
                       )}
                     </>
                   ) : (
                     <Link
-                      href={item.href || '#'}
+                      // CORRIGIDO: Constrói o href dinamicamente para 'Editar loja'
+                      href={item.href === '/personalizar/[lojaSlug]' && lojaSlug
+                        ? `/personalizar/${lojaSlug}`
+                        : item.href || '#'}
                       className={`nav-item ${isActive(item.href || '') ? 'active' : ''}`}
                     >
                       <span className="nav-icon">{item.icon}</span>

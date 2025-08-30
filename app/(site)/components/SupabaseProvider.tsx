@@ -2,19 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { createClientComponentClient, User } from '@supabase/auth-helpers-nextjs';
+import { useRouter, usePathname } from 'next/navigation';
 
-export interface UserProfile {
-  id: string;
-  email: string | null; // CORRIGIDO: Agora permite null
-  nome_completo: string | null;
-  lojaId: string | null;
-  lojaNome: string | null;
-  lojaSlug: string | null;
-  plano: string | null;
-  recorrencia: string | null;
-  preco_mensal?: number | null;
-  preco_anual?: number | null;
-}
+// Importa as interfaces de dados do Supabase que definimos
+import { LojaDataSupabase, UserProfile } from '../../(painel)/personalizar/types'; // Ajuste o caminho se necessário
+
+// A interface UserProfile já foi definida no seu types.ts
+// export interface UserProfile { ... }
 
 interface SupabaseContextType {
   user: User | null;
@@ -31,67 +25,94 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const fetchUserProfile = async (userId: string) => {
+    async function fetchUserProfile(userId: string) {
       setLoading(true);
-      const { data: lojaData, error: lojaError } = await supabase
-        .from('lojas')
-        .select(`
-          id,
-          nome_loja,
-          slug,
-          user_id,
-          assinaturas(
-            planos(
-              nome_plano,
-              preco_mensal,
-              preco_anual
-            ),
-            status,
-            periodo_atual_fim
-          )
-        `)
-        .eq('user_id', userId)
-        .single();
+      console.log("--- SupabaseProvider: Iniciando fetchUserProfile ---");
+      console.log("SupabaseProvider: userId para busca:", userId);
 
-      if (lojaError) {
-        if (lojaError.code === 'PGRST116') {
+      try {
+        // Usando a interface LojaDataSupabase para tipar o retorno
+        const { data: lojaData, error: lojaError } = await supabase
+          .from('lojas')
+          .select(`
+            id, 
+            nome_loja, 
+            slug, 
+            owner_id, 
+            assinaturas(
+              status,
+              periodo_atual_fim,
+              planos(
+                nome_plano, 
+                preco_mensal, 
+                preco_anual
+              )
+            )
+          `)
+          .eq('owner_id', userId)
+          .single();
+        
+        if (lojaError && lojaError.code !== 'PGRST116') {
+          console.error("SupabaseProvider: Erro ao carregar loja:", lojaError);
           setProfile(null);
+        } else if (lojaData) {
+          console.log("SupabaseProvider: Dados da loja carregados:", lojaData);
+
+          const assinaturaData = lojaData.assinaturas?.[0] || null;
+          const planoData = assinaturaData?.planos?.[0] || null;
+
+          const userProfileData: UserProfile = {
+            id: userId,
+            email: user?.email ?? null,
+            nome_completo: null, // Você precisaria buscar isso da tabela 'usuarios' se quiser
+            lojaId: lojaData.id,
+            lojaNome: lojaData.nome_loja,
+            lojaSlug: lojaData.slug,
+            plano: planoData?.nome_plano || 'Plano Grátis',
+            recorrencia: assinaturaData?.status === 'active' ? (planoData?.preco_anual ? 'anual' : 'mensal') : null,
+            preco_mensal: planoData?.preco_mensal || null,
+            preco_anual: planoData?.preco_anual || null,
+          };
+          setProfile(userProfileData);
+          console.log("SupabaseProvider: Perfil formatado:", userProfileData);
         } else {
-          console.error('Erro ao buscar o perfil do usuário:', lojaError);
-          setProfile(null);
+          console.log("SupabaseProvider: Nenhuma loja encontrada para o usuário. Perfil sem dados da loja.");
+          setProfile({ 
+            id: userId, 
+            email: user?.email ?? null, 
+            nome_completo: null, 
+            lojaId: null, 
+            lojaNome: null, 
+            lojaSlug: null,
+            plano: 'Plano Grátis',
+            recorrencia: null,
+            preco_mensal: null,
+            preco_anual: null,
+          });
         }
-      } else {
-        const assinaturaData = lojaData?.assinaturas?.[0] || null;
-        const planoData = assinaturaData?.planos?.[0] || null;
-
-        const userProfileData: UserProfile = {
-          id: lojaData.user_id,
-          email: user?.email ?? null, // CORRIGIDO: Atribuindo user.email, que pode ser null
-          nome_completo: null,
-          lojaId: lojaData.id,
-          lojaNome: lojaData.nome_loja,
-          lojaSlug: lojaData.slug,
-          plano: planoData?.nome_plano || null,
-          recorrencia: assinaturaData?.periodo_atual_fim ? (planoData?.preco_anual ? 'anual' : 'mensal') : null,
-          preco_mensal: planoData?.preco_mensal || null,
-          preco_anual: planoData?.preco_anual || null,
-        };
-        setProfile(userProfileData);
+      } catch (err: any) {
+        console.error("SupabaseProvider: Erro inesperado ao buscar o perfil do usuário:", err);
+        setProfile(null);
+      } finally {
+        setLoading(false);
+        console.log("--- SupabaseProvider: Fim de fetchUserProfile ---");
       }
-      setLoading(false);
-    };
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("SupabaseProvider: Evento de autenticação:", event, "Session:", session);
       if (session?.user) {
         setUser(session.user);
         fetchUserProfile(session.user.id);
       } else {
         setUser(null);
         setProfile(null);
+        setLoading(false);
       }
     });
 
     if (initialUser) {
+      setUser(initialUser);
       fetchUserProfile(initialUser.id);
     } else {
       setLoading(false);

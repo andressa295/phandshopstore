@@ -1,0 +1,72 @@
+/* app/(sitetemas)/sitetemas/[lojaSlug]/components/temas/TemaPadrao/TemaPadrao.css */
+
+/* --- Estilos Gerais do Tema Base --- */
+:root {
+  /* As variáveis abaixo são injetadas pelo ThemeContext.tsx */
+  /* Elas servem como a "planta" para os estilos do tema */
+  --primary-color: var(--primary-color, #333333);
+  --secondary-color: var(--secondary-color, #a8a8a8);
+  --text-color: var(--text-color, #444444);
+  --header-background-color: var(--header-background-color, #ffffff);
+  --header-text-color: var(--header-text-color, #333333);
+  --footer-background-color: var(--footer-background-color, #212529);
+  --footer-text-color: var(--footer-text-color, #f8f9fa);
+  --primary-font: var(--primary-font, 'Roboto', sans-serif);
+  --secondary-font: var(--secondary-font, 'Open Sans', sans-serif);
+  --button-border-radius: var(--button-border-radius, 8px);
+  --shadow-style: var(--shadow-style, none);
+}
+
+/* Estilo do Wrapper Principal do Tema */
+.ph-tema-padrao-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--primary-font);
+}
+
+/* --- Estilos para os Módulos e Componentes --- */
+
+/* Cabeçalho */
+.ph-header-container {
+  background-color: var(--header-background-color);
+  color: var(--header-text-color);
+  box-shadow: var(--shadow-style);
+}
+
+/* Rodapé */
+.ph-footer {
+  background-color: var(--footer-background-color);
+  color: var(--footer-text-color);
+}
+
+/* Títulos */
+h1, h2, h3 {
+  font-family: var(--secondary-font);
+  color: var(--primary-color);
+}
+
+/* Botões */
+.ph-button, .ph-checkout-button {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-radius: var(--button-border-radius);
+  box-shadow: var(--shadow-style);
+  transition: all 0.3s ease;
+}
+
+/* Cards de Produto */
+.ph-product-card {
+  box-shadow: var(--shadow-style);
+  border-radius: var(--image-border-radius);
+  overflow: hidden;
+}
+
+/* Imagens */
+.ph-product-image, .ph-mini-banner-img {
+  border-radius: var(--image-border-radius);
+}
+
+/* Efeito de hover */
+.ph-button:hover {
+  transform: scale(1.05);
+}

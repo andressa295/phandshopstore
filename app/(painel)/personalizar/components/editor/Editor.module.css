@@ -1,6 +1,6 @@
 .editorWrapper {
-padding: 0; /* Removido padding, background-color e box-shadow para o design "lisinho" */
-  margin-bottom: var(--spacing-xl); /* Espaçamento entre as seções */
+padding: 0; 
+  margin-bottom: var(--spacing-xl); 
 }
 
 .backButton {

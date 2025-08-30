@@ -2,19 +2,18 @@
 'use client';
 
 import React from 'react';
-import { ThemeConfig, ThemeUpdateFn, CartConfig } from '../../../types'; // Importa CartConfig
+import { ThemeConfig, ThemeUpdateFn, CartConfig } from '../../../types'; 
 import styles from './CartSection.module.css';
-import { useTheme } from '../../../context/ThemeContext'; // Importa useTheme
+import { useTheme } from '../../../context/ThemeContext'; 
 
 interface Props {
-  // config e updateConfig virão do useTheme, não mais de props diretas
-  // updateConfig: ThemeUpdateFn;
+
 }
 
-const CartSection: React.FC<Props> = () => { // Remove as props config e updateConfig
-  const { config, updateConfig } = useTheme(); // Usa o hook para acessar o contexto
+const CartSection: React.FC<Props> = () => { 
+  const { config, updateConfig } = useTheme(); 
 
-  const cartConfig: CartConfig = config.cart || { // Garante que cartConfig seja do tipo CartConfig
+  const cartConfig: CartConfig = config.cart || { 
     enableWholesaleMinOrder: false,
     minWholesaleOrderValue: null,
     showShippingEstimator: true,
@@ -25,7 +24,7 @@ const CartSection: React.FC<Props> = () => { // Remove as props config e updateC
     crossSellTitle: 'Produtos que você também pode gostar',
   };
 
-  const handleUpdate = (field: keyof CartConfig, value: any) => { // Usa keyof CartConfig
+  const handleUpdate = (field: keyof CartConfig, value: any) => { 
     updateConfig({
       cart: {
         ...cartConfig,

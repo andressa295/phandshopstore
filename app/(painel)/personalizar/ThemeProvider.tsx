@@ -6,14 +6,12 @@ import React, {
   useState,
   ReactNode,
   useEffect,
-  useRef
+  useRef,
+  useCallback
 } from 'react';
 
 import defaultThemeConfig from './context/defaultThemeConfig';
-import {
-  ThemeConfig,
-  ThemeUpdateFn
-} from './types';
+import { ThemeConfig, ThemeUpdateFn } from './types';
 
 interface ThemeContextType {
   config: ThemeConfig;
@@ -42,7 +40,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (response.ok) {
         const savedConfig = await response.json();
         console.log(`[LOAD] Configurações carregadas para "${themeName}":`, savedConfig);
-
         setConfig(prev => ({
           ...defaultThemeConfig,
           ...prev,
@@ -66,22 +63,16 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [selectedTheme]);
 
-  const updateConfig: ThemeUpdateFn = (newConfig) => {
+  const updateConfig: ThemeUpdateFn = useCallback((newConfig) => {
     setConfig(prevConfig => {
       const merged = { ...prevConfig };
-
       for (const key in newConfig) {
         if (Object.prototype.hasOwnProperty.call(newConfig, key)) {
           const newValue = (newConfig as any)[key];
           const prevValue = (prevConfig as any)[key];
-
           if (
-            typeof newValue === 'object' &&
-            newValue !== null &&
-            !Array.isArray(newValue) &&
-            typeof prevValue === 'object' &&
-            prevValue !== null &&
-            !Array.isArray(prevValue)
+            typeof newValue === 'object' && newValue !== null && !Array.isArray(newValue) &&
+            typeof prevValue === 'object' && prevValue !== null && !Array.isArray(prevValue)
           ) {
             (merged as any)[key] = { ...prevValue, ...newValue };
           } else {
@@ -89,21 +80,18 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           }
         }
       }
-
       return merged;
     });
-  };
+  }, []);
 
   const saveThemeConfig = async () => {
     console.log(`[SAVE] Tentando salvar config do tema "${selectedTheme}":`, config);
-
     try {
       const response = await fetch(`/api/theme-settings/${selectedTheme}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
       });
-
       if (response.ok) {
         hasJustSaved.current = true;
         alert('Configurações salvas com sucesso!');
@@ -119,10 +107,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
+  // Efeito para enviar a configuração para o iframe (lado do painel)
   useEffect(() => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       const iframeWindow = iframeRef.current.contentWindow;
-
       iframeWindow.postMessage(
         {
           type: 'UPDATE_THEME_CONFIG',
@@ -131,22 +119,19 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         },
         '*'
       );
-
+      // Injeção de variáveis CSS no iframe (isso já estava no seu código)
       const iframeDoc = iframeRef.current.contentDocument || iframeRef.current.contentWindow.document;
       let styleTag = iframeDoc.getElementById('injected-theme-vars') as HTMLStyleElement;
-
       if (!styleTag) {
         styleTag = iframeDoc.createElement('style');
         styleTag.id = 'injected-theme-vars';
         iframeDoc.head.appendChild(styleTag);
       }
-
       styleTag.innerHTML = `
         :root {
           --primary-color: ${config.primaryColor ?? '#8d4edb'};
           --secondary-color: ${config.secondaryColor ?? '#f0f0f0'};
           --text-color: ${config.textColor ?? '#333333'};
-
           --header-background-color: ${
             config.headerSettings?.useCustomHeaderColors
               ? config.headerSettings.headerBackgroundColor ?? '#ffffff'
@@ -157,17 +142,14 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               ? config.headerSettings.headerTextColor ?? '#333333'
               : config.headerTextColor ?? '#333333'
           };
-
           --navbar-background-color: ${config.navbarBackgroundColor ?? config.primaryColor ?? '#8d4edb'};
           --navbar-text-color: ${config.navbarTextColor ?? '#ffffff'};
           --search-bar-background-color: ${config.headerSettings?.searchBarBackgroundColor ?? '#ffffff'};
-
           --footer-background-color: ${config.footer?.footerBackgroundColor ?? '#212529'};
           --footer-text-color: ${config.footer?.footerTextColor ?? '#f8f9fa'};
           --footer-invert-social-icons: ${
             config.footer?.footerTextColor === '#ffffff' || config.footer?.footerTextColor === '#f8f9fa' ? '1' : '0'
           };
-
           --primary-font: '${config.primaryFont ?? 'Roboto'}', sans-serif;
           --secondary-font: '${config.secondaryFont ?? 'Open Sans'}', sans-serif;
           --title-base-font-size-value: ${
@@ -191,7 +173,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               ? '1.5em'
               : '1.2em'
           };
-
           --button-border-radius: ${
             config.design?.buttonBorderRadius === 'square'
               ? '0'
@@ -201,7 +182,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               ? '9999px'
               : '8px'
           };
-
           --image-border-radius: ${
             config.design?.imageBorderRadius === 'square'
               ? '0'
@@ -211,7 +191,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               ? '50%'
               : '0'
           };
-
           --shadow-style: ${
             config.design?.enableShadows && config.design.shadowStyle !== 'none'
               ? config.design.shadowStyle === 'small'
@@ -221,12 +200,28 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 : '0 8px 16px rgba(0,0,0,0.2)'
               : 'none'
           };
-
           --scrollbar-color: ${config.design?.scrollbarColor ?? config.primaryColor};
         }
       `;
     }
   }, [config, previewMode]);
+
+  // Efeito para receber a configuração do painel (lado do preview/loja)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Verificação de segurança: checa se o payload e o tipo de mensagem são o que esperamos
+      if (event.data && event.data.type === 'UPDATE_THEME_CONFIG' && event.data.config) {
+        console.log("Recebido tema do painel:", event.data.config);
+        setConfig(event.data.config);
+      }
+    };
+    // Adiciona o ouvinte ao carregar o componente
+    window.addEventListener('message', handleMessage);
+    // Remove o ouvinte ao desmontar para evitar vazamento de memória
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []); // A dependência é um array vazio, para que o ouvinte seja adicionado apenas uma vez
 
   return (
     <ThemeContext.Provider

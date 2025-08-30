@@ -1,0 +1,83 @@
+/* Este arquivo deve estar na pasta de estilos do seu projeto principal, por exemplo: app/styles/styles.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.header {
+  padding: 20px;
+  background-color: #6b21a8; /* roxo Phandshop */
+  color: white;
+  text-align: center;
+}
+
+.hero {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.lead-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.lead-form input {
+  padding: 10px;
+  font-size: 1rem;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.lead-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #6b21a8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lead-form button:hover {
+  background-color: #580f96;
+}
+
+.info {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.info ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.info li {
+  margin-bottom: 10px;
+}
+
+.footer {
+  padding: 20px;
+  background-color: #6b21a8;
+  color: white;
+  text-align: center;
+}
