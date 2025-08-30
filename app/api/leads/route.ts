@@ -1,14 +1,20 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js'; // Importa o cliente padrão
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const PHANDSHOP_LOGO_URL = process.env.PHANDSHOP_LOGO_URL; 
+const PHANDSHOP_LOGO_URL = process.env.PHANDSHOP_LOGO_URL;
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+// Inicializa o cliente Supabase de forma mais direta
+const supabase = createClient(supabaseUrl!, supabaseAnonKey!, {
+  auth: { persistSession: false },
+});
 
 export async function POST(request: Request) {
   const { name, email, whatsapp } = await request.json();
-  const supabase = createRouteHandlerClient({ cookies });
 
   try {
     const { data, error } = await supabase
@@ -42,11 +48,11 @@ export async function POST(request: Request) {
           <style>
             body { font-family: 'Poppins', sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
             .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 0; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); overflow: hidden;}
-            .header { text-align: center; background-color: #6b21a8; padding: 20px; } /* Fundo roxo para o cabeçalho */
-            .header h1 { color: #ffffff; margin-top: 15px; font-size: 24px; } /* Título branco */
+            .header { text-align: center; background-color: #6b21a8; padding: 20px; }
+            .header h1 { color: #ffffff; margin-top: 15px; font-size: 24px; }
             .logo-container { text-align: center; }
             .logo-container img { max-width: 150px; height: auto; display: block; margin: 0 auto; }
-            .content { padding: 20px; line-height: 1.6; color: #555; background-color: #ffffff; } /* Conteúdo em fundo branco */
+            .content { padding: 20px; line-height: 1.6; color: #555; background-color: #ffffff; }
             .content p { font-size: 16px; }
             .cta-button { text-align: center; margin: 20px 0; }
             .cta-button a {
@@ -58,7 +64,7 @@ export async function POST(request: Request) {
               border-radius: 5px;
               font-weight: bold;
             }
-            .footer { text-align: center; font-size: 12px; color: #999; padding: 20px; background-color: #f0f0f0; border-top: 1px solid #ddd; } /* Fundo cinza claro para o rodapé */
+            .footer { text-align: center; font-size: 12px; color: #999; padding: 20px; background-color: #f0f0f0; border-top: 1px solid #ddd; }
           </style>
         </head>
         <body>
