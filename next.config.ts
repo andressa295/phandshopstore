@@ -1,4 +1,3 @@
-// next.config.js
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -30,6 +29,22 @@ const nextConfig: NextConfig = {
       },
       
     ],
+  },
+  
+  // ADICIONADO: A função de reescrita para o subdomínio
+  async rewrites() {
+    return [
+      {
+        source: '/',
+        destination: '/pre-lancamento',
+        has: [
+          {
+            type: 'host',
+            value: 'pre-lancamento.phandshop.com.br',
+          },
+        ],
+      },
+    ];
   },
 };
 
