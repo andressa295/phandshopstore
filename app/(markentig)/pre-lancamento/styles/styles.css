@@ -1,83 +1,354 @@
-/* Este arquivo deve estar na pasta de estilos do seu projeto principal, por exemplo: app/styles/styles.css */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
   color: #333;
+  line-height: 1.6;
 }
 
 .header {
   padding: 20px;
-  background-color: #6b21a8; /* roxo Phandshop */
+  background-color: #6b21a8;
   color: white;
   text-align: center;
 }
 
-.hero {
-  padding: 60px 20px;
-  text-align: center;
-  background-color: #f9f9f9;
-}
-
-.hero h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-}
-
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-}
-
-.lead-form {
+.header .logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+}
+
+.header .logo img {
+  max-height: 40px;
+  width: auto;
+}
+
+/* NOVO DESIGN DA SEÇÃO HERO */
+.hero {
+  padding: 60px 20px; /* Reduzindo padding para juntar os elementos */
+  text-align: center;
+  background: linear-gradient(135deg, #e0c8f5 0%, #f9f9f9 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
+}
+
+.hero h1 {
+  font-size: 2.5rem; /* Título menor e mais elegante */
+  margin-bottom: 20px;
+  color: #2a0a4a;
+  font-weight: 600; /* Menos "grosso" */
+  line-height: 1.1;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.hero p:nth-of-type(1) {
+  font-size: 1.1rem; /* Texto menor e mais leve */
+  margin: 0 auto 10px auto; /* Menos espaço */
+  max-width: 750px;
+  color: #4a4a4a;
+  font-weight: 400; /* Mais fino */
+}
+
+.hero .highlight-message {
+  font-size: 1.25rem; /* Fonte menor */
+  font-weight: 600; /* Menos "grosso" */
+  color: #ffffff;
+  background-color: #6b21a8;
+  padding: 20px 30px; /* Padding reduzido */
+  border-radius: 10px;
+  margin: 20px auto 25px auto; /* Espaçamento ajustado */
+  max-width: 800px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  line-height: 1.3;
+  text-shadow: none;
+  border: 1px solid #a86bd1;
+}
+
+.hero p:last-of-type {
+    font-size: 1rem; /* Texto menor */
+    font-weight: 500;
+    color: #3a3a3a;
+    margin-bottom: 25px; /* Espaçamento ajustado */
+}
+
+/* Estilos para o formulário de captação - Melhorados */
+.lead-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Menos espaço */
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px; /* Padding reduzido */
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #eee;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Menos espaço entre os campos */
+  width: 100%;
 }
 
 .lead-form input {
-  padding: 10px;
-  font-size: 1rem;
-  width: 250px;
+  padding: 14px; /* Padding reduzido */
+  font-size: 0.95rem; /* Fonte menor */
+  width: 100%;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: #fefefe;
+  font-weight: 400; /* Fonte mais fina */
+}
+
+.lead-form input:focus {
+  outline: none;
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.4);
 }
 
 .lead-form button {
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 16px 30px; /* Padding reduzido */
+  font-size: 1rem; /* Fonte menor */
+  font-weight: 600; /* Mais leve */
   background-color: #6b21a8;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  width: 100%;
+  letter-spacing: 0; /* Removido o espaçamento */
 }
 
 .lead-form button:hover {
   background-color: #580f96;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: #28a745;
+  font-weight: 600;
+  padding: 12px;
+  background-color: #e6ffed;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(40,167,69,0.2);
 }
 
 .info {
-  padding: 40px 20px;
+  padding: 40px 20px; /* Padding reduzido */
   text-align: center;
+  background-color: white;
+  box-shadow: inset 0 10px 20px rgba(0,0,0,0.03);
 }
 
-.info ul {
+.info h2 {
+  font-size: 2rem; /* Título menor */
+  margin-bottom: 25px; /* Menos espaço */
+  color: #580f96;
+  font-weight: 600; /* Mais leve */
+}
+
+.info-list {
   list-style: none;
   padding: 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 25px; /* Menos espaço */
 }
 
-.info li {
+.info-list li {
+  flex: 1;
+  min-width: 250px; /* Largura ajustada */
+  max-width: 320px; /* Largura ajustada */
+  margin-bottom: 20px;
+  padding: 20px; /* Padding reduzido */
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Sombra mais suave */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.info-list li:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Sombra mais suave no hover */
+}
+
+.info-list li h3 {
+  font-size: 1.15rem; /* Título do benefício menor */
+  color: #6b21a8;
   margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.info-list li p {
+  font-size: 0.95rem; /* Texto do benefício menor */
+  color: #666;
+  font-weight: 400;
+}
+
+/* SEÇÃO DE IMAGEM: Fundo na cor roxa */
+.theme-showcase {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #6b21a8; /* MUDANÇA: fundo roxo */
+  box-shadow: inset 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.theme-showcase h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: white; /* MUDANÇA: texto branco */
+  font-weight: 600;
+}
+
+.theme-image-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.store-theme-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 15px;
 }
 
 .footer {
-  padding: 20px;
+  padding: 25px;
   background-color: #6b21a8;
   color: white;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 25px;
+}
+
+.social-icons a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #d1b4ee;
+  transform: scale(1.15);
+}
+
+.social-icons .icon {
+  width: 35px;
+  height: 35px;
+  stroke-width: 1.6;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 992px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero p:nth-of-type(1) {
+    font-size: 1rem;
+  }
+  .hero .highlight-message {
+    font-size: 1.1rem;
+    padding: 18px 20px;
+  }
+  .lead-form {
+    padding: 30px;
+  }
+  .info h2 {
+    font-size: 1.8rem;
+  }
+  .theme-showcase h2 {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 40px 15px; /* Padding ainda menor */
+  }
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  .hero p:nth-of-type(1), .hero p:last-of-type {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  .hero .highlight-message {
+    font-size: 1rem;
+    padding: 15px;
+    margin: 15px auto 20px auto;
+  }
+  .lead-form {
+    padding: 25px;
+    max-width: 90%;
+  }
+  .lead-form input {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  .lead-form button {
+    padding: 14px 25px;
+    font-size: 0.95rem;
+  }
+  .info {
+    padding: 30px 15px;
+  }
+  .info h2 {
+    font-size: 1.6rem;
+  }
+  .info-list li {
+    width: 90%;
+    padding: 18px;
+  }
+  .theme-showcase h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .hero p:nth-of-type(1) {
+    font-size: 0.85rem;
+  }
+  .hero .highlight-message {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+  .lead-form {
+    gap: 12px;
+    padding: 20px;
+  }
+  .info h2 {
+    font-size: 1.4rem;
+  }
+  .theme-showcase h2 {
+    font-size: 1.3rem;
+  }
+  .social-icons .icon {
+    width: 28px;
+    height: 28px;
+  }
 }
