@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'; // Importa o cliente padrão
+import { createClient } from '@supabase/supabase-js'; 
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
