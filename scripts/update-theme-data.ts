@@ -4,15 +4,14 @@ import { Padrao } from '../app/(painel)/personalizar/themes/Padrao';
 import { defaultThemeConfig } from '../app/(painel)/personalizar/context/defaultThemeConfig';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.error('Erro: Variáveis de ambiente NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY não estão definidas.');
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Erro: Variáveis de ambiente NEXT_PUBLIC_SUPABASE_URL ou NEXT_PUBLIC_SUPABASE_ANON_KEY não estão definidas.');
   process.exit(1);
 }
 
-// Usa a chave de Service Role para ter permissão de escrita
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const themesDataWithConfig: { nome_tema: string, config: ThemeConfig }[] = [
   { nome_tema: 'Padrao', config: Padrao },
