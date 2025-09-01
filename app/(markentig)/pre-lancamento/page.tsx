@@ -36,9 +36,7 @@ export default function PreLancamento() {
     <>
       {/* CABEÇALHO */}
       <header className="header">
-        <div className="logo">
-          <img src="/logo.png" alt="Logo da Phandshop" />
-        </div>
+        
       </header>
 
       {/* HERO COM VÍDEO */}
