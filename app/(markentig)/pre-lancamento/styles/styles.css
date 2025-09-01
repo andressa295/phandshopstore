@@ -1,3 +1,4 @@
+/* ===== RESET ===== */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -6,17 +7,12 @@ body {
   line-height: 1.6;
 }
 
+/* ===== CABEÇALHO ===== */
 .header {
-  padding: 20px;
+  padding: 10px;
   background-color: #6b21a8;
   color: white;
   text-align: center;
-}
-
-.header .logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .header .logo img {
@@ -24,61 +20,71 @@ body {
   width: auto;
 }
 
-/* NOVO DESIGN DA SEÇÃO HERO */
-.hero {
-  padding: 60px 20px; /* Reduzindo padding para juntar os elementos */
-  text-align: center;
-  background: linear-gradient(135deg, #e0c8f5 0%, #f9f9f9 100%);
+/* ===== HERO COM VÍDEO ===== */
+.hero-with-video {
   position: relative;
+  width: 100%;
+  height: 100vh; /* full screen no desktop */
+  overflow: hidden;
+  background-color: #6b21a8;
+}
+
+.hero-background-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover; /* preenche a tela mantendo proporção */
+  z-index: 0;
+}
+
+/* ===== CONTEÚDO ABAIXO DO HERO ===== */
+.hero-content-below {
+  padding: 10px 20px;
+  text-align: center;
+  background-color: #6b21a8;
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
 }
 
-.hero h1 {
-  font-size: 2.5rem; /* Título menor e mais elegante */
-  margin-bottom: 20px;
-  color: #2a0a4a;
-  font-weight: 600; /* Menos "grosso" */
-  line-height: 1.1;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+.hero-content-below h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.hero p:nth-of-type(1) {
-  font-size: 1.1rem; /* Texto menor e mais leve */
-  margin: 0 auto 10px auto; /* Menos espaço */
-  max-width: 750px;
-  color: #4a4a4a;
-  font-weight: 400; /* Mais fino */
+.hero-content-below p {
+  font-size: 1rem;
+  color: #ffffff;
+  line-height: 1.5;
 }
 
-.hero .highlight-message {
-  font-size: 1.25rem; /* Fonte menor */
-  font-weight: 400; /* Menos "grosso" */
+.hero-content-below .highlight-message {
+  font-size: 0.95rem;
+  font-weight: 400;
   color: #ffffff;
   background-color: #6b21a8;
-  padding: 20px 30px; /* Padding reduzido */
+  padding: 20px 30px;
   border-radius: 10px;
-  margin: 20px auto 25px auto; /* Espaçamento ajustado */
-  max-width: 800px;
+  margin: 30px auto 25px auto;
+  max-width: 500px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   line-height: 1.3;
-  text-shadow: none;
   border: 1px solid #a86bd1;
 }
 
-.hero p:last-of-type {
-    font-size: 1rem; /* Texto menor */
-    font-weight: 500;
-    color: #3a3a3a;
-    margin-bottom: 25px; /* Espaçamento ajustado */
-}
-
-/* Estilos para o formulário de captação - Melhorados */
+/* ===== FORMULÁRIO ===== */
 .lead-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px; /* Menos espaço */
+  gap: 10px; /* Menos espaço */
   background: rgba(255, 255, 255, 0.95);
   padding: 40px; /* Padding reduzido */
   border-radius: 15px;
@@ -197,28 +203,25 @@ body {
   font-weight: 400;
 }
 
-/* SEÇÃO DE IMAGEM: Fundo na cor roxa */
+/* ===== SEÇÃO DE TEMAS ===== */
 .theme-showcase {
   padding: 60px 20px;
   text-align: center;
-  background-color: #6b21a8; /* MUDANÇA: fundo roxo */
-  box-shadow: inset 0 10px 20px rgba(0,0,0,0.05);
+  background-color: #6b21a8;
 }
 
 .theme-showcase h2 {
   font-size: 2rem;
   margin-bottom: 30px;
-  color: white; /* MUDANÇA: texto branco */
+  color: white;
   font-weight: 600;
 }
 
 .theme-image-container {
   max-width: 1000px;
   margin: 0 auto;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
   border-radius: 15px;
   overflow: hidden;
-  border: 1px solid #ddd;
 }
 
 .store-theme-image {
@@ -228,8 +231,9 @@ body {
   border-radius: 15px;
 }
 
+/* ===== RODAPÉ ===== */
 .footer {
-  padding: 25px;
+padding: 25px;
   background-color: #6b21a8;
   color: white;
   text-align: center;
@@ -263,28 +267,48 @@ body {
   stroke-width: 1.6;
 }
 
-/* Media Queries para Responsividade */
+/* ===== RESPONSIVO ===== */
 @media (max-width: 992px) {
-  .hero h1 {
-    font-size: 2rem;
-  }
-  .hero p:nth-of-type(1) {
-    font-size: 1rem;
-  }
-  .hero .highlight-message {
-    font-size: 1.1rem;
-    padding: 18px 20px;
-  }
-  .lead-form {
-    padding: 30px;
-  }
-  .info h2 {
-    font-size: 1.8rem;
-  }
-  .theme-showcase h2 {
-    font-size: 1.8rem;
-  }
+  .hero-content-below h1 { font-size: 2rem; }
+  .hero-content-below p { font-size: 1rem; }
+  .hero-content-below .highlight-message { font-size: 0.85rem; padding: 16px 20px; }
+  .lead-form { padding: 30px; }
+  .info h2 { font-size: 1.8rem; }
+  .theme-showcase h2 { font-size: 1.8rem; }
 }
+
+@media (max-width: 768px) {
+  .hero-with-video { height: 60vh; }
+  .hero-background-video {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    min-width: auto;
+    min-height: auto;
+  }
+  .hero-content-below h1 { font-size: 1.8rem; }
+  .hero-content-below p { font-size: 0.9rem; }
+  .hero-content-below .highlight-message { font-size: 0.75rem; padding: 12px; margin: 15px auto 20px auto; }
+  .lead-form { padding: 25px; max-width: 90%; }
+  .lead-form input { padding: 12px; font-size: 0.9rem; }
+  .lead-form button { padding: 14px 25px; font-size: 0.95rem; }
+  .info { padding: 30px 15px; }
+  .info h2 { font-size: 1.6rem; }
+  .info-list li { width: 90%; padding: 18px; }
+  .theme-showcase h2 { font-size: 1.6rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-with-video { height: 50vh; }
+  .hero-content-below h1 { font-size: 1.5rem; }
+  .hero-content-below p { font-size: 0.85rem; }
+  .hero-content-below .highlight-message { font-size: 0.95rem; padding: 10px; }
+  .lead-form { gap: 12px; padding: 20px; }
+  .info h2 { font-size: 1.4rem; }
+  .theme-showcase h2 { font-size: 1.3rem; }
+  .social-icons .icon { width: 28px; height: 28px; }
+}
+
 
 @media (max-width: 768px) {
   .hero {

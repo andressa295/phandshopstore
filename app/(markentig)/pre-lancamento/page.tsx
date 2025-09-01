@@ -14,49 +14,49 @@ export default function PreLancamento() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Chama a API Route que criamos para salvar os dados na Supabase
     const response = await fetch('/api/leads', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, whatsapp }),
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      // Se a resposta da API for bem-sucedida
       setSuccess(true);
-      // Opcional: Limpar os campos do formulário
       setName('');
       setEmail('');
       setWhatsapp('');
     } else {
-      // Se houver um erro, exibe a mensagem do servidor
       alert(data.message);
     }
   };
 
   return (
     <>
+      {/* CABEÇALHO */}
       <header className="header">
         <div className="logo">
-          <img src="/logo.png" alt="Logo da Phandshop" style={{ height: '40px' }} />
+          <img src="/logo.png" alt="Logo da Phandshop" />
         </div>
       </header>
 
-      <section className="hero">
-        <h1>Seja um dos primeiros lojistas!</h1>
-        <p>
-          O lançamento oficial da nossa plataforma será no dia <b>20 de janeiro</b>. Mas, em <b>dezembro</b>, estamos abrindo uma oportunidade única para um grupo seleto de empreendedores.
-        </p>
+      {/* HERO COM VÍDEO */}
+      <section className="hero-with-video">
+        <video className="hero-background-video" autoPlay loop muted playsInline>
+          <source src="/phandshop-hero-desktop.mp4" media="(min-width: 769px)" type="video/mp4" />
+          <source src="/phandshop-hero-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
+          Seu navegador não suporta a tag de vídeo.
+        </video>
+      </section>
+
+      {/* CONTEÚDO ABAIXO DO HERO */}
+      <section className="hero-content-below">
+      
         <p className="highlight-message">
-          Garanta sua vaga para ser um dos primeiros a criar e testar sua loja online com acesso gratuito aos recursos completos e suporte VIP, ajudando a moldar a plataforma antes de todo mundo!
+          O lançamento oficial da nossa plataforma será no dia <b>20 de janeiro</b>. Mas, em <b>dezembro</b>, estamos abrindo uma oportunidade única para você. Garanta sua vaga para ser um dos primeiros a criar e testar sua loja online com acesso gratuito aos recursos completos e suporte VIP, ajudando a moldar a plataforma antes de todo mundo!
         </p>
-        <p>
-          Preencha o formulário abaixo:
-        </p>
+        <p>Preencha o formulário abaixo:</p>
         
         <form onSubmit={handleSubmit} className="lead-form">
           {success ? (
@@ -92,6 +92,7 @@ export default function PreLancamento() {
         </form>
       </section>
 
+      {/* BENEFÍCIOS */}
       <section className="info">
         <h2>Vantagens para quem chegar primeiro!</h2>
         <ul className="info-list">
@@ -114,6 +115,7 @@ export default function PreLancamento() {
         </ul>
       </section>
 
+      {/* EXEMPLO DE LOJA */}
       <section className="theme-showcase">
         <h2>Seja o próximo a ter uma loja incrível como esta!</h2>
         <div className="theme-image-container">
@@ -129,18 +131,17 @@ export default function PreLancamento() {
         </div>
       </section>
 
+      {/* RODAPÉ */}
       <footer className="footer">
         <div className="social-icons">
           <a href="https://instagram.com/phandshop" target="_blank" rel="noopener noreferrer">
             <FaInstagram className="icon" />
           </a>
-          
           <a href="https://wa.me/5511949184370" target="_blank" rel="noopener noreferrer">
             <FaWhatsapp className="icon" />
           </a>
         </div>
         <p>© 2025 Phandshop - Todos os direitos reservados</p>
-        
       </footer>
     </>
   );
