@@ -34,11 +34,7 @@ export default function PreLancamento() {
 
   return (
     <>
-      {/* CABEÇALHO */}
-      <header className="header">
-        
-      </header>
-
+      
       {/* HERO COM VÍDEO */}
       <section className="hero-with-video">
         <video className="hero-background-video" autoPlay loop muted playsInline>
@@ -99,7 +95,7 @@ export default function PreLancamento() {
             <p>Seja um dos primeiros a criar sua loja virtual e saia na frente da concorrência.</p>
           </li>
           <li>
-            <h3>Descontos de lançamento</h3>
+            <h3>Descontos</h3>
             <p>Condições únicas e exclusivas para os primeiros lojistas da Phandshop.</p>
           </li>
           <li>
