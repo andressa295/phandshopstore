@@ -6,6 +6,53 @@ body {
   color: #333;
   line-height: 1.6;
 }
+.header {
+    padding: 10px;
+    background-color: #6b21a8; /* Cor de fundo sólida */
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background-color: #6b21a8;;
+    padding: 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+}
+
+.countdown-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    font-weight: 500;
+}
 
 /* ===== HERO COM VÍDEO ===== */
 .hero-with-video {
@@ -256,8 +303,7 @@ body {
 @media (max-width: 992px) {
   .hero-content-below h1 { font-size: 1.8rem; }
   .hero-content-below p { font-size: 0.95rem; }
-  .hero-content-below 
-  .highlight-message { font-size: 0.85rem; padding: 16px 20px; }
+  .hero-content-below .highlight-message { font-size: 0.85rem; padding: 16px 20px; }
   .lead-form { padding: 30px; }
   .info h2 { font-size: 1.8rem; }
   .theme-showcase h2 { font-size: 1.8rem; }
