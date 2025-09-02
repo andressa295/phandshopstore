@@ -1,14 +1,16 @@
 /* ===== RESET ===== */
 body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #333;
-  line-height: 1.6;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    line-height: 1.6;
 }
+
+/* ===== CABEÇALHO ===== */
 .header {
     padding: 10px;
-    background-color: #6b21a8; /* Cor de fundo sólida */
+    background-color: #6b21a8;
     color: white;
     text-align: center;
     display: flex;
@@ -19,19 +21,25 @@ body {
 
 .header-content-wrapper {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
+.header .logo img {
+    max-height: 35px;
+    width: auto;
+}
+
+/* ===== ESTILOS DA CONTAGEM REGRESSIVA ===== */
 .countdown-container {
     display: flex;
     justify-content: center;
     gap: 15px;
-    background-color: #6b21a8;;
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 10px;
     border-radius: 8px;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -42,13 +50,13 @@ body {
 }
 
 .countdown-value {
-    font-size: 1.5rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: white;
 }
 
 .countdown-label {
-    font-size: 0.75rem;
+    font-size: 0.55rem;
     color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     font-weight: 500;
@@ -56,281 +64,346 @@ body {
 
 /* ===== HERO COM VÍDEO ===== */
 .hero-with-video {
-  position: relative;
-  width: 100%;
-  height: 100vh; /* full screen no desktop */
-  overflow: hidden;
-  background-color: #6b21a8;
-  margin: 0; /* sem margem em cima */
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #6b21a8;
 }
 
 .hero-background-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: auto;
-  height: 100%;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate(-50%, -50%);
-  object-fit: cover; /* preenche a tela mantendo proporção */
-  z-index: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
 }
 
 /* ===== CONTEÚDO ABAIXO DO HERO ===== */
 .hero-content-below {
-  padding: 10px 20px;
-  text-align: center;
-  background-color: #6b21a8;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
+    padding: 10px 20px;
+    text-align: center;
+    background-color: #6b21a8;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
 }
 
 .hero-content-below h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #ffffff;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .hero-content-below p {
-  font-size: 1rem;
-  color: #ffffff;
-  line-height: 1.5;
+    font-size: 1rem;
+    color: #ffffff;
+    line-height: 1.5;
 }
 
-.hero-content-below .highlight-message {
-  font-size: 0.95rem;
-  font-weight: 400;
-  color: #ffffff;
-  background-color: #6b21a8;
-  padding: 20px 30px;
-  border-radius: 20px;
-  margin: 10px auto 25px auto;
-  max-width: 500px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  line-height: 1.3;
-  border: 1px solid #a86bd1;
+/* ===== ESTILOS DA MENSAGEM DE DESTAQUE (AJUSTADO) ===== */
+.highlight-message-wrapper {
+    background-color: #6b21a8;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 20px auto 25px auto;
+    max-width: 800px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    border: 1px solid #a86bd1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
-/* ===== FORMULÁRIO ===== */
+.highlight-message-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.highlight-message-body {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.highlight-message-benefit {
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #580f96;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.highlight-message-body b {
+    font-weight: 700;
+    color: #ffcc00;
+}
+
+/* ===== FORMULÁRIO (CORRIGIDO) ===== */
 .lead-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-  max-width: 600px;
-  margin: 0 auto;
-  border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #eee;
 }
 
 .form-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b21a8;
+    pointer-events: none;
 }
 
 .lead-form input {
-  padding: 14px;
-  font-size: 0.95rem;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  background-color: #fefefe;
-  font-weight: 400;
+    padding: 14px 14px 14px 45px;
+    font-size: 0.95rem;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background-color: #fefefe;
+    font-weight: 400;
 }
 
 .lead-form input:focus {
-  outline: none;
-  border-color: #6b21a8;
-  box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.4);
+    outline: none;
+    border-color: #6b21a8;
+    box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.4);
 }
 
 .lead-form button {
-  padding: 16px 30px;
-  font-size: 1rem;
-  font-weight: 600;
-  background-color: #6b21a8;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-  width: 100%;
-  letter-spacing: 0;
+    padding: 16px 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #6b21a8;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    width: 100%;
+    letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .lead-form button:hover {
-  background-color: #580f96;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-  transform: translateY(-2px);
+    background-color: #580f96;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
 }
 
-.success-message {
-  background: #4c1d95; /* lilás clarinho de destaque */
-  color: #4c1d95; /* roxo escuro legível */
-  padding: 1rem;
-  border-radius: 0.75rem;
-  text-align: center;
-  font-weight: 600;
+.success-message-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    background: linear-gradient(45deg, #580f96, #580f96);
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(40,167,69,0.15);
 }
-/* ===== INFO ===== */
+
+.success-message-wrapper p {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* ===== SEÇÃO DE BENEFÍCIOS ===== */
 .info {
-  padding: 40px 20px;
-  text-align: center;
-  background-color: white;
-  box-shadow: inset 0 10px 20px rgba(0,0,0,0.03);
+    padding: 20px 20px;
+    text-align: center;
+    background-color: white;
+    box-shadow: inset 0 10px 20px rgba(0,0,0,0.03);
 }
 
 .info h2 {
-  font-size: 2rem;
-  margin-bottom: 25px;
-  color: #580f96;
-  font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    color: #580f96;
+    font-weight: 600;
 }
 
 .info-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
 }
 
 .info-list li {
-  flex: 1;
-  min-width: 250px;
-  max-width: 320px;
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #eee;
+    flex: 1;
+    min-width: 250px;
+    max-width: 320px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #6b21a8;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
 }
 
 .info-list li:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px #6b21a8;
 }
 
 .info-list li h3 {
-  font-size: 1.15rem;
-  color: #6b21a8;
-  margin-bottom: 10px;
-  font-weight: 500;
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
 
 .info-list li p {
-  font-size: 0.95rem;
-  color: #666;
-  font-weight: 400;
+    font-size: 0.85rem;
+    color: #ffffff;
+    font-weight: 300;
 }
 
 /* ===== SEÇÃO DE TEMAS ===== */
 .theme-showcase {
-  padding: 60px 20px;
-  text-align: center;
-  background-color: #6b21a8;
+    padding: 0px 20px;
+    text-align: center;
+    background-color: #6b21a8;
 }
 
 .theme-showcase h2 {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: white;
-  font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: white;
+    font-weight: 600;
 }
 
 .theme-image-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  border-radius: 15px;
-  overflow: hidden;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 .store-theme-image {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 15px;
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 15px;
 }
 
 /* ===== RODAPÉ ===== */
 .footer {
-  padding: 25px;
-  background-color: #6b21a8;
-  color: white;
-  text-align: center;
-  font-size: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+    padding: 25px;
+    background-color: #6b21a8;
+    color: white;
+    text-align: center;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .social-icons {
-  display: flex;
-  gap: 25px;
+    display: flex;
+    gap: 25px;
 }
 
 .social-icons a {
-  color: white;
-  text-decoration: none;
-  transition: color 0.3s ease, transform 0.3s ease;
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .social-icons a:hover {
-  color: #d1b4ee;
-  transform: scale(1.15);
+    color: #d1b4ee;
+    transform: scale(1.15);
 }
 
 .social-icons .icon {
-  width: 25px;
-  height: 25px;
-  stroke-width: 1.6;
+    width: 25px;
+    height: 25px;
+    stroke-width: 1.6;
 }
 
 /* ===== RESPONSIVO ===== */
 @media (max-width: 992px) {
-  .hero-content-below h1 { font-size: 1.8rem; }
-  .hero-content-below p { font-size: 0.95rem; }
-  .hero-content-below .highlight-message { font-size: 0.85rem; padding: 16px 20px; }
-  .lead-form { padding: 30px; }
-  .info h2 { font-size: 1.8rem; }
-  .theme-showcase h2 { font-size: 1.8rem; }
+    .header { padding: 15px; gap: 10px; }
+    .hero-content-below h1 { font-size: 1.8rem; }
+    .hero-content-below p { font-size: 0.95rem; }
+    .highlight-message-wrapper { padding: 25px; }
+    .highlight-message-title { font-size: 1.3rem; }
+    .highlight-message-body { font-size: 1rem; }
+    .highlight-message-benefit { font-size: 0.9rem; }
+    .lead-form { padding: 30px; }
+    .info h2 { font-size: 1.8rem; }
+    .theme-showcase h2 { font-size: 1.8rem; }
 }
 
 @media (max-width: 768px) {
-  .hero-with-video { height: 60vh; }
-  .hero-background-video { object-fit: contain; width: 100%; height: 100%; }
-  .hero-content-below h1 { font-size: 1.6rem; }
-  .hero-content-below p { font-size: 0.85rem; }
-  .hero-content-below .highlight-message { font-size: 0.75rem; padding: 12px; }
-  .lead-form { padding: 25px; max-width: 90%; }
-  .lead-form input { padding: 12px; font-size: 0.85rem; }
-  .lead-form button { padding: 14px 25px; font-size: 0.9rem; }
-  .info { padding: 30px 15px; }
-  .info h2 { font-size: 1.5rem; }
-  .info-list li { width: 90%; padding: 18px; }
-  .theme-showcase h2 { font-size: 1.5rem; }
+    .header { padding: 10px; gap: 8px; }
+    .hero-with-video { height: 60vh; }
+    .hero-background-video { object-fit: contain; width: 100%; height: 100%; }
+    .hero-content-below h1 { font-size: 1.6rem; }
+    .hero-content-below p { font-size: 0.85rem; }
+    .highlight-message-wrapper { padding: 20px; }
+    .highlight-message-title { font-size: 1.1rem; }
+    .highlight-message-body { font-size: 0.9rem; }
+    .highlight-message-benefit { font-size: 0.8rem; }
+    .lead-form { padding: 25px; max-width: 90%; }
+    .info h2 { font-size: 1.6rem; }
+    .info-list li { width: 90%; padding: 18px; }
+    .theme-showcase h2 { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {
-  .hero-with-video { height: 50vh; }
-  .hero-content-below h1 { font-size: 1.3rem; }
-  .hero-content-below p { font-size: 0.8rem; }
-  .hero-content-below .highlight-message { font-size: 0.85rem; padding: 10px; }
-  .lead-form { gap: 12px; padding: 18px; }
-  .info h2 { font-size: 1.3rem; }
-  .theme-showcase h2 { font-size: 1.2rem; }
-  .social-icons .icon { width: 26px; height: 26px; }
+    .header { padding: 8px; }
+    .hero-with-video { height: 50vh; }
+    .hero-content-below h1 { font-size: 1.3rem; }
+    .hero-content-below p { font-size: 0.8rem; }
+    .highlight-message-wrapper { padding: 15px; }
+    .highlight-message-title { font-size: 1rem; }
+    .highlight-message-body { font-size: 0.8rem; }
+    .highlight-message-benefit { font-size: 0.75rem; }
+    .lead-form { gap: 12px; padding: 18px; }
+    .info h2 { font-size: 1.4rem; }
+    .theme-showcase h2 { font-size: 1.2rem; }
+    .social-icons .icon { width: 26px; height: 26px; }
 }

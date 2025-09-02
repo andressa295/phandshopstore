@@ -4,6 +4,7 @@ import { useState, FormEvent, useEffect } from 'react';
 import './styles/styles.css'; 
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa';
 import Image from 'next/image';
+import { User, Mail, Smartphone, ArrowRight, Check } from 'lucide-react'; // Ícones para o formulário
 
 const Countdown = () => {
     const targetDate = new Date('2026-01-20T00:00:00');
@@ -59,22 +60,31 @@ export default function PreLancamento() {
     const [email, setEmail] = useState<string>('');
     const [whatsapp, setWhatsapp] = useState<string>('');
     const [success, setSuccess] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        const response = await fetch('/api/leads', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, whatsapp }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-            setSuccess(true);
-            setName('');
-            setEmail('');
-            setWhatsapp('');
-        } else {
-            alert(data.message);
+        setIsSubmitting(true);
+        try {
+            const response = await fetch('/api/leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, whatsapp }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setSuccess(true);
+                setName('');
+                setEmail('');
+                setWhatsapp('');
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Erro ao enviar o formulário:', error);
+            alert('Erro ao enviar. Tente novamente mais tarde.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -82,7 +92,9 @@ export default function PreLancamento() {
         <>
             <header className="header">
                 <div className="header-content-wrapper">
-                    
+                    <div className="logo">
+                        <img src="/logo.png" alt="Logo da Phandshop" style={{ height: '40px' }} />
+                    </div>
                     <Countdown />
                 </div>
             </header>
@@ -97,46 +109,70 @@ export default function PreLancamento() {
         
             <section className="hero-content-below">
                 <h1>Seja um dos primeiros lojistas!</h1>
-                <p className="highlight-message">
-                    O lançamento oficial da nossa plataforma será no dia <b>20 de janeiro</b>. Mas, em <b>dezembro</b>, estamos abrindo uma oportunidade única para você. Garanta sua vaga para ser um dos primeiros a criar e testar sua loja online com acesso gratuito aos recursos completos e suporte VIP, ajudando a moldar a plataforma antes de todo mundo!
-                </p>
+                <div className="highlight-message-wrapper">
+                    <h3 className="highlight-message-title">Oportunidade Única em Dezembro!</h3>
+                    <p className="highlight-message-body">
+                        O lançamento oficial da nossa plataforma será no dia <b>20 de janeiro</b>. Mas, em <b>dezembro</b>, estamos abrindo uma oportunidade única para você.
+                    </p>
+                    <p className="highlight-message-benefit">
+                        Garanta sua vaga para ser um dos primeiros a criar e testar sua loja online com acesso gratuito aos recursos completos e suporte VIP, ajudando a moldar a plataforma antes de todo mundo!
+                    </p>
+                </div>
                 <p>Preencha o formulário abaixo:</p>
                 <form onSubmit={handleSubmit} className="lead-form">
                     {success ? (
-                        <p className="success-message">Obrigado! Você entrou na lista VIP. 🎉</p>
+                        <div className="success-message-wrapper">
+                            <Check size={32} />
+                            <p className="success-message">Obrigado! Você entrou na lista VIP. 🎉</p>
+                        </div>
                     ) : (
                         <>
                             <div className="form-fields">
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Seu nome"
-                                    required
-                                />
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Seu melhor e-mail"
-                                    required
-                                />
-                                <input
-                                    type="tel"
-                                    value={whatsapp}
-                                    onChange={(e) => setWhatsapp(e.target.value)}
-                                    placeholder="Seu WhatsApp (com DDD)"
-                                    required
-                                />
+                                <div className="input-with-icon">
+                                    <User size={20} className="input-icon" />
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Seu nome"
+                                        required
+                                    />
+                                </div>
+                                <div className="input-with-icon">
+                                    <Mail size={20} className="input-icon" />
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Seu melhor e-mail"
+                                        required
+                                    />
+                                </div>
+                                <div className="input-with-icon">
+                                    <Smartphone size={20} className="input-icon" />
+                                    <input
+                                        type="tel"
+                                        value={whatsapp}
+                                        onChange={(e) => setWhatsapp(e.target.value)}
+                                        placeholder="Seu WhatsApp (com DDD)"
+                                        required
+                                    />
+                                </div>
                             </div>
-                            <button type="submit">Quero ser avisado</button>
+                            <button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? 'Enviando...' : (
+                                    <>
+                                        Quero ser avisado <ArrowRight size={20} />
+                                    </>
+                                )}
+                            </button>
                         </>
                     )}
                 </form>
             </section>
 
             <section className="info">
-                <h2>Vantagens para quem chegar primeiro!</h2>
+                <h2>Vantagens para você!</h2>
                 <ul className="info-list">
                     <li>
                         <h3>Exclusividade</h3>
@@ -158,10 +194,10 @@ export default function PreLancamento() {
             </section>
 
             <section className="theme-showcase">
-                <h2>Seja o próximo a ter uma loja incrível como esta!</h2>
+              
                 <div className="theme-image-container">
                     <Image
-                        src="/site.png"
+                        src="/vendas.png"
                         alt="Exemplo de tema de loja virtual da Phandshop"
                         width={1200}
                         height={600}
