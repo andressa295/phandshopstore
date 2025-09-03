@@ -155,13 +155,14 @@
     }
     
     .heroSection {
-        padding-bottom: 0px; /* Garante que não haja padding na parte inferior da seção */
-        padding-top: 1.5rem; 
-        min-height: 100vh; /* Garante que a seção tenha altura mínima */
+        padding-bottom: 100px; /* Garante que não haja padding na parte inferior da seção */
+        padding-top: 0rem; 
+        min-height: 70vh; /* Garante que a seção tenha altura mínima */
+        
     }
 
     .heroTitle {
-        font-size: clamp(1.8rem, 7vw, 2.5rem); /* Ajuste o tamanho da fonte para mobile */
+        font-size: clamp(1.8rem, 6vw, 2.5rem); /* Ajuste o tamanho da fonte para mobile */
     }
 
     .heroSubtitle {
@@ -172,13 +173,14 @@
     .heroActions {
         flex-direction: column; /* Botões um abaixo do outro */
         gap: 0.8rem;
-        margin-bottom: 4rem;
+        
     }
     .heroButton {
         width: 80%; /* Botões com largura maior no mobile */
-        max-width: 300px; /* Limita o tamanho máximo */
+        max-width: 500px; /* Limita o tamanho máximo */
         padding: 10px 20px;
         font-size: 0.9rem;
+        
     }
 
     /* !!! AQUI ESTÁ A CHAVE PARA O AJUSTE DA IMAGEM NO MOBILE !!! */
@@ -193,16 +195,19 @@
         display: flex;
         justify-content: center;
         align-items: flex-end;
+        min-height: auto; 
     }
 
     .heroImage {
         max-width: 100%;
         height: auto;
-        display: block;
+        display: flex;
         margin-bottom: 0; /* Remove a margem negativa, o bottom: 0; já faz o trabalho */
         object-fit: contain;
+        
     }
 }
+
 /* --- 2. Diferenciais --- */
 .diferenciaisSection {
     background-color: #fff;
