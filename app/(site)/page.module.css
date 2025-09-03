@@ -157,7 +157,7 @@
     .heroSection {
         padding-bottom: 100px; /* Garante que não haja padding na parte inferior da seção */
         padding-top: 0rem; 
-        min-height: 80vh; /* Garante que a seção tenha altura mínima */
+        min-height: 75vh; /* Garante que a seção tenha altura mínima */
         
     }
 
