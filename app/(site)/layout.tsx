@@ -70,11 +70,11 @@ export default async function SiteLayout({
         >
           <div
             style={{
-              backgroundColor: 'rgba(240, 240, 240, 0.9)', // cinza clarinho e translúcido
+              backgroundColor: '#25d365e3', // cinza clarinho e translúcido
               padding: '8px 12px',
-              borderRadius: '8px',
+              borderRadius: '20px',
               fontSize: '14px',
-              color: '#333',
+              color: '#ffffffff',
               boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
             }}
           >

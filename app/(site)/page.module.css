@@ -162,11 +162,11 @@
     }
 
     .heroTitle {
-        font-size: clamp(1.8rem, 6vw, 2.5rem); /* Ajuste o tamanho da fonte para mobile */
+        font-size: clamp(1.4rem, 6vw, 2.0rem); /* Ajuste o tamanho da fonte para mobile */
     }
 
     .heroSubtitle {
-        font-size: clamp(0.9rem, 3vw, 1rem); /* Ajuste o tamanho da fonte para mobile */
+        font-size: clamp(0.8rem, 3vw, 1rem); /* Ajuste o tamanho da fonte para mobile */
         max-width: unset; /* Remove o limite de largura para preencher mais a tela */
     }
 
