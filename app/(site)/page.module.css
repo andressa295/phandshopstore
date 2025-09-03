@@ -171,6 +171,7 @@
     .heroActions {
         flex-direction: column; /* Botões um abaixo do outro */
         gap: 0.8rem;
+        margin-bottom: 4rem;
     }
     .heroButton {
         width: 80%; /* Botões com largura maior no mobile */
