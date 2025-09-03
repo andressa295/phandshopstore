@@ -53,7 +53,9 @@ export default async function SiteLayout({
         </div>
 
         <Footer />
-
+<head>
+    <script async src="https://analytics.umami.is/script.js" data-website-id="0b0f68e0-5d10-4c8a-98f3-c83f265cb3c2"></script>
+</head>
         {/* Botão flutuante do WhatsApp */}
         <div
           style={{

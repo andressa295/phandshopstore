@@ -23,7 +23,7 @@ export function HeroSection() {
             </p>
           </div>
           <div className={styles.heroImageWrapper}>
-            <Image src="/site.png" alt="Ilustração Phandshop" width={700} height={700} priority className={styles.heroImage}/>
+            <Image src="/site4.png" alt="Ilustração Phandshop" width={1200} height={1500} priority className={styles.heroImage}/>
           </div>
         </div>
       </div>

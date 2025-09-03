@@ -70,8 +70,10 @@
 .heroSection {
     composes: section;
     background-color: #6b21a8;
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: 4rem;
+    padding-bottom: 20px; /* Mantido, pois é o correto */
+    position: relative; /* ESSENCIAL para o posicionamento da imagem */
+    overflow: hidden; /* Corta o que transborda da seção */
 }
 .heroGrid {
     display: grid;
@@ -80,14 +82,14 @@
     gap: 3rem;
 }
 .heroTitle {
-    font-size: clamp(1.5rem, 5vw, 2.8rem); /* Mais fino e menor */
+    font-size: clamp(1.5rem, 5vw, 2.8rem);
     font-weight: 500;
     color: white;
     line-height: 1.25;
     margin-bottom: 1.5rem;
 }
 .heroSubtitle {
-    font-size: clamp(1rem, 2vw, 1.0rem); /* Mais fino e menor */
+    font-size: clamp(1rem, 2vw, 1.0rem);
     color: white;
     max-width: 500px;
     line-height: 1.7;
@@ -101,7 +103,7 @@
 }
 .heroButton {
     display: inline-block;
-    padding: 12px 24px; /* Botão mais slim */
+    padding: 12px 24px;
     border-radius: 9999px;
     text-decoration: none;
     font-weight: 600;
@@ -131,29 +133,74 @@
     color: white;
     transform: translateY(-3px);
 }
-.heroImageWrapper img {
-    max-width: 100%;
+.heroImageWrapper {
+    position: absolute; /* Torna a imagem flutuante */
+    right: 0; /* Alinha na direita */
+    bottom: -1px; /* Puxa a imagem 1px para fora, colando-a na borda */
+    width: 50%; /* Ocupa a metade da tela */
+    z-index: 1; /* Garante que a imagem fique sobre o fundo roxo, mas atrás do texto */
+}
+.heroImage {
+    max-width: 100%; /* A imagem preenche o wrapper */
     height: auto;
+    display: block; /* Essencial para remover o espaço extra abaixo da imagem */
+    object-fit: contain; /* Garante que a imagem não seja cortada */
+    
 }
 @media (max-width: 768px) {
     .heroGrid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Uma coluna no mobile */
         text-align: center;
     }
+    
+    .heroSection {
+        padding-bottom: 0px; /* Garante que não haja padding na parte inferior da seção */
+        padding-top: 1.5rem; 
+        min-height: 100vh; /* Garante que a seção tenha altura mínima */
+    }
+
+    .heroTitle {
+        font-size: clamp(1.8rem, 7vw, 2.5rem); /* Ajuste o tamanho da fonte para mobile */
+    }
+
+    .heroSubtitle {
+        font-size: clamp(0.9rem, 3vw, 1rem); /* Ajuste o tamanho da fonte para mobile */
+        max-width: unset; /* Remove o limite de largura para preencher mais a tela */
+    }
+
     .heroActions {
-        flex-direction: column;
+        flex-direction: column; /* Botões um abaixo do outro */
         gap: 0.8rem;
     }
     .heroButton {
-        width: fit-content;
-        white-space: nowrap;
-        padding: 8px 20px;
+        width: 80%; /* Botões com largura maior no mobile */
+        max-width: 300px; /* Limita o tamanho máximo */
+        padding: 10px 20px;
         font-size: 0.9rem;
-        border-radius: 50px;
-        box-sizing: border-box;
+    }
+
+    /* !!! AQUI ESTÁ A CHAVE PARA O AJUSTE DA IMAGEM NO MOBILE !!! */
+    .heroImageWrapper {
+        position: absolute; /* A imagem precisa de posicionamento absoluto */
+        width: 100%; /* A imagem preenche a largura do contêiner */
+        height: auto;
+        bottom: 0; /* Alinha a imagem à parte de baixo da seção */
+        right: -30px;
+        margin-top: 2rem;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    .heroImage {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 0; /* Remove a margem negativa, o bottom: 0; já faz o trabalho */
+        object-fit: contain;
     }
 }
-
 /* --- 2. Diferenciais --- */
 .diferenciaisSection {
     background-color: #fff;

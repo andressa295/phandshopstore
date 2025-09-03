@@ -207,7 +207,9 @@ export default function PreLancamento() {
                     />
                 </div>
             </section>
-
+                  <head>
+    <script async src="https://analytics.umami.is/script.js" data-website-id="1d6a74e8-859e-4b58-a920-d29b0366e94d"></script>
+                 </head>
             <footer className="footer">
                 <div className="social-icons">
                     <a href="https://instagram.com/phandshop" target="_blank" rel="noopener noreferrer">
