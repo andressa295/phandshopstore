@@ -71,6 +71,7 @@ a {
   display: none; 
 }
 
+
 @keyframes pulse {
   0% {
     transform: translateX(-50%) scale(1);

@@ -8,11 +8,9 @@ import Preview from '../components/Preview';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import PanelHeader from '../components/Header';
 import panelStyles from '../context/theme-editor-panel.module.css';
-
-// Componente para renderizar a interface do editor (dependente do contexto)
-const EditorUI: React.FC = () => {
-    const [activeSection, setActiveSection] = React.useState<string | null>(null);
+const PageContent = () => {
     const { isLoading, error } = useTheme();
+    const [activeSection, setActiveSectionState] = React.useState<string | null>(null);
 
     if (isLoading) {
         return <div className={panelStyles.loadingState}>Carregando dados da loja...</div>;
@@ -26,11 +24,11 @@ const EditorUI: React.FC = () => {
         <>
             <div className={panelStyles.panelArea}>
                 {!activeSection ? (
-                    <Sidebar setActiveSection={setActiveSection} />
+                    <Sidebar setActiveSection={setActiveSectionState} activeSection={activeSection} />
                 ) : (
                     <Editor
                         activeSection={activeSection}
-                        goBack={() => setActiveSection(null)}
+                        goBack={() => setActiveSectionState(null)}
                     />
                 )}
             </div>
@@ -45,17 +43,68 @@ const PersonalizarPage: React.FC = () => {
     const params = useParams();
     const lojaSlug = params.lojaSlug as string;
 
+    const fixStyles = `
+        /* Remove o espaço em branco indesejado */
+        .main-layout {
+            font-size: 0 !important; /* <--- MANTÉM ESTE AQUI PARA O &NBSP; */
+            line-height: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Reseta a fonte para os containers do seu painel */
+        .theme-editor-panel_panelArea__1ULmn,
+        .theme-editor-panel_editorContainer__NF_7Z {
+            font-size: 16px !important; /* <--- RESET AGORA */
+            line-height: 1.5 !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        /* Estilos de layout que você já tinha */
+        .theme-editor-panel_editorContainer__NF_7Z {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .theme-editor-panel_mainContent__tr7iz {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            gap: 16px;
+            padding: 16px;
+        }
+        .theme-editor-panel_panelArea__1ULmn {
+            flex-shrink: 0;
+            width: 320px;
+            background-color: white;
+            overflow-y: auto;
+        }
+        .theme-editor-panel_previewArea__cn0nt {
+            flex: 1;
+            overflow: hidden;
+            background-color: #f6f7f9;
+        }
+
+        /* Garante que o iframe não tenha bordas */
+        iframe {
+            border: none;
+            box-shadow: none;
+        }
+    `;
+
     if (!lojaSlug) {
         return <div className={panelStyles.errorState}>Erro: O slug da loja não foi fornecido.</div>;
     }
 
     return (
-        // CORREÇÃO: O ThemeProvider agora envolve todo o conteúdo do painel
         <ThemeProvider lojaSlug={lojaSlug} isIframeHost={true}>
+            <style jsx global>{fixStyles}</style>
             <div className={panelStyles.editorContainer}>
-                <PanelHeader />
-                <main className={panelStyles.mainContent}>
-                    <EditorUI />
+                <main className="main-layout">
+                    <PageContent />
                 </main>
             </div>
         </ThemeProvider>

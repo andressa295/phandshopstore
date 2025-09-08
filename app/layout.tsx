@@ -75,11 +75,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           src="https://umami.phandshop.com.br/script.js"
         />
       </head>
-      <body style={{ margin: 0, padding: 0, backgroundColor: '#fff' }}>
+      <body style={{ margin: 0, padding: 0, backgroundColor: '#ffffff' }}>
         <SupabaseProvider initialUser={user}>
-          <main className="main-layout">
-            {children}
-          </main>
+          <main className="main-layout">{children}</main>
         </SupabaseProvider>
 
         {lojaId && <VisitTracker lojaId={lojaId} />}

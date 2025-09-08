@@ -101,8 +101,8 @@ export default function PreLancamento() {
 
             <section className="hero-with-video">
                 <video className="hero-background-video" autoPlay loop muted playsInline>
-                    <source src="/phandshop-hero-desktop.mp4" media="(min-width: 769px)" type="video/mp4" />
-                    <source src="/phandshop-hero-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
+                    <source src="/lancamento.mp4" media="(min-width: 769px)" type="video/mp4" />
+                    <source src="/lancamento2.mp4" media="(max-width: 768px)" type="video/mp4" />
                     Seu navegador não suporta a tag de vídeo.
                 </video>
             </section>

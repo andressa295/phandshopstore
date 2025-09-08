@@ -1,54 +1,91 @@
-.sidebar {
-  width: 300px; 
-  height: 100%;
-  overflow-y: auto; 
-  background: #fcfcfc; 
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04); 
-  padding: 1.5rem 0; 
-  
+/* src/components/Sidebar.module.css */
 
+.sidebar {
+  width: 280px;
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: 2px 0 8px #6b21a8(0, 0, 0, 0.04);
+  padding: 0rem 0;
   display: flex;
   flex-direction: column;
 }
 
-.title { /* Adicionado para um título do painel, se você tiver um */
-  font-size: 1.4rem;
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centraliza a logo */
+  position: relative;
+  padding: 0 1rem 1rem 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  max-width: 150px;
+  height: auto;
+  
+}
+
+.backButton {
+  position: absolute; /* Posição absoluta para o botão, que não afeta a centralização da logo */
+  left: 0rem; /* Alinhado à esquerda */
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: #6b21a8;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.backButton:hover {
+  opacity: 0.8;
+  background-color: #f0f2f5;
+}
+
+.backButton svg {
+  color: inherit;
+}
+
+.title {
+  font-size: 1.0rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 1.5rem;
-  padding: 0 1rem; /* Reduzido de 1.5rem para 1rem */
+  margin-bottom: 1.0rem;
+  padding: 0 1rem;
   text-align: left;
-  
 }
 
 .menuItem {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 1rem; /* Reduzido de 1.5rem para 1rem */
+  padding: 12px 1rem;
   background: transparent;
   border: none;
   font-size: 15px;
-  color: #333; /* Cor do texto padrão */
+  color: #333;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, font-weight 0.2s ease; /* Adicionado transição para font-weight */
+  transition: background 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
   text-align: left;
-  width: 100%; /* Faz o botão preencher a largura total */
-  box-sizing: border-box; /* Garante que padding não adicione largura extra */
+  width: 100%;
+  box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
 
 .menuItem:hover {
   background-color: #f0f0f0;
-  color: #6b21a8; /* Cor do texto no hover para combinar com o tema */
+  color: #6b21a8;
 }
 
 .active {
-  /* Cor e efeito para o item de menu ativo */
-  background-color: #e6e0f5; /* Um roxo claro mais suave para o fundo ativo */
-  border-left: 4px solid #6b21a8; /* Borda da cor principal da marca */
-  color: #6b21a8; /* Cor do texto ativo (roxa principal) */
-  font-weight: 600; /* Negrito para destacar */
+  background-color: #e6e0f5;
+  border-left: 4px solid #6b21a8;
+  color: #6b21a8;
+  font-weight: 600;
 }
 
 .icon {
@@ -57,7 +94,7 @@
   align-items: center;
   justify-content: center;
   min-width: 20px;
-  color: inherit; /* Faz o ícone herdar a cor do .menuItem ou .active */
+  color: inherit;
 }
 
 .menuText {
@@ -66,46 +103,48 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
-
 }
-
 
 
 @media screen and (max-width: 768px) {
   .sidebar {
-    width: 100%; /* Ocupa a largura total em mobile */
-    height: auto; /* Altura se ajusta ao conteúdo */
-    flex-direction: row; /* Itens em linha em mobile */
-    overflow-x: auto; /* Permite scroll horizontal se muitos itens */
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
     border-right: none;
     border-bottom: 1px solid #ddd;
-    padding: 0.5rem; /* Padding reduzido para mobile */
-    box-shadow: none; /* Remove sombra em mobile para um visual mais limpo */
-    white-space: nowrap; /* Impede quebras de linha nos items */
+    padding: 0.5rem;
+    box-shadow: none;
+    white-space: nowrap;
+  }
+
+  .topbar {
+    display: none;
   }
 
   .title {
-      display: none; /* Oculta o título do painel em mobile, se houver */
+    display: none;
   }
 
   .menuItem {
-    padding: 0.5rem 0.8rem; /* Ajuste padding para itens menores em mobile */
+    padding: 0.5rem 0.8rem;
     font-size: 14px;
-    flex-direction: column; /* Ícone e texto empilhados */
+    flex-direction: column;
     gap: 4px;
     align-items: center;
     justify-content: center;
-    min-width: 80px; /* Garante que o item tenha uma largura mínima */
+    min-width: 80px;
   }
 
   .menuItem .icon {
-    font-size: 18px; /* Ícone menor em mobile */
+    font-size: 18px;
   }
 
   .menuText {
     font-size: 12px;
-    flex: none; /* Não cresce em mobile, para evitar cortar texto */
-    white-space: normal; /* Permite quebras de linha para texto curto */
+    flex: none;
+    white-space: normal;
     text-align: center;
   }
 }

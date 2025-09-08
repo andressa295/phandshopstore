@@ -11,11 +11,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
   process.exit(1);
 }
 
+
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Usa a configuração completa do Padrao.ts como fonte de verdade
 const themesDataWithConfig: { nome_tema: string, config: ThemeConfig }[] = [
-  { nome_tema: 'Padrao', config: Padrao },
-  { nome_tema: 'Tema Padrão', config: defaultThemeConfig }
+  { nome_tema: 'Padrao', config: Padrao }
 ];
 
 async function updateThemesWithConfigs() {

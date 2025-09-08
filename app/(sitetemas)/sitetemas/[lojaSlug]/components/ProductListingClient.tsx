@@ -1,7 +1,7 @@
-'use client'; 
+'use client';
 
-import React from 'react';
-import { useTheme, ThemeProvider } from '../../../../(painel)/personalizar/context/ThemeContext';
+import React, { FC } from 'react';
+import { ThemeProvider } from '../../../../(painel)/personalizar/context/ThemeContext';
 import {
     ThemeConfig,
     LojaData,
@@ -9,7 +9,6 @@ import {
     CategoryData,
     BannerData,
     InfoBarItem,
-    HighlightsModuleData,
     HomepageModuleType,
 } from '../../../../(painel)/personalizar/types';
 
@@ -23,23 +22,25 @@ import TestimonialsSection from './TestimonialsSection';
 import MiniBannerSection from './MiniBannerSection';
 import NewsletterSection from './NewsletterSection';
 import TextWithImageSection from './TextWithImageSection';
-import CategoryListingPage from './CategoryListingPage';
-import StaticPage from './StaticPage';
 import ImageGalleryModule from './ImageGalleryModule';
 import ProductShowcaseModule from './ProductShowcaseModule';
 
-// Mapeamento de tipos de módulo para componente de render
+// Placeholder para componentes que ainda não existem
+const PlaceholderComponent: FC = () => null;
+
+// Mapeamento de tipos de módulo para o componente de render
 const ModuleRenderers: Record<HomepageModuleType['type'], React.FC<any>> = {
-    banner: BannerSlider,
-    mini_banners: MiniBannerSection,
-    product_showcase: ProductShowcaseModule,
-    text_image: TextWithImageSection,
-    newsletter: NewsletterSection,
-    categories: CategoryListingPage,
-    highlights: BenefitInfoBar,
-    video: StaticPage,
-    testimonials: TestimonialsSection,
-    image_gallery: ImageGalleryModule,
+    'banner': BannerSlider,
+    'mini_banners': MiniBannerSection,
+    'product_showcase': ProductShowcaseModule,
+    'text_image': TextWithImageSection,
+    'newsletter': NewsletterSection,
+    'image_gallery': ImageGalleryModule,
+    'highlights': BenefitInfoBar,
+    'testimonials': TestimonialsSection,
+    // CORREÇÃO: Adicionado os placeholders para evitar o erro
+    'categories': PlaceholderComponent,
+    'video': PlaceholderComponent,
 };
 
 // Interface para as props que virão do Server Component
@@ -62,12 +63,9 @@ const ProductListingClient: React.FC<ProductListingClientProps> = ({
     banners,
     categorias,
     infoBarItems,
-    isIframeHost
+    isIframeHost,
 }) => {
-    // CORREÇÃO: Removemos o useTheme daqui e passamos as props diretamente para o ThemeProvider
-    // para evitar conflitos.
-
-    const modules = initialThemeConfig.homepage?.modules || [];
+    const { homepage } = initialThemeConfig;
 
     return (
         <ThemeProvider
@@ -80,20 +78,19 @@ const ProductListingClient: React.FC<ProductListingClientProps> = ({
             infoBarItems={infoBarItems}
             isIframeHost={isIframeHost}
         >
-            <TopInfoBar />
             <Header />
             <main className="ph-main-content">
-                {modules.map((module) => {
-                    const Renderer = ModuleRenderers[module.type];
-                    if (!Renderer) {
-                        console.warn(`Componente de renderização para o tipo de módulo '${module.type}' não encontrado.`);
+                {homepage?.modules && homepage.modules.length > 0 ? (
+                    homepage.modules.map((module, index) => {
+                        const Renderer = ModuleRenderers[module.type];
+                        if (Renderer && module.data?.isActive) {
+                            return <Renderer key={index} data={module.data} />;
+                        }
                         return null;
-                    }
-                    if (module.data.isActive) {
-                        return <Renderer key={module.id} data={module.data} />;
-                    }
-                    return null;
-                })}
+                    })
+                ) : (
+                    <div className="p-4 text-center">Nenhum módulo de página inicial configurado.</div>
+                )}
             </main>
             <Footer />
         </ThemeProvider>

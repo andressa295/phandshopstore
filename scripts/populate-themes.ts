@@ -1,11 +1,10 @@
-// scripts/populate-themes.ts
-
 import { createClient } from '@supabase/supabase-js';
-import { v4 as uuidv4 } from 'uuid'; // Para gerar UUIDs se necessário
+import { v4 as uuidv4 } from 'uuid';
+import { Padrao } from '../app/(painel)/personalizar/themes/Padrao'; // Importa o tema padrão
+import * as dotenv from 'dotenv'; // Importa a biblioteca dotenv de forma correta
 
-// Carrega as variáveis de ambiente.
-// Se estiver executando como um script Node.js puro, você pode precisar de 'dotenv'.
-// require('dotenv').config(); 
+// Carrega as variáveis de ambiente do arquivo .env.local
+dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -41,21 +40,19 @@ const themesData = [
   { "id": "Simples", "nome": "Simples", "categoria": "Produtos Básicos / Essenciais", "descricao": "Clean, direto ao ponto, sem distrações, funcionalidade acima de tudo.", "imagemUrl": "https://placehold.co/600x400/F5F5F5/333333?text=Simples+Preview" }
 ];
 
-
 async function populateThemesTable() {
   console.log("Iniciando população da tabela 'public.temas'...");
 
   for (const theme of themesData) {
-    // Verifica se o tema já existe para evitar duplicatas
     const { data: existingTheme, error: fetchError } = await supabase
       .from('temas')
       .select('id')
-      .eq('caminho_componente', theme.id) // Usa o ID do JSON como caminho_componente
+      .eq('caminho_componente', theme.id)
       .single();
 
-    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = No rows found
+    if (fetchError && fetchError.code !== 'PGRST116') {
       console.error(`Erro ao verificar tema '${theme.nome}':`, fetchError.message);
-      continue; // Pula para o próximo tema em caso de erro real
+      continue;
     }
 
     if (existingTheme) {
@@ -67,8 +64,9 @@ async function populateThemesTable() {
           nome_tema: theme.nome,
           descricao: theme.descricao,
           preview_url: theme.imagemUrl,
-          is_free: true, // Todos são gratuitos por padrão, ajuste conforme necessário
-          caminho_componente: theme.id, // O ID do JSON é o nome da pasta do componente
+          is_free: true,
+          caminho_componente: theme.id,
+          configuracoes_json: Padrao
         });
 
       if (insertError) {
@@ -81,19 +79,4 @@ async function populateThemesTable() {
   console.log("População da tabela 'public.temas' concluída.");
 }
 
-// Para executar este script, você pode chamá-lo diretamente
 populateThemesTable();
-
-// Se for uma API Route, a chamada seria no handler da API, por exemplo:
-/*
-import type { NextApiRequest, NextApiResponse } from 'next';
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    await populateThemesTable();
-    res.status(200).json({ message: 'Tabela de temas populada com sucesso.' });
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
-*/

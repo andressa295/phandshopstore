@@ -1,45 +1,142 @@
-/* app/(painel)/personalizar/components/Preview.module.css */
-
+/* Container principal com bordas arredondadas e sombra */
 .previewContainer {
-    width: 100%;
-    height: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #f7f9fc;
+    margin-top: -30px;
+    
+}
+
+/* Barra de ferramentas (toolbar) com fundo e borda inferior */
+.previewToolbar {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background-color: #f1f1f1;
+    padding: 12px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+/* Estilo do seletor de modo (desktop/mobile) */
+.modeSwitch {
+    display: inline-flex;
+    border: 1px solid #d1d5db;
+    border-radius: 20px;
     overflow: hidden;
 }
 
-.iframeBase {
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: width 0.3s ease, height 0.3s ease;
+/* Botões do seletor de modo */
+.modeSwitch button {
+    background-color: transparent;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #6b21a8;
+    transition: all 0.2s ease-in-out;
 }
 
+/* Botão ativo com cor de fundo e cor de ícone */
+.modeSwitch button.active {
+    background-color: #6b21a8;
+    color: #ffffff;
+}
+
+/* Efeito hover nos botões inativos */
+.modeSwitch button:not(.active):hover {
+    background-color: #f1f5f9;
+}
+
+/* Estilo do link 'Ver Loja' */
+.viewStoreLink {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b21a8;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+/* Efeito hover no link */
+.viewStoreLink:hover {
+    color: #6b21a8;
+}
+
+/*
+* CONTAINER PRINCIPAL: Não tem mais padding
+* Serve apenas para preencher o espaço restante e ser a "moldura" cinza
+*/
+.iframeArea {
+    flex-grow: 1;
+    background-color: #f7f9fc;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    overflow: auto;
+    
+}
+
+/* NOVO CONTAINER INTERNO: Adiciona o padding e centraliza */
+.innerIframeContainer {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Classes para padding e centralização específicas */
+.desktopPadding {
+    padding: 15px; /* Padding para o modo desktop */
+}
+
+.mobilePadding {
+    padding: 310px; /* Padding para o modo mobile */
+}
+
+/* Estilo do iframe base */
+.iframeBase {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background-color: #ffffff;
+}
+
+/* Estilo do modo desktop */
 .desktopPreview {
     width: 100%;
     height: 100%;
+    min-width: 970px;
+    min-height: 500px;
 }
 
+/* Estilo do modo mobile */
 .mobilePreview {
-    width: 375px; /* Largura padrão de um iPhone */
-    height: 667px; /* Altura padrão de um iPhone */
+    width: 375px; /* Largura fixa do celular */
+    height: 667px; /* Altura fixa do celular */
+    border: 5px solid #2e2e2e;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-top: -300px;
+
 }
 
-@media (max-width: 768px) {
-    .previewContainer {
-        padding: 10px;
-    }
-    .desktopPreview {
-        display: none;
-    }
-    .mobilePreview {
-        width: 100%;
-        height: 100%;
-        max-width: 375px;
-        max-height: 812px; /* Altura para simular um celular maior */
-    }
+/* Efeito para simular o "notch" em modo mobile */
+.mobilePreview::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 8px;
+    background: #000;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    z-index: 1;
 }

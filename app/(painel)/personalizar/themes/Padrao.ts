@@ -26,7 +26,7 @@ export const Padrao: ThemeConfig = {
         desktopSearch: 'bar',
         mobileSearch: 'icon',
         showAnnouncementBar: true,
-        announcementText: '🎉 Frete Grátis para todo Brasil em compras acima de R$199!',
+        announcementText: 'Frete Grátis para todo Brasil em compras acima de R$199!',
         announcementLink: '/ofertas',
         announcementMarquee: true,
         useCustomHeaderColors: false,
@@ -40,6 +40,7 @@ export const Padrao: ThemeConfig = {
     // --- Módulos da Homepage (Layout Padrão) ---
     homepage: {
         modules: [
+            // Módulo de Banner
             {
                 id: generateUniqueId(),
                 type: 'banner',
@@ -51,12 +52,25 @@ export const Padrao: ThemeConfig = {
                     interval: 5,
                     isActive: true,
                     banners: [
-                        { id: uuidv4(), desktopImageUrl: 'https://via.placeholder.com/1920x600?text=Banner+Padr%C3%A3o', mobileImageUrl: 'https://via.placeholder.com/600x800?text=Banner+Padr%C3%A3o+Mobile', title: 'Descubra a Nova Coleção!', subtitle: 'Estilo e qualidade que você merece.', buttonText: 'Explorar Agora', buttonLink: '/novidades', overlayColor: '#000000', overlayOpacity: 0.3, isActive: true },
+                        { id: uuidv4(), desktopImageUrl: 'https://via.placeholder.com/1920x600?text=Banner+Padr%C3%A3o', mobileImageUrl: 'https://via.placeholder.co/600x800?text=Banner+Padr%C3%A3o+Mobile', title: 'Descubra a Nova Coleção!', subtitle: 'Estilo e qualidade que você merece.', buttonText: 'Explorar Agora', buttonLink: '/novidades', overlayColor: '#000000', overlayOpacity: 0.3, isActive: true },
                     ],
                 },
             },
+            // Módulo de Mini-Banners
             {
-                id: uuidv4(),
+                id: generateUniqueId(),
+                type: 'mini_banners',
+                data: {
+                    isActive: true,
+                    banners: [
+                       { id: uuidv4(), imageUrl: 'https://via.placeholder.com/600x300?text=Mini+Banner+1', link: '/oferta-1' },
+                       { id: uuidv4(), imageUrl: 'https://via.placeholder.com/600x300?text=Mini+Banner+2', link: '/oferta-2' },
+                ]
+                }
+            },
+            // Módulo de Vitrine de Produtos
+            {
+                id: generateUniqueId(),
                 type: 'product_showcase',
                 data: {
                     title: 'Produtos em Destaque',
@@ -65,13 +79,15 @@ export const Padrao: ThemeConfig = {
                     showcases: [{ id: uuidv4(), title: 'Mais Vendidos', displayType: 'best_sellers', numberOfProducts: 8, isActive: true }],
                 },
             },
+            // Módulo de Texto com Imagem
             {
-                id: uuidv4(),
+                id: generateUniqueId(),
                 type: 'text_image',
                 data: { title: 'Sobre Nossa Marca', text: 'Conheça um pouco da nossa história e dos valores que nos movem.', imageUrl: 'https://via.placeholder.com/600x400?text=Texto+Imagem', imagePosition: 'left', buttonText: 'Saiba Mais', buttonLink: '/sobre', isActive: true },
             },
+            // Módulo de Destaques/InfoBar
             {
-                id: uuidv4(),
+                id: generateUniqueId(),
                 type: 'highlights',
                 data: {
                     title: 'Por que Escolher a gente?',
@@ -79,10 +95,23 @@ export const Padrao: ThemeConfig = {
                     isActive: true,
                     highlightItems: [
                         { id: uuidv4(), icon: 'MdLocalShipping', title: 'Frete Rápido', subtitle: 'Em todo o Brasil', isActive: true },
+                        { id: uuidv4(), icon: 'MdCreditCard', title: 'Até 12x Sem Juros', subtitle: 'Pague com tranquilidade', isActive: true },
+                        { id: uuidv4(), icon: 'MdSecurity', title: 'Compra Segura', subtitle: 'Seus dados protegidos', isActive: true },
                     ],
                     layout: 'icons-text',
                 },
             },
+            // Módulo de Newsletter
+            {
+                id: generateUniqueId(),
+                type: 'newsletter',
+                data: {
+                    isActive: true,
+                    title: 'Assine nossa Newsletter!',
+                    subtitle: 'Receba ofertas e novidades exclusivas.',
+                    buttonText: 'Inscrever-se'
+                }
+            }
         ],
         categoriesData: [],
         productsData: [],

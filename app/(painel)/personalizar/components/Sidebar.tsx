@@ -2,10 +2,14 @@
 
 import React from 'react';
 import { MdColorLens, MdFontDownload, MdWeb, MdHome, MdList, MdInfo, MdShoppingCart, MdCropDin, MdBrush, MdCode } from 'react-icons/md';
+import { ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
 import styles from './Sidebar.module.css';
+import Link from 'next/link'; // Importa o componente Link
 
 interface SidebarProps {
   setActiveSection: (id: string) => void;
+  activeSection: string | null;
 }
 
 const menuItems = [
@@ -21,18 +25,30 @@ const menuItems = [
   { id: 'avancado', name: 'Avançado', icon: <MdCode /> },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ setActiveSection }) => {
+const Sidebar: React.FC<SidebarProps> = ({ setActiveSection, activeSection }) => {
   return (
     <nav className={styles.sidebar}>
+      <div className={styles.topbar}>
+        <Link href="/dashboard" passHref className={styles.backButton}>
+          <ArrowLeft size={20} />
+        </Link>
+        <Image
+          src="/logoroxo.png"
+          alt="Logo da Phandshop"
+          width={150}
+          height={80}
+          className={styles.logo}
+        />
+      </div>
       <h2 className={styles.title}>Editar Tema</h2>
       {menuItems.map(({ id, name, icon }) => (
         <button
           key={id}
-          className={styles.menuItem}
+          className={`${styles.menuItem} ${activeSection === id ? styles.active : ''}`}
           onClick={() => setActiveSection(id)}
         >
           <span className={styles.icon}>{icon}</span>
-          <span>{name}</span>
+          <span className={styles.menuText}>{name}</span>
         </button>
       ))}
     </nav>

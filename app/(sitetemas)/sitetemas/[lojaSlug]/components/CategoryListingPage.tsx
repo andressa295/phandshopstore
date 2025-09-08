@@ -5,21 +5,19 @@ import Link from 'next/link';
 import ProductCard from './ProductCard'; 
 import { 
     CategoriesModuleData, 
-    SelectedCategoryDisplayData, 
     ProdutoData, 
-    ThemeConfig 
 } from '../../../../(painel)/personalizar/types';
 import { useTheme } from '../../../../(painel)/personalizar/context/ThemeContext';
 
 interface CategoryListingPageProps {
-    data: CategoriesModuleData;
+    data?: CategoriesModuleData; // Tornando a prop 'data' opcional
 }
 
 const CategoryListingPage: React.FC<CategoryListingPageProps> = ({ data }) => {
-    // CORREÇÃO: Acessa os dados diretamente do contexto
+    // Acessa os dados diretamente do contexto
     const { lojaData, produtos: allProducts } = useTheme();
 
-    const categories = data.categoriesToDisplay || [];
+    const categories = data?.categoriesToDisplay || [];
     
     const [selectedCategory, setSelectedCategory] = useState<string | null>(categories[0]?.id || null);
     const [filteredProducts, setFilteredProducts] = useState<ProdutoData[]>([]);
@@ -38,7 +36,7 @@ const CategoryListingPage: React.FC<CategoryListingPageProps> = ({ data }) => {
         setSelectedCategory(categoryId);
     };
 
-    if (!data.isActive || categories.length === 0) {
+    if (!data?.isActive || categories.length === 0) {
         return null;
     }
 
