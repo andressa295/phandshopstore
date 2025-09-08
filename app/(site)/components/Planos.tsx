@@ -6,6 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import { FaGift, FaLightbulb, FaGem, FaRocket, FaCrown } from 'react-icons/fa';
+import { MdBusiness } from 'react-icons/md'; // Importação Material Design
 
 const planosData = [
   {
@@ -15,7 +16,7 @@ const planosData = [
     monthlyPriceDetails: '',
     annualFullPrice: 'R$ 0,00',
     annualMonthlyEquivalent: null,
-    features: [ 'Até 30 produtos cadastrados', 'Tema padrão com design responsivo e profissional', 'Integração com meios de pagamento', 'Integração com transportadoras (Envios)', 'Atendimento via WhatsApp para seus clientes', 'Certificado de segurança padrão', 'Aviso-me quando chegar', 'Guias de Tamanho', 'Dashboard simples de pedidos e vendas','Acesso ao App do lojista' ],
+    features: [ 'Até 15 produtos cadastrados', 'Tema padrão com design responsivo e profissional', 'Integração com meios de pagamento', 'Integração com transportadoras (Envios)', 'Atendimento via WhatsApp para seus clientes', 'Certificado de segurança padrão', 'Aviso-me quando chegar', 'Guias de Tamanho', 'Dashboard simples de pedidos e vendas','Acesso ao App do lojista' ],
     callout: 'Neste plano, é aplicada uma tarifa de 2.5% por venda aprovada.',
     buttonText: 'Começar agora',
     isFeatured: false,
@@ -71,7 +72,21 @@ const planosData = [
     monthlyPriceDetails: '/mês',
     annualFullPrice: 'R$ 2.499,00',
     annualMonthlyEquivalent: 'R$ 208,25/mês',
-    features: [ 'Tudo do plano Profissional, e mais:', 'Relatórios complexos e customizados', 'Atendimento prioritário (WhatsApp direto com especialista)', 'Acesso Antecipado a novas funcionalidades', 'Domínio grátis no plano anual (1º ano de domínio incluso)', 'Acesso ao programa de parceiros e marketplace', 'Consultoria estratégica 1x ao mês ','Loja feita pra você, em até 15 dias (Ao assinar o plano anual, nossa equipe configura sua loja do zero)' ],
+    features: [ 'Tudo do plano Profissional , e mais:', 'Relatórios complexos e customizados', 'Atendimento prioritário (WhatsApp direto com especialista)', 'Acesso Antecipado a novas funcionalidades', 'Domínio grátis no plano anual (1º ano de domínio incluso)', 'Acesso ao programa de parceiros e marketplace', 'Consultoria estratégica 1x ao mês ','Loja feita pra você, em até 15 dias (Ao assinar o plano anual, nossa equipe configura sua loja do zero)' ],
+    callout: null,
+    buttonText: 'Assinar Premium',
+    isFeatured: false,
+    stripePriceIdMonthly: 'price_1Rp0dDK7GLhCiTF0cDcu7cay',
+    stripePriceIdAnnual: 'price_1Rpid4K7GLhCiTF08Tcs9F4g', 
+  },
+  {
+    icon: <MdBusiness />,
+    name: 'Plano Business',
+    monthlyPrice: 'R$ 499,00',
+    monthlyPriceDetails: '/mês',
+    annualFullPrice: 'R$ 4.990,00',
+    annualMonthlyEquivalent: 'R$ 415,83/mês',
+    features: [ 'Tudo do Premium , e mais:', 'Multi-loja (várias lojas no mesmo painel)', 'Loja B2B/Atacado e Varejo no mesmo ambiente', 'API aberta e integrações avançadas ', 'Relatórios financeiros preditivos ', 'Onboarding personalizado (configuração completa com especialista)', 'Suporte VIP (fila exclusiva, WhatsApp/telefone direto)','Usuários ilimitados com controle de permissões', 'CDN premium (melhor performance e escalabilidade)' ],
     callout: null,
     buttonText: 'Assinar Premium',
     isFeatured: false,
