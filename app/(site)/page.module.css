@@ -253,6 +253,18 @@
     margin-bottom: 1rem;
 }
 
+@media (max-width: 768px) {
+    .diferenciaisGrid { grid-template-columns: 1fr; gap: 3rem; }
+    .section {
+        padding: 2rem 0; /* Ajusta o espaçamento geral de todas as seções */
+    }
+    .sectionHeader {
+        margin-bottom: 1.5rem; /* Ajusta o espaçamento abaixo dos títulos de seção */
+    }
+}
+
+
+
 /* --- 3. Funcionalidades (atualizada para carrossel) --- */
 .featuresSection { composes: section; background-color: #ffffff; }
 .featuresGrid {
@@ -781,7 +793,7 @@
 }
 
 .sectionSubtitle {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     color: #4a5568;
     max-width: 600px;
     margin: 0.75rem auto 0;
@@ -871,71 +883,6 @@
 @media (min-width: 1024px) {
     .testimonialsGrid {
         grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-.header { margin-bottom: 1.5rem; }
-.title { font-size: 1.25rem; /* Menor e mais fino */ font-weight: 600; color: #2c0e3e; }
-.subtitle { font-size: 0.95rem; color: #666; line-height: 1.5; }
-.form { display: flex; flex-direction: column; gap: 1rem; }
-.inputGroup { position: relative; display: flex; align-items: center; }
-.inputIcon {
-    position: absolute;
-    top: 50%;
-    left: 0.9rem;
-    transform: translateY(-50%);
-    color: #6b21a8;
-    font-size: 1rem;
-    pointer-events: none;
-}
-.input {
-    width: 100%;
-    padding: 0.8rem 1rem 0.8rem 2.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #ccc;
-    font-size: 0.95rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.input:focus {
-    outline: none;
-    border-color: #6b21a8;
-    box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.15);
-}
-.button {
-    background-color: #6b21a8;
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: 400;
-    padding: 0.8rem 2rem;
-    border-radius: 9999px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    font-family: 'Poppins', sans-serif;
-}
-.button:hover { background-color: #5a1d8f; transform: translateY(-1px); }
-@media (max-width: 768px) {
-    .formContainer { justify-content: center; padding: 1.5rem; }
-    .formBlock {
-        margin-left: 0;
-        max-width: 90%;
-        padding: 1.25rem 1rem;
-        border-radius: 1rem;
-    }
-    .title { font-size: 1.1rem; }
-    .subtitle { font-size: 0.85rem; line-height: 1.4; }
-    .input { font-size: 0.85rem; padding: 0.65rem 1rem 0.65rem 2.3rem; }
-    .inputIcon { font-size: 0.85rem; }
-    .button { font-size: 0.85rem; padding: 0.7rem 1.5rem; }
-}
-
-@media (max-width: 768px) {
-    .diferenciaisGrid { grid-template-columns: 1fr; gap: 3rem; }
-    .section {
-        padding: 2rem 0; /* Ajusta o espaçamento geral de todas as seções */
-    }
-    .sectionHeader {
-        margin-bottom: 1.5rem; /* Ajusta o espaçamento abaixo dos títulos de seção */
     }
 }
 
