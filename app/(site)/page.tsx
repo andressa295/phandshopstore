@@ -5,7 +5,7 @@ import { FeaturesSection } from './components/landing/FeaturesSection';
 import { TemasSection } from './components/landing/TemasSection';
 import { PlanosSection } from './components/landing/PlanosSection';
 import { FaqSection } from './components/landing/FaqSection';
-import { FormularioEspecialista } from './components/landing/FormularioEspecialista';
+import { TestimonialsSection } from './components/landing/TestimonialsSection';
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
       
       <PlanosSection />
       <FaqSection />
-      <FormularioEspecialista />
+      <TestimonialsSection />
     </main>
   );
 }
