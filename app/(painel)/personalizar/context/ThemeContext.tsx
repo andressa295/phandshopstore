@@ -159,11 +159,14 @@ export const ThemeProvider: React.FC<{
         console.log("ThemeContext: Iniciando fetch de dados do Supabase para lojaSlug:", lojaSlug);
         try {
           // CORRIGIDO: Busca a loja na tabela 'lojas' e a configuração do tema na tabela 'temas'
-          const { data: loja, error: lojaError } = await supabase
-            .from('lojas')
-            .select(`*, temas!inner(configuracoes_json)`) // Adicionei 'inner' para garantir o relacionamento
-            .eq('slug', lojaSlug)
-            .single();
+         const { data: loja, error: lojaError } = await supabase
+               .from('lojas')
+               .select(`
+             *,
+             tema:temas!fk_lojas_theme (id, nome_tema, caminho_componente, configuracoes_json)
+                        `)
+               .eq('slug', lojaSlug)
+               .single();
 
           if (lojaError || !loja) {
             throw new Error(lojaError?.message || "Loja não encontrada.");

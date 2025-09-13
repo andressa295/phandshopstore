@@ -1,0 +1,63 @@
+/* ============================= */
+/* InfoBar (faixa de benefícios) */
+/* ============================= */
+.padrao-infobar {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0.9rem 2rem;
+}
+
+.padrao-infobar.over {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0.8rem;
+  width: min(1200px, calc(100% - 2rem));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.8rem 1.2rem;
+  background: var(--color-primary);
+}
+
+.padrao-infobar__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.2rem;
+}
+
+.padrao-infobar__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.padrao-infobar__icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+.padrao-infobar__title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.padrao-infobar__subtitle {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+  .padrao-infobar__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .padrao-infobar__grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,33 @@
+/* ============================= */
+/* Responsividade geral          */
+/* ============================= */
+@media (max-width: 1024px) {
+  .search-bar.expanded {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-top {
+    justify-content: space-between;
+  }
+
+  .search-container {
+    flex: unset;
+    margin: 0;
+  }
+
+  .search-bar.expanded {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .header-bottom nav {
+    display: none; /* menu desktop some */
+  }
+
+  .menu-btn {
+    display: flex; /* aparece só no mobile */
+  }
+}

@@ -45,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       } else {
         console.log("UserContext: Objeto 'user' do Supabase:", supabaseUser);
         console.log("UserContext: user.id:", supabaseUser?.id);
-        console.log("UserContext: user.email (direto do auth.getUser()):", supabaseUser?.email); // Verifique este valor!
+        console.log("UserContext: user.email (direto do auth.getUser()):", supabaseUser?.email);
         console.log("UserContext: user.user_metadata:", supabaseUser?.user_metadata);
       }
       // --- FIM DOS LOGS DE DEPURAÇÃO ---
@@ -76,14 +76,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
           )
         `)
         .eq('owner_id', supabaseUser.id)
-        .single();
-      
+        .maybeSingle(); // ✅ corrigido
+
       // Busca dados do perfil do usuário na tabela `usuarios`
       const { data: perfilData, error: perfilError } = await supabase
         .from('usuarios')
         .select('nome_completo')
         .eq('id', supabaseUser.id)
-        .single();
+        .maybeSingle(); // ✅ corrigido
 
       if (lojaError) {
         console.error("UserContext: Erro ao carregar loja:", lojaError);
@@ -97,7 +97,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
         const formattedProfile: UserProfile = {
           id: supabaseUser.id,
-          email: supabaseUser.email ?? null, // Este valor é o que precisamos verificar
+          email: supabaseUser.email ?? null,
           nome_completo: perfilData?.nome_completo || null,
           lojaId: lojaData?.id || null,
           lojaNome: lojaData?.nome_loja || null,
@@ -108,8 +108,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
           preco_anual: planoData?.preco_anual || 0,
         };
         setProfile(formattedProfile);
-        console.log("UserContext: Perfil formatado (email):", formattedProfile.email); // Verifique este valor
+        console.log("UserContext: Perfil formatado (email):", formattedProfile.email);
       } else {
+        console.log("UserContext: Nenhuma loja encontrada para este usuário");
         setProfile(null);
       }
 

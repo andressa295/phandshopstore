@@ -40,6 +40,7 @@
   background-color: white;
   color: var(--purple-main, #6d28d9);
   transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
 }
 
 .toggleButton:hover {
@@ -178,6 +179,7 @@
   cursor: pointer;
   transition: all 0.2s;
   width: 100%;
+  font-family: 'Poppins', sans-serif;
 }
 
 .detailsButton:hover {
@@ -193,10 +195,11 @@
   border: none;
   border-radius: 9999px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .ctaButton:disabled {

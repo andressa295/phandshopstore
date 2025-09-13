@@ -1,0 +1,49 @@
+/* ============================= */
+/* Newsletter                    */
+/* ============================= */
+.newsletter {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 3rem 2rem;
+  text-align: center;
+  border-radius: var(--radius);
+  margin-top: 3rem;
+}
+
+.newsletter h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.newsletter-form {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.newsletter input[type="email"] {
+  flex: 1 1 200px;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius) 0 0 var(--radius);
+  outline: none;
+}
+
+.newsletter button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  background: #fff;
+  color: var(--color-primary);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.newsletter button:hover {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}

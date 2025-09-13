@@ -1,55 +1,50 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { MiniBannerModuleData, SingleMiniBannerData } from '../../../../(painel)/personalizar/types';
+import React from "react";
 
-interface MiniBannerSectionProps {
-    data: MiniBannerModuleData;
+interface MiniBanner {
+  src: string;
+  alt?: string;
+  href?: string;
+  title?: string;
 }
 
-const MiniBannerSection: React.FC<MiniBannerSectionProps> = ({ data }) => {
-    
-    // Verificação robusta para garantir que 'data' e 'banners' existem
-    if (!data || !data.isActive || !data.banners || data.banners.length === 0) {
-        return null;
-    }
+interface MiniBannerSectionProps {
+  banners: MiniBanner[];
+  columns?: number;
+}
 
-    const { banners, layout, title, subtitle } = data;
-
-    const containerClasses = layout === 'carousel' 
-        ? "flex overflow-x-auto snap-x snap-mandatory space-x-4" 
-        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8";
-
-    return (
-        <section className="ph-mini-banner-section">
-            {title && <h2 className="ph-mini-banner-section-title">{title}</h2>}
-            {subtitle && <p className="ph-mini-banner-section-subtitle">{subtitle}</p>}
-            
-            <div className={containerClasses}>
-                {banners.map(banner => (
-                    <div key={banner.id} className="ph-mini-banner-card">
-                        {banner.link ? (
-                            <Link href={banner.link} passHref>
-                                <img 
-                                    src={banner.imageUrl || `https://placehold.co/300x150/CCCCCC/000000?text=Mini+Banner`} 
-                                    alt={banner.title || 'Mini Banner'} 
-                                    className="ph-mini-banner-image"
-                                />
-                            </Link>
-                        ) : (
-                            <img 
-                                src={banner.imageUrl || `https://placehold.co/300x150/CCCCCC/000000?text=Mini+Banner`} 
-                                alt={banner.title || 'Mini Banner'} 
-                                className="ph-mini-banner-image"
-                            />
-                        )}
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-};
-
-export default MiniBannerSection;
-
+export default function MiniBannerSection({
+  banners,
+  columns = 3,
+}: MiniBannerSectionProps) {
+  return (
+    <section className="p-6 max-w-6xl mx-auto">
+      <div
+        className={`grid gap-4`}
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {banners.map((banner, idx) => (
+          <a
+            key={idx}
+            href={banner.href || "#"}
+            className="relative group block overflow-hidden rounded-[var(--radius)] shadow-sm"
+          >
+            <img
+              src={banner.src}
+              alt={banner.alt ?? `Mini banner ${idx + 1}`}
+              className="w-full h-40 object-cover transition group-hover:scale-105"
+            />
+            {banner.title && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition">
+                <span className="text-white font-semibold text-sm">
+                  {banner.title}
+                </span>
+              </div>
+            )}
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}

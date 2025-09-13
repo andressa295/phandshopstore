@@ -1,44 +1,41 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import CartPage from '../components/CartPage';
-import { notFound } from 'next/navigation';
+// app/(sitetemas)/sitetemas/[lojaSlug]/carrinho/page.tsx
+"use client";
 
-// ⚠️ Hack temporário: o Next gera tipagem errada em .next/types
-// params nunca é Promise, mas o compilador acha que é.
-// Por isso usamos @ts-expect-error só aqui.
-export default async function CarrinhoPage({ params }: { params: { lojaSlug: string } }) {
-  const supabase = createServerComponentClient({ cookies });
+import React from "react";
 
-  // Busca os dados da loja
-  const { data: loja, error: lojaError } = await supabase
-    .from('lojas')
-    .select('id, nome_loja')
-    .eq('slug', params.lojaSlug)
-    .single();
+export default function CarrinhoPage() {
+  // Mock → depois substituir por estado global / Supabase
+  const items = [
+    { id: 1, name: "Produto 1", price: 99.9, qty: 1, image: "/placeholder.jpg" },
+    { id: 2, name: "Produto 2", price: 149.9, qty: 2, image: "/placeholder.jpg" },
+  ];
 
-  if (lojaError || !loja) {
-    return notFound();
-  }
-
-  // Produtos para cross-sell
-  const { data: crossSellProducts } = await supabase
-    .from('produtos')
-    .select('*')
-    .eq('loja_id', loja.id)
-    .limit(4);
-
-  // Produto para compre junto
-  const { data: compreJuntoProduct } = await supabase
-    .from('produtos')
-    .select('*')
-    .eq('loja_id', loja.id)
-    .limit(1);
+  const subtotal = items.reduce((acc, i) => acc + i.price * i.qty, 0);
 
   return (
-    <CartPage
-      lojaNome={loja.nome_loja}
-      crossSellProducts={crossSellProducts || []}
-      compreJuntoProduct={compreJuntoProduct?.[0] || null}
-    />
+    <main className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Carrinho</h1>
+      <div className="grid gap-4">
+        {items.map((item) => (
+          <div key={item.id} className="flex items-center gap-4 border-b pb-4">
+            <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" />
+            <div className="flex-1">
+              <h2 className="font-bold">{item.name}</h2>
+              <p>Qtd: {item.qty}</p>
+            </div>
+            <p className="font-bold">R$ {item.price.toFixed(2)}</p>
+          </div>
+        ))}
+      </div>
+      <div className="text-right mt-6">
+        <p className="text-lg mb-2">Subtotal: R$ {subtotal.toFixed(2)}</p>
+        <a
+          href="/checkout"
+          className="inline-block bg-[var(--color-primary)] text-white px-6 py-2 rounded-[var(--radius)]"
+        >
+          Finalizar compra
+        </a>
+      </div>
+    </main>
   );
 }

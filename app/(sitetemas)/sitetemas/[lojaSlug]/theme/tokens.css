@@ -1,0 +1,17 @@
+:root {
+  --color-primary: #6a0dad;
+  --color-secondary: #f5f5f5;
+  --color-text: #333333;
+  --color-background: #ffffff;
+
+  --font-heading: "Roboto", sans-serif;
+  --font-body: "Open Sans", sans-serif;
+
+  --radius: 8px;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="padrao"] {
+  --color-primary: #6a0dad;
+  --color-text: #333333;
+}

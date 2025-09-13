@@ -57,6 +57,7 @@
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  font-family: 'Poppins', sans-serif;
 }
 
 .button:hover:not(:disabled) {

@@ -1,0 +1,41 @@
+/* ============================= */
+/* Footer                        */
+/* ============================= */
+footer {
+  background: #212529;
+  color: #f8f9fa;
+  padding: 3rem 2rem;
+  margin-top: 3rem;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+footer h3 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+footer a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #f8f9fa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: var(--color-primary);
+}
+
+.footer-copy {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #ccc;
+}

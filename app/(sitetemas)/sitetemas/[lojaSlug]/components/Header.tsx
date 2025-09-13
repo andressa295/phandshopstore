@@ -1,149 +1,133 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { User, ShoppingBag, Menu, Search, X } from 'lucide-react';
-import { useTheme } from '../../../../(painel)/personalizar/context/ThemeContext';
-import { HeaderSettingsConfig } from '../../../../(painel)/personalizar/types';
+import React, { useState } from "react";
+import { Search, ShoppingBag, User, Menu, X } from "lucide-react";
 
-const Header: React.FC = () => {
-    const { config } = useTheme();
+interface HeaderLink {
+  label: string;
+  href: string;
+}
 
-    const headerSettings: HeaderSettingsConfig = config.headerSettings || {};
-    const lojaNome = config.headerTitle || 'Sua Loja Padrão';
-    
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isMobileSearchActive, setIsMobileSearchActive] = useState<boolean>(false);
+interface HeaderProps {
+  lojaNome: string;
+  links?: HeaderLink[];
+}
 
-    const toggleMobileSearch = () => {
-        setIsMobileSearchActive(!isMobileSearchActive);
-        if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-    };
+export default function Header({
+  lojaNome,
+  links = [
+    { label: "Início", href: "/" },
+    { label: "Produtos", href: "/produtos" },
+    { label: "Quem somos", href: "/quem-somos" },
+    { label: "Contato", href: "/contato" },
+    { label: "Carrinho", href: "/carrinho" },
+  ],
+}: HeaderProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
-    const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
-        if (isMobileSearchActive) setIsMobileSearchActive(false);
-    };
+  return (
+    <header className="border-b relative">
+      {/* TOP BAR */}
+      <div className="header-top">
+        {/* ESQUERDA (MOBILE): MENU */}
+        <div className="flex items-center gap-3">
+          <button
+            className="menu-btn"
+            aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+            onClick={() => {
+              setMobileMenuOpen(!mobileMenuOpen);
+              // fecha a busca se o menu abrir
+              if (!mobileMenuOpen) setMobileSearchOpen(false);
+            }}
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
 
-    return (
-        <header className="ph-header-container">
-            {/* Barra de Anúncio (Frete Grátis) */}
-            {headerSettings.showAnnouncementBar && (
-                <div className="ph-announcement-bar">
-                    <div className="ph-loja-container">
-                        <span className="ph-announcement-text-wrapper">
-                            <span className="ph-announcement-text">{headerSettings.announcementText}</span>
-                        </span>
-                    </div>
-                </div>
-            )}
+        {/* CENTRO: LOGO */}
+        <div className="logo">{lojaNome}</div>
 
-            {/* Cabeçalho Desktop (Oculto no Mobile) */}
-            <div className="ph-main-header-bar ph-desktop-only">
-                <div className="ph-loja-container">
-                    <div className="ph-header-top-row">
-                        {/* Logo */}
-                        <Link href="/" className="ph-logo-link">
-                            {headerSettings.logoUrl ? (
-                                <img
-                                    src={headerSettings.logoUrl}
-                                    alt={`${lojaNome} Logo`}
-                                    className="ph-logo-img"
-                                />
-                            ) : (
-                                <h1 className="ph-logo-placeholder">{lojaNome}</h1>
-                            )}
-                        </Link>
-        
-                        {/* Busca */}
-                        <div className="ph-search-bar">
-                            <input type="text" placeholder="O que deseja procurar?" className="ph-search-input" />
-                            <button className="ph-search-button" aria-label="Buscar">
-                                <Search size={20} />
-                            </button>
-                        </div>
-        
-                        {/* Ações do Usuário */}
-                        <div className="ph-user-actions">
-                            <Link href="/minha-conta" className="ph-user-action-link">
-                                <User size={20} />
-                                <span className="ph-user-action-text">Minha Conta</span>
-                            </Link>
-                            <Link href="/carrinho" className="ph-user-action-link">
-                                <ShoppingBag size={20} />
-                                <span className="ph-user-action-text">Carrinho</span>
-                            </Link>
-                        </div>
-                    </div>
-                    
-                    {/* Linha Divisória */}
-                    <hr className="ph-header-divider" />
-        
-                    {/* Navegação Principal */}
-                    <nav className="ph-main-nav">
-                        <ul>
-                            <li><Link href="/">Início</Link></li>
-                            <li><Link href="/produtos">Produtos</Link></li>
-                            <li><Link href="/contato">Contato</Link></li>
-                            <li><Link href="/quem-somos">Quem Somos</Link></li>
-                            <li><Link href="/politicas">Políticas</Link></li>
-                            <li><Link href="/trocas-devolucoes">Trocas e Devoluções</Link></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+        {/* DIREITA: AÇÕES */}
+        <div className="header-actions">
+          {/* MOBILE: TOGGLE DE BUSCA (fica ao lado dos ícones) */}
+          <button
+            className="search-toggle"
+            aria-label={mobileSearchOpen ? "Fechar busca" : "Abrir busca"}
+            onClick={() => {
+              setMobileSearchOpen(!mobileSearchOpen);
+              // fecha o menu se a busca abrir
+              if (!mobileSearchOpen) setMobileMenuOpen(false);
+            }}
+          >
+            {mobileSearchOpen ? <X size={22} /> : <Search size={20} />}
+          </button>
 
-            {/* Header Mobile (Oculto no Desktop) */}
-            <div className="ph-main-header-bar ph-loja-container ph-mobile-only">
-                <button
-                    className="ph-mobile-menu-toggle"
-                    onClick={toggleMobileMenu}
-                    aria-label={isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
-                >
-                    <Menu size={28} />
-                </button>
-        
-                <Link href="/" className="ph-logo-link">
-                    <h1>{lojaNome}</h1>
-                </Link>
-        
-                <div className="ph-mobile-actions-right">
-                    <button
-                        className="ph-mobile-search-toggle"
-                        onClick={toggleMobileSearch}
-                        aria-label={isMobileSearchActive ? 'Fechar busca' : 'Abrir busca'}
-                    >
-                        <Search size={24} />
-                    </button>
-                    <Link href="/carrinho" className="ph-mobile-cart-link" aria-label="Sacola de compras">
-                        <ShoppingBag size={24} />
-                    </Link>
-                </div>
-            </div>
+          <a href="/conta" aria-label="Minha conta">
+            <User size={20} />
+          </a>
+          <a href="/carrinho" aria-label="Carrinho">
+            <ShoppingBag size={20} />
+          </a>
+        </div>
+      </div>
 
-            {/* Menu Mobile */}
-            <div className={`ph-mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
-                <button
-                    className="ph-mobile-menu-close-button"
-                    onClick={toggleMobileMenu}
-                    aria-label="Fechar menu"
-                >
-                    <X size={40} />
-                </button>
-                <nav className="ph-mobile-nav">
-                    <ul>
-                        <li><Link href="/" onClick={toggleMobileMenu}>Início</Link></li>
-                        <li><Link href="/produtos" onClick={toggleMobileMenu}>Produtos</Link></li>
-                        <li><Link href="/contato" onClick={toggleMobileMenu}>Contato</Link></li>
-                        <li><Link href="/quem-somos" onClick={toggleMobileMenu}>Quem Somos</Link></li>
-                        <li><Link href="/politicas" onClick={toggleMobileMenu}>Políticas</Link></li>
-                        <li><Link href="/trocas-devolucoes" onClick={toggleMobileMenu}>Trocas e Devoluções</Link></li>
-                        <li><Link href="/minha-conta" onClick={toggleMobileMenu}>Minha Conta</Link></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-    );
-};
+      {/* DESKTOP: BARRA OVAL SEMPRE VISÍVEL */}
+      <div className="header-desktop-search">
+        <form className="search-pill" role="search">
+          <input
+            type="text"
+            placeholder="Buscar produtos..."
+            aria-label="Buscar produtos"
+          />
+          <button type="submit" aria-label="Buscar">
+            <Search size={18} />
+          </button>
+        </form>
+      </div>
 
-export default Header;
+      {/* DESKTOP: MENU INFERIOR */}
+      <div className="header-bottom">
+        <nav>
+          {links.map((link, i) => (
+            <a key={i} href={link.href}>
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+
+      {/* MOBILE: OVERLAY DA BUSCA (SEM LUPA INTERNA) */}
+      {mobileSearchOpen && (
+        <div className="mobile-search-bar">
+          <form role="search" className="mobile-search-form" onSubmit={(e)=>e.preventDefault()}>
+            <input
+              type="text"
+              placeholder="Buscar produtos..."
+              aria-label="Buscar produtos"
+            />
+            <button type="submit">Buscar</button>
+          </form>
+        </div>
+      )}
+
+      {/* MOBILE: DRAWER À ESQUERDA */}
+      <div className={`mobile-menu ${mobileMenuOpen ? "active" : ""}`}>
+        <button
+          className="close-btn"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-label="Fechar menu"
+        >
+          <X size={20} /> Fechar
+        </button>
+        <nav>
+          {links.map((link, i) => (
+            <a key={i} href={link.href}>
+              {link.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+}

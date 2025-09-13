@@ -10,56 +10,30 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      console.log("--- AuthCallbackPage: Iniciando verificação de autenticação ---");
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error('AuthCallbackPage: Erro ao obter a sessão:', sessionError);
-        router.replace('/login?error=auth_failed');
-        return;
-      }
-      
-      if (session) {
-        const { user } = session;
-        console.log('AuthCallbackPage: Usuário autenticado:', user.id);
+      const { data: { session } } = await supabase.auth.getSession();
 
-        // Tentar buscar a loja do usuário
-        const { data: loja, error: lojaError } = await supabase
+      if (session?.user) {
+        const user = session.user;
+
+        // Tenta carregar loja vinculada ao usuário
+        const { data: loja } = await supabase
           .from('lojas')
-          .select('slug')
-          .eq('owner_id', user.id) // Usar 'owner_id'
-          .single();
-
-        if (lojaError && lojaError.code !== 'PGRST116') { // PGRST116 é 'no rows found'
-          // Se for um erro real do banco de dados (não apenas loja não encontrada)
-          console.error('AuthCallbackPage: Erro real ao buscar loja do usuário:', lojaError);
-          router.replace('/login?error=db_error'); // Redireciona para login com erro de DB
-          return;
-        }
+          .select('id, slug')
+          .eq('owner_id', user.id)
+          .maybeSingle();
 
         if (loja) {
-          // Loja encontrada, redireciona para o slug da loja
-          console.log('AuthCallbackPage: Loja encontrada, redirecionando para:', `/${loja.slug}`);
-          router.replace(`/${loja.slug}`);
+          router.replace('/dashboard'); // ✅ já tem loja, vai pro painel
         } else {
-          // Nenhuma loja encontrada para o usuário, redireciona para onboarding
-          console.log('AuthCallbackPage: Nenhuma loja encontrada para o usuário, redirecionando para /onboarding');
-          router.replace('/onboarding');
+          router.replace('/onboarding'); // ✅ não tem loja, cria uma
         }
       } else {
-        // Nenhuma sessão encontrada, redireciona para o login
-        console.log('AuthCallbackPage: Nenhuma sessão encontrada, redirecionando para /login');
-        router.replace('/login?error=auth_failed');
+        router.replace('/login'); // ❌ só se realmente não tem sessão
       }
-      console.log("--- AuthCallbackPage: Fim da verificação ---");
     };
 
     handleAuthCallback();
   }, [supabase, router]);
 
-  return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <p>Confirmando e-mail...</p>
-    </div>
-  );
+  return <p>Confirmando e-mail...</p>;
 }

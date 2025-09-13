@@ -32,10 +32,15 @@ export default async function DashboardPage() {
       )
     `)
     .eq('owner_id', user.id) // CORREÇÃO: Coluna agora é 'owner_id'
-    .single();
+    .maybeSingle(); // ✅ corrigido
 
-  if (lojaError || !lojaData) {
+  if (lojaError) {
     console.error('Erro ao carregar loja do usuário:', lojaError);
+    redirect('/onboarding');
+  }
+
+  if (!lojaData) {
+    console.warn('Nenhuma loja encontrada para este usuário, redirecionando...');
     redirect('/onboarding');
   }
 
@@ -72,7 +77,7 @@ export default async function DashboardPage() {
     lojaId: lojaData.id,
     lojaNome: lojaData.nome_loja,
     lojaSlug: lojaData.slug,
-    plano: planoData?.nome_plano || 'Plano Grátis', // placeholder só se não tiver assinatura
+    plano: planoData?.nome_plano || 'Plano Grátis',
     recorrencia: recorrencia,
     preco_mensal: planoData?.preco_mensal ?? null,
     preco_anual: planoData?.preco_anual ?? null,

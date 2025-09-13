@@ -1,0 +1,96 @@
+/* ============================= */
+/* Vitrine (Product Showcase)    */
+/* ============================= */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+  text-align: center;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  border: 1px solid #eee;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  background: #fff;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
+}
+
+/* Imagem quadrada */
+.product-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+/* Conteúdo da vitrine */
+.product-card-content {
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: center;
+}
+
+.product-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  min-height: 2.4em; /* mantém altura padronizada */
+}
+
+/* Preço principal */
+.product-price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+/* Preço Pix */
+.product-pix {
+  font-size: 0.9rem;
+  color: #0a8f3c;
+  font-weight: 500;
+}
+
+/* Parcelamento */
+.product-installments {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Botão adicionar */
+.product-card button {
+  margin-top: 0.6rem;
+  width: 100%;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.product-card button:hover {
+  background: #4b0877;
+}
