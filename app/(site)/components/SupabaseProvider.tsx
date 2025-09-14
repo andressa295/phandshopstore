@@ -50,9 +50,9 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
             )
           `)
           .eq('owner_id', userId)
-          .maybeSingle(); // ✅ corrigido
-
-        if (lojaError) {
+          .single();
+        
+        if (lojaError && lojaError.code !== 'PGRST116') {
           console.error("SupabaseProvider: Erro ao carregar loja:", lojaError);
           setProfile(null);
         } else if (lojaData) {
@@ -76,7 +76,7 @@ export function SupabaseProvider({ children, initialUser }: { children: ReactNod
           setProfile(userProfileData);
           console.log("SupabaseProvider: Perfil formatado:", userProfileData);
         } else {
-          console.log("SupabaseProvider: Nenhuma loja encontrada para o usuário.");
+          console.log("SupabaseProvider: Nenhuma loja encontrada para o usuário. Perfil sem dados da loja.");
           setProfile({ 
             id: userId, 
             email: user?.email ?? null, 
